@@ -13,7 +13,13 @@ use Mix.Config
 # which you typically run after static files are built.
 config :alloy_ci, AlloyCi.Endpoint,
   http: [port: {:system, "PORT"}],
-  url: [host: "example.com", port: 80],
+  url: [host: "alloy-ci.com", port: 443],
+  force_ssl: [hsts: true],
+  https: [
+    port: 443,
+    keyfile: System.get_env("SSL_KEY_PATH"),
+    certfile: System.get_env("SSL_CERT_PATH")
+  ],
   cache_static_manifest: "priv/static/manifest.json"
 
 # Do not print debug messages in production

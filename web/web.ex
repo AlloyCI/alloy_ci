@@ -29,13 +29,36 @@ defmodule AlloyCi.Web do
   def controller do
     quote do
       use Phoenix.Controller
+      use Guardian.Phoenix.Controller
 
       alias AlloyCi.Repo
+      alias Guardian.Plug.EnsureAuthenticated
+      alias Guardian.Plug.EnsurePermissions
+
       import Ecto
       import Ecto.Query
 
       import AlloyCi.Router.Helpers
+      import AlloyCi.Controller.Helpers
       import AlloyCi.Gettext
+    end
+  end
+
+  def admin_controller do
+    quote do
+      use Phoenix.Controller, namespace: AlloyCi.Admin
+      use Guardian.Phoenix.Controller, key: :admin
+
+      alias AlloyCi.Repo
+      alias Guardian.Plug.EnsureAuthenticated
+      alias Guardian.Plug.EnsurePermissions
+
+      import Ecto.Schema
+      import Ecto.Query, only: [from: 1, from: 2]
+
+      import AlloyCi.Router.Helpers
+      import AlloyCi.Controller.Helpers
+      import AlloyCi.Controller.Helpers
     end
   end
 
@@ -51,6 +74,7 @@ defmodule AlloyCi.Web do
 
       import AlloyCi.Router.Helpers
       import AlloyCi.ErrorHelpers
+      import AlloyCi.ViewHelpers
       import AlloyCi.Gettext
     end
   end
