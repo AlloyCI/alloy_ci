@@ -1,0 +1,88 @@
+//colors
+$mercury: #e5e5e5;
+
+.jumbotron {
+  border-bottom: 1px solid $mercury;
+  color: $brand-danger;
+  text-align: center;
+}
+
+body {
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+form {
+  margin-bottom: 20px;
+  margin-top: 20px;
+
+  &.link {
+    display: inline;
+  }
+
+  &.button {
+    display: inline;
+  }
+}
+
+ul {
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+table {
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.header {
+  border-bottom: 1px solid $mercury;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.logo {
+  background-image: url('/images/phoenix.png');
+  background-size: 519px 71px;
+  display: inline-block;
+  height: 71px;
+  margin-bottom: 1em;
+  width: 519px;
+}
+
+.marketing {
+  margin: 35px 0;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+@media(min-width: 768px) {
+  .container {
+    max-width: 730px;
+  }
+}
+
+@media screen and(min-width: 768px) {
+  .header {
+    margin-bottom: 30px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .marketing {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .jumbotron {
+    border-bottom: 0;
+  }
+}
+
+.alert:empty {
+  display: none;
+}
+
+.container-narrow > hr {
+  margin: 30px 0;
+}
