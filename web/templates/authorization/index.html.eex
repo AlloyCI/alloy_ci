@@ -13,7 +13,7 @@
 
       <%= for auth <- auths do %>
         <tr>
-          <td><%= auth.provider %></td>
+          <td><%= icon(auth.provider, 'fa-2x') %></td>
           <td><%= auth.uid %></td>
           <td><%= auth.expires_at %></td>
           <td><%= auth.inserted_at %></td>

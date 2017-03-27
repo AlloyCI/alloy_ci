@@ -7,4 +7,12 @@ defmodule AlloyCi.ViewHelpers do
 
   def logged_in?(conn), do: Guardian.Plug.authenticated?(conn)
   def current_user(conn), do: Guardian.Plug.current_resource(conn)
+
+  def icon(name) do
+    {:safe, "<i class='fa fa-#{name}'></i>"}
+  end
+
+  def icon(name, classes) do
+    {:safe, "<i class='fa fa-#{name} #{classes}'></i>"}
+  end
 end
