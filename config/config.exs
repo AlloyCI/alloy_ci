@@ -12,7 +12,7 @@ config :alloy_ci,
 # Configures the endpoint
 config :alloy_ci, AlloyCi.Endpoint,
   url: [host: "localhost"],
-  secret_key_base: "ihHz/ZrHEy2bZF/T3ROjOy01oYwWg5Oe9Egv4sGmcEJJntCnlGAgryfi+AFzAm2x",
+  secret_key_base: System.get_env("SECRET_KEY_BASE"),
   render_errors: [view: AlloyCi.ErrorView, accepts: ~w(html json)],
   pubsub: [name: AlloyCi.PubSub,
            adapter: Phoenix.PubSub.PG2]
@@ -39,7 +39,7 @@ config :guardian, Guardian,
   ttl: {30, :days},
   verify_issuer: true,
   serializer: AlloyCi.GuardianSerializer,
-  secret_key: to_string(Mix.env),
+  secret_key: System.get_env("SECRET_KEY_BASE"),
   hooks: GuardianDb,
   permissions: %{
     default: [
