@@ -1,4 +1,6 @@
 defmodule AlloyCi.Mixfile do
+  @moduledoc """
+  """
   use Mix.Project
 
   def project do
@@ -62,12 +64,15 @@ defmodule AlloyCi.Mixfile do
       {:phoenix_html, "~> 2.6"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
+      {:gravatar, "~> 0.1.0"},
       {:cowboy, "~> 1.0"},
       {:guardian_db, "~> 0.8"},
       {:ueberauth_identity, "~> 0.2.3"},
       {:ueberauth_github, "~> 0.4"},
       {:tentacat, "~> 0.5"},
-      {:ex_machina, "~> 2.0", only: [:dev, :test]}
+      {:ex_machina, "~> 2.0", only: [:dev, :test]},
+      {:exvcr, "~> 0.8", only: :test},
+      {:credo, "~> 0.3", only: [:dev, :test]}
     ]
   end
 
