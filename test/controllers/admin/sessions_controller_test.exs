@@ -6,7 +6,7 @@ defmodule AlloyCi.SessionControllerTest do
   alias AlloyCi.User
 
   setup do
-    auth = insert(:user)|> User.make_admin! |> with_authorization
+    auth = insert(:user)|> User.make_admin! |> with_authentication
     {:ok, %{user: auth.user}}
   end
 

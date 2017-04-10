@@ -1,7 +1,9 @@
-defmodule AlloyCi.Authorization do
+defmodule AlloyCi.Authentication do
+  @moduledoc """
+  """
   use AlloyCi.Web, :model
 
-  schema "authorizations" do
+  schema "authentications" do
     field :provider, :string
     field :uid, :string
     field :token, :string

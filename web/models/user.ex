@@ -1,4 +1,6 @@
 defmodule AlloyCi.User do
+  @moduledoc """
+  """
   use AlloyCi.Web, :model
 
   alias AlloyCi.Repo
@@ -8,17 +10,19 @@ defmodule AlloyCi.User do
     field :email, :string
     field :is_admin, :boolean
 
-    has_many :authorizations, AlloyCi.Authorization
+    has_many :authentications, AlloyCi.Authentication
+    has_many :project_permissions, AlloyCi.ProjectPermission
+    has_many :projects, through: [:project_permissions, :project]
 
     timestamps()
   end
 
   @required_fields ~w(email name)a
-  @optional_fields ~w()a
+  @optional_fields ~w(is_admin)a
 
   def registration_changeset(model, params \\ :empty) do
     model
-    |>cast(params, ~w(email name)a)
+    |> cast(params, ~w(email name)a)
     |> validate_required(@required_fields)
   end
 
@@ -39,5 +43,11 @@ defmodule AlloyCi.User do
     user
     |> cast(%{is_admin: true}, ~w(is_admin)a)
     |> Repo.update!
+  end
+
+  def gravatar_url(user) do
+    user.email
+    |> Gravatar.new
+    |> to_string
   end
 end

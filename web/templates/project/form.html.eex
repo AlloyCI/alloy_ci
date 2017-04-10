@@ -1,0 +1,15 @@
+<%= form_for @changeset, @action, fn f -> %>
+  <%= hidden_input f, :name, value: @repo |> Map.get("name") %>
+  <%= hidden_input f, :owner, value: @repo |> Map.get("owner") |> Map.get("login") %>
+  <%= hidden_input f, :private, value: @repo |> Map.get("private") |> to_string %>
+  <%= hidden_input f, :repo_id, value: @repo |> Map.get("id") %>
+  <tr>
+    <td><%= @repo |> Map.get("name") %></td>
+    <td><%= @repo |> Map.get("description") %></td>
+    <%= if (@repo |> Map.get("id")) in @existing_ids do %>
+      <td><a href="#" class="btn btn-outline-primary disabled btn-block">Already in AlloyCI</a></td>
+    <% else %>
+      <td><%= submit "Add to AlloyCI", class: "btn btn-primary btn-block" %></td>
+    <% end %>
+  </tr>
+<% end %>

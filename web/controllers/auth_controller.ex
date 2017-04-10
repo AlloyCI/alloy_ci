@@ -2,13 +2,14 @@ defmodule AlloyCi.AuthController do
   @moduledoc """
   Handles the Überauth integration.
   This controller implements the request and callback phases for all providers.
-  The actual creation and lookup of users/authorizations is handled by UserFromAuth
+  The actual creation and lookup of users/authentications is handled by UserFromAuth
   """
   use AlloyCi.Web, :controller
 
   alias AlloyCi.UserFromAuth
 
   plug Ueberauth
+  plug :put_layout, "login_layout.html"
 
   def login(conn, _params, current_user, _claims) do
     render conn, "login.html", current_user: current_user, current_auths: auths(current_user)
@@ -21,12 +22,12 @@ defmodule AlloyCi.AuthController do
   end
 
   def callback(%Plug.Conn{assigns: %{ueberauth_auth: auth}} = conn, _params, current_user, _claims) do
-    case UserFromAuth.get_or_insert(auth, current_user, Repo) do
+    case UserFromAuth.get_or_insert(auth, current_user) do
       {:ok, user} ->
         conn
         |> put_flash(:info, "Signed in as #{user.name}")
         |> Guardian.Plug.sign_in(user, :access, perms: %{default: Guardian.Permissions.max})
-        |> redirect(to: private_page_path(conn, :index))
+        |> redirect(to: project_path(conn, :index))
       {:error, reason} ->
         conn
         |> put_flash(:error, "Could not authenticate. Error: #{reason}")
@@ -51,10 +52,24 @@ defmodule AlloyCi.AuthController do
     end
   end
 
+  # The unauthenticated function is called because this controller has been
+  # specified as the handler.
+  def unauthenticated(conn, _params) do
+    conn
+    |> put_flash(:error, "Authentication required")
+    |> redirect(to: auth_path(conn, :login, :login))
+  end
+
+  def unauthorized(conn, _params) do
+    conn
+    |> put_flash(:error, "Unauthorized")
+    |> redirect(external: redirect_back(conn))
+  end
+
   defp auths(nil), do: []
   defp auths(%AlloyCi.User{} = user) do
-    user = user |> Repo.preload(:authorizations)
-    user.authorizations
+    user = user |> Repo.preload(:authentications)
+    user.authentications
     |> Enum.map(&(&1.provider))
   end
 end

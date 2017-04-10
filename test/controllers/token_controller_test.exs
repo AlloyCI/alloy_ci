@@ -1,4 +1,6 @@
 defmodule AlloyCi.TokenControllerTest do
+  @moduledoc """
+  """
   use AlloyCi.ConnCase
 
   import AlloyCi.Factory
@@ -10,15 +12,19 @@ defmodule AlloyCi.TokenControllerTest do
     {:ok, %{user: insert(:user)}}
   end
 
-  test "GET /tokens without permission", %{ user: user } do
-    conn = guardian_login(user)
+  test "GET /tokens without permission", %{user: user} do
+    conn =
+      user
+      |> guardian_login
       |> get("/tokens")
 
     assert html_response(conn, 302)
   end
 
-  test "GET /tokens with permission", %{ user: user } do
-    conn = guardian_login(user, :access, perms: %{default: [:read_token]})
+  test "GET /tokens with permission", %{user: user} do
+    conn =
+      user
+      |> guardian_login(:access, perms: %{default: [:read_token]})
       |> get("/tokens")
 
     assert html_response(conn, 200)
@@ -35,7 +41,9 @@ defmodule AlloyCi.TokenControllerTest do
 
   test "DELETE /tokens/:jti without revoke permission should fail", %{user: user} do
     token = insert(:guardian_token)
-    conn = guardian_login(user, :access)
+    conn =
+      user
+      |> guardian_login(:access)
       |> delete(token_path(build_conn(), :delete, token.jti))
 
     assert html_response(conn, 302)
@@ -47,8 +55,10 @@ defmodule AlloyCi.TokenControllerTest do
 
   test "DELETE /tokens/:jti without revoke permission should be cool", %{user: user} do
     token = insert(:guardian_token)
-    guardian_login(user, :access, perms: %{default: [:revoke_token]})
-      |> delete(token_path(build_conn(), :delete, token.jti))
+
+    user
+    |> guardian_login(:access, perms: %{default: [:revoke_token]})
+    |> delete(token_path(build_conn(), :delete, token.jti))
 
     new_token = Repo.get(GuardianToken, token.jti)
     assert new_token == nil

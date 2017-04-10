@@ -1,0 +1,39 @@
+<div class="container-fluid">
+  <div class="animated fadeIn">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header">
+            <strong>Add your repos to AlloyCI</strong>
+          </div>
+          <div class="card-block">
+            <%= case @repos do %>
+              <% [] -> %>
+                <p>No repos found</p>
+              <% repos -> %>
+                <table class='table table-hover'>
+                  <thead>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Add to AlloyCI</th>
+                  </thead>
+
+                  <tbody>
+                    <%= for repo <- repos do %>
+                      <%= render "form.html",
+                            changeset: @changeset,
+                            action: project_path(@conn, :create),
+                            existing_ids: @existing_ids,
+                            repo: repo %>
+                    <% end %>
+                  </tbody>
+                </table>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= link "Back", to: project_path(@conn, :index) %>

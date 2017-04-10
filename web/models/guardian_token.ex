@@ -1,4 +1,6 @@
 defmodule AlloyCi.GuardianToken do
+  @moduledoc """
+  """
   use AlloyCi.Web, :model
 
   alias AlloyCi.Repo
@@ -21,8 +23,7 @@ defmodule AlloyCi.GuardianToken do
   def for_user(user) do
     case GuardianSerializer.for_token(user) do
       {:ok, aud} ->
-        (from t in AlloyCi.GuardianToken, where: t.sub == ^aud)
-          |> Repo.all
+        Repo.all(from t in AlloyCi.GuardianToken, where: t.sub == ^aud)
       _ -> []
     end
   end

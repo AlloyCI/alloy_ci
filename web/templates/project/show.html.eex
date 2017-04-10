@@ -1,0 +1,28 @@
+<h2>Show project</h2>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @project.name %>
+  </li>
+
+  <li>
+    <strong>Owner:</strong>
+    <%= @project.owner %>
+  </li>
+
+  <li>
+    <strong>Repo ID:</strong>
+    <%= @project.repo_id %>
+  </li>
+
+  <li>
+    <strong>Private:</strong>
+    <%= @project.private %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: project_path(@conn, :edit, @project) %>
+<%= link "Back", to: project_path(@conn, :index) %>

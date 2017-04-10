@@ -1,17 +1,20 @@
 defmodule AlloyCi.UserFromAuth do
+  @moduledoc """
+  """
   alias AlloyCi.User
-  alias AlloyCi.Authorization
+  alias AlloyCi.Authentication
+  alias AlloyCi.Repo
   alias Ueberauth.Auth
 
-  def get_or_insert(auth, current_user, repo) do
-    case auth_and_validate(auth, repo) do
-      {:error, :not_found} -> register_user_from_auth(auth, current_user, repo)
+  def get_or_insert(auth, current_user) do
+    case auth_and_validate(auth) do
+      {:error, :not_found} -> register_user_from_auth(auth, current_user)
       {:error, reason} -> {:error, reason}
-      authorization ->
-        if authorization.expires_at && authorization.expires_at < Guardian.Utils.timestamp do
-          replace_authorization(authorization, auth, current_user, repo)
+      authentication ->
+        if authentication.expires_at && authentication.expires_at < Guardian.Utils.timestamp do
+          replace_authentication(authentication, auth, current_user)
         else
-          user_from_authorization(authorization, current_user, repo)
+          user_from_authentication(authentication, current_user)
         end
     end
   end
@@ -34,7 +37,7 @@ defmodule AlloyCi.UserFromAuth do
   end
 
   # All the other providers are oauth so should be good
-  defp validate_auth_for_registration(auth), do: :ok
+  defp validate_auth_for_registration(_auth), do: :ok
 
   defp validate_pw_length(pw, email) when is_binary(pw) do
     if String.length(pw) >= 8 do
@@ -48,43 +51,45 @@ defmodule AlloyCi.UserFromAuth do
     case Regex.run(~r/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/, email) do
       nil ->
         {:error, :invalid_email}
-      [email] ->
+      [_email] ->
         :ok
     end
   end
 
-  defp register_user_from_auth(auth, current_user, repo) do
-    case validate_auth_for_registration(auth) do
-      :ok ->
-        case repo.transaction(fn -> create_user_from_auth(auth, current_user, repo) end) do
-          {:ok, response} -> response
-          {:error, reason} -> {:error, reason}
-        end
+  defp register_user_from_auth(auth, current_user) do
+    with :ok <- validate_auth_for_registration(auth) do
+      case Repo.transaction(fn -> create_user_from_auth(auth, current_user) end) do
+        {:ok, response} -> response
+        {:error, reason} -> {:error, reason}
+      end
+    else
       {:error, reason} -> {:error, reason}
     end
   end
 
-  defp replace_authorization(authorization, auth, current_user, repo) do
-    case validate_auth_for_registration(auth) do
-      :ok ->
-        case user_from_authorization(authorization, current_user, repo) do
-          {:ok, user} ->
-            case repo.transaction(fn ->
-              repo.delete(authorization)
-              authorization_from_auth(user, auth, repo)
-              user
-            end) do
-              {:ok, user} -> {:ok, user}
-              {:error, reason} -> {:error, reason}
-            end
-          {:error, reason} -> {:error, reason}
-        end
+  defp replace_authentication(authentication, auth, current_user) do
+    with :ok <- validate_auth_for_registration(auth),
+         {:ok, user} <- user_from_authentication(authentication, current_user)
+    do
+      case invalidate_authentication(authentication, user, auth) do
+        {:ok, user} -> {:ok, user}
+        {:error, reason} -> {:error, reason}
+      end
+    else
       {:error, reason} -> {:error, reason}
     end
   end
 
-  defp user_from_authorization(authorization, current_user, repo) do
-    case repo.one(Ecto.assoc(authorization, :user)) do
+  defp invalidate_authentication(authentication, user, auth) do
+    Repo.transaction(fn ->
+      Repo.delete(authentication)
+      authentication_from_auth(user, auth)
+      user
+    end)
+  end
+
+  defp user_from_authentication(authentication, current_user) do
+    case Repo.one(Ecto.assoc(authentication, :user)) do
       nil -> {:error, :user_not_found}
       user ->
         if current_user && current_user.id != user.id do
@@ -95,32 +100,34 @@ defmodule AlloyCi.UserFromAuth do
     end
   end
 
-  defp create_user_from_auth(auth, current_user, repo) do
-    user = current_user
-    if !user, do: user = repo.get_by(User, email: auth.info.email)
-    if !user, do: user = create_user(auth, repo)
-    authorization_from_auth(user, auth, repo)
+  defp create_user_from_auth(auth, current_user) do
+    user = current_user || Repo.get_by(User, email: auth.info.email) || create_user(auth)
+
+    authentication_from_auth(user, auth)
     {:ok, user}
   end
 
-  defp create_user(auth, repo) do
+  defp create_user(auth) do
     name = name_from_auth(auth)
-    result = User.registration_changeset(%User{}, scrub(%{email: auth.info.email, name: name}))
-    |> repo.insert
+    result =
+      %User{}
+      |> User.registration_changeset(scrub(%{email: auth.info.email, name: name}))
+      |> Repo.insert
+
     case result do
       {:ok, user} -> user
-      {:error, reason} -> repo.rollback(reason)
+      {:error, reason} -> Repo.rollback(reason)
     end
   end
 
-  defp auth_and_validate(%{provider: :identity} = auth, repo) do
-    case repo.get_by(Authorization, uid: uid_from_auth(auth), provider: to_string(auth.provider)) do
+  defp auth_and_validate(%{provider: :identity} = auth) do
+    case Repo.get_by(Authentication, uid: uid_from_auth(auth), provider: to_string(auth.provider)) do
       nil -> {:error, :not_found}
-      authorization ->
+      authentication ->
         case auth.credentials.other.password do
           pass when is_binary(pass) ->
-            if Comeonin.Bcrypt.checkpw(auth.credentials.other.password, authorization.token) do
-              authorization
+            if Comeonin.Bcrypt.checkpw(auth.credentials.other.password, authentication.token) do
+              authentication
             else
               {:error, :password_does_not_match}
             end
@@ -129,50 +136,52 @@ defmodule AlloyCi.UserFromAuth do
     end
   end
 
-  defp auth_and_validate(%{provider: service} = auth, repo)  when service in [:google, :facebook, :github] do
-    case repo.get_by(Authorization, uid: uid_from_auth(auth), provider: to_string(auth.provider)) do
+  defp auth_and_validate(%{provider: service} = auth)  when service in [:google, :facebook, :github] do
+    case Repo.get_by(Authentication, uid: uid_from_auth(auth), provider: to_string(auth.provider)) do
       nil -> {:error, :not_found}
-      authorization ->
-        if authorization.uid == uid_from_auth(auth) do
-          authorization
+      authentication ->
+        if authentication.uid == uid_from_auth(auth) do
+          authentication
         else
           {:error, :uid_mismatch}
         end
     end
   end
 
-  defp auth_and_validate(auth, repo) do
-    case repo.get_by(Authorization, uid: uid_from_auth(auth), provider: to_string(auth.provider)) do
+  defp auth_and_validate(auth) do
+    case Repo.get_by(Authentication, uid: uid_from_auth(auth), provider: to_string(auth.provider)) do
       nil -> {:error, :not_found}
-      authorization ->
-        if authorization.token == auth.credentials.token do
-          authorization
+      authentication ->
+        if authentication.token == auth.credentials.token do
+          authentication
         else
           {:error, :token_mismatch}
         end
     end
   end
 
-  defp authorization_from_auth(user, auth, repo) do
-    authorization = Ecto.build_assoc(user, :authorizations)
-    result = Authorization.changeset(
-      authorization,
-      scrub(
-        %{
-          provider: to_string(auth.provider),
-          uid: uid_from_auth(auth),
-          token: token_from_auth(auth),
-          refresh_token: auth.credentials.refresh_token,
-          expires_at: auth.credentials.expires_at,
-          password: password_from_auth(auth),
-          password_confirmation: password_confirmation_from_auth(auth)
-        }
-      )
-    ) |> repo.insert
+  defp authentication_from_auth(user, auth) do
+    authentication = Ecto.build_assoc(user, :authentications)
+    result =
+      authentication
+      |> Authentication.changeset(
+          scrub(
+            %{
+              provider: to_string(auth.provider),
+              uid: uid_from_auth(auth),
+              token: token_from_auth(auth),
+              refresh_token: auth.credentials.refresh_token,
+              expires_at: auth.credentials.expires_at,
+              password: password_from_auth(auth),
+              password_confirmation: password_confirmation_from_auth(auth)
+            }
+          )
+        )
+      |> Repo.insert
 
     case result do
       {:ok, the_auth} -> the_auth
-      {:error, reason} -> repo.rollback(reason)
+      {:error, reason} -> Repo.rollback(reason)
     end
   end
 
@@ -188,7 +197,7 @@ defmodule AlloyCi.UserFromAuth do
 
   defp token_from_auth(%{provider: :identity} = auth) do
     case auth do
-      %{ credentials: %{ other: %{ password: pass } } } when not is_nil(pass) ->
+      %{credentials: %{other: %{password: pass}}} when not is_nil(pass) ->
         Comeonin.Bcrypt.hashpwsalt(pass)
       _ -> nil
     end
@@ -196,7 +205,6 @@ defmodule AlloyCi.UserFromAuth do
 
   defp token_from_auth(auth), do: auth.credentials.token
 
-  defp uid_from_auth(%{ provider: :slack } = auth), do: auth.credentials.other.user_id
   defp uid_from_auth(auth), do: auth.uid
 
   defp password_from_auth(%{provider: :identity} = auth), do: auth.credentials.other.password
@@ -209,12 +217,12 @@ defmodule AlloyCi.UserFromAuth do
 
   # We don't have any nested structures in our params that we are using scrub with so this is a very simple scrub
   defp scrub(params) do
-    result = Enum.filter(params, fn
-      {key, val} when is_binary(val) -> String.strip(val) != ""
-      {key, val} when is_nil(val) -> false
+    params
+    |> Enum.filter(fn
+      {_key, val} when is_binary(val) -> String.strip(val) != ""
+      {_key, val} when is_nil(val) -> false
       _ -> true
     end)
     |> Enum.into(%{})
-    result
   end
 end

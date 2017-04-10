@@ -1,0 +1,44 @@
+<div class="container-fluid">
+  <div class="animated fadeIn">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header">
+            <strong>Your projects</strong>
+          </div>
+          <div class="card-block">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Owner</th>
+                  <th>Repo ID</th>
+                  <th>Private</th>
+
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <%= for project <- @projects do %>
+                  <tr>
+                    <td><%= project.name %></td>
+                    <td><%= project.owner %></td>
+                    <td><%= project.repo_id %></td>
+                    <td><%= project.private %></td>
+
+                    <td class="text-right">
+                      <%= link "Show", to: project_path(@conn, :show, project), class: "btn btn-success btn-xs" %>
+                      <%= link "Edit", to: project_path(@conn, :edit, project), class: "btn btn-warning btn-xs" %>
+                      <%= link "Delete", to: project_path(@conn, :delete, project), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+            <%= link "New project", to: project_path(@conn, :new), class: "btn btn-outline-primary" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

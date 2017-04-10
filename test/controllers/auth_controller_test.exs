@@ -1,4 +1,6 @@
 defmodule AlloyCi.AuthControllerTest do
+  @moduledoc """
+  """
   use AlloyCi.ConnCase
 
   import AlloyCi.Factory
@@ -8,8 +10,8 @@ defmodule AlloyCi.AuthControllerTest do
   alias AlloyCi.GuardianToken
 
   setup do
-    user_auth = insert(:user) |> with_authorization
-    admin_auth = insert(:user) |> User.make_admin! |> with_authorization
+    user_auth = insert(:user) |> with_authentication
+    admin_auth = insert(:user) |> User.make_admin! |> with_authentication
 
     {:ok, %{
         user: user_auth.user,

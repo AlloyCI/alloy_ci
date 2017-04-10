@@ -19,7 +19,7 @@ defmodule AlloyCi.Admin.SessionController do
   # We've aliased Guardian.Plug.EnsureAuthenticated in our AlloyCi.Web.admin_controller macro
   plug EnsureAuthenticated, [key: :admin, handler: __MODULE__] when action in [:delete, :impersonate, :stop_impersonating]
 
-  def new(conn, params, current_user, _claims) do
+  def new(conn, _params, current_user, _claims) do
     render conn, "new.html", current_user: current_user
   end
 
@@ -32,7 +32,7 @@ defmodule AlloyCi.Admin.SessionController do
   # In this function, when sign in is successful we sign_in the user into the :admin section
   # of the Guardian session
   def callback(%Plug.Conn{assigns: %{ueberauth_auth: auth}} = conn, _params, current_user, _claims) do
-    case UserFromAuth.get_or_insert(auth, current_user, Repo) do
+    case UserFromAuth.get_or_insert(auth, current_user) do
       {:ok, user} ->
         if user.is_admin do
           conn
@@ -51,14 +51,14 @@ defmodule AlloyCi.Admin.SessionController do
     end
   end
 
-  def logout(conn, params, _current_user, _claims) do
+  def logout(conn, _params, _current_user, _claims) do
     conn
-      |> Guardian.Plug.sign_out(:admin)
-      |> put_flash(:info, "admin signed out")
-      |> redirect(to: "/")
+    |> Guardian.Plug.sign_out(:admin)
+    |> put_flash(:info, "admin signed out")
+    |> redirect(to: "/")
   end
 
-  def impersonate(conn, params, current_user, _claims) do
+  def impersonate(conn, params, _current_user, _claims) do
     user = Repo.get(User, params["user_id"])
     conn
     |> Guardian.Plug.sign_out(:default)
@@ -66,7 +66,7 @@ defmodule AlloyCi.Admin.SessionController do
     |> redirect(to: "/")
   end
 
-  def stop_impersonating(conn, params, current_user, _claims) do
+  def stop_impersonating(conn, _params, _current_user, _claims) do
     conn
     |> Guardian.Plug.sign_out(:default)
     |> redirect(to: admin_user_path(conn, :index))

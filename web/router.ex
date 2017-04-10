@@ -39,9 +39,9 @@ defmodule AlloyCi.Router do
     plug :accepts, ["json"]
   end
 
-  # This pipeline if intended for API requests and looks for the JWT in the "Authorization" header
+  # This pipeline if intended for API requests and looks for the JWT in the "Authentication" header
   # In this case, it should be prefixed with "Bearer" so that it's looking for
-  # Authorization: Bearer <jwt>
+  # Authentication: Bearer <jwt>
   pipeline :api_auth do
     plug Guardian.Plug.VerifyHeader, realm: "Bearer"
     plug Guardian.Plug.LoadResource
@@ -57,10 +57,11 @@ defmodule AlloyCi.Router do
     delete "/logout", AuthController, :logout
 
     resources "/users", UserController, only: [:new]
-    resources "/authorizations", AuthorizationController
-    resources "/tokens", TokenController
+    resources "/authentications", AuthenticationController, only: [:index]
+    resources "/tokens", TokenController, only: [:index, :delete]
 
-    get "/private", PrivatePageController, :index
+    # Protected routes
+    resources "/projects", ProjectController
   end
 
   # This scope is the main authentication area for Ueberauth
