@@ -1,5 +1,7 @@
 # Alloy CI
 
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 Alloy CI aims to bridge the gap between GitLab's CI runner and GitHub. GitLab's
 CI runner is tightly coupled with GitLab, so it is not possible to use one of
 these runners from a GitHub codebase.
