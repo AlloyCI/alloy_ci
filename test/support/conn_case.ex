@@ -1,4 +1,4 @@
-defmodule AlloyCi.ConnCase do
+defmodule AlloyCi.Web.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -25,10 +25,10 @@ defmodule AlloyCi.ConnCase do
       import Ecto.Changeset
       import Ecto.Query
 
-      import AlloyCi.Router.Helpers
+      import AlloyCi.Web.Router.Helpers
 
       # The default endpoint for testing
-      @endpoint AlloyCi.Endpoint
+      @endpoint AlloyCi.Web.Endpoint
 
       # We need a way to get into the connection to login a user
       # We need to use the bypass_through to fire the plugs in the router
@@ -41,7 +41,7 @@ defmodule AlloyCi.ConnCase do
       def guardian_login(%Plug.Conn{} = conn, user, token), do: guardian_login(conn, user, token, [])
       def guardian_login(%Plug.Conn{} = conn, user, token, opts) do
         conn
-          |> bypass_through(AlloyCi.Router, [:browser])
+          |> bypass_through(AlloyCi.Web.Router, [:browser])
           |> get("/")
           |> Guardian.Plug.sign_in(user, token, opts)
           |> send_resp(200, "Flush the session")

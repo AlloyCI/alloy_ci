@@ -1,4 +1,4 @@
-defmodule AlloyCi.ChannelCase do
+defmodule AlloyCi.Web.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -27,7 +27,7 @@ defmodule AlloyCi.ChannelCase do
 
 
       # The default endpoint for testing
-      @endpoint AlloyCi.Endpoint
+      @endpoint AlloyCi.Web.Endpoint
     end
   end
 
