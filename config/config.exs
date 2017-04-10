@@ -10,10 +10,10 @@ config :alloy_ci,
   ecto_repos: [AlloyCi.Repo]
 
 # Configures the endpoint
-config :alloy_ci, AlloyCi.Endpoint,
+config :alloy_ci, AlloyCi.Web.Endpoint,
   url: [host: "localhost"],
   secret_key_base: System.get_env("SECRET_KEY_BASE"),
-  render_errors: [view: AlloyCi.ErrorView, accepts: ~w(html json)],
+  render_errors: [view: AlloyCi.Web.ErrorView, accepts: ~w(html json)],
   pubsub: [name: AlloyCi.PubSub,
            adapter: Phoenix.PubSub.PG2]
 

@@ -1,15 +1,15 @@
-defmodule AlloyCi.UserFromAuthTest do
+defmodule AlloyCi.AccountsTest do
   @moduledoc """
   """
   @lint {Credo.Check.Refactor.PipeChainStart , false}
-  use AlloyCi.ModelCase
+  use AlloyCi.DataCase
 
   import Ecto.Query
 
   alias AlloyCi.Repo
   alias AlloyCi.User
   alias AlloyCi.Authentication
-  alias AlloyCi.UserFromAuth
+  alias AlloyCi.Accounts
   alias Ueberauth.Auth
   alias Ueberauth.Auth.Credentials
   alias Ueberauth.Auth.Info
@@ -44,7 +44,7 @@ defmodule AlloyCi.UserFromAuthTest do
   test "it creates a new authentication and user when there is neither", %{auth: auth} do
     before_users = user_count()
     before_authentications = authentication_count()
-    {:ok, user} = UserFromAuth.get_or_insert(auth, nil)
+    {:ok, user} = Accounts.get_or_create_user(auth, nil)
     after_users = user_count()
     after_authentications = authentication_count()
 
@@ -68,7 +68,7 @@ defmodule AlloyCi.UserFromAuthTest do
 
     before_users = user_count()
     before_authentications = authentication_count()
-    {:ok, user_from_auth} = UserFromAuth.get_or_insert(auth, nil)
+    {:ok, user_from_auth} = Accounts.get_or_create_user(auth, nil)
     assert user_from_auth.id == user.id
 
     assert user_count() == before_users
@@ -79,7 +79,7 @@ defmodule AlloyCi.UserFromAuthTest do
     {:ok, user} = User.registration_changeset(%User{}, %{email: @email, name: @name}) |> Repo.insert
     before_users = user_count()
     before_authentications = authentication_count()
-    {:ok, user_from_auth} = UserFromAuth.get_or_insert(auth, nil)
+    {:ok, user_from_auth} = Accounts.get_or_create_user(auth, nil)
     assert user_from_auth.id == user.id
 
     assert user_count() == before_users
@@ -101,7 +101,7 @@ defmodule AlloyCi.UserFromAuthTest do
 
     before_users = user_count()
     before_authentications = authentication_count()
-    {:ok, user_from_auth} = UserFromAuth.get_or_insert(auth, nil)
+    {:ok, user_from_auth} = Accounts.get_or_create_user(auth, nil)
 
     assert user_from_auth.id == user.id
     assert before_users == user_count()
@@ -124,6 +124,6 @@ defmodule AlloyCi.UserFromAuthTest do
       }
     ) |> Repo.insert
 
-    {:error, :user_does_not_match} = UserFromAuth.get_or_insert(auth, current_user)
+    {:error, :user_does_not_match} = Accounts.get_or_create_user(auth, current_user)
   end
 end

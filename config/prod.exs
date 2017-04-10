@@ -22,7 +22,7 @@ config :alloy_ci, AlloyCi.Endpoint,
   #   keyfile: System.get_env("SSL_KEY_PATH"),
   #   certfile: System.get_env("SSL_CERT_PATH")
   # ],
-  cache_static_manifest: "priv/static/manifest.json",
+  cache_static_manifest: "priv/static/cache_manifest.json",
   secret_key_base: System.get_env("SECRET_KEY_BASE")
 
 # Do not print debug messages in production
