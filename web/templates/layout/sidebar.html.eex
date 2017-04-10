@@ -1,0 +1,82 @@
+<%= if @current_user do %>
+  <div class="sidebar">
+    <nav class="sidebar-nav">
+      <ul class="nav">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html"><%= icon("dashboard") %> Dashboard <span class="badge badge-info">NEW</span></a>
+        </li>
+
+        <li class="nav-title">
+          UI Elements
+        </li>
+        <li class="nav-item nav-dropdown">
+          <a class="nav-link nav-dropdown-toggle" href="#"><%= icon("puzzle-piece") %> Components</a>
+          <ul class="nav-dropdown-items">
+            <li class="nav-item">
+              <a class="nav-link" href="components-buttons.html"><%= icon("puzzle-piece") %> Buttons</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="components-social-buttons.html"><%= icon("puzzle-piece") %> Social Buttons</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="components-cards.html"><%= icon("puzzle-piece") %> Cards</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="components-forms.html"><%= icon("puzzle-piece") %> Forms</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="components-modals.html"><%= icon("puzzle-piece") %> Modals</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="components-switches.html"><%= icon("puzzle-piece") %> Switches</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="components-tables.html"><%= icon("puzzle-piece") %> Tables</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="components-tabs.html"><%= icon("puzzle-piece") %> Tabs</a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item nav-dropdown">
+          <a class="nav-link nav-dropdown-toggle" href="#"><%= icon("star") %> Icons</a>
+          <ul class="nav-dropdown-items">
+            <li class="nav-item">
+              <a class="nav-link" href="icons-font-awesome.html"><%= icon("star") %> Font Awesome</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="icons-simple-line-icons.html"><%= icon("star") %> Simple Line Icons</a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="widgets.html"><%= icon("calculator") %> Widgets <span class="badge badge-info">NEW</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="charts.html"><%= icon("pie-chart") %> Charts</a>
+        </li>
+        <li class="divider"></li>
+        <li class="nav-title">
+          Extras
+        </li>
+        <li class="nav-item nav-dropdown">
+          <a class="nav-link nav-dropdown-toggle" href="#"><%= icon("star") %> Pages</a>
+          <ul class="nav-dropdown-items">
+            <li class="nav-item">
+              <a class="nav-link" href="pages-login.html" target="_top"><%= icon("star") %> Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="pages-register.html" target="_top"><%= icon("star") %> Register</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="pages-404.html" target="_top"><%= icon("star") %> Error 404</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="pages-500.html" target="_top"><%= icon("star") %> Error 500</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+<% end %>

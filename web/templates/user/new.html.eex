@@ -1,26 +1,33 @@
-<h1>Register</h1>
-<%= form_tag auth_path(@conn, :callback, "identity"), [method: "POST", novalidate: true] do %>
-  <div class='control-group'>
-    <label class='control-label' for='email-input'>Email</label>
-    <input type='email' name='email' required class='form-control'/>
+<div class="card">
+  <div class="card-block p-a-2">
+    <h1>Register</h1>
+    <p class="text-muted">Create your account</p>
+    <%= form_tag auth_path(@conn, :callback, "identity"), [method: "POST", novalidate: true] do %>
+      <div class="input-group m-b-1">
+        <span class="input-group-addon">@</span>
+        <input type="email" name="email" required class="form-control" placeholder="Email"/>
+      </div>
+      <div class="input-group m-b-1">
+        <span class="input-group-addon"><%= icon("user") %></span>
+        <input type="text" class="form-control" name="name" placeholder="Name">
+      </div>
+      <div class="input-group m-b-1">
+        <span class="input-group-addon"><%= icon("lock") %></span>
+        <input type="password" name="password" class="form-control" placeholder="Password">
+      </div>
+      <div class="input-group m-b-2">
+        <span class="input-group-addon"><%= icon("lock") %></span>
+        <input type="password" name="password_confirmation" class="form-control" placeholder="Repeat password">
+      </div>
+      <input type="submit" class="btn btn-block btn-success">
+    <% end %>
   </div>
-
-  <div class='control-group'>
-    <label class='control-label' for='name-input'>Name</label>
-    <input name='name' required class='form-control'/>
+  <div class="card-footer p-a-2">
+    <div class="row">
+      <div class="col-12">
+        <p class="text-muted">Create with</p>
+        <%= link "GitHub", to: auth_path(@conn, :login, "github"), class: "btn btn-block btn-github" %>
+      </div>
+    </div>
   </div>
-
-  <div class='control-group'>
-    <label class='control-label' for='password-input'>Password</label>
-    <input type='password' name='password' required class='form-control'/>
-  </div>
-
-  <div class='control-group'>
-    <label class='control-label' for='password-confirmation-input'>Password</label>
-    <input type='password' name='password_confirmation' required class='form-control'/>
-  </div>
-
-  <div class='control-group'>
-    <button class='btn btn-primary'>Sign up</button>
-  </div>
-<% end %>
+</div>

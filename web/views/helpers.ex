@@ -1,4 +1,7 @@
 defmodule AlloyCi.ViewHelpers do
+  @moduledoc """
+  """
+  
   def active_on_current(%{request_path: path}, path), do: "active"
   def active_on_current(_, _), do: ""
 
@@ -11,6 +14,8 @@ defmodule AlloyCi.ViewHelpers do
   def icon(name) do
     {:safe, "<i class='fa fa-#{name}'></i>"}
   end
+
+  def icon("identity", classes), do: icon("vcard", classes)
 
   def icon(name, classes) do
     {:safe, "<i class='fa fa-#{name} #{classes}'></i>"}

@@ -1,0 +1,41 @@
+<div class="container-fluid">
+  <div class="animated fadeIn">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header">
+            <strong>Authentications</strong>
+          </div>
+          <div class="card-block">
+            <%= case @authentications do %>
+              <% [] -> %>
+                <p>No authentication found</p>
+              <% auths -> %>
+                <table class='table table-hover'>
+                  <thead>
+                    <th>Provider</th>
+                    <th>UID</th>
+                    <th>Expires</th>
+                    <th>Created</th>
+                    <th>Token</th>
+                  </thead>
+
+                  <tbody>
+                    <%= for auth <- auths do %>
+                      <tr>
+                        <td><%= icon(auth.provider, 'fa-2x') %></td>
+                        <td><%= auth.uid %></td>
+                        <td><%= auth.expires_at %></td>
+                        <td><%= auth.inserted_at %></td>
+                        <td><%= String.slice(auth.token, 0..20) %>…</td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

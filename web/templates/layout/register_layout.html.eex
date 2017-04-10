@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Continuous Integration set free.">
+  <meta name="author" content="Alloy CI">
+  <meta name="keyword" content="Continuous Integration,CI,CD,GitHub,GitLab">
+  <!-- <link rel="shortcut icon" href="assets/ico/favicon.png"> -->
+
+  <title>Alloy CI | Register</title>
+  <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+</head>
+
+<body class="">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-5 m-x-auto pull-xs-none vamiddle">
+        <%= render @view_module, @view_template, assigns %>
+      </div>
+    </div>
+  </div>
+  <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+  <script>
+    function verticalAlignMiddle()
+    {
+      var bodyHeight = $(window).height();
+      var formHeight = $('.vamiddle').height();
+      var marginTop = (bodyHeight / 2) - (formHeight / 2);
+      if (marginTop > 0)
+      {
+        $('.vamiddle').css('margin-top', marginTop);
+      }
+    }
+    $(document).ready(function()
+    {
+      verticalAlignMiddle();
+    });
+    $(window).bind('resize', verticalAlignMiddle);
+  </script>
+</body>
+</html>
