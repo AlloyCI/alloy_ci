@@ -1,0 +1,38 @@
+.alert:empty {
+  display: none;
+}
+
+.margin-right-imp {
+  margin-right: 30px !important;
+}
+
+.m-b-1, .m-y-1 {
+  margin-bottom: 1rem !important;
+}
+
+.m-b-2, .m-y-2 {
+  margin-bottom: 1.5rem !important;
+}
+
+.m-x-auto {
+  margin-right: auto !important;
+  margin-left: auto !important;
+}
+
+.p-a-2 {
+  padding: 1.5rem !important;
+}
+
+.padding-top {
+  padding-top: 20px;
+}
+
+.inline {
+  display: inline-flex;
+}
+
+.navbar-toggler {
+  span {
+    font-size: .675rem;
+  }
+}

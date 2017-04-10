@@ -19,3 +19,9 @@ import "phoenix_html"
 // paths "./socket" or full ones "web/static/js/socket".
 
 // import socket from "./socket"
+import "./core-ui"
+
+$('[data-submit="parent"]').click(function(e) {
+  e.preventDefault;
+  $(this).parent().submit();
+});
