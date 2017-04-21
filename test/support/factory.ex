@@ -3,11 +3,8 @@ defmodule AlloyCi.Factory do
   """
   use ExMachina.Ecto, repo: AlloyCi.Repo
 
-  alias AlloyCi.User
-  alias AlloyCi.Authentication
-  alias AlloyCi.GuardianToken
-  alias AlloyCi.Project
-  alias AlloyCi.ProjectPermission
+  alias AlloyCi.{User, Authentication, GuardianToken, Project, ProjectPermission}
+  alias AlloyCi.{Pipeline, Build}
 
   def user_factory do
     %User{
@@ -31,12 +28,56 @@ defmodule AlloyCi.Factory do
     }
   end
 
+  def empty_project_permission_factory do
+    %ProjectPermission{
+      repo_id: sequence(:repo_id, &(&1))
+    }
+  end
+
+  def pipeline_factory do
+    project = insert(:project)
+    %Pipeline{
+      installation_id: sequence(:installation_id, &(&1)),
+      project: project,
+      ref: "master",
+      sha: "00000000",
+      before_sha: "00000000",
+      commit: %{"message" => "test", "username" => "supernova32"},
+      builds: [build(:build, project: project)]
+    }
+  end
+
+  def clean_pipeline_factory do
+    %Pipeline{
+      installation_id: sequence(:installation_id, &(&1)),
+      ref: "master",
+      sha: "00000000",
+      before_sha: "00000000",
+      commit: %{"message" => "test", "username" => "supernova32"}
+    }
+  end
+
   def project_factory do
     %Project{
       name: "elixir",
       owner: "elixir-lang",
       repo_id: sequence(:repo_id, &(&1)),
       private: false
+    }
+  end
+
+  def with_pipeline(project, attrs \\ %{}) do
+    attrs = Enum.into(attrs, %{project_id: project.id})
+    insert(:clean_pipeline, attrs)
+    project
+  end
+
+  def build_factory do
+    %Build{
+      commands: ["echo hello", "iex -S"],
+      options: ["--option"],
+      runner_id: 1,
+      token: sequence("long-token")
     }
   end
 
@@ -56,8 +97,8 @@ defmodule AlloyCi.Factory do
     }
   end
 
-  def with_authentication(user, opts \\ []) do
-    opts = opts ++ [user: user, uid: user.email]
-    insert(:authentication, opts)
+  def with_authentication(user, opts \\ %{}) do
+    attrs = Enum.into(opts, %{user: user, uid: user.email})
+    insert(:authentication, attrs)
   end
 end
