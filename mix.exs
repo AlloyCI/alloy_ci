@@ -31,19 +31,23 @@ defmodule AlloyCi.Mixfile do
 
   def applications(_) do
     [
-      :phoenix,
-      :phoenix_pubsub,
-      :phoenix_html,
+      :comeonin,
       :cowboy,
-      :logger,
+      :exq,
+      :exq_ui,
       :gettext,
+      :logger,
+      :phoenix,
       :phoenix_ecto,
+      :phoenix_html,
+      :phoenix_pubsub,
       :postgrex,
       :ueberauth,
       :ueberauth_github,
       :ueberauth_identity,
+      :timex,
       :tentacat,
-      :comeonin
+      :yaml_elixir,
     ]
   end
 
@@ -57,22 +61,29 @@ defmodule AlloyCi.Mixfile do
   defp deps do
     [
       {:comeonin, "~> 3.0"},
-      {:phoenix, "~> 1.3.0-rc", override: true},
-      {:phoenix_pubsub, "~> 1.0"},
-      {:phoenix_ecto, "~> 3.2"},
-      {:postgrex, ">= 0.0.0"},
-      {:phoenix_html, "~> 2.6"},
-      {:phoenix_live_reload, "~> 1.0", only: :dev},
+      {:cowboy, "~> 1.0"},
+      {:exq, "~> 0.8.6"},
+      {:exq_ui, "~> 0.8.6"},
       {:gettext, "~> 0.11"},
       {:gravatar, "~> 0.1.0"},
-      {:cowboy, "~> 1.0"},
       {:guardian_db, "~> 0.8"},
+      {:joken, "~> 1.4"},
+      {:phoenix, "~> 1.3.0-rc", override: true},
+      {:phoenix_ecto, "~> 3.2"},
+      {:phoenix_html, "~> 2.6"},
+      {:phoenix_pubsub, "~> 1.0"},
+      {:postgrex, ">= 0.0.0"},
+      {:tentacat, "~> 0.6", github: "supernova32/tentacat"},
+      {:timex, "~> 3.1"},
       {:ueberauth_identity, "~> 0.2.3"},
       {:ueberauth_github, "~> 0.4"},
-      {:tentacat, "~> 0.5"},
+      {:yaml_elixir, "~> 1.3"},
+
+      # Test and Dev dependencies
       {:ex_machina, "~> 2.0", only: [:dev, :test]},
       {:exvcr, "~> 0.8", only: :test},
-      {:credo, "~> 0.3", only: [:dev, :test]}
+      {:credo, "~> 0.7", only: [:dev, :test]},
+      {:phoenix_live_reload, "~> 1.0", only: :dev},
     ]
   end
 
