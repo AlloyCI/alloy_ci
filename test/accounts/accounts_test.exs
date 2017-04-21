@@ -14,9 +14,9 @@ defmodule AlloyCi.AccountsTest do
   alias Ueberauth.Auth.Credentials
   alias Ueberauth.Auth.Info
 
-  @name "Daniel Neighman"
-  @email "has.sox@gmail.com"
-  @uid "hassox"
+  @name "Bob Belcher"
+  @email "bob@gmail.com"
+  @uid "bob"
   @provider :github
   @token "the-token"
   @refresh_token "refresh-token"
@@ -124,6 +124,6 @@ defmodule AlloyCi.AccountsTest do
       }
     ) |> Repo.insert
 
-    {:error, :user_does_not_match} = Accounts.get_or_create_user(auth, current_user)
+    assert {:error, :user_does_not_match} = Accounts.get_or_create_user(auth, current_user)
   end
 end

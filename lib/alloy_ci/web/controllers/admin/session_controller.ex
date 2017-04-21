@@ -7,8 +7,7 @@ defmodule AlloyCi.Web.Admin.SessionController do
   """
   use AlloyCi.Web, :admin_controller
 
-  alias AlloyCi.Accounts
-  alias AlloyCi.User
+  alias AlloyCi.{Accounts, User}
 
   # We still want to use Ueberauth for checking the passwords etc
   # we have everything we need to check email / passwords and oauth already
