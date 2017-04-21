@@ -39,12 +39,24 @@ defmodule AlloyCi.Web.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :github do
+    plug AlloyCi.Plugs.GithubHeader
+  end
+
   # This pipeline if intended for API requests and looks for the JWT in the "Authentication" header
   # In this case, it should be prefixed with "Bearer" so that it's looking for
   # Authentication: Bearer <jwt>
   pipeline :api_auth do
     plug Guardian.Plug.VerifyHeader, realm: "Bearer"
     plug Guardian.Plug.LoadResource
+  end
+
+  pipeline :exq do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_flash
+    plug :put_secure_browser_headers
+    plug ExqUi.RouterPlug, namespace: "exq"
   end
 
   scope "/", AlloyCi.Web do
@@ -60,8 +72,9 @@ defmodule AlloyCi.Web.Router do
     resources "/authentications", AuthenticationController, only: [:index]
     resources "/tokens", TokenController, only: [:index, :delete]
 
-    # Protected routes
-    resources "/projects", ProjectController
+    resources "/projects", ProjectController do
+      resources "/pipelines", PipelineController, only: [:show]
+    end
   end
 
   # This scope is the main authentication area for Ueberauth
@@ -89,7 +102,14 @@ defmodule AlloyCi.Web.Router do
     resources "/users", UserController
   end
 
-  scope "/api", AlloyCi.Web do
-    pipe_through [:api, :api_auth]
+  scope "/api/github", AlloyCi.Web.Api, as: :api do
+    pipe_through [:api, :github]
+
+    post "/handle_event", GithubEventController, :handle_event
+  end
+
+  scope "/exq", ExqUi do
+    pipe_through :exq
+    forward "/", RouterPlug.Router, :index
   end
 end

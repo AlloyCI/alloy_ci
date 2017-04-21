@@ -7,7 +7,9 @@ use Mix.Config
 
 # General application configuration
 config :alloy_ci,
-  ecto_repos: [AlloyCi.Repo]
+  ecto_repos: [AlloyCi.Repo],
+  integration_id: System.get_env("GITHUB_INTEGRATION_ID"),
+  private_key: System.get_env("GITHUB_PRIVATE_KEY")
 
 # Configures the endpoint
 config :alloy_ci, AlloyCi.Web.Endpoint,
@@ -53,6 +55,23 @@ config :guardian, Guardian,
 config :guardian_db, GuardianDb,
   repo: AlloyCi.Repo,
   sweep_interval: 60 # 60 minutes
+
+config :exq,
+  name: Exq,
+  url: "redis://localhost:6379/0",
+  concurrency: :infinite,
+  queues: ["default"],
+  poll_timeout: 50,
+  scheduler_poll_timeout: 200,
+  scheduler_enable: true,
+  max_retries: 25,
+  shutdown_timeout: 5000
+
+config :exq_ui,
+  server: false
+
+config :tentacat,
+  :extra_headers, [{"Accept", "application/vnd.github.machine-man-preview+json"}]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
