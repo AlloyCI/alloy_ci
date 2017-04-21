@@ -1,11 +1,8 @@
 defmodule AlloyCi.Web.ProjectController do
   use AlloyCi.Web, :controller
 
-  alias AlloyCi.Project
-  alias AlloyCi.ProjectPermission
-  alias AlloyCi.Repo
-
-  import Project, only: [repos_for: 1]
+  alias AlloyCi.{Project, Projects, ProjectPermission, Repo}
+  import Projects, only: [repos_for: 1]
 
   plug EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access"
 
@@ -26,7 +23,7 @@ defmodule AlloyCi.Web.ProjectController do
   end
 
   def create(conn, %{"project" => project_params}, current_user, _claims) do
-    case Project.create_project(project_params, current_user) do
+    case Projects.create_project(project_params, current_user) do
       {:ok, project} ->
         conn
         |> put_flash(:info, "Project created successfully.")
@@ -39,7 +36,7 @@ defmodule AlloyCi.Web.ProjectController do
   end
 
   def show(conn, %{"id" => id}, current_user, _claims) do
-    case Project.get_by(id, current_user) do
+    case Projects.get_by(id, current_user) do
       {:ok, project} ->
         render(conn, "show.html", project: project, current_user: current_user)
       {:error, nil} ->
@@ -50,7 +47,7 @@ defmodule AlloyCi.Web.ProjectController do
   end
 
   def edit(conn, %{"id" => id}, current_user, _claims) do
-    case Project.get_by(id, current_user) do
+    case Projects.get_by(id, current_user) do
       {:ok, project} ->
         changeset = Project.changeset(project)
         render(conn, "edit.html", project: project, changeset: changeset, current_user: current_user)
@@ -62,7 +59,7 @@ defmodule AlloyCi.Web.ProjectController do
   end
 
   def update(conn, %{"id" => id, "project" => project_params}, current_user, _claims) do
-    case Project.get_by(id, current_user) do
+    case Projects.get_by(id, current_user) do
       {:ok, project} ->
         changeset = Project.changeset(project, project_params)
 
@@ -82,9 +79,8 @@ defmodule AlloyCi.Web.ProjectController do
   end
 
   def delete(conn, %{"id" => id}, current_user, _claims) do
-    case Project.get_by(id, current_user) do
+    case Projects.delete_project(id, current_user) do
       {:ok, project} ->
-        Repo.delete!(project)
         conn
         |> put_flash(:info, "Project deleted successfully.")
         |> redirect(to: project_path(conn, :index))

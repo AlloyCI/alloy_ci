@@ -3,8 +3,7 @@ defmodule AlloyCi.GuardianToken do
   """
   use AlloyCi.Web, :model
 
-  alias AlloyCi.Repo
-  alias AlloyCi.GuardianSerializer
+  alias AlloyCi.{GuardianSerializer, Repo}
 
   @primary_key {:jti, :string, []}
   @derive {Phoenix.Param, key: :jti}

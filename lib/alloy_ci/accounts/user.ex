@@ -17,8 +17,8 @@ defmodule AlloyCi.User do
     timestamps()
   end
 
-  @required_fields ~w(email name)a
-  @optional_fields ~w(is_admin)a
+  @required_fields ~w(email)a
+  @optional_fields ~w(is_admin name)a
 
   def registration_changeset(model, params \\ :empty) do
     model

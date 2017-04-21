@@ -21,8 +21,7 @@ defmodule AlloyCi.Web do
       use Ecto.Schema
 
       import Ecto
-      import Ecto.Changeset
-      import Ecto.Query
+      import Ecto.{Changeset, Query}
     end
   end
 
@@ -32,15 +31,12 @@ defmodule AlloyCi.Web do
       use Guardian.Phoenix.Controller
 
       alias AlloyCi.Repo
-      alias Guardian.Plug.EnsureAuthenticated
-      alias Guardian.Plug.EnsurePermissions
+      alias Guardian.Plug.{EnsureAuthenticated, EnsurePermissions}
 
       import Ecto
       import Ecto.Query
 
-      import AlloyCi.Web.Router.Helpers
-      import AlloyCi.Web.Controller.Helpers
-      import AlloyCi.Web.Gettext
+      import AlloyCi.Web.{Gettext, Router.Helpers, Controller.Helpers}
     end
   end
 
@@ -50,15 +46,12 @@ defmodule AlloyCi.Web do
       use Guardian.Phoenix.Controller, key: :admin
 
       alias AlloyCi.Repo
-      alias Guardian.Plug.EnsureAuthenticated
-      alias Guardian.Plug.EnsurePermissions
+      alias Guardian.Plug.{EnsureAuthenticated, EnsurePermissions}
 
       import Ecto.Schema
       import Ecto.Query, only: [from: 1, from: 2]
 
-      import AlloyCi.Web.Router.Helpers
-      import AlloyCi.Web.Controller.Helpers
-      import AlloyCi.Web.Controller.Helpers
+      import AlloyCi.Web.{Router.Helpers, Controller.Helpers}
     end
   end
 
@@ -74,9 +67,7 @@ defmodule AlloyCi.Web do
       use Phoenix.HTML
 
       import AlloyCi.Web.Router.Helpers
-      import AlloyCi.Web.ErrorHelpers
-      import AlloyCi.Web.ViewHelpers
-      import AlloyCi.Web.Gettext
+      import AlloyCi.Web.{ErrorHelpers, Gettext, ViewHelpers}
     end
   end
 
@@ -93,7 +84,6 @@ defmodule AlloyCi.Web do
       alias AlloyCi.Repo
       import Ecto
       import Ecto.Query
-      import AlloyCi.Web.Gettext
     end
   end
 

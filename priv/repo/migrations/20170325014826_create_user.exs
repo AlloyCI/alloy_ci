@@ -1,4 +1,6 @@
 defmodule AlloyCi.Repo.Migrations.CreateUser do
+  @moduledoc """
+  """
   use Ecto.Migration
 
   def change do

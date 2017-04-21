@@ -3,8 +3,7 @@ defmodule AlloyCi.GuardianSerializer do
   """
   @behaviour Guardian.Serializer
 
-  alias AlloyCi.Repo
-  alias AlloyCi.User
+  alias AlloyCi.{Repo, User}
 
   def for_token(%User{} = user), do: {:ok, "User:#{user.id}"}
   def for_token(_), do: {:error, "Unknown resource type"}

@@ -1,4 +1,6 @@
 defmodule AlloyCi.Repo.Migrations.CreateGuardianToken do
+  @moduledoc """
+  """
   use Ecto.Migration
 
   def change do

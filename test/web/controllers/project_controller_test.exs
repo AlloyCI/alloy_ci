@@ -7,7 +7,7 @@ defmodule AlloyCi.Web.ProjectControllerTest do
   import AlloyCi.Factory
 
   alias AlloyCi.Project
-  @valid_attrs %{owner: "some_owner", name: "some content", private: true, repo_id: 69}
+  @valid_attrs %{owner: "some_owner", name: "some content", private: true, repo_id: 69, tags: ["one", "two"]}
   @invalid_attrs %{repo_id: nil}
 
   setup do
