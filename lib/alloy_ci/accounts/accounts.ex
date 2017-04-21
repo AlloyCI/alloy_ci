@@ -1,9 +1,8 @@
 defmodule AlloyCi.Accounts do
   @moduledoc """
   """
-  alias AlloyCi.User
-  alias AlloyCi.Authentication
-  alias AlloyCi.Repo
+  alias AlloyCi.{User, Authentication, Repo}
+  alias AlloyCi.Workers.BuildPermissionsWorker
   alias Ueberauth.Auth
 
   def get_or_create_user(auth, current_user) do
@@ -18,6 +17,8 @@ defmodule AlloyCi.Accounts do
         end
     end
   end
+
+  def get_user!(id), do: Repo.get!(User, id)
 
   def authentications(user) do
     user = user |> Repo.preload(:authentications)
@@ -192,18 +193,29 @@ defmodule AlloyCi.Accounts do
       |> Repo.insert
 
     case result do
-      {:ok, auth} -> auth
+      {:ok, auth} ->
+        case auth.provider do
+          "github" ->
+            # Enqueue worker that creates the proper project permissions for
+            # projects to which the user already has access, and have already
+            # been added to AlloyCI.
+            Exq.enqueue(Exq, "default", BuildPermissionsWorker, [auth.user_id, auth.token])
+            auth
+          _ -> auth
+        end
       {:error, reason} -> Repo.rollback(reason)
     end
   end
 
   defp name_from_auth(auth) do
-    if auth.info.name do
-      auth.info.name
-    else
-      [auth.info.first_name, auth.info.last_name]
-      |> Enum.filter(&(&1 != nil and String.strip(&1) != ""))
-      |> Enum.join(" ")
+    cond do
+      auth.info.name -> auth.info.name
+      auth.info.first_name && auth.info.last_name ->
+        [auth.info.first_name, auth.info.last_name]
+        |> Enum.filter(&(&1 != nil and String.strip(&1) != ""))
+        |> Enum.join(" ")
+      auth.info.nickname -> auth.info.nickname
+      true -> auth.info.email
     end
   end
 
