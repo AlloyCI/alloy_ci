@@ -36,3 +36,47 @@
     font-size: .675rem;
   }
 }
+
+.allign-right {
+  text-align: right;
+}
+
+.status-btn {
+  margin-top: 10px;
+}
+
+.success-background {
+  background-color: #E4F2E4;
+  min-height: 70px;
+  margin: 0 !important;
+}
+
+.failed-background {
+  background-color: #F2E4E4;
+  min-height: 70px;
+  margin: 0 !important;
+}
+
+.pending-background {
+  background-color: #EAEEF2;
+  min-height: 70px;
+  margin: 0 !important;
+}
+
+.running-background {
+  background-color: #FAFBFC;
+  min-height: 70px;
+  margin: 0 !important;
+}
+
+.commmit-avatar {
+  margin-top: 10px;
+  max-height: 50px;
+  vertical-align: middle;
+}
+
+.vertical-align {
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}

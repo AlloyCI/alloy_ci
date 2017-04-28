@@ -80,7 +80,7 @@ defmodule AlloyCi.Web.ProjectController do
 
   def delete(conn, %{"id" => id}, current_user, _claims) do
     case Projects.delete_project(id, current_user) do
-      {:ok, project} ->
+      {:ok, _} ->
         conn
         |> put_flash(:info, "Project deleted successfully.")
         |> redirect(to: project_path(conn, :index))

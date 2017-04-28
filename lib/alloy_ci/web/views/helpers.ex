@@ -11,6 +11,20 @@ defmodule AlloyCi.Web.ViewHelpers do
   def logged_in?(conn), do: Guardian.Plug.authenticated?(conn)
   def current_user(conn), do: Guardian.Plug.current_resource(conn)
 
+  def status_btn("success"), do: "btn-success"
+  def status_btn("failed"), do: "btn-danger"
+  def status_btn("running"), do: "btn-warning"
+  def status_btn(_), do: "btn-outline-secondary active"
+
+  def callout("success"), do: "callout-success"
+  def callout("failed"), do: "callout-danger"
+  def callout("running"), do: "callout-warning"
+  def callout(_), do: ""
+
+  def pretty_commit(msg) do
+    msg |> String.split("\n") |> List.first
+  end
+
   def icon(name) do
     {:safe, "<i class='fa fa-#{name}'></i>"}
   end

@@ -1,44 +1,72 @@
 <div class="container-fluid">
   <div class="animated fadeIn">
     <div class="row">
-      <div class="col-sm-12">
-        <div class="card">
-          <div class="card-header">
-            <strong>Your projects</strong>
-          </div>
-          <div class="card-block">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Owner</th>
-                  <th>Repo ID</th>
-                  <th>Private</th>
-
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <%= for project <- @projects do %>
-                  <tr>
-                    <td><%= project.name %></td>
-                    <td><%= project.owner %></td>
-                    <td><%= project.repo_id %></td>
-                    <td><%= project.private %></td>
-
-                    <td class="text-right">
-                      <%= link "Show", to: project_path(@conn, :show, project), class: "btn btn-success btn-xs" %>
-                      <%= link "Edit", to: project_path(@conn, :edit, project), class: "btn btn-warning btn-xs" %>
-                      <%= link "Delete", to: project_path(@conn, :delete, project), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
-                    </td>
-                  </tr>
-                <% end %>
-              </tbody>
-            </table>
-            <%= link "New project", to: project_path(@conn, :new), class: "btn btn-outline-primary" %>
+      <%= if Enum.empty?(@projects) do %>
+        <div class="col-md-6 offset-md-3 col-sm-10 offset-sm-1">
+          <div class="card card-inverse card-warning">
+            <div class="card-block">
+              <%= if has_github_auth(@current_user) do %>
+                <div class="h1 text-muted text-sm-right m-b-2">
+                  <%= icon("circle-o-notch", "fa-spin") %>
+                </div>
+                <div class="h5 m-b-0">
+                  If you are member of projects that have already been added to AlloyCI,
+                  they will show up here once you reload the page.
+                </div>
+                <div class="h5 m-b-0">
+                  Or you can create a <%= link "new project.", to: project_path(@conn, :new) %>
+                </div>
+              <% else %>
+                <div class="h1 text-muted text-sm-right m-b-2">
+                  <%= icon("exclamation-triangle") %>
+                </div>
+                <div class="h5 m-b-0">
+                  You need to add your GitHub account in order to be able to use
+                  AlloyCI.
+                </div>
+              <% end %>
+            </div>
           </div>
         </div>
-      </div>
+      <% else %>
+        <div class="col-sm-12">
+          <div class="card">
+            <div class="card-header">
+              <strong>Your projects</strong>
+            </div>
+            <div class="card-block">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Owner</th>
+                    <th>Repo ID</th>
+                    <th>Private</th>
+
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <%= for project <- @projects do %>
+                    <tr>
+                      <td><%= project.name %></td>
+                      <td><%= project.owner %></td>
+                      <td><%= project.repo_id %></td>
+                      <td><%= project.private %></td>
+
+                      <td class="text-right">
+                        <%= link "Show", to: project_path(@conn, :show, project), class: "btn btn-success btn-xs" %>
+                        <%= link "Settings", to: project_path(@conn, :edit, project), class: "btn btn-warning btn-xs" %>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+              <%= link "New project", to: project_path(@conn, :new), class: "btn btn-outline-primary" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>

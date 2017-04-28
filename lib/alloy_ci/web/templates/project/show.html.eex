@@ -1,28 +1,48 @@
-<h2>Show project</h2>
-
-<ul>
-
-  <li>
-    <strong>Name:</strong>
-    <%= @project.name %>
-  </li>
-
-  <li>
-    <strong>Owner:</strong>
-    <%= @project.owner %>
-  </li>
-
-  <li>
-    <strong>Repo ID:</strong>
-    <%= @project.repo_id %>
-  </li>
-
-  <li>
-    <strong>Private:</strong>
-    <%= @project.private %>
-  </li>
-
-</ul>
-
-<%= link "Edit", to: project_path(@conn, :edit, @project) %>
-<%= link "Back", to: project_path(@conn, :index) %>
+<div class="container-fluid">
+  <div class="animated fadeIn">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header">
+            <strong><%= @project.owner %>/<%= @project.name %></strong>
+          </div>
+          <div class="card-block">
+            <div class="m-b-2">
+              <%= for pipeline <- @project.pipelines do %>
+                <div class="callout <%= callout(pipeline.status) %> <%= pipeline.status %>-background">
+                  <div class="row">
+                    <div class="col-sm-1">
+                      <img src='<%= pipeline.commit["avatar_url"] %>' class="commmit-avatar" alt='<%= pipeline.commit["username"] %>'>
+                    </div>
+                    <div class="col-sm-9">
+                      <div class="text-muted"><strong><%= pretty_commit(pipeline.commit["message"]) %></strong></div>
+                      <br/>
+                      <%= pipeline.commit["username"] %>
+                      |
+                      <%= icon("github") %> <%= pipeline.sha |> String.slice(0..7) %>
+                      |
+                      <%= icon("random") %> <%= pipeline.ref %>
+                      |
+                      <%= icon("hourglass") %> <%= pipeline.duration %>
+                      |
+                      <%= icon("clock-o") %> <%= pipeline.inserted_at %>
+                    </div>
+                    <div class="col-sm-2">
+                      <div class="allign-right status-btn">
+                        <%= link String.capitalize(pipeline.status),
+                                 to: project_pipeline_path(@conn, :show, @project, pipeline),
+                                 class: "btn #{status_btn(pipeline.status)} btn-lg btn-block" %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+            <%= link "Edit", to: project_path(@conn, :edit, @project), class: "btn btn-warning btn-sm" %>
+            <%= link "Back", to: project_path(@conn, :index), class: "btn btn-outline-primary btn-sm" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

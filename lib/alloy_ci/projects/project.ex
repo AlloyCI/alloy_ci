@@ -2,7 +2,6 @@ defmodule AlloyCi.Project do
   @moduledoc """
   """
   use AlloyCi.Web, :model
-  alias AlloyCi.{ProjectPermission, Repo}
 
   schema "projects" do
     field :name, :string
@@ -11,7 +10,7 @@ defmodule AlloyCi.Project do
     field :repo_id, :integer
     field :tags, {:array, :string}
 
-    has_many :project_permissions, ProjectPermission
+    has_many :project_permissions, AlloyCi.ProjectPermission
     has_many :users, through: [:project_permissions, :user]
     has_many :pipelines, AlloyCi.Pipeline
 
