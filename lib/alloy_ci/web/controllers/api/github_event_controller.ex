@@ -3,7 +3,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
   """
   use AlloyCi.Web, :controller
 
-  alias AlloyCi.{Pipelines, Projects}
+  alias AlloyCi.{Pipelines, Projects, Workers.CreateBuildsWorker}
 
   def handle_event(%{assigns: %{github_event: "push"}} = conn, params, _, _) do
     with %AlloyCi.Project{} = project <- Projects.get_by_repo_id(params["repository"]["id"]) do
@@ -23,6 +23,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
 
       case Pipelines.create_pipeline(pipeline, pipeline_attrs) do
         {:ok, pipeline} ->
+          Exq.enqueue(Exq, "default", CreateBuildsWorker, [pipeline.id])
           event = %{status: :ok, message: "Pipeline with ID: #{pipeline.id} created sucessfully."}
           render(conn, "event.json", event: event)
         {:error, changeset} ->

@@ -4,7 +4,9 @@ defmodule AlloyCi.Pipelines do
   """
 
   import Ecto.{Query, Changeset}, warn: false
+  import Joken
   alias AlloyCi.{Pipeline, Projects, Repo}
+  use Timex
 
   @doc """
   Returns the list of pipelines.
@@ -43,6 +45,12 @@ defmodule AlloyCi.Pipelines do
       |> Repo.get!(id)
       |> Repo.preload(:builds)
     end
+  end
+
+  def get_with_project(id) do
+    Pipeline
+    |> Repo.get_by(id: id)
+    |> Repo.preload(:project)
   end
 
   @doc """
@@ -85,5 +93,22 @@ defmodule AlloyCi.Pipelines do
     pipeline
     |> Pipeline.changeset(params)
     |> Repo.update()
+  end
+
+  def installation_token(pipeline) do
+    key = JOSE.JWK.from_pem(Application.get_env(:alloy_ci, :private_key))
+    integration_id = Application.get_env(:alloy_ci, :integration_id)
+
+    payload = %{
+      "iat" => DateTime.utc_now() |> Timex.to_unix,
+      "exp" => Timex.now() |> Timex.shift(minutes: 9) |> Timex.to_unix,
+      "iss" => String.to_integer(integration_id)
+    }
+
+    signed_jwt = payload |> token |> sign(rs256(key)) |> get_compact
+
+    client = Tentacat.Client.new(%{integration_jwt_token: signed_jwt})
+    {_, response} = Tentacat.Integrations.Installations.get_token(client, pipeline.installation_id)
+    response
   end
 end

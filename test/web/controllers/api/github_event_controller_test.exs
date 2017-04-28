@@ -38,9 +38,8 @@ defmodule AlloyCi.Web.Api.GithubEventControllerTest do
       sha: "0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c"
     }
 
-    project =
-      insert(:project, repo_id: "14322")
-      |> with_pipeline(pipeline_params)
+    insert(:project, repo_id: "14322")
+    |> with_pipeline(pipeline_params)
 
     params = %{
       ref: "refs/heads/changes",
