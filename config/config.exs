@@ -58,7 +58,7 @@ config :guardian_db, GuardianDb,
 
 config :exq,
   name: Exq,
-  url: "redis://localhost:6379/0",
+  url: System.get_env("REDIS_URL"),
   concurrency: :infinite,
   queues: ["default"],
   poll_timeout: 50,

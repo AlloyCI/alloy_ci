@@ -13,5 +13,5 @@ config :logger, level: :warn
 config :alloy_ci, AlloyCi.Repo,
   adapter: Ecto.Adapters.Postgres,
   database: "alloy_ci_test",
-  hostname: "localhost",
+  hostname: System.get_env("DATABASE_URL"),
   pool: Ecto.Adapters.SQL.Sandbox
