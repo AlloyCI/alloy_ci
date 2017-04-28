@@ -7,10 +7,12 @@ defmodule AlloyCi.Build do
     field :allow_failure, :boolean, default: false
     field :commands, {:array, :string}
     field :finished_at, :naive_datetime
-    field :options, {:array, :string}
+    field :name, :string
+    field :options, :map
     field :queued_at, :naive_datetime
     field :runner_id, :integer
     field :stage, :string, default: "test"
+    field :stage_idx, :integer
     field :started_at, :naive_datetime
     field :status, :string
     field :token, :string
@@ -24,8 +26,8 @@ defmodule AlloyCi.Build do
     timestamps()
   end
 
-  @required_fields ~w(commands options runner_id pipeline_id project_id token)a
-  @optional_fields ~w(allow_failure finished_at queued_at stage started_at status trace variables when)a
+  @required_fields ~w(commands name options runner_id pipeline_id project_id token)a
+  @optional_fields ~w(allow_failure finished_at queued_at stage started_at status trace variables when stage_idx)a
 
   def changeset(struct, params \\ %{}) do
     struct

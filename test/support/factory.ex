@@ -74,8 +74,9 @@ defmodule AlloyCi.Factory do
 
   def build_factory do
     %Build{
+      name: "build-1",
       commands: ["echo hello", "iex -S"],
-      options: ["--option"],
+      options: %{"variables" => %{"GITHUB" => "yes"}},
       runner_id: 1,
       token: sequence("long-token")
     }

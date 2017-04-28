@@ -8,14 +8,16 @@ defmodule AlloyCi.Repo.Migrations.CreateBuild do
       add :allow_failure, :boolean, default: false, null: false
       add :commands, {:array, :string}
       add :finished_at, :naive_datetime
-      add :options, {:array, :string}
+      add :name, :string, null: false
+      add :options, :map
       add :pipeline_id, references(:pipelines, on_delete: :delete_all), null: false
       add :project_id, references(:projects, on_delete: :delete_all), null: false
       add :queued_at, :naive_datetime
       add :runner_id, :integer
       add :stage, :string, default: "test"
+      add :stage_idx, :integer
       add :started_at, :naive_datetime
-      add :status, :string
+      add :status, :string, default: "pending"
       add :token, :string
       add :trace, :text
       add :variables, :map
