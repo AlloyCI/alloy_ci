@@ -5,7 +5,7 @@ defmodule AlloyCi.Pipelines do
 
   import Ecto.{Query, Changeset}, warn: false
   import Joken
-  alias AlloyCi.{Pipeline, Projects, Repo}
+  alias AlloyCi.{Github, Pipeline, Projects, Repo}
   use Timex
 
   @doc """
@@ -43,7 +43,7 @@ defmodule AlloyCi.Pipelines do
       Pipeline
       |> where(project_id: ^project_id)
       |> Repo.get!(id)
-      |> Repo.preload(:builds)
+      |> Repo.preload([:builds, :project])
     end
   end
 
@@ -107,7 +107,7 @@ defmodule AlloyCi.Pipelines do
 
     signed_jwt = payload |> token |> sign(rs256(key)) |> get_compact
 
-    client = Tentacat.Client.new(%{integration_jwt_token: signed_jwt})
+    client = Github.api_client(%{integration_jwt_token: signed_jwt})
     {_, response} = Tentacat.Integrations.Installations.get_token(client, pipeline.installation_id)
     response
   end

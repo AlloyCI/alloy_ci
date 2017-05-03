@@ -17,9 +17,9 @@
                     <div class="col-sm-9">
                       <div class="text-muted"><strong><%= pretty_commit(pipeline.commit["message"]) %></strong></div>
                       <br/>
-                      <%= pipeline.commit["username"] %>
+                      <%= icon("user") %> <%= pipeline.commit["username"] %>
                       |
-                      <%= icon("github") %> <%= pipeline.sha |> String.slice(0..7) %>
+                      <%= icon("github") %> <%= sha_link(pipeline, @project) %>
                       |
                       <%= icon("random") %> <%= pipeline.ref %>
                       |

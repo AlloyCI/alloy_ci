@@ -9,7 +9,8 @@ use Mix.Config
 config :alloy_ci,
   ecto_repos: [AlloyCi.Repo],
   integration_id: System.get_env("GITHUB_INTEGRATION_ID"),
-  private_key: System.get_env("GITHUB_PRIVATE_KEY")
+  private_key: System.get_env("GITHUB_PRIVATE_KEY"),
+  github_domain: System.get_env("GITHUB_DOMAIN")
 
 # Configures the endpoint
 config :alloy_ci, AlloyCi.Web.Endpoint,

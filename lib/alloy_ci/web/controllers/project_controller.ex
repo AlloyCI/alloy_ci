@@ -2,7 +2,7 @@ defmodule AlloyCi.Web.ProjectController do
   use AlloyCi.Web, :controller
 
   alias AlloyCi.{Project, Projects, ProjectPermission, Repo}
-  import Projects, only: [repos_for: 1]
+  import AlloyCi.Github, only: [repos_for: 1]
 
   plug EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access"
 

@@ -2,8 +2,7 @@ defmodule AlloyCi.Projects do
   @moduledoc """
   The boundary for the Projects system.
   """
-  import Ecto.Query, warn: false
-  alias AlloyCi.{Pipelines, Project, ProjectPermission, Repo}
+  alias AlloyCi.{Project, ProjectPermission, Repo}
 
   def get_by(id, user) do
     permission =
@@ -47,20 +46,5 @@ defmodule AlloyCi.Projects do
     with {:ok, project} <- get_by(id, user) do
       Repo.delete(project)
     end
-  end
-
-  def clone_url(project, pipeline) do
-    token = Pipelines.installation_token(pipeline)
-
-    "https://x-access-token:#{token["token"]}@github.com/#{project.owner}/#{project.name}.git"
-  end
-
-  def repos_for(user) do
-    query = from auth in "authentications",
-              where: auth.user_id == ^user.id and auth.provider == "github",
-              select: auth.token
-    token = Repo.one(query)
-    client = Tentacat.Client.new(%{access_token: token})
-    Tentacat.Repositories.list_mine(client, sort: "pushed")
   end
 end

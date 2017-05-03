@@ -5,11 +5,11 @@ defmodule AlloyCi.Workers.BuildPermissionsWorker do
   AlloyCI, it will be added to the list of projects to which they already have
   access.
   """
-  alias AlloyCi.{Repo, ProjectPermission}
+  alias AlloyCi.{Github, Repo, ProjectPermission}
   import AlloyCi.ProjectPermission, only: [existing_ids: 0]
 
   def perform(user_id, token) do
-    client = Tentacat.Client.new(%{access_token: token})
+    client = Github.api_client(%{access_token: token})
     repo_ids =
       client
       |> Tentacat.Repositories.list_mine
