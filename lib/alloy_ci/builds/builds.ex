@@ -12,7 +12,7 @@ defmodule AlloyCi.Builds do
       global_options = Map.take(config, @global_config)
       stages = config["stages"] || ["build", "test", "deploy"]
 
-      build_jobs = Map.drop(config, @global_config ++ @variables)
+      build_jobs = Map.drop(config, @global_config)
 
       Enum.each(build_jobs, fn {name, options} ->
         local_options = Map.merge(global_options, Map.take(options, @local_overrides))
@@ -40,13 +40,13 @@ defmodule AlloyCi.Builds do
     end
   end
 
-  def create_build(params \\ %{}) do
+  defp create_build(params) do
     %Build{}
     |> Build.changeset(params)
-    |> Repo.insert()
+    |> Repo.insert!()
   end
 
-  def generate_token do
+  defp generate_token do
     SecureRandom.base64(12)
   end
 end
