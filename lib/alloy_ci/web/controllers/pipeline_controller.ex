@@ -3,6 +3,7 @@ defmodule AlloyCi.Web.PipelineController do
 
   alias AlloyCi.{Pipeline, Pipelines}
   plug EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access"
+  plug :put_layout, "pipeline_layout.html" when action in [:show]
 
   def index(conn, %{"project_id" => project_id}, current_user, _claims) do
     case Pipelines.list_pipelines(project_id, current_user) do

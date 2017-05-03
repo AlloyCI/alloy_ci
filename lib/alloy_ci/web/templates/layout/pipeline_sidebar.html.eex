@@ -1,0 +1,21 @@
+<div class="sidebar">
+  <nav class="sidebar-nav">
+    <ul class="nav">
+      <li class="nav-item">
+        <%= link to: project_path(@conn, :show, @pipeline.project_id), class: "nav-link" do %>
+          <%= icon("code-fork") %> Pipelines
+        <% end %>
+      </li>
+
+      <li class="nav-title">
+        Steps
+      </li>
+
+      <%= for build <- @pipeline.builds do %>
+        <li class="nav-item">
+          <a class="nav-link" href="widgets.html"><%= icon("cogs") %> <%= build.name %></a>
+        </li>
+      <% end %>
+    </ul>
+  </nav>
+</div>
