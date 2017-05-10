@@ -18,6 +18,7 @@ defmodule AlloyCi.Repo.Migrations.CreateBuild do
       add :stage_idx, :integer
       add :started_at, :naive_datetime
       add :status, :string, default: "pending"
+      add :tags, {:array, :string}
       add :token, :string
       add :trace, :text
       add :variables, :map

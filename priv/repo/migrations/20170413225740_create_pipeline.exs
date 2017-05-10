@@ -9,6 +9,7 @@ defmodule AlloyCi.Repo.Migrations.CreatePipeline do
       add :commit, :map, null: false
       add :duration, :integer
       add :finished_at, :naive_datetime
+      add :installation_id, :integer, null: false
       add :project_id, references(:projects, on_delete: :delete_all), null: false
       add :ref, :string, null: false
       add :sha, :string, null: false
