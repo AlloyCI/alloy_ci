@@ -6,6 +6,7 @@
   ],
   "variables": {
     "MIX_ENV": "test",
+    "RUNNER_REGISTRATION_TOKEN": "lustlmc3gMl59smZ",
     "GITHUB_CLIENT_ID": "fake-id",
     "GITHUB_CLIENT_SECRET": "fake-secret",
     "GITHUB_SECRET_TOKEN": "fake-token",
