@@ -2,11 +2,10 @@ defmodule AlloyCi.Web.ProjectControllerTest do
   @moduledoc """
   """
   use AlloyCi.Web.ConnCase
-  use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
-
-  import AlloyCi.Factory
-
   alias AlloyCi.Project
+  import AlloyCi.Factory
+  import Mock
+
   @valid_attrs %{owner: "some_owner", name: "some content", private: true, repo_id: 69, tags: ["one", "two"]}
   @invalid_attrs %{repo_id: nil}
 
@@ -25,7 +24,7 @@ defmodule AlloyCi.Web.ProjectControllerTest do
   end
 
   test "renders GitHub repos to add", %{user: user} do
-    use_cassette "repositories_list" do
+    with_mock Tentacat.Repositories, [list_mine: fn(_, _) -> Poison.decode!(File.read!("test/fixtures/responses/repositories_list.json")) end] do
       conn =
         user
         |> guardian_login(:access)

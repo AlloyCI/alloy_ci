@@ -4,10 +4,9 @@ defmodule AlloyCi.BuildPermissionsWorkerTest do
   use AlloyCi.DataCase
   alias AlloyCi.Workers.BuildPermissionsWorker
   import AlloyCi.Factory
-  use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
+  import Mock
 
   setup do
-    HTTPoison.start
     {:ok, %{user: insert(:user)}}
   end
 
@@ -16,7 +15,7 @@ defmodule AlloyCi.BuildPermissionsWorkerTest do
     insert(:empty_project_permission, user_id: user.id, repo_id: "14144680", project_id: project.id)
     new_user = insert(:user)
 
-    use_cassette "repositories_list" do
+    with_mock Tentacat.Repositories, [list_mine: fn(_) -> Poison.decode!(File.read!("test/fixtures/responses/repositories_list.json")) end] do
       BuildPermissionsWorker.perform(new_user.id, "fake-token")
       new_user = new_user |> Repo.preload(:projects)
 

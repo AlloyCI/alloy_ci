@@ -3,9 +3,11 @@ defmodule AlloyCi.Mixfile do
   """
   use Mix.Project
 
+  @version "0.0.1"
+
   def project do
     [app: :alloy_ci,
-     version: "0.0.1",
+     version: @version,
      elixir: "~> 1.4",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
@@ -50,6 +52,10 @@ defmodule AlloyCi.Mixfile do
     ]
   end
 
+  def version do
+    @version
+  end
+
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_),     do: ["lib"]
@@ -80,7 +86,7 @@ defmodule AlloyCi.Mixfile do
 
       # Test and Dev dependencies
       {:ex_machina, "~> 2.0", only: [:dev, :test]},
-      {:exvcr, "~> 0.8", only: :test},
+      {:mock, "~> 0.2", only: :test},
       {:credo, "~> 0.7", only: [:dev, :test]},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
     ]
