@@ -14,4 +14,5 @@ config :alloy_ci, AlloyCi.Repo,
   adapter: Ecto.Adapters.Postgres,
   database: "alloy_ci_test",
   hostname: System.get_env("DATABASE_URL"),
-  pool: Ecto.Adapters.SQL.Sandbox
+  pool: Ecto.Adapters.SQL.Sandbox,
+  ownership_timeout: 10 * 60 * 1000
