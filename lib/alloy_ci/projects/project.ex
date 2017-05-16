@@ -9,6 +9,7 @@ defmodule AlloyCi.Project do
     field :private, :boolean, default: false
     field :repo_id, :integer
     field :tags, {:array, :string}
+    field :token, :string
 
     has_many :project_permissions, AlloyCi.ProjectPermission
     has_many :users, through: [:project_permissions, :user]
@@ -17,7 +18,7 @@ defmodule AlloyCi.Project do
     timestamps()
   end
 
-  @required_fields ~w(name owner private repo_id)a
+  @required_fields ~w(name owner private repo_id token)a
   @optional_fields ~w(tags)a
 
   @doc """

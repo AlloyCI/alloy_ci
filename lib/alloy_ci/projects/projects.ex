@@ -22,9 +22,19 @@ defmodule AlloyCi.Projects do
     |> Repo.get_by(repo_id: id)
   end
 
+  def get_by_token(token) do
+    Project
+    |> Repo.get_by(token: token)
+  end
+
   def create_project(params, user) do
     Repo.transaction(fn ->
-      changeset = Project.changeset(%Project{}, params)
+      changeset =
+        Project.changeset(
+          %Project{},
+          Enum.into(params, %{"token" => SecureRandom.urlsafe_base64(10)})
+        )
+
       with {:ok, project} <- Repo.insert(changeset) do
         permissions_changeset = ProjectPermission.changeset(
                                   %ProjectPermission{},
