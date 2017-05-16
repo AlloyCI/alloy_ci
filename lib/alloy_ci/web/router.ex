@@ -108,6 +108,22 @@ defmodule AlloyCi.Web.Router do
     post "/handle_event", GithubEventController, :handle_event
   end
 
+  scope "/api/v4", AlloyCi.Web.Api, as: :runner_api do
+    pipe_through [:api]
+
+    scope "/runners" do
+      post "/", RunnerEventController, :register, as: :register
+      post "/verify", RunnerEventController, :verify, as: :verify
+    end
+
+    scope "/jobs" do
+      post "/request", BuildsEventController, :request, as: :verify
+      put "/:id", BuildsEventController, :update
+      patch "/:id/trace", BuildsEventController, :trace
+      # add routes for artifacts here
+    end
+  end
+
   scope "/exq", ExqUi do
     pipe_through :exq
     forward "/", RouterPlug.Router, :index

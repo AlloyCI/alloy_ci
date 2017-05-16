@@ -4,7 +4,7 @@ defmodule AlloyCi.Factory do
   use ExMachina.Ecto, repo: AlloyCi.Repo
 
   alias AlloyCi.{User, Authentication, GuardianToken, Project, ProjectPermission}
-  alias AlloyCi.{Pipeline, Build}
+  alias AlloyCi.{Pipeline, Build, Runner}
 
   def user_factory do
     %User{
@@ -43,7 +43,7 @@ defmodule AlloyCi.Factory do
       sha: "00000000",
       before_sha: "00000000",
       commit: %{"message" => "test", "username" => "supernova32"},
-      builds: [build(:build, project: project)]
+      builds: [build(:build, project: project, status: "running")]
     }
   end
 
@@ -62,7 +62,9 @@ defmodule AlloyCi.Factory do
       name: "elixir",
       owner: "elixir-lang",
       repo_id: sequence(:repo_id, &(&1)),
-      private: false
+      private: false,
+      tags: ["elixir", "phoenix"],
+      token: sequence("long-token")
     }
   end
 
@@ -77,7 +79,31 @@ defmodule AlloyCi.Factory do
       name: "build-1",
       commands: ["echo hello", "iex -S"],
       options: %{"variables" => %{"GITHUB" => "yes"}},
-      runner_id: 1,
+      token: sequence("long-token")
+    }
+  end
+
+  def full_build_factory do
+    pipeline = insert(:pipeline)
+    %Build{
+      name: "full-build-1",
+      commands: ["mix test"],
+      options: %{
+        "variables" => %{"GITHUB" => "yes"},
+        "services" => ["postgres:latest"],
+        "before_script" => ["mix deps.get"]
+      },
+      stage_idx: 1,
+      pipeline: pipeline,
+      project: pipeline.project,
+      token: sequence("long-token")
+    }
+  end
+
+  def runner_factory do
+    %Runner{
+      description: "test runner",
+      name: "Test",
       token: sequence("long-token")
     }
   end
