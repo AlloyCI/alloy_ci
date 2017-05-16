@@ -1,4 +1,4 @@
-defmodule AlloyCi.Workers.BuildPermissionsWorker do
+defmodule AlloyCi.Workers.CreatePermissionsWorker do
   @moduledoc """
   This worker takes care of creating the project permissions for newly created
   users. If the user has access to a project that has already been added to
@@ -9,10 +9,9 @@ defmodule AlloyCi.Workers.BuildPermissionsWorker do
   import AlloyCi.ProjectPermission, only: [existing_ids: 0]
 
   def perform(user_id, token) do
-    client = Github.api_client(%{access_token: token})
     repo_ids =
-      client
-      |> Tentacat.Repositories.list_mine
+      token
+      |> Github.fetch_repos
       |> Enum.map(&(&1["id"]))
 
     permission_ids = MapSet.intersection(MapSet.new(repo_ids), MapSet.new(existing_ids()))

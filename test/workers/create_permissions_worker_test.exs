@@ -1,8 +1,8 @@
-defmodule AlloyCi.BuildPermissionsWorkerTest do
+defmodule AlloyCi.CreatePermissionsWorkerTest do
   @moduledoc """
   """
   use AlloyCi.DataCase
-  alias AlloyCi.Workers.BuildPermissionsWorker
+  alias AlloyCi.Workers.CreatePermissionsWorker
   import AlloyCi.Factory
   import Mock
 
@@ -15,8 +15,8 @@ defmodule AlloyCi.BuildPermissionsWorkerTest do
     insert(:empty_project_permission, user_id: user.id, repo_id: "14144680", project_id: project.id)
     new_user = insert(:user)
 
-    with_mock Tentacat.Repositories, [list_mine: fn(_) -> Poison.decode!(File.read!("test/fixtures/responses/repositories_list.json")) end] do
-      BuildPermissionsWorker.perform(new_user.id, "fake-token")
+    with_mock AlloyCi.Github, [fetch_repos: fn(_) -> Poison.decode!(File.read!("test/fixtures/responses/repositories_list.json")) end] do
+      CreatePermissionsWorker.perform(new_user.id, "fake-token")
       new_user = new_user |> Repo.preload(:projects)
 
       assert Enum.member?(new_user.projects, project)
