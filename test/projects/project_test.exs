@@ -2,7 +2,6 @@ defmodule AlloyCi.ProjectTest do
   @moduledoc """
   """
   use AlloyCi.DataCase
-
   alias AlloyCi.Project
 
   @valid_attrs %{owner: "some_owner", name: "some content", private: true, repo_id: 42, token: "long-token"}

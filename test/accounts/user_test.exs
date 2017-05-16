@@ -2,7 +2,6 @@ defmodule AlloyCi.UserTest do
   @moduledoc """
   """
   use AlloyCi.DataCase
-
   alias AlloyCi.User
 
   @valid_attrs %{name: "some content", email: "foo@example.com"}

@@ -2,9 +2,7 @@ defmodule AlloyCi.Web.TokenControllerTest do
   @moduledoc """
   """
   use AlloyCi.Web.ConnCase
-
   import AlloyCi.Factory
-
   alias AlloyCi.Repo
   alias AlloyCi.GuardianToken
 

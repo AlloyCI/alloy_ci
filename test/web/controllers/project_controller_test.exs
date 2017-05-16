@@ -10,7 +10,6 @@ defmodule AlloyCi.Web.ProjectControllerTest do
   @invalid_attrs %{repo_id: nil}
 
   setup do
-    HTTPoison.start
     {:ok, %{user: insert(:user_with_project)}}
   end
 
@@ -72,12 +71,6 @@ defmodule AlloyCi.Web.ProjectControllerTest do
 
     assert html_response(conn, 200) =~ project.name
   end
-
-  # test "renders page not found when id is nonexistent", %{user: user} do
-  #   assert_error_sent 404, fn ->
-  #     get conn, project_path(conn, :show, -1)
-  #   end
-  # end
 
   test "renders form for editing chosen resource", %{user: user} do
     [project | _] = (user |> Repo.preload(:projects)).projects

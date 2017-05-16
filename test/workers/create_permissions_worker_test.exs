@@ -12,7 +12,7 @@ defmodule AlloyCi.CreatePermissionsWorkerTest do
 
   test "creation of the correct project permissions", %{user: user} do
     project = insert(:project)
-    insert(:empty_project_permission, user_id: user.id, repo_id: "14144680", project_id: project.id)
+    insert(:clean_project_permission, user_id: user.id, repo_id: "14144680", project_id: project.id)
     new_user = insert(:user)
 
     with_mock AlloyCi.Github, [fetch_repos: fn(_) -> Poison.decode!(File.read!("test/fixtures/responses/repositories_list.json")) end] do

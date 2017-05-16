@@ -4,10 +4,7 @@ defmodule AlloyCi.Web.AuthControllerTest do
   use AlloyCi.Web.ConnCase
 
   import AlloyCi.Factory
-
-  alias AlloyCi.Repo
-  alias AlloyCi.User
-  alias AlloyCi.GuardianToken
+  alias AlloyCi.{GuardianToken, Repo, User}
 
   setup do
     user_auth = insert(:user) |> with_authentication
@@ -23,9 +20,11 @@ defmodule AlloyCi.Web.AuthControllerTest do
   end
 
   test "DELETE /logout logs out the user and admin", context do
-    conn = guardian_login(context.user, :token)
+    conn =
+      guardian_login(context.user, :token)
       |> guardian_login(context.admin, :token, key: :admin)
       |> get("/") # This get loads the info out of the session and puts it into the connection
+
     assert Guardian.Plug.current_resource(conn).id == context.user.id
 
     {:ok, user_claims} = Guardian.Plug.claims(conn)

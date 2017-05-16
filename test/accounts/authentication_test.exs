@@ -2,7 +2,6 @@ defmodule AlloyCi.AuthenticationTest do
   @moduledoc """
   """
   use AlloyCi.DataCase
-
   alias AlloyCi.Authentication
 
   @valid_attrs %{provider: "some content", uid: "some content", user_id: 42, token: "some token"}

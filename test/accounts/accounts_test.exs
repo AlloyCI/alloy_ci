@@ -1,18 +1,14 @@
 defmodule AlloyCi.AccountsTest do
   @moduledoc """
   """
-  @lint {Credo.Check.Refactor.PipeChainStart , false}
+  @lint {Credo.Check.Refactor.PipeChainStart, false}
   use AlloyCi.DataCase
 
   import Ecto.Query
 
-  alias AlloyCi.Repo
-  alias AlloyCi.User
-  alias AlloyCi.Authentication
-  alias AlloyCi.Accounts
+  alias AlloyCi.{Accounts, Authentication, User, Repo}
   alias Ueberauth.Auth
-  alias Ueberauth.Auth.Credentials
-  alias Ueberauth.Auth.Info
+  alias Ueberauth.Auth.{Credentials, Info}
 
   @name "Bob Belcher"
   @email "bob@gmail.com"
