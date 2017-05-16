@@ -22,8 +22,7 @@ defmodule AlloyCi.Web.ChannelCase do
 
       alias AlloyCi.Repo
       import Ecto
-      import Ecto.Changeset
-      import Ecto.Query
+      import Ecto.{Changeset, Query}
 
 
       # The default endpoint for testing

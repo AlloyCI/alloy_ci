@@ -19,8 +19,7 @@ defmodule AlloyCi.DataCase do
       alias AlloyCi.Repo
 
       import Ecto
-      import Ecto.Changeset
-      import Ecto.Query
+      import Ecto.{Changeset, Query}
       import AlloyCi.DataCase
     end
   end

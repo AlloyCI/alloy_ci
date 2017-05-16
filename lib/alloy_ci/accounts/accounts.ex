@@ -1,9 +1,22 @@
 defmodule AlloyCi.Accounts do
   @moduledoc """
   """
-  alias AlloyCi.{User, Authentication, Repo}
-  alias AlloyCi.Workers.BuildPermissionsWorker
+  alias AlloyCi.{Authentication, ExqEnqueuer, User, Repo}
+  alias AlloyCi.Workers.CreatePermissionsWorker
   alias Ueberauth.Auth
+  import Ecto.Query
+
+  def authentications(user) do
+    user = user |> Repo.preload(:authentications)
+    user.authentications
+  end
+
+  def current_auths(nil), do: []
+  def current_auths(%User{} = user) do
+    user = user |> Repo.preload(:authentications)
+    user.authentications
+    |> Enum.map(&(&1.provider))
+  end
 
   def get_or_create_user(auth, current_user) do
     case auth_and_validate(auth) do
@@ -20,16 +33,17 @@ defmodule AlloyCi.Accounts do
 
   def get_user!(id), do: Repo.get!(User, id)
 
-  def authentications(user) do
-    user = user |> Repo.preload(:authentications)
-    user.authentications
+  def github_auth(user) do
+    Authentication
+    |> where(user_id: ^user.id)
+    |> where(provider: "github")
+    |> Repo.one
   end
 
-  def current_auths(nil), do: []
-  def current_auths(%User{} = user) do
-    user = user |> Repo.preload(:authentications)
-    user.authentications
-    |> Enum.map(&(&1.provider))
+  def gravatar_url(user) do
+    user.email
+    |> Gravatar.new
+    |> to_string
   end
 
   # We need to check the pw for the identity provider
@@ -194,16 +208,22 @@ defmodule AlloyCi.Accounts do
 
     case result do
       {:ok, auth} ->
-        case auth.provider do
-          "github" ->
-            # Enqueue worker that creates the proper project permissions for
-            # projects to which the user already has access, and have already
-            # been added to AlloyCI.
-            Exq.enqueue(Exq, "default", BuildPermissionsWorker, [auth.user_id, auth.token])
-            auth
-          _ -> auth
-        end
+        process_auth(auth)
       {:error, reason} -> Repo.rollback(reason)
+    end
+  end
+
+  @doc """
+  Process the current auth, and enqueue a worker that creates the proper
+  project permissions for projects to which the user already has access,
+  and have already been added to AlloyCI.
+  """
+  defp process_auth(auth) do
+    case auth.provider do
+      "github" ->
+        ExqEnqueuer.push(CreatePermissionsWorker, [auth.user_id, auth.token])
+        auth
+      _ -> auth
     end
   end
 

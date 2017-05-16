@@ -44,10 +44,4 @@ defmodule AlloyCi.User do
     |> cast(%{is_admin: true}, ~w(is_admin)a)
     |> Repo.update!
   end
-
-  def gravatar_url(user) do
-    user.email
-    |> Gravatar.new
-    |> to_string
-  end
 end

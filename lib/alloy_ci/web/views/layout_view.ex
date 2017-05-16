@@ -1,5 +1,5 @@
 defmodule AlloyCi.Web.LayoutView do
   use AlloyCi.Web, :view
 
-  alias AlloyCi.User
+  alias AlloyCi.Accounts
 end

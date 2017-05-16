@@ -24,7 +24,7 @@
 
     <li class="nav-item dropdown margin-right-imp">
       <a class="nav-link dropdown-toggle nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-        <img src="<%= User.gravatar_url(@current_user) %>" class="img-avatar" alt="<%= @current_user.email %>">
+        <img src="<%= Accounts.gravatar_url(@current_user) %>" class="img-avatar" alt="<%= @current_user.email %>">
         <span class="hidden-md-down"><%= @current_user.name %></span>
       </a>
       <div class="dropdown-menu dropdown-menu-right">
