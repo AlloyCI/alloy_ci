@@ -3,10 +3,8 @@ defmodule AlloyCi.Pipelines do
   The boundary for the Pipelines system.
   """
 
-  import Ecto.{Query, Changeset}, warn: false
-  import Joken
-  alias AlloyCi.{Github, Pipeline, Projects, Repo}
-  use Timex
+  import Ecto.Query, warn: false
+  alias AlloyCi.{Pipeline, Projects, Repo}
 
   @doc """
   Returns the list of pipelines.
@@ -22,6 +20,21 @@ defmodule AlloyCi.Pipelines do
       project = Repo.preload(project, :pipelines)
       {:ok, project.pipelines}
     end
+  end
+
+  def for_project(project_id) do
+    Pipeline
+    |> where(project_id: ^project_id)
+    |> where([p], p.status == "pending" or p.status == "running")
+    |> order_by(asc: :inserted_at)
+    |> Repo.all
+  end
+
+  def to_process do
+    Pipeline
+    |> where([p], p.status == "pending" or p.status == "running")
+    |> order_by(asc: :inserted_at)
+    |> Repo.all
   end
 
   @doc """
@@ -95,20 +108,12 @@ defmodule AlloyCi.Pipelines do
     |> Repo.update()
   end
 
-  def installation_token(pipeline) do
-    key = JOSE.JWK.from_pem(Application.get_env(:alloy_ci, :private_key))
-    integration_id = Application.get_env(:alloy_ci, :integration_id)
+  def current_stage_for(pipeline_id) do
+    query = from b in "builds",
+            where: b.pipeline_id == ^pipeline_id and b.status == "pending" and is_nil(b.runner_id),
+            order_by: [asc: b.stage_idx], limit: 1,
+            select: b.stage_idx
 
-    payload = %{
-      "iat" => DateTime.utc_now() |> Timex.to_unix,
-      "exp" => Timex.now() |> Timex.shift(minutes: 9) |> Timex.to_unix,
-      "iss" => String.to_integer(integration_id)
-    }
-
-    signed_jwt = payload |> token |> sign(rs256(key)) |> get_compact
-
-    client = Github.api_client(%{integration_jwt_token: signed_jwt})
-    {_, response} = Tentacat.Integrations.Installations.get_token(client, pipeline.installation_id)
-    response
+    Repo.one(query)
   end
 end
