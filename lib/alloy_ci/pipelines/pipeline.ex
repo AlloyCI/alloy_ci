@@ -1,5 +1,7 @@
 defmodule AlloyCi.Pipeline do
   @moduledoc """
+  A Pipeline represents the entire set of jobs, and all the information they
+  contain. It maps directly to a single repository push.
   """
   use AlloyCi.Web, :model
 

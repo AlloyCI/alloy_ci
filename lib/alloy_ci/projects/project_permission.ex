@@ -1,5 +1,6 @@
 defmodule AlloyCi.ProjectPermission do
   @moduledoc """
+  Mapping to give Users access to multiple Projects, without duplicating entries
   """
   use AlloyCi.Web, :model
   alias AlloyCi.Repo

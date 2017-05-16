@@ -1,5 +1,7 @@
 defmodule AlloyCi.GuardianToken do
   @moduledoc """
+  JWT Tokens used for authetication. They are stored in DB in order to make
+  it easier to revoke them.
   """
   use AlloyCi.Web, :model
 

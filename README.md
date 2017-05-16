@@ -49,7 +49,7 @@ branches, so you can always know their status, just like any other CI service.
   - [ ] Can pass artifacts between build jobs
   - [ ] Can make use of `only` and `except` tags for jobs
 - [ ] Deployment functionality
-  - [ ] Can manually start deployments
+  - [ ] Can manually start deployments (manual actions)
   - [ ] Can do auto deploys
   - [ ] Can start Review Apps
 - [ ] Autoscaling Support

@@ -1,9 +1,9 @@
 defmodule AlloyCi.Web.Admin.SessionController do
   @moduledoc """
   Provides login and logout for the admin part of the site.
-  We keep the logins seperate rather than use a permission for this because keeping the tokens in
-  separate locations allows us to more easily manage the different requirements between the
-  normal site and the admin site
+  We keep the logins seperate rather than use a permission for this because
+  keeping the tokens in separate locations allows us to more easily manage the
+  different requirements between the normal site and the admin site
   """
   use AlloyCi.Web, :admin_controller
 

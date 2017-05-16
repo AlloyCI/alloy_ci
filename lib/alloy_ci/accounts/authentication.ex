@@ -1,5 +1,7 @@
 defmodule AlloyCi.Authentication do
   @moduledoc """
+  An Authentication struct represents a set of credentials with which a
+  User can gain access to the system.
   """
   use AlloyCi.Web, :model
 
