@@ -24,7 +24,7 @@ defmodule AlloyCi.Web.ProjectControllerTest do
   end
 
   test "renders GitHub repos to add", %{user: user} do
-    with_mock Tentacat.Repositories, [list_mine: fn(_, _) -> Poison.decode!(File.read!("test/fixtures/responses/repositories_list.json")) end] do
+    with_mock AlloyCi.Github, [repos_for: fn(_) -> Poison.decode!(File.read!("test/fixtures/responses/repositories_list.json")) end] do
       conn =
         user
         |> guardian_login(:access)

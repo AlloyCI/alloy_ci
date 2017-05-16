@@ -8,16 +8,19 @@ defmodule AlloyCi.Workers.CreateBuildsWorker do
     pipeline = Pipelines.get_with_project(pipeline_id)
     project = pipeline.project
 
-    token = Pipelines.installation_token(pipeline)
-    client = Github.api_client(%{access_token: token["token"]})
-    file = Tentacat.Contents.find_in(project.owner, project.name, ".alloy-ci.json", pipeline.sha, client)
-    content = :base64.decode(file["content"])
 
-    case Builds.create_builds_from_config(content, pipeline) do
-      {:ok, _} ->
-        Logger.info("Builds created successfully")
-      {:error, reason} ->
-        Logger.info(reason)
+    with %{"content" => raw_content} <- Github.alloy_ci_config(project, pipeline) do
+      content = :base64.decode(raw_content)
+
+      case Builds.create_builds_from_config(content, pipeline) do
+        {:ok, _} ->
+          Logger.info("Builds created successfully")
+        {:error, reason} ->
+          Logger.info(reason)
+      end
+    else
+      _ ->
+        Logger.info(".alloy-ci.json file not found")
     end
   end
 end
