@@ -3,10 +3,33 @@ defmodule AlloyCi.Web.Api.GithubEventController do
   """
   use AlloyCi.Web, :controller
 
-  alias AlloyCi.{Pipelines, Projects, Workers.CreateBuildsWorker}
+  alias AlloyCi.{ExqEnqueuer, Github, Pipelines, Projects, Workers.CreateBuildsWorker}
 
-  def handle_event(%{assigns: %{github_event: "push"}} = conn, params, _, _) do
-    with %AlloyCi.Project{} = project <- Projects.get_by_repo_id(params["repository"]["id"]) do
+  def handle_event(%{assigns: %{github_event: "push"}} = conn, %{"after" => "0000000000000000000000000000000000000000"}, _, _) do
+    event = %{status: :bad_request, message: "Branch deletion is not handled"}
+
+    render(conn, "event.json", event: event)
+  end
+
+  def handle_event(%{assigns: %{github_event: "push"}} = conn, %{"head_commit" => %{"message" => msg}} = params, _, _) do
+    if String.match?(msg, ~r/\[skip ci\]/) do
+      event = %{status: :ok, message: "Pipeline creation skipped"}
+      render(conn, "event.json", event: event)
+    else
+      handle_event(conn, params)
+    end
+  end
+
+  def handle_event(%{assigns: %{github_event: gh_event}} = conn, _params, _, _) do
+    event = %{status: :bad_request, message: "Event #{gh_event} is not handled by this endpoint."}
+
+    render(conn, "event.json", event: event)
+  end
+
+  defp handle_event(conn, params) do
+    with %AlloyCi.Project{} = project <- Projects.get_by_repo_id(params["repository"]["id"]),
+         %{"contents" => _} <- Github.alloy_ci_config(project, %{installation_id: params["installation"]["id"], sha: params["after"]})
+    do
       pipeline_attrs = %{
         before_sha: params["before"],
         commit: %{
@@ -23,7 +46,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
 
       case Pipelines.create_pipeline(pipeline, pipeline_attrs) do
         {:ok, pipeline} ->
-          Exq.enqueue(Exq, "default", CreateBuildsWorker, [pipeline.id])
+          ExqEnqueuer.push(CreateBuildsWorker, [pipeline.id])
           event = %{status: :ok, message: "Pipeline with ID: #{pipeline.id} created sucessfully."}
           render(conn, "event.json", event: event)
         {:error, changeset} ->
@@ -32,12 +55,8 @@ defmodule AlloyCi.Web.Api.GithubEventController do
     else
       nil ->
         render(conn, "event.json", event: %{status: :not_found, message: "Project not found."})
+      _ ->
+        render(conn, "event.json", event: %{status: :bad_request, message: "Config file not found for ref."})
     end
-  end
-
-  def handle_event(%{assigns: %{github_event: gh_event}} = conn, _params, _, _) do
-    event = %{status: :bad_request, message: "Event #{gh_event} is not handled by this endpoint."}
-
-    render(conn, "event.json", event: event)
   end
 end
