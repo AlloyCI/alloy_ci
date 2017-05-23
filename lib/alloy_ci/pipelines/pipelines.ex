@@ -2,24 +2,18 @@ defmodule AlloyCi.Pipelines do
   @moduledoc """
   The boundary for the Pipelines system.
   """
-
   import Ecto.Query, warn: false
   alias AlloyCi.{Pipeline, Projects, Repo}
 
-  @doc """
-  Returns the list of pipelines.
+  def create_pipeline(pipeline, params) do
+    pipeline
+    |> Pipeline.changeset(params)
+    |> Repo.insert()
+  end
 
-  ## Examples
-
-      iex> list_pipelines()
-      [%Pipeline{}, ...]
-
-  """
-  def list_pipelines(project_id, user) do
-    with {:ok, project} <- Projects.get_by(project_id, user) do
-      project = Repo.preload(project, :pipelines)
-      {:ok, project.pipelines}
-    end
+  def failed!(pipeline) do
+    {:ok, _} = update_pipeline(pipeline, %{status: "failed"})
+    # Notify user that pipeline failed. (Email and badge)
   end
 
   def for_project(project_id) do
@@ -30,32 +24,16 @@ defmodule AlloyCi.Pipelines do
     |> Repo.all
   end
 
-  def to_process do
+  def get(id) do
     Pipeline
-    |> where([p], p.status == "pending" or p.status == "running")
-    |> order_by(asc: :inserted_at)
-    |> Repo.all
+    |> Repo.get_by(id: id)
   end
 
-  @doc """
-  Gets a single pipeline.
-
-  Raises `Ecto.NoResultsError` if the Pipeline does not exist.
-
-  ## Examples
-
-      iex> get_pipeline!(123)
-      %Pipeline{}
-
-      iex> get_pipeline!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_pipeline!(id, project_id, user) do
+  def get_pipeline(id, project_id, user) do
     with {:ok, _} <- Projects.get_by(project_id, user) do
       Pipeline
       |> where(project_id: ^project_id)
-      |> Repo.get!(id)
+      |> Repo.get(id)
       |> Repo.preload([:builds, :project])
     end
   end
@@ -66,54 +44,55 @@ defmodule AlloyCi.Pipelines do
     |> Repo.preload(:project)
   end
 
-  @doc """
-  Creates a pipeline.
-
-  ## Examples
-
-      iex> create_pipeline(%{field: value})
-      {:ok, %Pipeline{}}
-
-      iex> create_pipeline(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_pipeline(params \\ %{}) do
-    %Pipeline{}
-    |> Pipeline.changeset(params)
-    |> Repo.insert()
+  def list_pipelines(project_id, user) do
+    with {:ok, project} <- Projects.get_by(project_id, user) do
+      project = Repo.preload(project, :pipelines)
+      {:ok, project.pipelines}
+    end
   end
 
-  def create_pipeline(pipeline, params) do
-    pipeline
-    |> Pipeline.changeset(params)
-    |> Repo.insert()
+  def success!(pipeline_id) do
+    pipeline =
+      pipeline_id
+      |> get
+      |> Repo.preload(:builds)
+
+    query = from b in "builds",
+            where: b.pipeline_id == ^pipeline.id and b.status == "success",
+            select: count(b.id)
+    successful_builds = Repo.one(query)
+
+    query = from b in "builds",
+            where: b.pipeline_id == ^pipeline.id and b.status == "failed" and b.allow_failure == true,
+            select: count(b.id)
+    allowed_failures = Repo.one(query)
+
+    if (successful_builds + allowed_failures) == Enum.count(pipeline.builds) do
+      update_pipeline(pipeline, %{status: "success"})
+      #Notify of successfull pipeline
+    end
   end
 
-  @doc """
-  Updates a pipeline.
-
-  ## Examples
-
-      iex> update_pipeline(pipeline, %{field: new_value})
-      {:ok, %Pipeline{}}
-
-      iex> update_pipeline(pipeline, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def update_pipeline(%Pipeline{} = pipeline, params) do
     pipeline
     |> Pipeline.changeset(params)
-    |> Repo.update()
+    |> Repo.update
   end
 
-  def current_stage_for(pipeline_id) do
-    query = from b in "builds",
-            where: b.pipeline_id == ^pipeline_id and b.status == "pending" and is_nil(b.runner_id),
-            order_by: [asc: b.stage_idx], limit: 1,
-            select: b.stage_idx
+  def update_status(pipeline_id) do
+    pipeline = get(pipeline_id)
 
-    Repo.one(query)
+    query = from b in "builds",
+            where: b.pipeline_id == ^pipeline_id and b.status in ~w(success failed skipped),
+            order_by: [desc: b.id], limit: 1,
+            select: %{status: b.status, allow_failure: b.allow_failure}
+    last_status = Repo.one(query) || %{status: "skipped", allow_failure: false}
+
+    case last_status do
+      %{status: "success"} -> success!(pipeline_id)
+      %{status: "failed", allow_failure: false} -> failed!(pipeline)
+      %{status: "skipped"} -> update_pipeline(pipeline, %{status: "running"})
+      _ -> nil
+    end
   end
 end

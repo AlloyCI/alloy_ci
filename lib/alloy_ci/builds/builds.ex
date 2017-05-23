@@ -2,7 +2,7 @@ defmodule AlloyCi.Builds do
   @moduledoc """
   The boundary for the Builds system.
   """
-  alias AlloyCi.{Build, Github, Pipelines, Repo}
+  alias AlloyCi.{Build, ExqEnqueuer, Github, Pipelines, Repo, Workers}
   import Ecto.Query, warn: false
 
   @global_config ~w(image cache after_script before_script stages services variables)
@@ -42,19 +42,34 @@ defmodule AlloyCi.Builds do
     end
   end
 
+  def enqueue(build) do
+    if build.status == "created" do
+      do_update_status(build, "pending")
+    else
+      build
+    end
+  end
+
+  def for_pipeline_and_stage(pipeline_id, stage_idx) do
+    Build
+    |> where(pipeline_id: ^pipeline_id)
+    |> where(stage_idx: ^stage_idx)
+    |> Repo.all
+  end
+
   def for_project(project_id) do
     pipelines = Pipelines.for_project(project_id)
 
-    Enum.map(pipelines, fn(p) ->
-      current_stage = Pipelines.current_stage_for(p.id)
-
+    mapper = fn(p) ->
       Build
       |> where(pipeline_id: ^p.id)
-      |> where(stage_idx: ^current_stage)
       |> where([b], b.status == "pending" and is_nil(b.runner_id))
       |> order_by(asc: :inserted_at)
       |> Repo.all
-    end)
+    end
+
+    pipelines
+    |> Enum.map(mapper)
     |> List.flatten
     |> List.first
   end
@@ -66,23 +81,24 @@ defmodule AlloyCi.Builds do
     |> where([b], fragment("? && ?", b.tags, ^runner.tags))
     |> order_by(asc: :inserted_at)
     |> Repo.all
-    |> Enum.filter(fn(b) ->
-      current_stage = Pipelines.current_stage_for(b.pipeline_id)
-      b.stage_idx == current_stage
-    end)
     |> List.first
   end
 
-  def to_process do
+  def get(id) do
     Build
-    |> where([b], b.status == "pending" and is_nil(b.runner_id))
-    |> order_by(asc: :inserted_at)
-    |> Repo.all
-    |> Enum.filter(fn(b) ->
-      current_stage = Pipelines.current_stage_for(b.pipeline_id)
-      b.stage_idx == current_stage
-    end)
-    |> List.first
+    |> Repo.get(id)
+  end
+
+  def get_by(id, token) do
+    build =
+      Build
+      |> Repo.get(id)
+
+    if build.token == token do
+      build
+    else
+      nil
+    end
   end
 
   def start_build(build, runner) do
@@ -94,12 +110,15 @@ defmodule AlloyCi.Builds do
           |> where(id: ^build.id)
           |> lock("FOR UPDATE")
           |> Repo.one
-          |> Build.changeset(%{runner_id: runner.id, status: "running"})
+          |> Build.changeset(%{runner_id: runner.id})
 
         case Repo.update(changeset) do
           {:ok, build} ->
             # build was updated, prepare struct for payload delivery
-            build = build |> Repo.preload([:pipeline, :project])
+            build =
+              build
+              |> transition_status("running")
+              |> Repo.preload([:pipeline, :project])
 
             Map.merge(build, extra_fields(build))
           {:error, changeset} ->
@@ -112,14 +131,50 @@ defmodule AlloyCi.Builds do
     end
   end
 
+  def to_process do
+    Build
+    |> where([b], b.status == "pending" and is_nil(b.runner_id))
+    |> order_by(asc: :inserted_at)
+    |> Repo.all
+    |> List.first
+  end
+
+  def transition_status(build, status \\ nil) do
+    case build.status do
+      "created" -> update_status(build, status || "running")
+      "pending" -> update_status(build, status || "running")
+      "running" -> update_status(build, status || "success")
+    end
+  end
+
+  @doc """
+  Private funtions
+  """
+  defp after_script(build) do
+    case build.options["after_script"] do
+      nil ->
+        nil
+      _ ->
+        %{
+          name: :after_script,
+          script: build.options["after_script"],
+          timeout: 3600,
+          when: "always",
+          allow_failure: true
+        }
+    end
+  end
+
   defp create_build(params) do
     %Build{}
     |> Build.changeset(params)
-    |> Repo.insert!()
+    |> Repo.insert!
   end
 
-  defp generate_token do
-    SecureRandom.urlsafe_base64(10)
+  defp do_update_status(build, status) do
+    build
+    |> Build.changeset(%{status: status})
+    |> Repo.update
   end
 
   defp extra_fields(build) do
@@ -136,6 +191,29 @@ defmodule AlloyCi.Builds do
     }
   end
 
+  defp generate_token do
+    SecureRandom.urlsafe_base64(10)
+  end
+
+  defp predefined_vars(build) do
+    [
+      %{key: "CI", value: "true", public: true},
+      %{key: "GITLAB_CI", value: "true", public: true},
+      %{key: "CI_SERVER_NAME", value: "AlloyCI", public: true},
+      %{key: "CI_SERVER_VERSION", value: AlloyCi.Mixfile.version, public: true},
+      %{key: "CI_SERVER_REVISION", value: AlloyCi.Mixfile.version, public: true},
+      %{key: "CI_JOB_ID", value: Integer.to_string(build.id), public: true},
+      %{key: "CI_JOB_NAME", value: build.name, public: true},
+      %{key: "CI_JOB_STAGE", value: build.stage, public: true},
+      %{key: "CI_JOB_TOKEN", value: build.token, public: false},
+      %{key: "CI_PIPELINE_ID", value: Integer.to_string(build.project_id), public: true},
+      %{key: "CI_COMMIT_SHA", value: build.pipeline.sha, public: true},
+      %{key: "CI_COMMIT_REF_NAME", value: build.pipeline.ref, public: true},
+      %{key: "CI_COMMIT_REF_SLUG", value: build.pipeline.ref, public: true},
+      %{key: "CI_REPOSITORY_URL", value: Github.clone_url(build.project, build.pipeline), public: false}
+    ]
+  end
+
   defp steps(build) do
     [
       %{
@@ -150,36 +228,12 @@ defmodule AlloyCi.Builds do
     |> Enum.reject(&(&1 == nil))
   end
 
-  defp after_script(build) do
-    case build.options["after_script"] do
-      nil ->
-        nil
-      _ ->
-        %{
-          name: :after_script,
-          script: build.options["after_script"],
-          timeout: 3600,
-          when: "always",
-          allow_failure: true
-        }
+  defp update_status(build, status) do
+    case do_update_status(build, status) do
+      {:ok, build} ->
+        ExqEnqueuer.push(Workers.ProcessPipelineWorker, [build.pipeline_id])
+        build
+      {:error, _} -> nil
     end
-  end
-
-  defp predefined_vars(build) do
-    [
-      %{key: "CI", value: true, public: true},
-      %{key: "GITLAB_CI", value: true, public: true},
-      %{key: "CI_SERVER_NAME", value: "AlloyCI", public: true},
-      %{key: "CI_SERVER_VERSION", value: AlloyCi.Mixfile.version, public: true},
-      %{key: "CI_SERVER_REVISION", value: AlloyCi.Mixfile.version, public: true},
-      %{key: "CI_JOB_ID", value: build.id, public: true},
-      %{key: "CI_JOB_NAME", value: build.name, public: true},
-      %{key: "CI_JOB_STAGE", value: build.stage, public: true},
-      %{key: "CI_JOB_TOKEN", value: build.token, public: false},
-      %{key: "CI_COMMIT_SHA", value: build.pipeline.sha, public: true},
-      %{key: "CI_COMMIT_REF_NAME", value: build.pipeline.ref, public: true},
-      %{key: "CI_COMMIT_REF_SLUG", value: build.pipeline.ref, public: true},
-      %{key: "CI_REPOSITORY_URL", value: Github.clone_url(build.project, build.pipeline), public: false}
-    ]
   end
 end

@@ -1,7 +1,7 @@
 defmodule AlloyCi.Workers.CreateBuildsWorker do
   @moduledoc """
   """
-  alias AlloyCi.{Builds, Github, Pipelines}
+  alias AlloyCi.{Builds, Github, Pipelines, Workers.ProcessPipelineWorker}
   require Logger
 
   def perform(pipeline_id) do
@@ -15,6 +15,7 @@ defmodule AlloyCi.Workers.CreateBuildsWorker do
       case Builds.create_builds_from_config(content, pipeline) do
         {:ok, _} ->
           Logger.info("Builds created successfully")
+          ProcessPipelineWorker.perform(pipeline_id)
         {:error, reason} ->
           Logger.info(reason)
       end

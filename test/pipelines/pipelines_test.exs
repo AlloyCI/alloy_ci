@@ -11,7 +11,7 @@ defmodule AlloyCi.PipelinesTest do
   setup do
     user = insert(:user_with_project)
     [project | _] = (user |> Repo.preload(:projects)).projects
-    pipeline = insert(:pipeline, project: project)
+    pipeline = insert(:clean_pipeline, project: project)
     {:ok, %{
         user: user,
         project: project,
@@ -20,48 +20,113 @@ defmodule AlloyCi.PipelinesTest do
     }
   end
 
+  describe "create_pipeline/2" do
+    test "with valid data creates a pipeline" do
+      project = insert(:project)
+      assert {:ok, pipeline} = Pipelines.create_pipeline(Ecto.build_assoc(project, :pipelines), params_for(:pipeline))
+      assert pipeline.before_sha == "00000000"
+      assert pipeline.ref == "master"
+      assert pipeline.sha == "00000000"
+      assert pipeline.status == "pending"
+    end
+
+    test "with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Pipelines.create_pipeline(%AlloyCi.Pipeline{}, @invalid_attrs)
+    end
+  end
+
+  describe "failed!/1" do
+    # This test still lacks a check for notifications
+    test "it marks the pipeline as failed", %{pipeline: pipeline} do
+      {:ok, result} = Pipelines.failed!(pipeline)
+
+      assert result.status == "failed"
+    end
+  end
+
+  describe "for_project/1" do
+    test "it returns the correct pipelines", %{pipeline: pipeline, project: project} do
+      [result] = Pipelines.for_project(project.id)
+
+      assert result.id == pipeline.id
+    end
+  end
+
+  describe "get_pipeline/3" do
+    test "it returns the pipeline with given id", %{user: user, project: project, pipeline: pipeline} do
+      p = Pipelines.get_pipeline(pipeline.id, project.id, user)
+      assert p.id == pipeline.id
+    end
+
+    test "it returns nil when no pipeline", %{user: user, project: project} do
+      p = Pipelines.get_pipeline(100_076, project.id, user)
+      assert p == nil
+    end
+  end
+
   test "list_pipelines/2 returns all pipelines", %{user: user, project: project, pipeline: pipeline} do
     {:ok, [p]} = Pipelines.list_pipelines(project.id, user)
     assert p.id == pipeline.id
   end
 
-  test "get_pipeline returns the pipeline with given id", %{user: user, project: project, pipeline: pipeline} do
-    p = Pipelines.get_pipeline(pipeline.id, project.id, user)
-    assert p.id == pipeline.id
+  describe "success!/1" do
+    # This test still lacks a check for notifications
+    test "when all builds succeeded", %{pipeline: pipeline} do
+      insert(:full_build, pipeline: pipeline, project: pipeline.project, status: "success")
+      insert(:full_build, pipeline: pipeline, project: pipeline.project, status: "success")
+      {:ok, result} = Pipelines.success!(pipeline.id)
+
+      assert result.status == "success"
+    end
+
+    test "when build is allowed to fail", %{pipeline: pipeline} do
+      insert(:full_build, pipeline: pipeline, project: pipeline.project, status: "success")
+      insert(:full_build, pipeline: pipeline, project: pipeline.project, status: "failed", allow_failure: true)
+      {:ok, result} = Pipelines.success!(pipeline.id)
+
+      assert result.status == "success"
+    end
   end
 
-  test "get_pipeline returns nil when no pipeline", %{user: user, project: project} do
-    p = Pipelines.get_pipeline(100_076, project.id, user)
-    assert p == nil
+  describe "update_pipeline/2" do
+    test "with valid data updates the pipeline" do
+      pipeline = insert(:pipeline)
+      assert {:ok, pipeline} = Pipelines.update_pipeline(pipeline, @update_attrs)
+      assert pipeline.before_sha == "some updated before_sha"
+      assert pipeline.duration == 43
+      assert pipeline.finished_at == ~N[2011-05-18 15:01:01.000000]
+      assert pipeline.ref == "some updated ref"
+      assert pipeline.sha == "some updated sha"
+      assert pipeline.started_at == ~N[2011-05-18 15:01:01.000000]
+      assert pipeline.status == "some updated status"
+    end
+
+    test "with invalid data returns error changeset" do
+      pipeline = insert(:pipeline)
+      assert {:error, %Ecto.Changeset{}} = Pipelines.update_pipeline(pipeline, @invalid_attrs)
+    end
   end
 
-  test "create_pipeline/2 with valid data creates a pipeline" do
-    project = insert(:project)
-    assert {:ok, pipeline} = Pipelines.create_pipeline(Ecto.build_assoc(project, :pipelines), params_for(:pipeline))
-    assert pipeline.before_sha == "00000000"
-    assert pipeline.ref == "master"
-    assert pipeline.sha == "00000000"
-    assert pipeline.status == "pending"
-  end
+  describe "update_status/2" do
+    test "it marks as failed", %{pipeline: pipeline} do
+      insert(:full_build, pipeline: pipeline, project: pipeline.project, status: "failed")
+      {:ok, result} = Pipelines.update_status(pipeline.id)
 
-  test "create_pipeline/2 with invalid data returns error changeset" do
-    assert {:error, %Ecto.Changeset{}} = Pipelines.create_pipeline(%AlloyCi.Pipeline{}, @invalid_attrs)
-  end
+      assert result.status == "failed"
+    end
 
-  test "update_pipeline/2 with valid data updates the pipeline" do
-    pipeline = insert(:pipeline)
-    assert {:ok, pipeline} = Pipelines.update_pipeline(pipeline, @update_attrs)
-    assert pipeline.before_sha == "some updated before_sha"
-    assert pipeline.duration == 43
-    assert pipeline.finished_at == ~N[2011-05-18 15:01:01.000000]
-    assert pipeline.ref == "some updated ref"
-    assert pipeline.sha == "some updated sha"
-    assert pipeline.started_at == ~N[2011-05-18 15:01:01.000000]
-    assert pipeline.status == "some updated status"
-  end
+    test "it does not mark as failed", %{pipeline: pipeline} do
+      insert(:full_build, pipeline: pipeline, project: pipeline.project, status: "failed", allow_failure: true)
+      result = Pipelines.update_status(pipeline.id)
 
-  test "update_pipeline/2 with invalid data returns error changeset" do
-    pipeline = insert(:pipeline)
-    assert {:error, %Ecto.Changeset{}} = Pipelines.update_pipeline(pipeline, @invalid_attrs)
+      assert result == nil
+    end
+
+    test "it marks as success", %{pipeline: pipeline} do
+      insert(:full_build, pipeline: pipeline, project: pipeline.project, status: "success")
+      {:ok, result} = Pipelines.update_status(pipeline.id)
+
+      assert result.status == "success"
+    end
   end
 end
