@@ -27,4 +27,17 @@ defmodule AlloyCi.Web.Api.RunnerEventController do
         |> json(%{message: "200 Credentials are valid"})
     end
   end
+
+  def delete(conn, %{"token" => token}, _, _) do
+    case Runners.delete(token) do
+      {:ok, _} ->
+        conn
+        |> put_status(204)
+        |> json(%{message: "204 Runner was deleted"})
+      _ ->
+        conn
+        |> put_status(403)
+        |> json(%{message: "403 Forbidden"})
+    end
+  end
 end

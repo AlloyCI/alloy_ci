@@ -34,6 +34,14 @@ defmodule AlloyCi.Runners do
     end
   end
 
+  def delete(token) do
+    token
+    |> get_by_token()
+    |> Repo.delete
+  rescue
+    FunctionClauseError -> nil
+  end
+
   def save(params) do
     %Runner{}
     |> Runner.changeset(params)
@@ -48,26 +56,28 @@ defmodule AlloyCi.Runners do
   def update_info(runner, params) do
     runner
     |> Runner.changeset(params)
-    |> Repo.update()
+    |> Repo.update
   end
 
   def register_job(%{project_id: nil, tags: nil} = runner) do
-    Builds.to_process()
+    Builds.to_process
     |> Builds.start_build(runner)
   end
 
   def register_job(%{project_id: nil, run_untagged: true} = runner) do
-    Builds.to_process()
+    Builds.to_process
     |> Builds.start_build(runner)
   end
 
   def register_job(%{project_id: nil} = runner) do
-    Builds.for_runner(runner)
+    runner
+    |> Builds.for_runner
     |> Builds.start_build(runner)
   end
 
   def register_job(%{project_id: project_id} = runner) do
-    Builds.for_project(project_id)
+    project_id
+    |> Builds.for_project
     |> Builds.start_build(runner)
   end
 

@@ -69,7 +69,6 @@ defmodule AlloyCi.Web.Api.RunnerEventControllerTest do
   describe "verify/4" do
     test "it responds with 200 if runner token is valid" do
       runner = insert(:runner)
-
       conn =
         build_conn()
         |> post("/api/v4/runners/verify", %{token: runner.token})
@@ -81,6 +80,25 @@ defmodule AlloyCi.Web.Api.RunnerEventControllerTest do
       conn =
         build_conn()
         |> post("/api/v4/runners/verify", %{token: "invalid"})
+
+      assert conn.status == 403
+    end
+  end
+
+  describe "delete/4" do
+    test "it deletes the runner if token valid" do
+      runner = insert(:runner)
+      conn =
+        build_conn()
+        |> delete("/api/v4/runners", %{token: runner.token})
+
+      assert conn.status == 204
+    end
+
+    test "it responds with 403 otherwise" do
+      conn =
+        build_conn()
+        |> delete("/api/v4/runners", %{token: "invalid"})
 
       assert conn.status == 403
     end
