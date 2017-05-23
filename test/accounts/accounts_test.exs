@@ -1,7 +1,6 @@
 defmodule AlloyCi.AccountsTest do
   @moduledoc """
   """
-  @lint {Credo.Check.Refactor.PipeChainStart, false}
   use AlloyCi.DataCase
 
   import Ecto.Query
@@ -50,17 +49,23 @@ defmodule AlloyCi.AccountsTest do
   end
 
   test "it returns the existing user when the authentication and user both exist", %{auth: auth} do
-    {:ok, user} = User.registration_changeset(%User{}, %{email: @email, name: @name}) |> Repo.insert
-    {:ok, _authentication} = Authentication.changeset(
-      Ecto.build_assoc(user, :authentications),
-      %{
-        provider: to_string(@provider),
-        uid: @uid,
-        token: @token,
-        refresh_token: @refresh_token,
-        expires_at: Guardian.Utils.timestamp + 500
-      }
-    ) |> Repo.insert
+    {:ok, user} =
+      %User{}
+      |> User.registration_changeset(%{email: @email, name: @name})
+      |> Repo.insert
+
+    params = %{
+      provider: to_string(@provider),
+      uid: @uid,
+      token: @token,
+      refresh_token: @refresh_token,
+      expires_at: Guardian.Utils.timestamp + 500
+    }
+    {:ok, _authentication} =
+      user
+      |> Ecto.build_assoc(:authentications)
+      |> Authentication.changeset(params)
+      |> Repo.insert
 
     before_users = user_count()
     before_authentications = authentication_count()
@@ -72,7 +77,11 @@ defmodule AlloyCi.AccountsTest do
   end
 
   test "it returns an existing user when the user has the same email", %{auth: auth} do
-    {:ok, user} = User.registration_changeset(%User{}, %{email: @email, name: @name}) |> Repo.insert
+    {:ok, user} =
+      %User{}
+      |> User.registration_changeset(%{email: @email, name: @name})
+      |> Repo.insert
+
     before_users = user_count()
     before_authentications = authentication_count()
     {:ok, user_from_auth} = Accounts.get_or_create_user(auth, nil)
@@ -83,17 +92,24 @@ defmodule AlloyCi.AccountsTest do
   end
 
   test "it deletes the authentication and makes a new one when the old one is expired", %{auth: auth} do
-    {:ok, user} = User.registration_changeset(%User{}, %{email: @email, name: @name}) |> Repo.insert
-    {:ok, authentication} = Authentication.changeset(
-      Ecto.build_assoc(user, :authentications),
-      %{
-        provider: to_string(@provider),
-        uid: @uid,
-        token: @token,
-        refresh_token: @refresh_token,
-        expires_at: Guardian.Utils.timestamp - 500
-      }
-    ) |> Repo.insert
+    {:ok, user} =
+      %User{}
+      |> User.registration_changeset(%{email: @email, name: @name})
+      |> Repo.insert
+
+    params = %{
+      provider: to_string(@provider),
+      uid: @uid,
+      token: @token,
+      refresh_token: @refresh_token,
+      expires_at: Guardian.Utils.timestamp - 500
+    }
+
+    {:ok, authentication} =
+      user
+      |> Ecto.build_assoc(:authentications)
+      |> Authentication.changeset(params)
+      |> Repo.insert
 
     before_users = user_count()
     before_authentications = authentication_count()
@@ -107,18 +123,30 @@ defmodule AlloyCi.AccountsTest do
   end
 
   test "it returns an error if the user is not the current user", %{auth: auth} do
-    {:ok, current_user} = User.registration_changeset(%User{}, %{email: "fred@example.com", name: @name}) |> Repo.insert
-    {:ok, user} = User.registration_changeset(%User{}, %{email: @email, name: @name}) |> Repo.insert
-    {:ok, _authentication} = Authentication.changeset(
-      Ecto.build_assoc(user, :authentications),
-      %{
-        provider: to_string(@provider),
-        uid: @uid,
-        token: @token,
-        refresh_token: @refresh_token,
-        expires_at: Guardian.Utils.timestamp + 500
-      }
-    ) |> Repo.insert
+    {:ok, current_user} =
+      %User{}
+      |> User.registration_changeset(%{email: "fred@example.com", name: @name})
+      |> Repo.insert
+
+    {:ok, user} =
+      %User{}
+      |> User.registration_changeset(%{email: @email, name: @name})
+      |> Repo.insert
+
+
+    params = %{
+      provider: to_string(@provider),
+      uid: @uid,
+      token: @token,
+      refresh_token: @refresh_token,
+      expires_at: Guardian.Utils.timestamp + 500
+    }
+
+    {:ok, _authentication} =
+      user
+      |> Ecto.build_assoc(:authentications)
+      |> Authentication.changeset(params)
+      |> Repo.insert
 
     assert {:error, :user_does_not_match} = Accounts.get_or_create_user(auth, current_user)
   end
