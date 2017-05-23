@@ -13,6 +13,8 @@ defmodule AlloyCi.Mixfile do
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
+     test_coverage: [tool: ExCoveralls],
+     preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test],
      aliases: aliases(),
      deps: deps()]
   end
@@ -85,6 +87,7 @@ defmodule AlloyCi.Mixfile do
       {:ueberauth_identity, "~> 0.2.3"},
 
       # Test and Dev dependencies
+      {:excoveralls, "~> 0.6", only: :test},
       {:ex_machina, "~> 2.0", only: [:dev, :test]},
       {:mock, "~> 0.2", only: :test},
       {:credo, "~> 0.7", only: [:dev, :test]},
