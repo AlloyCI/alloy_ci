@@ -12,7 +12,6 @@ defmodule AlloyCi.Web.ConnCase do
   inside a transaction which is reset at the beginning
   of the test unless the test case is marked as async.
   """
-
   use ExUnit.CaseTemplate
 
   using do

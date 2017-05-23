@@ -41,8 +41,8 @@ defmodule AlloyCi.Github do
     integration_id = Application.get_env(:alloy_ci, :integration_id)
 
     payload = %{
-      "iat" => DateTime.utc_now() |> Timex.to_unix,
-      "exp" => Timex.now() |> Timex.shift(minutes: 9) |> Timex.to_unix,
+      "iat" => DateTime.utc_now |> Timex.to_unix,
+      "exp" => Timex.now |> Timex.shift(minutes: 9) |> Timex.to_unix,
       "iss" => String.to_integer(integration_id)
     }
 
