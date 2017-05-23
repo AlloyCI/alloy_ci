@@ -7,7 +7,7 @@ defmodule AlloyCi.Web.Api.GithubEventControllerTest do
   import Mock
 
   test "handles push events" do
-    with_mock Tentacat.Contents, [find_in: fn(_, _, _, _, _) -> %{"contents" => "fake-data"} end] do
+    with_mock Tentacat.Contents, [find_in: fn(_, _, _, _, _) -> %{"content" => "fake-data"} end] do
       project = insert(:project, repo_id: "14321")
       params = %{
         ref: "refs/heads/changes",
@@ -66,7 +66,7 @@ defmodule AlloyCi.Web.Api.GithubEventControllerTest do
   end
 
   test "when pipeline exists already" do
-    with_mock Tentacat.Contents, [find_in: fn(_, _, _, _, _) -> %{"contents" => "fake-data"} end] do
+    with_mock Tentacat.Contents, [find_in: fn(_, _, _, _, _) -> %{"content" => "fake-data"} end] do
       pipeline_params = %{
         ref: "refs/heads/changes",
         sha: "0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c"

@@ -28,7 +28,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
 
   defp handle_event(conn, params) do
     with %AlloyCi.Project{} = project <- Projects.get_by_repo_id(params["repository"]["id"]),
-         %{"contents" => _} <- Github.alloy_ci_config(project, %{installation_id: params["installation"]["id"], sha: params["after"]})
+         %{"content" => _} <- Github.alloy_ci_config(project, %{installation_id: params["installation"]["id"], sha: params["after"]})
     do
       pipeline_attrs = %{
         before_sha: params["before"],
@@ -42,9 +42,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
         installation_id: params["installation"]["id"]
       }
 
-      pipeline = Ecto.build_assoc(project, :pipelines)
-
-      case Pipelines.create_pipeline(pipeline, pipeline_attrs) do
+      case Pipelines.create_pipeline(Ecto.build_assoc(project, :pipelines), pipeline_attrs) do
         {:ok, pipeline} ->
           ExqEnqueuer.push(CreateBuildsWorker, [pipeline.id])
           event = %{status: :ok, message: "Pipeline with ID: #{pipeline.id} created sucessfully."}
