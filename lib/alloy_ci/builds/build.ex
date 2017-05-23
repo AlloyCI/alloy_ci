@@ -16,7 +16,7 @@ defmodule AlloyCi.Build do
     field :stage, :string, default: "test"
     field :stage_idx, :integer
     field :started_at, :naive_datetime
-    field :status, :string, default: "pending"
+    field :status, :string, default: "created"
     field :tags, {:array, :string}
     field :token, :string
     field :trace, :string
