@@ -29,10 +29,10 @@ defmodule AlloyCi.Web.Api.BuildsEventView do
         name: build.options["image"]
       },
       services: build.services,
-      artifacts: [], # Implement artifacts in version 1.0
-      cache: build.options["cache"],
-      credentials: [],
-      dependencies: [] # Implement artifacts in version 1.0
+      # artifacts: [], # Implement artifacts in version 1.0
+      cache: build.options["cache"] || []
+      # credentials: [],
+      # dependencies: [] # Implement artifacts in version 1.0
     }
   end
 
