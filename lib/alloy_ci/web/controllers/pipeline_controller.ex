@@ -1,6 +1,5 @@
 defmodule AlloyCi.Web.PipelineController do
   use AlloyCi.Web, :controller
-
   alias AlloyCi.{Pipeline, Pipelines}
   plug EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access"
   plug :put_layout, "pipeline_layout.html" when action in [:show]

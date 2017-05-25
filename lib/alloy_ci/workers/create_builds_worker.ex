@@ -8,7 +8,6 @@ defmodule AlloyCi.Workers.CreateBuildsWorker do
     pipeline = Pipelines.get_with_project(pipeline_id)
     project = pipeline.project
 
-
     with %{"content" => raw_content} <- Github.alloy_ci_config(project, pipeline) do
       content = :base64.decode(raw_content)
 
