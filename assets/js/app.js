@@ -39,7 +39,11 @@ $('.build-get').click(function(e) {
     type: "GET",
     url: '/projects/' + project_id + '/builds/' + id,
     success: function(data) {
-      var contents = ansi.toHtml(data.trace);
+      if(data.trace == null) {
+        var contents = "Build is pending"
+      } else {
+        var contents = ansi.toHtml(data.trace);
+      }
       $('#output').replaceWith(contents.replace(/\n/g, "<br />"));
     },
     dataType: 'json'

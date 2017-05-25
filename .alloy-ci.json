@@ -27,5 +27,12 @@
     "script": [
       "mix test"
     ]
+  },
+  "credo": {
+    "stage": "test",
+    "tags": ["elixir"],
+    "script": [
+      "mix credo"
+    ]
   }
 }

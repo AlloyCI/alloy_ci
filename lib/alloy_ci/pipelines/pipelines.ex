@@ -83,7 +83,7 @@ defmodule AlloyCi.Pipelines do
     pipeline = get(pipeline_id)
 
     query = from b in "builds",
-            where: b.pipeline_id == ^pipeline_id and b.status in ~w(success failed skipped),
+            where: b.pipeline_id == ^pipeline_id and b.status in ~w(pending running success failed skipped),
             order_by: [desc: b.id], limit: 1,
             select: %{status: b.status, allow_failure: b.allow_failure}
     last_status = Repo.one(query) || %{status: "skipped", allow_failure: false}
@@ -92,6 +92,7 @@ defmodule AlloyCi.Pipelines do
       %{status: "success"} -> success!(pipeline_id)
       %{status: "failed", allow_failure: false} -> failed!(pipeline)
       %{status: "skipped"} -> update_pipeline(pipeline, %{status: "running"})
+      %{status: "running"} -> update_pipeline(pipeline, %{status: "running"})
       _ -> nil
     end
   end
