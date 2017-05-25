@@ -13,7 +13,9 @@
 
       <%= for build <- @pipeline.builds do %>
         <li class="nav-item">
-          <a class="nav-link" href="widgets.html"><%= icon("cogs") %> <%= build.name %></a>
+          <a class="nav-link build-get"
+             data-id="<%= build.id %>" data-project-id="<%= build.project_id %>" 
+             href="#"><%= icon("terminal") %> <%= build.name %></a>
         </li>
       <% end %>
     </ul>

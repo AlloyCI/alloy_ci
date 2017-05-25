@@ -2,7 +2,7 @@ defmodule AlloyCi.Web.Router do
   use AlloyCi.Web, :router
 
   pipeline :browser do
-    plug :accepts, ["html"]
+    plug :accepts, ["html", "json"]
     plug :fetch_session
     plug :fetch_flash
     plug :protect_from_forgery
@@ -36,7 +36,7 @@ defmodule AlloyCi.Web.Router do
   end
 
   pipeline :api do
-    plug :accepts, ["json"]
+    plug :accepts, ["json", "text"]
   end
 
   pipeline :github do
@@ -74,6 +74,7 @@ defmodule AlloyCi.Web.Router do
 
     resources "/projects", ProjectController do
       resources "/pipelines", PipelineController, only: [:show]
+      resources "/builds", BuildController, only: [:show]
     end
   end
 
@@ -113,6 +114,7 @@ defmodule AlloyCi.Web.Router do
 
     scope "/runners" do
       post "/", RunnerEventController, :register, as: :register
+      delete "/", RunnerEventController, :delete, as: :delete
       post "/verify", RunnerEventController, :verify, as: :verify
     end
 

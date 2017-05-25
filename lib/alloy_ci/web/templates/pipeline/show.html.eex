@@ -1,52 +1,9 @@
-<h2>Show Pipeline</h2>
-
-<ul>
-
-  <li>
-    <strong>Project:</strong>
-    <%= @pipeline.project_id %>
-  </li>
-
-  <li>
-    <strong>Ref:</strong>
-    <%= @pipeline.ref %>
-  </li>
-
-  <li>
-    <strong>Sha:</strong>
-    <%= @pipeline.sha %>
-  </li>
-
-  <li>
-    <strong>Before sha:</strong>
-    <%= @pipeline.before_sha %>
-  </li>
-
-  <li>
-    <strong>Status:</strong>
-    <%= @pipeline.status %>
-  </li>
-
-  <li>
-    <strong>Started at:</strong>
-    <%= @pipeline.started_at %>
-  </li>
-
-  <li>
-    <strong>Finished at:</strong>
-    <%= @pipeline.finished_at %>
-  </li>
-
-  <li>
-    <strong>Duration:</strong>
-    <%= @pipeline.duration %>
-  </li>
-
-  <li>
-    <strong>Commit:</strong>
-    <%= @pipeline.commit["message"] %>
-  </li>
-
-</ul>
-
-<span><%= link "Back", to: project_path(@conn, :show, @pipeline.project_id) %></span>
+<div class="terminal-container">
+  <div class="terminal">
+    <div id="output">
+      <div class="centered">
+        <h3>Choose a build to show its output</h3>
+      </div>
+    </div>
+  </div>
+</div>

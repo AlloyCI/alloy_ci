@@ -1,0 +1,79 @@
+.terminal-container {
+  cursor: text;
+  counter-reset: input;
+  padding: 0;
+  background: lavenderblush;
+  -moz-font-smoothing: antialiased;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+  background: #002728;
+  height:100%;
+}
+
+.terminal {
+  float: left;
+  margin: 10px;
+  padding: 50px 0;
+  font-family: Menlo, Courier New;
+  font-size: 18px;
+  text-rendering: optimizeLegibility;
+  font-weight: bold;
+  color: white;
+}
+.terminal > .terminal--input {
+  counter-increment: input;
+}
+.terminal > .terminal--input:before {
+  content: "[" counter(input) "] $ ";
+}
+.terminal > .terminal--input:last-child:after {
+  -webkit-animation: blink 0.75s infinite;
+  -moz-animation: blink 0.75s infinite;
+  -o-animation: blink 0.75s infinite;
+  animation: blink 0.75s infinite;
+  margin-left: 5px;
+  width: 28px;
+  content: "|";
+  background: white;
+}
+.terminal > .terminal--output.is-console:before {
+  margin-right: 10px;
+  content: ">";
+}
+.terminal > .terminal--output.is-not-defined:before {
+  content: "undefined";
+  color: rgba(255, 255, 255, 0.5);
+}
+
+@-webkit-keyframes blink {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@-moz-keyframes blink {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@-ms-keyframes blink {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes blink {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}

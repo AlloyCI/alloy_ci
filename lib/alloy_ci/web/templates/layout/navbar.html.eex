@@ -18,10 +18,6 @@
   </ul>
 
   <ul class="nav navbar-nav ml-auto">
-    <li class="nav-item hidden-md-down">
-      <a class="nav-link" href="#"><%= icon("bell") %><span class="badge badge-pill badge-danger">5</span></a>
-    </li>
-
     <li class="nav-item dropdown margin-right-imp">
       <a class="nav-link dropdown-toggle nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
         <img src="<%= Accounts.gravatar_url(@current_user) %>" class="img-avatar" alt="<%= @current_user.email %>">

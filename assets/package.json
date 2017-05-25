@@ -6,6 +6,7 @@
     "watch": "brunch watch --stdin"
   },
   "dependencies": {
+    "ansi-to-html": "^0.6.2",
     "bootstrap": "^4.0.0-alpha.6",
     "font-awesome": "^4.7.0",
     "jquery": "^3.2.1",

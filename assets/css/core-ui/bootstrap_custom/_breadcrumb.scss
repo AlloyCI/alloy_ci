@@ -1,6 +1,10 @@
 .breadcrumb {
-  position: relative;
-  margin-bottom: 1.5 * $spacer-y;
+  // position: relative;
+  position: fixed;
+  z-index: 1000;
+  width: 100%;
+  border-radius: 0; 
+  margin-bottom: 0 * $spacer-y;
 
   @include borders($breadcrumb-borders);
 }
