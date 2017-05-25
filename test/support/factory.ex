@@ -20,6 +20,7 @@ defmodule AlloyCi.Factory do
       name: "build-1",
       commands: ["echo hello", "iex -S"],
       options: %{"variables" => %{"GITHUB" => "yes"}},
+      status: "pending",
       token: sequence("long-token")
     }
   end
@@ -50,6 +51,7 @@ defmodule AlloyCi.Factory do
         "services" => ["postgres:latest"],
         "before_script" => ["mix deps.get"]
       },
+      status: "pending",
       stage_idx: 1,
       pipeline: pipeline,
       project: pipeline.project,
@@ -94,7 +96,7 @@ defmodule AlloyCi.Factory do
       project: build(:project)
     }
   end
-  
+
   def runner_factory do
     %Runner{
       description: "test runner",
@@ -106,14 +108,14 @@ defmodule AlloyCi.Factory do
   def user_factory do
     %User{
       name: "Bob Belcher",
-      email: sequence(:email, &"email-#{&1}@example.com"),
+      email: sequence(:email, &"email-#{&1}@alloy-ci.com"),
     }
   end
 
   def user_with_project_factory do
     %User{
       name: "Bob Belcher",
-      email: sequence(:email, &"email-#{&1}@example.com"),
+      email: sequence(:email, &"email-#{&1}@alloy-ci.com"),
       project_permissions: [build(:project_permission)]
     }
   end

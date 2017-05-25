@@ -1,6 +1,6 @@
 defmodule AlloyCi.Web.Api.BuildsEventController do
   use AlloyCi.Web, :controller
-  alias AlloyCi.{Runner, Runners}
+  alias AlloyCi.{Builds, Runner, Runners}
 
   def request(conn, params, _, _) do
     with %Runner{} = runner <- Runners.get_by_token(params["token"]) do
@@ -26,6 +26,45 @@ defmodule AlloyCi.Web.Api.BuildsEventController do
         conn
         |> put_status(401)
         |> json(%{messgae: "401 Unauthorized"})
+    end
+  end
+
+  def trace(conn, %{"id" => id}, _, _) do
+    [token] = get_req_header(conn, "job-token")
+    {:ok, trace, _} = read_body(conn)
+
+    with {:ok, build} <- Builds.get_by(id, token),
+         {:ok, build} <- Builds.append_trace(build, trace) do
+
+      # Send notification to the channel listening on this build
+
+      conn
+      |> put_status(202)
+      |> json(%{message: "202 Trace was patched"})
+
+    else
+      {:error, _} ->
+        conn
+        |> put_status(403)
+        |> json(%{message: "403 Forbidden"})
+    end
+  end
+
+  def update(conn, %{"id" => id, "token" => token} = params, _, _) do
+    case Builds.get_by(id, token) do
+      {:error, _} ->
+        conn
+        |> put_status(403)
+        |> json(%{message: "403 Forbidden"})
+      {:ok, build} ->
+        case params["state"] do
+          "failed" -> Builds.transition_status(build, "failed")
+          "success" -> Builds.transition_status(build, "success")
+        end
+
+        conn
+        |> put_status(200)
+        |> json(%{message: "200 OK"})
     end
   end
 end

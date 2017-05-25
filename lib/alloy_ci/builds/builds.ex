@@ -2,11 +2,20 @@ defmodule AlloyCi.Builds do
   @moduledoc """
   The boundary for the Builds system.
   """
-  alias AlloyCi.{Build, ExqEnqueuer, Github, Pipelines, Repo, Workers}
+  alias AlloyCi.{Build, ExqEnqueuer, Github, Pipelines, Projects, Repo, Workers}
   import Ecto.Query, warn: false
 
   @global_config ~w(image cache after_script before_script stages services variables)
   @local_overrides ~w(after_script before_script variables)
+
+  def append_trace(build, trace) do
+    old_trace = build.trace
+    new_trace = "#{old_trace}\n#{trace}\n"
+
+    build
+    |> Build.changeset(%{trace: new_trace})
+    |> Repo.update
+  end
 
   def create_builds_from_config(content, pipeline) do
     with {:ok, config} <- Poison.decode(content) do
@@ -89,15 +98,23 @@ defmodule AlloyCi.Builds do
     |> Repo.get(id)
   end
 
+  def get_build(id, project_id, user) do
+    with {:ok, _} <- Projects.get_by(project_id, user) do
+      Build
+      |> where(project_id: ^project_id)
+      |> Repo.get(id)
+    end
+  end
+
   def get_by(id, token) do
     build =
       Build
       |> Repo.get(id)
 
     if build.token == token do
-      build
+      {:ok, build}
     else
-      nil
+      {:error, nil}
     end
   end
 

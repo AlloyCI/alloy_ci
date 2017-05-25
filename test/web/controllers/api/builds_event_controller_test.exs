@@ -2,24 +2,26 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
   @moduledoc """
   """
   use AlloyCi.Web.ConnCase
+  alias AlloyCi.Builds
   import AlloyCi.Factory
 
   setup do
-    {:ok, runner: insert(:runner)}
+    runner = insert(:runner)
+    params = %{
+      info: %{
+        name: "runner",
+        version: "9",
+        platform: "darwin",
+        architecture: "amd64"
+      }
+    }
+    {:ok, %{runner: runner, params: params}}
   end
 
   describe "request/4" do
-    test "fetches a build, starts it and returns the correct data", %{runner: runner} do
+    test "fetches a build, starts it and returns the correct data", %{runner: runner, params: params} do
       insert(:full_build)
-      params = %{
-        token: runner.token,
-        info: %{
-          name: "runner",
-          version: "9",
-          platform: "darwin",
-          architecture: "amd64"
-        }
-      }
+      params = Map.put(params, :token, runner.token)
 
       expected_steps = [
         %{allow_failure: false, name: :script,
@@ -54,6 +56,42 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
 
       assert conn.status == 401
       assert conn.resp_body =~ "Unauthorized"
+    end
+  end
+
+  describe "update/4" do
+    test "it updates the state of the build",  %{params: params} do
+      build = insert(:full_build, status: "running")
+      params = Map.merge(params, %{state: "success", token: build.token})
+
+      conn =
+        build_conn()
+        |> put("/api/v4/jobs/#{build.id}", params)
+
+      {:ok, build} = Builds.get_by(build.id, build.token)
+
+      assert conn.status == 200
+      assert conn.resp_body =~ "OK"
+      assert build.status == "success"
+    end
+  end
+
+  describe "trace/4" do
+    test "it appends to the job's trace" do
+      build = insert(:full_build, status: "running")
+
+      raw_params =
+        "\x1b[0KRunning with gitlab-ci-multi-runner 9.1.1 (6104325) on localhost.lan (OFdlS21H)
+        \x1b[0;m\x1b[0KUsing Docker executor with image elixir:latest ...
+        \x1b[0;m"
+
+      conn =
+        build_conn()
+        |> put_req_header("job-token", build.token)
+        |> put_req_header("content-type", "text/plain")
+        |> patch("/api/v4/jobs/#{build.id}/trace", raw_params)
+
+      assert conn.status == 202
     end
   end
 end
