@@ -65,6 +65,19 @@ defmodule AlloyCi.Web.Api.GithubEventControllerTest do
     assert conn.resp_body =~ "Pipeline creation skipped"
   end
 
+  test "when commit message contains [ci skip]" do
+    params = %{
+      head_commit: %{message: "Test [ci skip]"}
+    }
+
+    conn =
+      build_conn()
+      |> put_req_header("x-github-event", "push")
+      |> post("/api/github/handle_event", params)
+
+    assert conn.resp_body =~ "Pipeline creation skipped"
+  end
+
   test "when pipeline exists already" do
     with_mock Tentacat.Contents, [find_in: fn(_, _, _, _, _) -> %{"content" => "fake-data"} end] do
       pipeline_params = %{
@@ -72,7 +85,8 @@ defmodule AlloyCi.Web.Api.GithubEventControllerTest do
         sha: "0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c"
       }
 
-      insert(:project, repo_id: "14322")
+      :project
+      |> insert(repo_id: "14322")
       |> with_pipeline(pipeline_params)
 
       params = %{

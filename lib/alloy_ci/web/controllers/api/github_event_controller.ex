@@ -12,7 +12,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
   end
 
   def handle_event(%{assigns: %{github_event: "push"}} = conn, %{"head_commit" => %{"message" => msg}} = params, _, _) do
-    if String.match?(msg, ~r/\[skip ci\]/) do
+    if Github.skip_ci?(msg) do
       event = %{status: :ok, message: "Pipeline creation skipped"}
       render(conn, "event.json", event: event)
     else
