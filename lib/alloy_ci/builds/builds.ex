@@ -17,6 +17,19 @@ defmodule AlloyCi.Builds do
     |> Repo.update
   end
 
+  def by_stage(pipeline) do
+    query = from b in Build, where: b.pipeline_id == ^pipeline.id,
+            group_by: b.stage, select: {b.stage, count(b.id)}
+    stages = Repo.all(query)
+
+    Enum.map(stages, fn {stage, _} ->
+      query = from b in Build,
+              where: b.pipeline_id == ^pipeline.id and b.stage == ^stage,
+              select: %{id: b.id, name: b.name, project_id: b.project_id}
+      %{"#{stage}" => Repo.all(query)}
+    end)
+  end
+
   def create_builds_from_config(content, pipeline) do
     with {:ok, config} <- Poison.decode(content) do
       global_options = Map.take(config, @global_config)
@@ -99,7 +112,7 @@ defmodule AlloyCi.Builds do
   end
 
   def get_build(id, project_id, user) do
-    with {:ok, _} <- Projects.get_by(project_id, user) do
+    with true <- Projects.can_access?(project_id, user) do
       Build
       |> where(project_id: ^project_id)
       |> Repo.get(id)

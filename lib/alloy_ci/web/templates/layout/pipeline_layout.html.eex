@@ -39,7 +39,7 @@
   <%= render "navbar.html", current_user: @current_user, conn: @conn %>
 
   <div class="app-body">
-    <%= render "pipeline_sidebar.html", current_user: @current_user, conn: @conn, pipeline: @pipeline %>
+    <%= render "pipeline_sidebar.html", current_user: @current_user, conn: @conn, pipeline: @pipeline, builds: @builds %>
 
     <!-- Main content -->
     <main class="main">
