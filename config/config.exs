@@ -11,7 +11,8 @@ config :alloy_ci,
   integration_id: System.get_env("GITHUB_INTEGRATION_ID"),
   private_key: System.get_env("GITHUB_PRIVATE_KEY"),
   github_domain: System.get_env("GITHUB_DOMAIN"),
-  runner_registration_token: System.get_env("RUNNER_REGISTRATION_TOKEN")
+  runner_registration_token: System.get_env("RUNNER_REGISTRATION_TOKEN"),
+  server_url: System.get_env("SERVER_URL")
 
 # Configures the endpoint
 config :alloy_ci, AlloyCi.Web.Endpoint,
