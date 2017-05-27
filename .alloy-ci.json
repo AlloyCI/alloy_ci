@@ -18,6 +18,7 @@
     "REDIS_URL": "redis://redis:6379"
   },
   "before_script": [
+    "mix local.hex --force",
     "mix deps.get",
     "mix ecto.setup"
   ],
