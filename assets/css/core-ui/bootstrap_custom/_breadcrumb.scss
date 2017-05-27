@@ -1,9 +1,9 @@
 .breadcrumb {
   // position: relative;
   position: fixed;
-  z-index: 1000;
+  z-index: 0;
   width: 100%;
-  border-radius: 0; 
+  border-radius: 0;
   margin-bottom: 0 * $spacer-y;
 
   @include borders($breadcrumb-borders);

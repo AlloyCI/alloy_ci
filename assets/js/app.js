@@ -34,17 +34,19 @@ $('.build-get').click(function(e) {
   e.preventDefault;
   var id = $(this).data('id');
   var project_id = $(this).data('project-id');
+  var build_name = $(this).data('name');
 
   $.ajax({
     type: "GET",
     url: '/projects/' + project_id + '/builds/' + id,
     success: function(data) {
-      if(data.trace == null) {
+      if(data.trace == "") {
         var contents = "Build is pending"
       } else {
         var contents = ansi.toHtml(data.trace);
       }
-      $('#output').replaceWith(contents.replace(/\n/g, "<br />"));
+      $('#output').html("<h3>"+build_name+"</h3>"+contents.replace(/\n/g, "<br />"));
+      $(window).scrollTop(0);
     },
     dataType: 'json'
   });
