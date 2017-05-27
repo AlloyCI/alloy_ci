@@ -16,12 +16,13 @@ defmodule AlloyCi.Builds do
 
   def by_stage(pipeline) do
     query = from b in Build, where: b.pipeline_id == ^pipeline.id,
-            group_by: b.stage, select: {b.stage, count(b.id)}
+            order_by: [asc: :stage_idx],
+            group_by: [b.stage, b.stage_idx], select: {b.stage, b.stage_idx, count(b.id)}
     stages = Repo.all(query)
 
-    Enum.map(stages, fn {stage, _} ->
+    Enum.map(stages, fn {stage, stage_idx, _} ->
       query = from b in Build,
-              where: b.pipeline_id == ^pipeline.id and b.stage == ^stage,
+              where: b.pipeline_id == ^pipeline.id and b.stage_idx == ^stage_idx,
               order_by: [asc: :id],
               select: %{id: b.id, name: b.name, project_id: b.project_id}
       %{"#{stage}" => Repo.all(query)}
