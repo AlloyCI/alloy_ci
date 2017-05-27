@@ -12,6 +12,20 @@ defmodule AlloyCi.RunnersTest do
     {:ok, %{build: build}}
   end
 
+  describe "create/1" do
+    test "it creates a global runner" do
+      params = %{
+        "token" => Application.get_env(:alloy_ci, :runner_registration_token),
+        "description" => "test runner",
+        "info" => %{"name" => "test"}
+      }
+
+      result = Runners.create(params)
+
+      assert result != nil
+    end
+  end
+
   describe "get_by_token/1" do
     test "it gets the correct runner" do
       runner = insert(:runner)

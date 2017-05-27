@@ -91,7 +91,10 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
         |> put_req_header("content-type", "text/plain")
         |> patch("/api/v4/jobs/#{build.id}/trace", raw_params)
 
+      {:ok, build} = Builds.get_by(build.id, build.token)
+
       assert conn.status == 202
+      assert build.trace != nil
     end
   end
 end
