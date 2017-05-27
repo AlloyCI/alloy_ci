@@ -23,6 +23,11 @@
     "mix deps.get",
     "mix ecto.setup"
   ],
+  "export": {
+    "before_script": [],
+    "stage": "build",
+    "script": ["export"]
+  },
   "mix": {
     "stage": "test",
     "tags": ["elixir", "postgres"],
