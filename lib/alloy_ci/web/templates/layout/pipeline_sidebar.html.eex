@@ -16,6 +16,7 @@
             <li class="nav-item">
               <a class="nav-link build-get"
                  data-id="<%= build.id %>" data-project-id="<%= build.project_id %>"
+                 data-name="<%= build.name %>"
                  href="#"><%= icon("terminal") %> <%= build.name %></a>
             </li>
           <% end %>

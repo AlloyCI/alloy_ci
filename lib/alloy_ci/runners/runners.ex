@@ -93,9 +93,9 @@ defmodule AlloyCi.Runners do
       architecture: runner_info["architecture"],
       description: params["description"],
       name: runner_info["name"],
-      locked: params["locked"],
+      locked: params["locked"] || false,
       platform: runner_info["platform"],
-      run_untagged: params["run_untagged"],
+      run_untagged: params["run_untagged"] || true,
       token: SecureRandom.urlsafe_base64(10),
       tags: tags,
       version: runner_info["version"]
