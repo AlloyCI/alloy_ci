@@ -7,8 +7,7 @@ defmodule AlloyCi.Github do
   use Timex
 
   def alloy_ci_config(project, pipeline) do
-    token = installation_token(pipeline.installation_id)
-    client = api_client(%{access_token: token["token"]})
+    client = installation_client(pipeline)
     Tentacat.Contents.find_in(project.owner, project.name, ".alloy-ci.json", pipeline.sha, client)
   end
 
@@ -19,6 +18,11 @@ defmodule AlloyCi.Github do
       domain ->
         Tentacat.Client.new(token, "https://#{domain}/")
     end
+  end
+
+  def installation_client(pipeline) do
+    token = installation_token(pipeline.installation_id)
+    api_client(%{access_token: token["token"]})
   end
 
   def clone_url(project, pipeline) do
@@ -36,7 +40,51 @@ defmodule AlloyCi.Github do
     Tentacat.Repositories.list_mine(client, sort: "pushed")
   end
 
-  def installation_token(installation_id) do
+  def notify_pending!(project, pipeline) do
+    params = %{
+      state: "pending",
+      description: "Pipeline is pending"
+    }
+
+    notify!(project, pipeline, params)
+  end
+
+  def notify_success!(project, pipeline) do
+    params = %{
+      state: "success",
+      description: "Pipleine succeeded"
+    }
+
+    notify!(project, pipeline, params)
+  end
+
+  def notify_failure!(project, pipeline) do
+    params = %{
+      state: "failure",
+      description: "Pipeline failed"
+    }
+
+    notify!(project, pipeline, params)
+  end
+
+  def repos_for(user) do
+    query = from auth in "authentications",
+              where: auth.user_id == ^user.id and auth.provider == "github",
+              select: auth.token
+    token = Repo.one(query)
+    fetch_repos(token)
+  end
+
+  def skip_ci?(commit_messsage) do
+    String.match?(commit_messsage, ~r/\[skip ci\]/) ||
+    String.match?(commit_messsage, ~r/\[ci skip\]/)
+  end
+
+  def sha_url(project, pipeline) do
+    "https://#{domain()}/#{project.owner}/#{project.name}/commit/#{pipeline.sha}"
+  end
+
+  defp installation_token(installation_id) do
     key = JOSE.JWK.from_pem(Application.get_env(:alloy_ci, :private_key))
     integration_id = Application.get_env(:alloy_ci, :integration_id)
 
@@ -53,19 +101,22 @@ defmodule AlloyCi.Github do
     response
   end
 
-  def repos_for(user) do
-    query = from auth in "authentications",
-              where: auth.user_id == ^user.id and auth.provider == "github",
-              select: auth.token
-    token = Repo.one(query)
-    fetch_repos(token)
+  defp notify!(project, pipeline, params) do
+    base = %{
+      target_url: pipeline_url(project, pipeline),
+      context: "ci/alloy-ci"
+    }
+    params = Map.merge(params, base)
+    client = installation_client(pipeline)
+
+    Tentacat.Repositories.Statuses.create(
+      project.owner, project.name, pipeline.sha, params, client
+    )
   end
 
-  def skip_ci?(commit_messsage) do
-    String.match?(commit_messsage, ~r/\[skip ci\]/) || String.match?(commit_messsage, ~r/\[ci skip\]/)
-  end
+  defp pipeline_url(project, pipeline) do
+    base_url = Application.get_env(:alloy_ci, :server_url)
 
-  def sha_url(project, pipeline) do
-    "https://#{domain()}/#{project.owner}/#{project.name}/commit/#{pipeline.sha}"
+    "#{base_url}/projects/#{project.id}/pipelines/#{pipeline.id}"
   end
 end

@@ -14,6 +14,8 @@ defmodule AlloyCi.Workers.CreateBuildsWorker do
       case Builds.create_builds_from_config(content, pipeline) do
         {:ok, _} ->
           Logger.info("Builds created successfully")
+          Github.notify_pending!(project, pipeline)
+
           ProcessPipelineWorker.perform(pipeline_id)
         {:error, reason} ->
           Logger.info(reason)

@@ -12,7 +12,11 @@ defmodule AlloyCi.CreateBuildsWorkerTest do
 
   test "creation of the correct builds", %{pipeline: pipeline} do
 
-    with_mock AlloyCi.Github, [alloy_ci_config: fn(_, _) -> %{"content" => :base64.encode(File.read!(".alloy-ci.json"))} end] do
+    with_mock AlloyCi.Github,
+              [
+                alloy_ci_config: fn(_, _) -> %{"content" => :base64.encode(File.read!(".alloy-ci.json"))} end,
+                notify_pending!: fn(_, _) -> {"200", "ok"} end
+              ] do
       CreateBuildsWorker.perform(pipeline.id)
       build = Repo.one(from b in Build, order_by: [desc: b.id], limit: 1)
 

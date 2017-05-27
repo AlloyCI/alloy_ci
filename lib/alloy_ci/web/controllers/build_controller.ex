@@ -5,7 +5,7 @@ defmodule AlloyCi.Web.BuildController do
 
   def show(conn, %{"id" => id, "project_id" => project_id}, current_user, _) do
     case Builds.get_build(id, project_id, current_user) do
-      {:error, _} ->
+      false ->
         conn
         |> put_status(404)
         |> json(%{trace: "Error: Build not found"})
