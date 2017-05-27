@@ -4,11 +4,23 @@ defmodule AlloyCi.Projects do
   """
   alias AlloyCi.{Project, ProjectPermission, Repo}
 
+  def can_access?(id, user) do
+    permission =
+      ProjectPermission
+      |> Repo.get_by(project_id: id, user_id: user.id)
+
+    case permission do
+      %ProjectPermission{} -> true
+      _ -> false
+    end
+  end
+
   def get_by(id, user) do
     permission =
       ProjectPermission
       |> Repo.get_by(project_id: id, user_id: user.id)
       |> Repo.preload(:project)
+
     case permission do
       %ProjectPermission{} ->
         project = permission.project |> Repo.preload(:pipelines)

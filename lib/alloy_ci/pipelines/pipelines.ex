@@ -3,7 +3,7 @@ defmodule AlloyCi.Pipelines do
   The boundary for the Pipelines system.
   """
   import Ecto.Query, warn: false
-  alias AlloyCi.{Pipeline, Projects, Repo}
+  alias AlloyCi.{Github, Pipeline, Projects, Repo}
 
   def create_pipeline(pipeline, params) do
     pipeline
@@ -12,6 +12,8 @@ defmodule AlloyCi.Pipelines do
   end
 
   def failed!(pipeline) do
+    pipeline = pipeline |> Repo.preload(:project)
+    Github.notify_failure!(pipeline.project, pipeline)
     {:ok, _} = update_pipeline(pipeline, %{status: "failed"})
     # Notify user that pipeline failed. (Email and badge)
   end
@@ -30,11 +32,11 @@ defmodule AlloyCi.Pipelines do
   end
 
   def get_pipeline(id, project_id, user) do
-    with {:ok, _} <- Projects.get_by(project_id, user) do
+    with true <- Projects.can_access?(project_id, user) do
       Pipeline
       |> where(project_id: ^project_id)
       |> Repo.get(id)
-      |> Repo.preload([:builds, :project])
+      |> Repo.preload(:project)
     end
   end
 
@@ -51,11 +53,17 @@ defmodule AlloyCi.Pipelines do
     end
   end
 
+  def run!(pipeline) do
+    if pipeline.status == "pending" do
+      update_pipeline(pipeline, %{status: "running"})
+    end
+  end
+
   def success!(pipeline_id) do
     pipeline =
       pipeline_id
       |> get
-      |> Repo.preload(:builds)
+      |> Repo.preload([:builds, :project])
 
     query = from b in "builds",
             where: b.pipeline_id == ^pipeline.id and b.status == "success",
@@ -68,8 +76,9 @@ defmodule AlloyCi.Pipelines do
     allowed_failures = Repo.one(query)
 
     if (successful_builds + allowed_failures) == Enum.count(pipeline.builds) do
+      Github.notify_success!(pipeline.project, pipeline)
       update_pipeline(pipeline, %{status: "success"})
-      #Notify of successfull pipeline
+      # Notify user of successfull pipeline
     end
   end
 
