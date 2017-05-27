@@ -9,12 +9,9 @@ defmodule AlloyCi.Builds do
   @local_overrides ~w(after_script before_script variables)
 
   def append_trace(build, trace) do
-    old_trace = build.trace
-    new_trace = "#{old_trace}\n#{trace}\n"
-
-    build
-    |> Build.changeset(%{trace: new_trace})
-    |> Repo.update
+    with {1, nil} <- append!(build, trace) do
+      {:ok, build}
+    end
   end
 
   def by_stage(pipeline) do
@@ -25,6 +22,7 @@ defmodule AlloyCi.Builds do
     Enum.map(stages, fn {stage, _} ->
       query = from b in Build,
               where: b.pipeline_id == ^pipeline.id and b.stage == ^stage,
+              order_by: [asc: :id],
               select: %{id: b.id, name: b.name, project_id: b.project_id}
       %{"#{stage}" => Repo.all(query)}
     end)
@@ -150,6 +148,8 @@ defmodule AlloyCi.Builds do
               |> transition_status("running")
               |> Repo.preload([:pipeline, :project])
 
+            Pipelines.run!(build.pipeline)
+
             Map.merge(build, extra_fields(build))
           {:error, changeset} ->
             Repo.rollback(changeset)
@@ -177,9 +177,25 @@ defmodule AlloyCi.Builds do
     end
   end
 
+  def update_trace(build, trace) do
+    build
+    |> Build.changeset(%{trace: trace})
+    |> Repo.update
+  end
+
   @doc """
   Private funtions
   """
+  defp append!(build, trace) do
+    new_trace = "\n#{trace}\n"
+
+    query = from b in Build,
+            where: b.id == ^build.id,
+            update: [set: [trace: fragment("? || ?", b.trace, ^new_trace)]]
+
+    Repo.update_all(query, [])
+  end
+
   defp after_script(build) do
     case build.options["after_script"] do
       nil ->

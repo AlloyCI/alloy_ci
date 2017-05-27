@@ -31,7 +31,7 @@ defmodule AlloyCi.Web.Api.BuildsEventController do
 
   def trace(conn, %{"id" => id}, _, _) do
     [token] = get_req_header(conn, "job-token")
-    {:ok, trace, _} = read_body(conn)
+    {:ok, trace, conn} = read_body(conn)
 
     with {:ok, build} <- Builds.get_by(id, token),
          {:ok, build} <- Builds.append_trace(build, trace) do
@@ -40,6 +40,8 @@ defmodule AlloyCi.Web.Api.BuildsEventController do
 
       conn
       |> put_status(202)
+      |> put_resp_header("job-status", build.status)
+      |> put_resp_header("range", "0-100")
       |> json(%{message: "202 Trace was patched"})
 
     else
@@ -60,6 +62,12 @@ defmodule AlloyCi.Web.Api.BuildsEventController do
         case params["state"] do
           "failed" -> Builds.transition_status(build, "failed")
           "success" -> Builds.transition_status(build, "success")
+          "running" -> Builds.transition_status(build, "running")
+        end
+
+        case params["trace"] do
+          nil -> :ok
+          _ -> Builds.update_trace(build, params["trace"])
         end
 
         conn
