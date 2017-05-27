@@ -19,7 +19,7 @@ defmodule AlloyCi.Build do
     field :status, :string, default: "created"
     field :tags, {:array, :string}
     field :token, :string
-    field :trace, :string
+    field :trace, :string, default: ""
     field :variables, :map
     field :when, :string, default: "on_success"
 

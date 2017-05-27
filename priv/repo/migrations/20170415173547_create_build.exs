@@ -20,7 +20,7 @@ defmodule AlloyCi.Repo.Migrations.CreateBuild do
       add :status, :string, default: "created"
       add :tags, {:array, :string}
       add :token, :string
-      add :trace, :text
+      add :trace, :text, default: ""
       add :variables, :map
       add :when, :string, default: "on_success"
 
