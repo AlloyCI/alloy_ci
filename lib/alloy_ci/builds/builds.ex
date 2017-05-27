@@ -6,7 +6,7 @@ defmodule AlloyCi.Builds do
   import Ecto.Query, warn: false
 
   @global_config ~w(image cache after_script before_script stages services variables)
-  @local_overrides ~w(after_script before_script variables)
+  @local_overrides ~w(after_script before_script cache variables)
 
   def append_trace(build, trace) do
     with {1, nil} <- append!(build, trace) do
