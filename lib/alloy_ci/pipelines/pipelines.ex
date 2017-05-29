@@ -3,7 +3,9 @@ defmodule AlloyCi.Pipelines do
   The boundary for the Pipelines system.
   """
   import Ecto.Query, warn: false
-  alias AlloyCi.{Github, Pipeline, Projects, Repo}
+  alias AlloyCi.{Pipeline, Projects, Repo}
+
+  @github_api Application.get_env(:alloy_ci, :github_api)
 
   def create_pipeline(pipeline, params) do
     pipeline
@@ -13,7 +15,7 @@ defmodule AlloyCi.Pipelines do
 
   def failed!(pipeline) do
     pipeline = pipeline |> Repo.preload(:project)
-    Github.notify_failure!(pipeline.project, pipeline)
+    @github_api.notify_failure!(pipeline.project, pipeline)
     {:ok, _} = update_pipeline(pipeline, %{status: "failed"})
     # Notify user that pipeline failed. (Email and badge)
   end
@@ -76,7 +78,7 @@ defmodule AlloyCi.Pipelines do
     allowed_failures = Repo.one(query)
 
     if (successful_builds + allowed_failures) == Enum.count(pipeline.builds) do
-      Github.notify_success!(pipeline.project, pipeline)
+      @github_api.notify_success!(pipeline.project, pipeline)
       update_pipeline(pipeline, %{status: "success"})
       # Notify user of successfull pipeline
     end

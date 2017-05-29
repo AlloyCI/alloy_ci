@@ -89,7 +89,6 @@ defmodule AlloyCi.Mixfile do
       # Test and Dev dependencies
       {:excoveralls, "~> 0.6", only: :test},
       {:ex_machina, "~> 2.0", only: [:dev, :test]},
-      {:mock, "~> 0.2", only: :test},
       {:credo, "~> 0.7", only: [:dev, :test]},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
     ]

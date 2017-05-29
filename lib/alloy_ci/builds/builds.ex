@@ -2,8 +2,10 @@ defmodule AlloyCi.Builds do
   @moduledoc """
   The boundary for the Builds system.
   """
-  alias AlloyCi.{Build, ExqEnqueuer, Github, Pipelines, Projects, Repo, Workers}
+  alias AlloyCi.{Build, ExqEnqueuer, Pipelines, Projects, Repo, Workers}
   import Ecto.Query, warn: false
+
+  @github_api Application.get_env(:alloy_ci, :github_api)
 
   @global_config ~w(image cache after_script before_script stages services variables)
   @local_overrides ~w(after_script before_script cache variables)
@@ -257,7 +259,7 @@ defmodule AlloyCi.Builds do
       %{key: "CI_COMMIT_SHA", value: build.pipeline.sha, public: true},
       %{key: "CI_COMMIT_REF_NAME", value: build.pipeline.ref, public: true},
       %{key: "CI_COMMIT_REF_SLUG", value: build.pipeline.ref, public: true},
-      %{key: "CI_REPOSITORY_URL", value: Github.clone_url(build.project, build.pipeline), public: false}
+      %{key: "CI_REPOSITORY_URL", value: @github_api.clone_url(build.project, build.pipeline), public: false}
     ]
   end
 

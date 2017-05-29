@@ -4,7 +4,6 @@ defmodule AlloyCi.RunnersTest do
   use AlloyCi.DataCase
   alias AlloyCi.{Runners, Repo}
   import AlloyCi.Factory
-  import Mock
 
   setup do
     build = insert(:full_build)
@@ -44,13 +43,11 @@ defmodule AlloyCi.RunnersTest do
   describe "register_job/1" do
     test "it processes and starts the correct build", %{build: build} do
       runner = insert(:runner)
-      with_mock Tentacat.Integrations.Installations, [get_token: fn(_, _) -> {:ok, %{"token" => "v1.1f699f1069f60xxx"}} end] do
-        {:ok, result} = Runners.register_job(runner)
+      {:ok, result} = Runners.register_job(runner)
 
-        assert result.id == build.id
-        assert result.status == "running"
-        assert result.runner_id == runner.id
-      end
+      assert result.id == build.id
+      assert result.status == "running"
+      assert result.runner_id == runner.id
     end
 
     test "it returns correct status when no build is found", %{build: build} do

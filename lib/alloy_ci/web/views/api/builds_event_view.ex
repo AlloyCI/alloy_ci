@@ -1,6 +1,6 @@
 defmodule AlloyCi.Web.Api.BuildsEventView do
   use AlloyCi.Web, :view
-  alias AlloyCi.Github
+  @github_api Application.get_env(:alloy_ci, :github_api)
 
   def render("build.json", build) do
     %{
@@ -14,7 +14,7 @@ defmodule AlloyCi.Web.Api.BuildsEventView do
         project_name: build.project.name
       },
       git_info: %{
-        repo_url: Github.clone_url(build.project, build.pipeline),
+        repo_url: @github_api.clone_url(build.project, build.pipeline),
         ref: build.pipeline.ref,
         before_sha: build.pipeline.before_sha,
         sha: build.pipeline.sha,
@@ -30,7 +30,7 @@ defmodule AlloyCi.Web.Api.BuildsEventView do
       },
       services: build.services,
       # artifacts: [], # Implement artifacts in version 1.0
-      cache: build.options["cache"] || []
+      cache: [build.options["cache"]] || []
       # credentials: [],
       # dependencies: [] # Implement artifacts in version 1.0
     }

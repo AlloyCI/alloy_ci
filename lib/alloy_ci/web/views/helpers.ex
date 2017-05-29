@@ -1,7 +1,7 @@
 defmodule AlloyCi.Web.ViewHelpers do
   @moduledoc """
   """
-  alias AlloyCi.Github
+  @github_api Application.get_env(:alloy_ci, :github_api)
 
   def active_on_current(%{request_path: path}, path), do: "active"
   def active_on_current(_, _), do: ""
@@ -27,11 +27,11 @@ defmodule AlloyCi.Web.ViewHelpers do
   end
 
   def sha_link(pipeline) do
-    {:safe, "<a href='#{Github.sha_url(pipeline.project, pipeline)}'>#{pipeline.sha |> String.slice(0..7)}</a>"}
+    {:safe, "<a href='#{@github_api.sha_url(pipeline.project, pipeline)}'>#{pipeline.sha |> String.slice(0..7)}</a>"}
   end
 
   def sha_link(pipeline, project) do
-    {:safe, "<a href='#{Github.sha_url(project, pipeline)}'>#{pipeline.sha |> String.slice(0..7)}</a>"}
+    {:safe, "<a href='#{@github_api.sha_url(project, pipeline)}'>#{pipeline.sha |> String.slice(0..7)}</a>"}
   end
 
   def icon(name) do

@@ -2,7 +2,7 @@ defmodule AlloyCi.Web.ProjectController do
   use AlloyCi.Web, :controller
 
   alias AlloyCi.{Project, Projects, ProjectPermission, Repo}
-  import AlloyCi.Github, only: [repos_for: 1]
+  @github_api Application.get_env(:alloy_ci, :github_api)
 
   plug EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access"
 
@@ -15,7 +15,7 @@ defmodule AlloyCi.Web.ProjectController do
     changeset = Project.changeset(%Project{})
 
     render(conn, "new.html",
-            repos: repos_for(current_user),
+            repos: @github_api.repos_for(current_user),
             changeset: changeset,
             current_user: current_user,
             existing_ids: ProjectPermission.existing_ids

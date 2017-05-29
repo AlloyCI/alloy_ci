@@ -2,8 +2,9 @@ defmodule AlloyCi.Web.Api.GithubEventController do
   @moduledoc """
   """
   use AlloyCi.Web, :controller
+  alias AlloyCi.{ExqEnqueuer, Pipelines, Projects, Workers.CreateBuildsWorker}
 
-  alias AlloyCi.{ExqEnqueuer, Github, Pipelines, Projects, Workers.CreateBuildsWorker}
+  @github_api Application.get_env(:alloy_ci, :github_api)
 
   def handle_event(%{assigns: %{github_event: "push"}} = conn, %{"after" => "0000000000000000000000000000000000000000"}, _, _) do
     event = %{status: :bad_request, message: "Branch deletion is not handled"}
@@ -12,7 +13,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
   end
 
   def handle_event(%{assigns: %{github_event: "push"}} = conn, %{"head_commit" => %{"message" => msg}} = params, _, _) do
-    if Github.skip_ci?(msg) do
+    if @github_api.skip_ci?(msg) do
       event = %{status: :ok, message: "Pipeline creation skipped"}
       render(conn, "event.json", event: event)
     else
@@ -28,7 +29,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
 
   defp handle_event(conn, params) do
     with %AlloyCi.Project{} = project <- Projects.get_by_repo_id(params["repository"]["id"]),
-         %{"content" => _} <- Github.alloy_ci_config(project, %{installation_id: params["installation"]["id"], sha: params["after"]})
+         %{"content" => _} <- @github_api.alloy_ci_config(project, %{installation_id: params["installation"]["id"], sha: params["after"]})
     do
       pipeline_attrs = %{
         before_sha: params["before"],

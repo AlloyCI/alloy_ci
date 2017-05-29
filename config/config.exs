@@ -8,9 +8,10 @@ use Mix.Config
 # General application configuration
 config :alloy_ci,
   ecto_repos: [AlloyCi.Repo],
+  github_api: AlloyCi.Github.Live,
+  github_domain: System.get_env("GITHUB_DOMAIN"),
   integration_id: System.get_env("GITHUB_INTEGRATION_ID"),
   private_key: System.get_env("GITHUB_PRIVATE_KEY"),
-  github_domain: System.get_env("GITHUB_DOMAIN"),
   runner_registration_token: System.get_env("RUNNER_REGISTRATION_TOKEN"),
   server_url: System.get_env("SERVER_URL")
 

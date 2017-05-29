@@ -5,13 +5,15 @@ defmodule AlloyCi.Workers.CreatePermissionsWorker do
   AlloyCI, it will be added to the list of projects to which they already have
   access.
   """
-  alias AlloyCi.{Github, Repo, ProjectPermission}
+  alias AlloyCi.{Repo, ProjectPermission}
   import AlloyCi.ProjectPermission, only: [existing_ids: 0]
+
+  @github_api Application.get_env(:alloy_ci, :github_api)
 
   def perform(user_id, token) do
     repo_ids =
       token
-      |> Github.fetch_repos
+      |> @github_api.fetch_repos
       |> Enum.map(&(&1["id"]))
 
     permission_ids = MapSet.intersection(MapSet.new(repo_ids), MapSet.new(existing_ids()))

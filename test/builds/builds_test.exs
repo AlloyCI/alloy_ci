@@ -4,7 +4,6 @@ defmodule AlloyCi.BuildsTest do
   use AlloyCi.DataCase
   alias AlloyCi.{Build, Builds, Repo}
   import AlloyCi.Factory
-  import Mock
 
   setup do
     project = insert(:project)
@@ -120,14 +119,12 @@ defmodule AlloyCi.BuildsTest do
           timeout: 3600, when: "on_success", allow_failure: false}
       ]
 
-      with_mock Tentacat.Integrations.Installations, [get_token: fn(_, _) -> {:ok, %{"token" => "v1.1f699f1069f60xxx"}} end] do
-        {:ok, result} = Builds.start_build(build, runner)
+      {:ok, result} = Builds.start_build(build, runner)
 
-        assert result.services == [%{name: "postgres:latest"}]
-        assert result.steps == expected_steps
-        assert result.status == "running"
-        assert result.runner_id == runner.id
-      end
+      assert result.services == [%{name: "postgres:latest"}]
+      assert result.steps == expected_steps
+      assert result.status == "running"
+      assert result.runner_id == runner.id
     end
 
     test "it returns correct status when no build is found" do

@@ -1,19 +1,17 @@
-defmodule AlloyCi.Github do
+defmodule AlloyCi.Github.Test do
   @moduledoc """
   """
   import Ecto.Query, warn: false
   alias AlloyCi.Repo
-  import Joken
-  use Timex
 
-  def alloy_ci_config(project, pipeline) do
-    client = installation_client(pipeline)
-    Tentacat.Contents.find_in(project.owner, project.name, ".alloy-ci.json", pipeline.sha, client)
+  def alloy_ci_config(_project, _pipeline) do
+    contents = ".alloy-ci.json" |> File.read! |> :base64.encode
+    %{"content" => contents}
   end
 
   def api_client(token) do
     case domain() do
-      "github.com" = _ ->
+      "github.com" ->
         Tentacat.Client.new(token)
       domain ->
         Tentacat.Client.new(token, "https://#{domain}/")
@@ -35,9 +33,8 @@ defmodule AlloyCi.Github do
     Application.get_env(:alloy_ci, :github_domain)
   end
 
-  def fetch_repos(token) do
-    client = api_client(%{access_token: token})
-    Tentacat.Repositories.list_mine(client, sort: "pushed")
+  def fetch_repos(_token) do
+    Poison.decode!(File.read!("test/fixtures/responses/repositories_list.json"))
   end
 
   def notify_pending!(project, pipeline) do
@@ -84,34 +81,12 @@ defmodule AlloyCi.Github do
     "https://#{domain()}/#{project.owner}/#{project.name}/commit/#{pipeline.sha}"
   end
 
-  defp installation_token(installation_id) do
-    key = JOSE.JWK.from_pem(Application.get_env(:alloy_ci, :private_key))
-    integration_id = Application.get_env(:alloy_ci, :integration_id)
-
-    payload = %{
-      "iat" => DateTime.utc_now |> Timex.to_unix,
-      "exp" => Timex.now |> Timex.shift(minutes: 9) |> Timex.to_unix,
-      "iss" => String.to_integer(integration_id)
-    }
-
-    signed_jwt = payload |> token() |> sign(rs256(key)) |> get_compact()
-
-    client = api_client(%{integration_jwt_token: signed_jwt})
-    {_, response} = Tentacat.Integrations.Installations.get_token(client, installation_id)
-    response
+  defp installation_token(_installation_id) do
+    %{"token" => "v1.1f699f1069f60xxx"}
   end
 
-  defp notify!(project, pipeline, params) do
-    base = %{
-      target_url: pipeline_url(project, pipeline),
-      context: "ci/alloy-ci"
-    }
-    params = Map.merge(params, base)
-    client = installation_client(pipeline)
-
-    Tentacat.Repositories.Statuses.create(
-      project.owner, project.name, pipeline.sha, params, client
-    )
+  defp notify!(_project, _pipeline, _params) do
+    {201, :ok}
   end
 
   defp pipeline_url(project, pipeline) do

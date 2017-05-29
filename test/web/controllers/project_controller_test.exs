@@ -4,7 +4,6 @@ defmodule AlloyCi.Web.ProjectControllerTest do
   use AlloyCi.Web.ConnCase
   alias AlloyCi.Project
   import AlloyCi.Factory
-  import Mock
 
   @valid_attrs %{owner: "some_owner", name: "some content", private: true, repo_id: 69, tags: ["one", "two"]}
   @invalid_attrs %{repo_id: nil}
@@ -23,18 +22,16 @@ defmodule AlloyCi.Web.ProjectControllerTest do
   end
 
   test "renders GitHub repos to add", %{user: user} do
-    with_mock AlloyCi.Github, [repos_for: fn(_) -> Poison.decode!(File.read!("test/fixtures/responses/repositories_list.json")) end] do
-      conn =
-        user
-        |> guardian_login(:access)
-        |> get("/projects/new")
+    conn =
+      user
+      |> guardian_login(:access)
+      |> get("/projects/new")
 
-      response = html_response(conn, 200)
+    response = html_response(conn, 200)
 
-      assert response =~ "Add your repos"
-      assert response =~ "pacman"
-      assert response =~ "Elixir berlin meetup kata challenge"
-    end
+    assert response =~ "Add your repos"
+    assert response =~ "pacman"
+    assert response =~ "Elixir berlin meetup kata challenge"
   end
 
   test "creates resource and redirects when data is valid", %{user: user} do
