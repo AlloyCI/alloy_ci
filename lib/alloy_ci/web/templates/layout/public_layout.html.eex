@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,25 +7,80 @@
   <meta name="description" content="Continuous Integration set free.">
   <meta name="author" content="Alloy CI">
   <meta name="keyword" content="Continuous Integration,CI,CD,GitHub,GitLab">
-  <link rel="shortcut icon" href="img/favicon.png">
-
+  <link rel="shortcut icon" href="/favicon.png">
   <title>Alloy CI</title>
-  <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+  <link rel="stylesheet" href="<%= static_path(@conn, "/css/freelancer.css") %>">
 </head>
+<body class="index" id="page-top">
+  <!-- Navigation -->
+  <nav class="navbar fixed-top navbar-toggleable-md navbar-light" id="mainNav">
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarExample" aria-controls="navbarExample" aria-expanded="false" aria-label="Toggle navigation">
+    Menu <i class="fa fa-bars"></i>
+    </button>
+    <div class="container">
+      <a class="navbar-brand" href="#page-top">Alloy CI</a>
+      <div class="collapse navbar-collapse" id="navbarExample">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#portfolio">Portfolio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#about">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#contact">Contact</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- Header -->
+  <header class="masthead">
+    <div class="container">
+      <img class="img-fluid" src="/images/profile.png" alt="">
+      <div class="intro-text">
+        <span class="name">Alloy CI</span>
+        <hr class="star-light">
+        <span class="skills">Web Developer - Graphic Artist - User Experience Designer</span>
+      </div>
+    </div>
+  </header>
 
-<body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
   <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
   <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
-  
+
   <%= render @view_module, @view_template, assigns %>
 
-  <footer class="app-footer">
-    <a href="https://alloy-ci.com">Alloy CI</a> © 2017 Insomniware, LLC.
-    <span class="float-right">Powered by <a href="http://coreui.io">CoreUI</a>
-    </span>
-  </footer>
+  <!-- Footer -->
+  <footer class="text-center">
+    <div class="footer-above">
+      <div class="container">
+        <div class="row">
+          <div class="footer-col col-md-4">
 
+          </div>
+          <div class="footer-col col-md-4">
+            <h3>Around the Web</h3>
+            <ul class="list-inline">
+              <li class="list-inline-item">
+                <a class="btn-social btn-outline" href="#"><i class="fa fa-fw fa-twitter"></i></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-below">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            Copyright &copy; <%= Timex.now.year %> Insomniware, LLC
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- Bootstrap core JavaScript -->
   <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
 </body>
-
 </html>

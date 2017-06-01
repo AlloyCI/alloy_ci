@@ -38,11 +38,11 @@ branches, so you can always know their status, just like any other CI service.
 
 ## Features
 
-- [ ] Basic CI functionality:
+- [x] Basic CI functionality:
   - [x] Can parse a basic `.alloy-ci.json` file correctly, and create build jobs accordingly
   - [x] Can send the required build information to the runner for processing when requested
-  - [ ] Can receive status updates from runner
-  - [ ] Can report back to GitHub with the statuses
+  - [x] Can receive status updates from runner
+  - [x] Can report back to GitHub with the statuses
 - [ ] Advanced CI functionality
   - [ ] Can distinguishing between tags and branches
   - [ ] Can receive uploaded artifacts from runners

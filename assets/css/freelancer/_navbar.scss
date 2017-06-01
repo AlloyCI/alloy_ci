@@ -1,0 +1,81 @@
+// Styling for the navbar
+#mainNav {
+    font-family: 'Montserrat', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: none;
+    background: $theme-primary;
+    a:focus {
+        outline: none;
+    }
+    .navbar-brand {
+        color: white;
+        &:hover,
+        &:focus,
+        &:active,
+        &.active {
+            color: white;
+        }
+    }
+    .navbar-nav {
+        letter-spacing: 1px;
+        li.nav-item {
+            a.nav-link {
+                color: white;
+                &:hover {
+                    color: $theme-success;
+                    outline: none;
+                }
+                &:focus,
+                &:active {
+                    color: white;
+                }
+            }
+        }
+    }
+    .navbar-toggler {
+        font-size: 14px;
+        padding: 11px;
+        text-transform: uppercase;
+        color: white;
+        border-color: white;
+        &:hover,
+        &:focus {
+            color: white;
+            border-color: $theme-success;
+            background-color: $theme-success;
+        }
+    }
+}
+
+@media(min-width:992px) {
+    #mainNav {
+        padding: 25px 0;
+        -webkit-transition: padding .3s;
+        -moz-transition: padding .3s;
+        transition: padding .3s;
+        .navbar-brand {
+            font-size: 2em;
+            -webkit-transition: all .3s;
+            -moz-transition: all .3s;
+            transition: all .3s;
+        }
+        .navbar-nav > li.nav-item > a.nav-link.active {
+            color: white;
+            border-radius: 3px;
+            background: $theme-success;
+            &:hover,
+            &:focus,
+            &:active {
+                color: white;
+                background: $theme-success;
+            }
+        }
+    }
+    #mainNav.navbar-shrink {
+        padding: 10px 0;
+        .navbar-brand {
+            font-size: 1.5em;
+        }
+    }
+}

@@ -20,7 +20,10 @@ exports.config = {
       // }
     },
     stylesheets: {
-      joinTo: "css/app.css",
+      joinTo: {
+        "css/app.css": path => !path.includes('freelancer'),
+        "css/freelancer.css": path => path.includes('freelancer')
+      },
       order: {
         after: ["css/app.css"] // concat app.css last
       }
