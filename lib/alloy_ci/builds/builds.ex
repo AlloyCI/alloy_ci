@@ -186,9 +186,9 @@ defmodule AlloyCi.Builds do
     |> Repo.update
   end
 
-  @doc """
-  Private funtions
-  """
+  ##################
+  # Private funtions
+  ##################
   defp append!(build, trace) do
     new_trace = "\n#{trace}\n"
 

@@ -1,8 +1,9 @@
 defmodule AlloyCi.Web.UserSocket do
   use Phoenix.Socket
+  alias AlloyCi.Accounts
 
   ## Channels
-  # channel "room:*", AlloyCi.RoomChannel
+  channel "builds:*", AlloyCi.Web.BuildsChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
@@ -19,8 +20,11 @@ defmodule AlloyCi.Web.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(_params, socket) do
-    {:ok, socket}
+  def connect(%{"token" => token}, socket) do
+    case verified_user_id(token) do
+      nil -> :error
+      user_id -> {:ok, assign(socket, :user_id, user_id)}
+    end
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
@@ -33,5 +37,9 @@ defmodule AlloyCi.Web.UserSocket do
   #     AlloyCi.Endpoint.broadcast("users_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
-  def id(_socket), do: nil
+  def id(socket), do: "users_socket:#{socket.assigns.user_id}"
+
+  def verified_user_id(token) do
+    Accounts.get_user_from_auth_token(token)
+  end
 end

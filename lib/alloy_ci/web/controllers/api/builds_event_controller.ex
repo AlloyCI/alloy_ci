@@ -1,6 +1,6 @@
 defmodule AlloyCi.Web.Api.BuildsEventController do
   use AlloyCi.Web, :controller
-  alias AlloyCi.{Builds, Runner, Runners}
+  alias AlloyCi.{Builds, Runner, Runners, Web.BuildsChannel}
 
   def request(conn, params, _, _) do
     with %Runner{} = runner <- Runners.get_by_token(params["token"]) do
@@ -37,6 +37,7 @@ defmodule AlloyCi.Web.Api.BuildsEventController do
          {:ok, build} <- Builds.append_trace(build, trace) do
 
       # Send notification to the channel listening on this build
+      BuildsChannel.send_trace(build.id, trace)
 
       conn
       |> put_status(202)

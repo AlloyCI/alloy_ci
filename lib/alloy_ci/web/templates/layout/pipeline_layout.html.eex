@@ -53,14 +53,12 @@
   </div>
 
   <footer class="app-footer">
-    <a href="https://alloy-ci.com">Alloy CI</a> © 2017 Insomniware, LLC.
+    <a href="https://alloy-ci.com">Alloy CI</a> © <%= Timex.now.year %> Insomniware, LLC.
     <span class="float-right">Powered by <a href="http://coreui.io">CoreUI</a>
     </span>
   </footer>
 
-  <!-- Bootstrap and necessary plugins -->
-  <!-- <script src="bower_components/pace/pace.min.js"></script> -->
-
+  <script>window.userToken = "<%= Accounts.get_valid_auth_token(@current_user) %>";</script>
   <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
 </body>
 </html>

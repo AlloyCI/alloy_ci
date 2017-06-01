@@ -12,42 +12,17 @@
 // If you no longer want to use a dependency, remember
 // to also remove its path from "config.paths.watched".
 import "phoenix_html"
-import "ansi-to-html"
 
 // Import local files
 //
 // Local files can be imported directly using relative
 // paths "./socket" or full ones "web/static/js/socket".
 
-// import socket from "./socket"
+import "./builds"
 import "./core-ui"
-
-var Ansi = require('ansi-to-html');
-var ansi = new Ansi();
+import "./landing"
 
 $('[data-submit="parent"]').click(function(e) {
   e.preventDefault;
   $(this).parent().submit();
-});
-
-$('.build-get').click(function(e) {
-  e.preventDefault;
-  var id = $(this).data('id');
-  var project_id = $(this).data('project-id');
-  var build_name = $(this).data('name');
-
-  $.ajax({
-    type: "GET",
-    url: '/projects/' + project_id + '/builds/' + id,
-    success: function(data) {
-      if(data.trace == "") {
-        var contents = "Build is pending"
-      } else {
-        var contents = ansi.toHtml(data.trace);
-      }
-      $('#output').html("<h3>"+build_name+"</h3>"+contents.replace(/\n/g, "<br />"));
-      $(window).scrollTop(0);
-    },
-    dataType: 'json'
-  });
 });

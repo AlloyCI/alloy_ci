@@ -33,6 +33,20 @@ defmodule AlloyCi.Accounts do
 
   def get_user!(id), do: Repo.get!(User, id)
 
+  def get_user_from_auth_token(token) do
+    query = from a in Authentication,
+            where: a.token == ^token, limit: 1,
+            select: a.user_id
+    Repo.one(query)
+  end
+
+  def get_valid_auth_token(user) do
+    query = from a in Authentication,
+            where: a.user_id == ^user.id, limit: 1,
+            select: a.token
+    Repo.one(query)
+  end
+
   def github_auth(user) do
     Authentication
     |> where(user_id: ^user.id)
@@ -46,106 +60,23 @@ defmodule AlloyCi.Accounts do
     |> to_string
   end
 
-  # We need to check the pw for the identity provider
-  defp validate_auth_for_registration(%Auth{provider: :identity} = auth) do
-    pw = Map.get(auth.credentials.other, :password)
-    pwc = Map.get(auth.credentials.other, :password_confirmation)
-    email = auth.info.email
-    case pw do
-      nil ->
-        {:error, :password_is_null}
-      "" ->
-        {:error, :password_empty}
-      ^pwc ->
-        validate_pw_length(pw, email)
-      _ ->
-        {:error, :password_confirmation_does_not_match}
+  @doc """
+  Process the current auth, and enqueue a worker that creates the proper
+  project permissions for projects to which the user already has access,
+  and have already been added to AlloyCI.
+  """
+  def process_auth(auth) do
+    case auth.provider do
+      "github" ->
+        ExqEnqueuer.push(CreatePermissionsWorker, [auth.user_id, auth.token])
+        auth
+      _ -> auth
     end
   end
 
-  # All the other providers are oauth so should be good
-  defp validate_auth_for_registration(_auth), do: :ok
-
-  defp validate_pw_length(pw, email) when is_binary(pw) do
-    if String.length(pw) >= 8 do
-      validate_email(email)
-    else
-      {:error, :password_length_is_less_than_8}
-    end
-  end
-
-  defp validate_email(email) when is_binary(email) do
-    case Regex.run(~r/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/, email) do
-      nil ->
-        {:error, :invalid_email}
-      [_email] ->
-        :ok
-    end
-  end
-
-  defp register_user_from_auth(auth, current_user) do
-    with :ok <- validate_auth_for_registration(auth) do
-      case Repo.transaction(fn -> create_user_from_auth(auth, current_user) end) do
-        {:ok, response} -> response
-        {:error, reason} -> {:error, reason}
-      end
-    else
-      {:error, reason} -> {:error, reason}
-    end
-  end
-
-  defp replace_authentication(authentication, auth, current_user) do
-    with :ok <- validate_auth_for_registration(auth),
-         {:ok, user} <- user_from_authentication(authentication, current_user)
-    do
-      case invalidate_authentication(authentication, user, auth) do
-        {:ok, user} -> {:ok, user}
-        {:error, reason} -> {:error, reason}
-      end
-    else
-      {:error, reason} -> {:error, reason}
-    end
-  end
-
-  defp invalidate_authentication(authentication, user, auth) do
-    Repo.transaction(fn ->
-      Repo.delete(authentication)
-      authentication_from_auth(user, auth)
-      user
-    end)
-  end
-
-  defp user_from_authentication(authentication, current_user) do
-    case Repo.one(Ecto.assoc(authentication, :user)) do
-      nil -> {:error, :user_not_found}
-      user ->
-        if current_user && current_user.id != user.id do
-          {:error, :user_does_not_match}
-        else
-          {:ok, user}
-        end
-    end
-  end
-
-  defp create_user_from_auth(auth, current_user) do
-    user = current_user || Repo.get_by(User, email: auth.info.email) || create_user(auth)
-
-    authentication_from_auth(user, auth)
-    {:ok, user}
-  end
-
-  defp create_user(auth) do
-    name = name_from_auth(auth)
-    result =
-      %User{}
-      |> User.registration_changeset(scrub(%{email: auth.info.email, name: name}))
-      |> Repo.insert
-
-    case result do
-      {:ok, user} -> user
-      {:error, reason} -> Repo.rollback(reason)
-    end
-  end
+  ##################
+  # Private funtions
+  ##################
 
   defp auth_and_validate(%{provider: :identity} = auth) do
     case Repo.get_by(Authentication, uid: uid_from_auth(auth), provider: to_string(auth.provider)) do
@@ -213,18 +144,32 @@ defmodule AlloyCi.Accounts do
     end
   end
 
-  @doc """
-  Process the current auth, and enqueue a worker that creates the proper
-  project permissions for projects to which the user already has access,
-  and have already been added to AlloyCI.
-  """
-  defp process_auth(auth) do
-    case auth.provider do
-      "github" ->
-        ExqEnqueuer.push(CreatePermissionsWorker, [auth.user_id, auth.token])
-        auth
-      _ -> auth
+  defp create_user(auth) do
+    name = name_from_auth(auth)
+    result =
+      %User{}
+      |> User.registration_changeset(scrub(%{email: auth.info.email, name: name}))
+      |> Repo.insert
+
+    case result do
+      {:ok, user} -> user
+      {:error, reason} -> Repo.rollback(reason)
     end
+  end
+
+  defp create_user_from_auth(auth, current_user) do
+    user = current_user || Repo.get_by(User, email: auth.info.email) || create_user(auth)
+
+    authentication_from_auth(user, auth)
+    {:ok, user}
+  end
+
+  defp invalidate_authentication(authentication, user, auth) do
+    Repo.transaction(fn ->
+      Repo.delete(authentication)
+      authentication_from_auth(user, auth)
+      user
+    end)
   end
 
   defp name_from_auth(auth) do
@@ -239,18 +184,6 @@ defmodule AlloyCi.Accounts do
     end
   end
 
-  defp token_from_auth(%{provider: :identity} = auth) do
-    case auth do
-      %{credentials: %{other: %{password: pass}}} when not is_nil(pass) ->
-        Comeonin.Bcrypt.hashpwsalt(pass)
-      _ -> nil
-    end
-  end
-
-  defp token_from_auth(auth), do: auth.credentials.token
-
-  defp uid_from_auth(auth), do: auth.uid
-
   defp password_from_auth(%{provider: :identity} = auth), do: auth.credentials.other.password
   defp password_from_auth(_), do: nil
 
@@ -258,6 +191,30 @@ defmodule AlloyCi.Accounts do
     auth.credentials.other.password_confirmation
   end
   defp password_confirmation_from_auth(_), do: nil
+
+  defp register_user_from_auth(auth, current_user) do
+    with :ok <- validate_auth_for_registration(auth) do
+      case Repo.transaction(fn -> create_user_from_auth(auth, current_user) end) do
+        {:ok, response} -> response
+        {:error, reason} -> {:error, reason}
+      end
+    else
+      {:error, reason} -> {:error, reason}
+    end
+  end
+
+  defp replace_authentication(authentication, auth, current_user) do
+    with :ok <- validate_auth_for_registration(auth),
+         {:ok, user} <- user_from_authentication(authentication, current_user)
+    do
+      case invalidate_authentication(authentication, user, auth) do
+        {:ok, user} -> {:ok, user}
+        {:error, reason} -> {:error, reason}
+      end
+    else
+      {:error, reason} -> {:error, reason}
+    end
+  end
 
   # We don't have any nested structures in our params that we are using scrub with so this is a very simple scrub
   defp scrub(params) do
@@ -268,5 +225,66 @@ defmodule AlloyCi.Accounts do
       _ -> true
     end)
     |> Enum.into(%{})
+  end
+
+  defp token_from_auth(%{provider: :identity} = auth) do
+    case auth do
+      %{credentials: %{other: %{password: pass}}} when not is_nil(pass) ->
+        Comeonin.Bcrypt.hashpwsalt(pass)
+      _ -> nil
+    end
+  end
+
+  defp token_from_auth(auth), do: auth.credentials.token
+
+  defp user_from_authentication(authentication, current_user) do
+    case Repo.one(Ecto.assoc(authentication, :user)) do
+      nil -> {:error, :user_not_found}
+      user ->
+        if current_user && current_user.id != user.id do
+          {:error, :user_does_not_match}
+        else
+          {:ok, user}
+        end
+    end
+  end
+
+  defp uid_from_auth(auth), do: auth.uid
+
+  # We need to check the pw for the identity provider
+  defp validate_auth_for_registration(%Auth{provider: :identity} = auth) do
+    pw = Map.get(auth.credentials.other, :password)
+    pwc = Map.get(auth.credentials.other, :password_confirmation)
+    email = auth.info.email
+    case pw do
+      nil ->
+        {:error, :password_is_null}
+      "" ->
+        {:error, :password_empty}
+      ^pwc ->
+        validate_pw_length(pw, email)
+      _ ->
+        {:error, :password_confirmation_does_not_match}
+    end
+  end
+
+  # All the other providers are oauth so should be good
+  defp validate_auth_for_registration(_auth), do: :ok
+
+  defp validate_pw_length(pw, email) when is_binary(pw) do
+    if String.length(pw) >= 8 do
+      validate_email(email)
+    else
+      {:error, :password_length_is_less_than_8}
+    end
+  end
+
+  defp validate_email(email) when is_binary(email) do
+    case Regex.run(~r/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/, email) do
+      nil ->
+        {:error, :invalid_email}
+      [_email] ->
+        :ok
+    end
   end
 end
