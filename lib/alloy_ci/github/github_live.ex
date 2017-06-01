@@ -1,6 +1,10 @@
 defmodule AlloyCi.Github.Live do
   @moduledoc """
+  Production implementation of the GitHub API behaviour. All interaction with
+  the GitHub API goes through this module.
   """
+  @behaviour AlloyCi.Github
+
   import Ecto.Query, warn: false
   alias AlloyCi.Repo
   import Joken
@@ -20,19 +24,10 @@ defmodule AlloyCi.Github.Live do
     end
   end
 
-  def installation_client(pipeline) do
-    token = installation_token(pipeline.installation_id)
-    api_client(%{access_token: token["token"]})
-  end
-
   def clone_url(project, pipeline) do
     token = installation_token(pipeline.installation_id)
 
     "https://x-access-token:#{token["token"]}@#{domain()}/#{project.owner}/#{project.name}.git"
-  end
-
-  def domain do
-    Application.get_env(:alloy_ci, :github_domain)
   end
 
   def fetch_repos(token) do
@@ -82,6 +77,15 @@ defmodule AlloyCi.Github.Live do
 
   def sha_url(project, pipeline) do
     "https://#{domain()}/#{project.owner}/#{project.name}/commit/#{pipeline.sha}"
+  end
+
+  defp domain do
+    Application.get_env(:alloy_ci, :github_domain)
+  end
+
+  defp installation_client(pipeline) do
+    token = installation_token(pipeline.installation_id)
+    api_client(%{access_token: token["token"]})
   end
 
   defp installation_token(installation_id) do

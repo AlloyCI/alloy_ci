@@ -1,6 +1,10 @@
 defmodule AlloyCi.Github.Test do
   @moduledoc """
+  Test impelementation of the GitHub API behavior. It is a mock module that
+  simulates the communication with the GitHub API.
   """
+  @behaviour AlloyCi.Github
+
   import Ecto.Query, warn: false
   alias AlloyCi.Repo
 
@@ -18,19 +22,10 @@ defmodule AlloyCi.Github.Test do
     end
   end
 
-  def installation_client(pipeline) do
-    token = installation_token(pipeline.installation_id)
-    api_client(%{access_token: token["token"]})
-  end
-
   def clone_url(project, pipeline) do
     token = installation_token(pipeline.installation_id)
 
     "https://x-access-token:#{token["token"]}@#{domain()}/#{project.owner}/#{project.name}.git"
-  end
-
-  def domain do
-    Application.get_env(:alloy_ci, :github_domain)
   end
 
   def fetch_repos(_token) do
@@ -81,17 +76,15 @@ defmodule AlloyCi.Github.Test do
     "https://#{domain()}/#{project.owner}/#{project.name}/commit/#{pipeline.sha}"
   end
 
+  defp domain do
+    Application.get_env(:alloy_ci, :github_domain)
+  end
+
   defp installation_token(_installation_id) do
     %{"token" => "v1.1f699f1069f60xxx"}
   end
 
   defp notify!(_project, _pipeline, _params) do
     {201, :ok}
-  end
-
-  defp pipeline_url(project, pipeline) do
-    base_url = Application.get_env(:alloy_ci, :server_url)
-
-    "#{base_url}/projects/#{project.id}/pipelines/#{pipeline.id}"
   end
 end
