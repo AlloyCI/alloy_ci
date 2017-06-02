@@ -13,11 +13,15 @@
         <%= for {name, builds} <- stage do %>
           <li class="nav-subtitle"><%= name %></li>
           <%= for build <- builds do %>
-            <li class="nav-item">
+            <li class="nav-item" data-toggle="tooltip" data-placement="right"
+                title="Build status: <%= String.capitalize(build.status) %>">
               <a class="nav-link build-get"
                  data-id="<%= build.id %>" data-project-id="<%= build.project_id %>"
                  data-name="<%= build.name %>"
-                 href="#"><%= icon("terminal") %> <%= build.name %></a>
+                 href="#">
+                 <%= icon("terminal") %> <%= build.name %>
+                 <span class="float-right"><%= status_icon(build.status) %></span>
+             </a>
             </li>
           <% end %>
         <% end %>

@@ -26,7 +26,7 @@ defmodule AlloyCi.Builds do
       query = from b in Build,
               where: b.pipeline_id == ^pipeline.id and b.stage_idx == ^stage_idx,
               order_by: [asc: :id],
-              select: %{id: b.id, name: b.name, project_id: b.project_id}
+              select: %{id: b.id, name: b.name, project_id: b.project_id, status: b.status}
       %{"#{stage}" => Repo.all(query)}
     end)
   end
@@ -201,8 +201,7 @@ defmodule AlloyCi.Builds do
 
   defp after_script(build) do
     case build.options["after_script"] do
-      nil ->
-        nil
+      nil -> nil
       _ ->
         %{
           name: :after_script,
