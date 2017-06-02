@@ -68,7 +68,9 @@ defmodule AlloyCi.Web.Api.BuildsEventController do
 
         case params["trace"] do
           nil -> :ok
-          _ -> Builds.update_trace(build, params["trace"])
+          _ ->
+            Builds.update_trace(build, params["trace"])
+            BuildsChannel.replace_trace(build.id, params["trace"])
         end
 
         conn

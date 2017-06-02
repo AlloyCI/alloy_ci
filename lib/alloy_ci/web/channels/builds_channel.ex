@@ -1,15 +1,8 @@
 defmodule AlloyCi.Web.BuildsChannel do
   @moduledoc """
   """
+  alias AlloyCi.{Builds, Projects}
   use AlloyCi.Web, :channel
-
-  def join("builds:" <> build_id, payload, socket) do
-    {:ok, socket}
-  end
-
-  def send_trace(build_id, trace) do
-    AlloyCi.Web.Endpoint.broadcast("builds:#{build_id}", "append_trace", %{trace: trace})
-  end
 
   # Channels can be used in a request/response fashion
   # by sending replies to requests from the client
@@ -24,8 +17,21 @@ defmodule AlloyCi.Web.BuildsChannel do
     {:noreply, socket}
   end
 
-  # Add authorization logic here as required.
-  defp authorized?(_payload) do
-    true
+  def join("builds:" <> build_id, _payload, socket) do
+    build = Builds.get(build_id)
+
+    if Projects.can_access?(build.project_id, %{id: socket.assigns.user_id}) do
+      {:ok, socket}
+    else
+      {:error, %{reason: "Unauthorized"}}
+    end
+  end
+
+  def replace_trace(build_id, trace) do
+    AlloyCi.Web.Endpoint.broadcast("builds:#{build_id}", "replace_trace", %{trace: trace})
+  end
+
+  def send_trace(build_id, trace) do
+    AlloyCi.Web.Endpoint.broadcast("builds:#{build_id}", "append_trace", %{trace: trace})
   end
 end
