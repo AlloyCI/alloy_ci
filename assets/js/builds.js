@@ -14,24 +14,24 @@ if(document.querySelector("#output")) {
     let project_id = $(this).data('project-id');
     let build_name = $(this).data('name');
 
+    let trace_update = function(data) {
+      if(data.trace == "") {
+        var contents = "Build is pending"
+      } else {
+        var contents = ansi.toHtml(data.trace);
+      }
+      output.html("<h3>"+build_name+"</h3>"+contents.replace(/\n/g, "<br />"));
+      $(window).scrollTop(0);
+    }
+
     let output = window.output.attr("id","output-"+id);
 
     $.ajax({
       type: "GET",
       url: '/projects/' + project_id + '/builds/' + id,
-      success: function(data) {
-        if(data.trace == "") {
-          var contents = "Build is pending"
-        } else {
-          var contents = ansi.toHtml(data.trace);
-        }
-        output.html("<h3>"+build_name+"</h3>"+contents.replace(/\n/g, "<br />"));
-        $(window).scrollTop(0);
-      },
+      success: trace_update,
       dataType: 'json'
     });
-
-    socket.connect();
 
     let channel = socket.channel("builds:"+id, {});
     channel.join()
@@ -40,6 +40,11 @@ if(document.querySelector("#output")) {
 
     channel.on("append_trace", data => {
       $("#output-"+id).append(ansi.toHtml(data.trace).replace(/\n/g, "<br/>"));
+      $(window).scrollTop($(document).height());
+    });
+
+    channel.on("replace_trace", data => {
+      trace_update(data);
       $(window).scrollTop($(document).height());
     });
   });
