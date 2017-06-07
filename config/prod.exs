@@ -35,6 +35,10 @@ config :alloy_ci, AlloyCi.Repo,
   pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
   ssl: true
 
+config :exq_ui,
+  web_port: System.get_env("EXQ_PORT") || 4040,
+  server: true
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key

@@ -51,14 +51,6 @@ defmodule AlloyCi.Web.Router do
     plug Guardian.Plug.LoadResource
   end
 
-  pipeline :exq do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_flash
-    plug :put_secure_browser_headers
-    plug ExqUi.RouterPlug, namespace: "exq"
-  end
-
   scope "/", AlloyCi.Web do
     # We pipe this through the browser_auth to fetch logged in people
     # We pipe this through the impersonation_browser_auth to know if we're impersonating
@@ -126,8 +118,18 @@ defmodule AlloyCi.Web.Router do
     end
   end
 
-  scope "/exq", ExqUi do
-    pipe_through :exq
-    forward "/", RouterPlug.Router, :index
+  if Mix.env == :dev do
+    pipeline :exq do
+      plug :accepts, ["html"]
+      plug :fetch_session
+      plug :fetch_flash
+      plug :put_secure_browser_headers
+      plug ExqUi.RouterPlug, namespace: "exq"
+    end
+
+    scope "/exq", ExqUi do
+      pipe_through :exq
+      forward "/", RouterPlug.Router, :index
+    end
   end
 end
