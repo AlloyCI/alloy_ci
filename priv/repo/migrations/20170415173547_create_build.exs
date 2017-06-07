@@ -29,5 +29,7 @@ defmodule AlloyCi.Repo.Migrations.CreateBuild do
 
     create index(:builds, [:token], unique: true)
     create index(:builds, [:project_id])
+    create index(:builds, [:pipeline_id])
+    create index(:builds, [:stage_idx])
   end
 end
