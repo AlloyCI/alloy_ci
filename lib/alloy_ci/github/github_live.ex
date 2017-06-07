@@ -64,8 +64,8 @@ defmodule AlloyCi.Github.Live do
 
   def repos_for(user) do
     query = from auth in "authentications",
-              where: auth.user_id == ^user.id and auth.provider == "github",
-              select: auth.token
+            where: auth.user_id == ^user.id and auth.provider == "github",
+            select: auth.token
     token = Repo.one(query)
     fetch_repos(token)
   end

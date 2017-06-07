@@ -246,7 +246,7 @@ defmodule AlloyCi.Builds do
   defp predefined_vars(build) do
     [
       %{key: "CI", value: "true", public: true},
-      %{key: "GITLAB_CI", value: "true", public: true},
+      %{key: "ALLOY_CI", value: "true", public: true},
       %{key: "CI_SERVER_NAME", value: "AlloyCI", public: true},
       %{key: "CI_SERVER_VERSION", value: AlloyCi.Mixfile.version, public: true},
       %{key: "CI_SERVER_REVISION", value: AlloyCi.Mixfile.version, public: true},

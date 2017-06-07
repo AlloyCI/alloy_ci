@@ -3,6 +3,7 @@ defmodule AlloyCi.Projects do
   The boundary for the Projects system.
   """
   alias AlloyCi.{Project, ProjectPermission, Repo}
+  import Ecto.Query
 
   def can_access?(id, user) do
     permission =
@@ -13,30 +14,6 @@ defmodule AlloyCi.Projects do
       %ProjectPermission{} -> true
       _ -> false
     end
-  end
-
-  def get_by(id, user) do
-    permission =
-      ProjectPermission
-      |> Repo.get_by(project_id: id, user_id: user.id)
-      |> Repo.preload(:project)
-
-    case permission do
-      %ProjectPermission{} ->
-        project = permission.project |> Repo.preload(:pipelines)
-        {:ok, project}
-      _ -> {:error, nil}
-    end
-  end
-
-  def get_by_repo_id(id) do
-    Project
-    |> Repo.get_by(repo_id: id)
-  end
-
-  def get_by_token(token) do
-    Project
-    |> Repo.get_by(token: token)
   end
 
   def create_project(params, user) do
@@ -68,5 +45,38 @@ defmodule AlloyCi.Projects do
     with {:ok, project} <- get_by(id, user) do
       Repo.delete(project)
     end
+  end
+
+  def get_by(id, user) do
+    permission =
+      ProjectPermission
+      |> Repo.get_by(project_id: id, user_id: user.id)
+      |> Repo.preload(:project)
+
+    case permission do
+      %ProjectPermission{} ->
+        project = permission.project |> Repo.preload(:pipelines)
+        {:ok, project}
+      _ -> {:error, nil}
+    end
+  end
+
+  def get_by_repo_id(id) do
+    Project
+    |> Repo.get_by(repo_id: id)
+  end
+
+  def get_by_token(token) do
+    Project
+    |> Repo.get_by(token: token)
+  end
+
+  def latest(user) do
+    query = from pp in ProjectPermission,
+            where: pp.user_id == ^user.id,
+            join: p in Project, on: p.id == pp.project_id,
+            order_by: [desc: :updated_at], limit: 5,
+            select: p
+    Repo.all(query)
   end
 end
