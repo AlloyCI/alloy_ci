@@ -21,19 +21,6 @@ defmodule AlloyCi.Web.ProjectControllerTest do
     assert html_response(conn, 200) =~ "Your projects"
   end
 
-  test "renders GitHub repos to add", %{user: user} do
-    conn =
-      user
-      |> guardian_login(:access)
-      |> get("/projects/new")
-
-    response = html_response(conn, 200)
-
-    assert response =~ "Add your repos"
-    assert response =~ "pacman"
-    assert response =~ "Elixir berlin meetup kata challenge"
-  end
-
   test "creates resource and redirects when data is valid", %{user: user} do
     conn =
       user

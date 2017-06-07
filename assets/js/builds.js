@@ -1,18 +1,20 @@
 import socket from "./socket"
 
-var Ansi = require('ansi-to-html');
+var Ansi = require("ansi-to-html");
 var ansi = new Ansi();
 
 // Now that you are connected, you can join channels with a topic:
 if(document.querySelector("#output")) {
   window.output = $("#output");
 
-  $('.build-get').click(function(e) {
+  $(".build-get").click(function(e) {
     e.preventDefault;
+    $("a.active").removeClass("active");
+    $(this).addClass("active");
 
-    let id = $(this).data('id');
-    let project_id = $(this).data('project-id');
-    let build_name = $(this).data('name');
+    let id = $(this).data("id");
+    let project_id = $(this).data("project-id");
+    let build_name = $(this).data("name");
 
     let trace_update = function(data) {
       if(data.trace == "") {
@@ -28,9 +30,9 @@ if(document.querySelector("#output")) {
 
     $.ajax({
       type: "GET",
-      url: '/projects/' + project_id + '/builds/' + id,
+      url: "/projects/" + project_id + "/builds/" + id,
       success: trace_update,
-      dataType: 'json'
+      dataType: "json"
     });
 
     let channel = socket.channel("builds:"+id, {});

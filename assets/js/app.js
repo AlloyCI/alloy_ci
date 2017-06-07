@@ -21,6 +21,7 @@ import "phoenix_html"
 import "./builds"
 import "./core-ui"
 import "./landing"
+import "./repos"
 
 $('[data-submit="parent"]').click(function(e) {
   e.preventDefault;

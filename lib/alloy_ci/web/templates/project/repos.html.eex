@@ -1,0 +1,55 @@
+<div class="container-fluid">
+  <div class="animated fadeIn">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header">
+            <strong>Add your repos to AlloyCI</strong>
+          </div>
+          <div class="card-block">
+            <%= case @repos do %>
+              <% [] -> %>
+                <p>No repos found</p>
+              <% repos -> %>
+                <table class='table table-hover'>
+                  <thead>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Add to AlloyCI</th>
+                  </thead>
+
+                  <tbody>
+                    <%= for repo <- repos do %>
+                      <tr>
+                        <td><%= repo["name"] %></td>
+                        <td><%= repo["description"] %></td>
+                        <%= if (repo["id"]) in @existing_ids do %>
+                          <td><a href="#" class="btn btn-outline-primary disabled btn-block">Already in AlloyCI</a></td>
+                        <% else %>
+                          <td><%= submit "Add to AlloyCI", class: "btn btn-primary btn-block", form: repo["id"] %></td>
+                        <% end %>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<%= case @repos do %>
+  <% [] -> %>
+    <div class="empty"></div>
+  <% repos -> %>
+    <%= for repo <- repos do %>
+      <%= form_for @changeset, "/projects", [csrf_token: false, id: repo["id"]], fn f -> %>
+        <%= tag :input, type: "hidden", name: "_csrf_token", value: @csrf %>
+        <%= hidden_input f, :name, value: repo["name"] %>
+        <%= hidden_input f, :owner, value: repo["owner"]["login"] %>
+        <%= hidden_input f, :private, value: repo["private"] |> to_string %>
+        <%= hidden_input f, :repo_id, value: repo["id"] %>
+      <% end %>
+    <% end %>
+<% end %>

@@ -4,9 +4,9 @@ defmodule AlloyCi.ExqEnqueuer do
   everytime we need to enqueue a worker
   """
 
-  def push(worker, args, queue \\ "default") do
+  def push(worker, args, options \\ [], queue \\ "default") do
     unless Mix.env == :test do
-      Exq.enqueue(Exq, queue, worker, args)
+      Exq.enqueue(Exq, queue, worker, args, options)
     end
   end
 end

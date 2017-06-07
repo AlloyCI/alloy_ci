@@ -1,17 +1,12 @@
-defmodule AlloyCi.Web.BuildsChannelTest do
+defmodule AlloyCi.Web.ReposChannelTest do
   use AlloyCi.Web.ChannelCase
-  import AlloyCi.Factory
 
-  alias AlloyCi.Web.BuildsChannel
+  alias AlloyCi.Web.ReposChannel
 
   setup do
-    build = insert(:full_build)
-    user = insert(:user, project_permissions: [build(:project_permission, project: build.project)])
-
     {:ok, _, socket} =
-      "user_id"
-      |> socket(%{user_id: user.id})
-      |> subscribe_and_join(BuildsChannel, "builds:#{build.id}")
+      socket("user_id", %{some: :assign})
+      |> subscribe_and_join(ReposChannel, "repos:lobby")
 
     {:ok, socket: socket}
   end
@@ -21,7 +16,7 @@ defmodule AlloyCi.Web.BuildsChannelTest do
     assert_reply ref, :ok, %{"hello" => "there"}
   end
 
-  test "shout broadcasts to builds:lobby", %{socket: socket} do
+  test "shout broadcasts to repos:lobby", %{socket: socket} do
     push socket, "shout", %{"hello" => "all"}
     assert_broadcast "shout", %{"hello" => "all"}
   end

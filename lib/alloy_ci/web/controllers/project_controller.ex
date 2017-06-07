@@ -1,8 +1,7 @@
 defmodule AlloyCi.Web.ProjectController do
   use AlloyCi.Web, :controller
 
-  alias AlloyCi.{Project, Projects, ProjectPermission, Repo}
-  @github_api Application.get_env(:alloy_ci, :github_api)
+  alias AlloyCi.{ExqEnqueuer, Project, Projects, Repo, Workers}
 
   plug EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access"
 
@@ -12,14 +11,9 @@ defmodule AlloyCi.Web.ProjectController do
   end
 
   def new(conn, _params, current_user, _claims) do
-    changeset = Project.changeset(%Project{})
+    ExqEnqueuer.push(Workers.FetchReposWorker, [current_user.id, get_csrf_token()], max_retries: 0)
 
-    render(conn, "new.html",
-            repos: @github_api.repos_for(current_user),
-            changeset: changeset,
-            current_user: current_user,
-            existing_ids: ProjectPermission.existing_ids
-          )
+    render(conn, "new.html", current_user: current_user)
   end
 
   def create(conn, %{"project" => project_params}, current_user, _claims) do

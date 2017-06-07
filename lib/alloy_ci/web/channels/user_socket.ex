@@ -4,6 +4,7 @@ defmodule AlloyCi.Web.UserSocket do
 
   ## Channels
   channel "builds:*", AlloyCi.Web.BuildsChannel
+  channel "repos:*", AlloyCi.Web.ReposChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
@@ -22,7 +23,7 @@ defmodule AlloyCi.Web.UserSocket do
   # performing token verification on connect.
   def connect(%{"token" => token}, socket) do
     case verified_user_id(token) do
-      nil -> :error
+      nil     -> :error
       user_id -> {:ok, assign(socket, :user_id, user_id)}
     end
   end
