@@ -1,4 +1,4 @@
-defmodule AlloyCi.Web.PageControllerTest do
+defmodule AlloyCi.Web.PublicControllerTest do
   @moduledoc """
   """
   use AlloyCi.Web.ConnCase

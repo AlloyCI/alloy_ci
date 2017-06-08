@@ -57,10 +57,10 @@ defmodule AlloyCi.Web.Router do
     # We don't just pipe it through admin_browser_auth because that also loads the resource
     pipe_through [:browser, :browser_auth, :impersonation_browser_auth]
 
-    get "/", PageController, :index
+    get "/", PublicController, :index
+    get "/register", PublicController, :register, as: :register
     delete "/logout", AuthController, :logout
 
-    resources "/users", UserController, only: [:new]
     resources "/authentications", AuthenticationController, only: [:index]
     resources "/tokens", TokenController, only: [:index, :delete]
 
