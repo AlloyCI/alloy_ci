@@ -22,6 +22,6 @@ defmodule AlloyCi.Repo.Migrations.CreateAlloyCi.Runner do
       timestamps()
     end
 
-    create index(:builds, [:token], unique: true)
+    create index(:runners, [:token], unique: true)
   end
 end
