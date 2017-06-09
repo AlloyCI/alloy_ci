@@ -2,7 +2,7 @@ defmodule AlloyCi.Projects do
   @moduledoc """
   The boundary for the Projects system.
   """
-  alias AlloyCi.{Project, ProjectPermission, Repo}
+  alias AlloyCi.{Pipelines, Project, ProjectPermission, Repo}
   import Ecto.Query
 
   def can_access?(id, user) do
@@ -25,12 +25,12 @@ defmodule AlloyCi.Projects do
         )
 
       with {:ok, project} <- Repo.insert(changeset) do
-        permissions_changeset = ProjectPermission.changeset(
-                                  %ProjectPermission{},
-                                  %{project_id: project.id,
-                                    repo_id: project.repo_id,
-                                    user_id: user.id}
-                                )
+        permissions_changeset =
+          ProjectPermission.changeset(
+            %ProjectPermission{},
+            %{project_id: project.id, repo_id: project.repo_id, user_id: user.id}
+          )
+
         case Repo.insert(permissions_changeset) do
           {:ok, _} -> project
           {:error, changeset} -> changeset |> Repo.rollback
@@ -61,6 +61,21 @@ defmodule AlloyCi.Projects do
     end
   end
 
+  def get_by(id, user, params) do
+    permission =
+      ProjectPermission
+      |> Repo.get_by(project_id: id, user_id: user.id)
+      |> Repo.preload(:project)
+
+    case permission do
+      %ProjectPermission{} ->
+        project = permission.project
+        {pipelines, kerosene} = Pipelines.paginated(id, params)
+        {:ok, {project, pipelines, kerosene}}
+      _ -> {:error, nil}
+    end
+  end
+
   def get_by_repo_id(id) do
     Project
     |> Repo.get_by(repo_id: id)
@@ -71,12 +86,27 @@ defmodule AlloyCi.Projects do
     |> Repo.get_by(token: token)
   end
 
+  def paginated_for(user, params) do
+    query = from pp in ProjectPermission,
+            where: pp.user_id == ^user.id,
+            join: p in Project, on: p.id == pp.project_id,
+            select: p
+    Repo.paginate(query, params)        
+  end
+
   def latest(user) do
     query = from pp in ProjectPermission,
             where: pp.user_id == ^user.id,
             join: p in Project, on: p.id == pp.project_id,
-            order_by: [desc: :updated_at], limit: 5,
+            order_by: [:updated_at], limit: 5,
             select: p
     Repo.all(query)
+  end
+
+  def touch(id) do
+    Project
+    |> Repo.get_by(id: id)
+    |> Project.changeset
+    |> Repo.update(force: true)
   end
 end

@@ -33,6 +33,8 @@ defmodule AlloyCi.Builds do
 
   def create_builds_from_config(content, pipeline) do
     with {:ok, config} <- Poison.decode(content) do
+      Projects.touch(pipeline.project_id)
+
       global_options = Map.take(config, @global_config)
       stages = config["stages"] || ["build", "test", "deploy"]
 

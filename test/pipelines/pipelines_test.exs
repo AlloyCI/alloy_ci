@@ -64,11 +64,6 @@ defmodule AlloyCi.PipelinesTest do
     end
   end
 
-  test "list_pipelines/2 returns all pipelines", %{user: user, project: project, pipeline: pipeline} do
-    {:ok, [p]} = Pipelines.list_pipelines(project.id, user)
-    assert p.id == pipeline.id
-  end
-
   describe "success!/1" do
     # This test still lacks a check for notifications
     test "when all builds succeeded", %{pipeline: pipeline} do

@@ -5,9 +5,9 @@ defmodule AlloyCi.Web.ProjectController do
 
   plug EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access"
 
-  def index(conn, _params, current_user, _claims) do
-    user = current_user |> Repo.preload(:projects)
-    render(conn, "index.html", projects: user.projects, current_user: current_user)
+  def index(conn, params, current_user, _claims) do
+    {projects, kerosene} = Projects.paginated_for(current_user, params)
+    render(conn, "index.html", kerosene: kerosene, projects: projects, current_user: current_user)
   end
 
   def new(conn, _params, current_user, _claims) do
@@ -29,10 +29,11 @@ defmodule AlloyCi.Web.ProjectController do
     end
   end
 
-  def show(conn, %{"id" => id}, current_user, _claims) do
-    case Projects.get_by(id, current_user) do
-      {:ok, project} ->
-        render(conn, "show.html", project: project, current_user: current_user)
+  def show(conn, %{"id" => id} = params, current_user, _claims) do
+    case Projects.get_by(id, current_user, %{page: params["page"]}) do
+      {:ok, {project, pipelines, kerosene}} ->
+        render(conn, "show.html", project: project, pipelines: pipelines,
+               kerosene: kerosene, current_user: current_user)
       {:error, nil} ->
         conn
         |> put_flash(:info, "Project not found")

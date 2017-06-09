@@ -8,7 +8,7 @@
           </div>
           <div class="card-block">
             <div class="m-b-2">
-              <%= for pipeline <- @project.pipelines do %>
+              <%= for pipeline <- @pipelines do %>
                 <div class="callout <%= callout(pipeline.status) %> <%= pipeline.status %>-background">
                   <div class="row">
                     <div class="col-sm-1">
@@ -38,6 +38,7 @@
                 </div>
               <% end %>
             </div>
+            <%= paginate @conn, @kerosene %>
             <%= link "Edit", to: project_path(@conn, :edit, @project), class: "btn btn-warning btn-sm" %>
             <%= link "Back", to: project_path(@conn, :index), class: "btn btn-outline-primary btn-sm" %>
           </div>

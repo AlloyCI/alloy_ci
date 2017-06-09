@@ -75,6 +75,7 @@ defmodule AlloyCi.Mixfile do
       {:gravatar, "~> 0.1.0"},
       {:guardian_db, "~> 0.8"},
       {:joken, "~> 1.4"},
+      {:kerosene, "~> 0.7"},
       {:phoenix, "~> 1.3.0-rc", override: true},
       {:phoenix_ecto, "~> 3.2"},
       {:phoenix_html, "~> 2.6"},

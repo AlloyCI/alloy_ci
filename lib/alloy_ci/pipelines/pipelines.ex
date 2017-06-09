@@ -48,11 +48,10 @@ defmodule AlloyCi.Pipelines do
     |> Repo.preload(:project)
   end
 
-  def list_pipelines(project_id, user) do
-    with {:ok, project} <- Projects.get_by(project_id, user) do
-      project = Repo.preload(project, :pipelines)
-      {:ok, project.pipelines}
-    end
+  def paginated(project_id, params) do
+    Pipeline
+    |> where(project_id: ^project_id)
+    |> Repo.paginate(params)
   end
 
   def run!(pipeline) do

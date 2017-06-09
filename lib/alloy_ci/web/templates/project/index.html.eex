@@ -62,6 +62,7 @@
                   <% end %>
                 </tbody>
               </table>
+              <%= paginate @conn, @kerosene %>
               <%= link "New project", to: project_path(@conn, :new), class: "btn btn-outline-primary" %>
             </div>
           </div>
