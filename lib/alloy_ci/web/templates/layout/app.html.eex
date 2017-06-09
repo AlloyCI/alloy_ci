@@ -8,7 +8,7 @@
   <meta name="description" content="Continuous Integration set free.">
   <meta name="author" content="Alloy CI">
   <meta name="keyword" content="Continuous Integration,CI,CD,GitHub,GitLab">
-  <link rel="shortcut icon" href="img/favicon.png">
+  <link rel="shortcut icon" href="/favicon.ico">
 
   <title>Alloy CI</title>
   <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
@@ -39,7 +39,7 @@
   <%= render "navbar.html", current_user: @current_user, conn: @conn %>
 
   <div class="app-body">
-    <%= render "sidebar.html", current_user: @current_user, conn: @conn %>
+    <%= render "sidebar.html", current_user: @current_user, conn: @conn, projects: Projects.latest(@current_user) %>
 
     <!-- Main content -->
     <main class="main padding-top">

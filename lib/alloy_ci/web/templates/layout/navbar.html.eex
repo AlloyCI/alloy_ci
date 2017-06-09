@@ -35,9 +35,12 @@
         </div>
 
         <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Profile</a>
-        <a class="dropdown-item" href="#"><i class="fa fa-wrench"></i> Settings</a>
-        <a class="dropdown-item" href="#"><i class="fa fa-usd"></i> Payments<span class="badge badge-default">42</span></a>
-        <a class="dropdown-item" href="#"><i class="fa fa-file"></i> Projects<span class="badge badge-primary">42</span></a>
+        <%= if @current_user.is_admin do %>
+          <a class="dropdown-item" href="#"><i class="fa fa-wrench"></i> Settings</a>
+        <% end %>
+        <%= link to: project_path(@conn, :index), class: "dropdown-item" do %>
+          <i class="fa fa-file"></i> Projects<span class="badge badge-primary">42</span>
+        <% end %>  
         <div class="divider"></div>
         <%= link to: auth_path(@conn, :logout), method: :delete, class: "dropdown-item" do %>
           <i class="fa fa-lock"></i> Logout</a>
