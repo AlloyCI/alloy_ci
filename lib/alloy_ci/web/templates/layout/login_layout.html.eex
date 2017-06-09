@@ -7,7 +7,7 @@
   <meta name="description" content="Continuous Integration set free.">
   <meta name="author" content="Alloy CI">
   <meta name="keyword" content="Continuous Integration,CI,CD,GitHub,GitLab">
-  <!-- <link rel="shortcut icon" href="assets/ico/favicon.png"> -->
+  <link rel="shortcut icon" href="/favicon.ico">
 
   <title>Alloy CI | Log in</title>
   <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
@@ -18,7 +18,7 @@
     <div class="row justify-content-center">
       <div class="col-md-8">
         <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-        <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>         
+        <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
       </div>
     </div>
     <div class="row justify-content-center">
@@ -40,7 +40,7 @@
               <div>
                 <h2>Sign up</h2>
                 <p>Create your account today to start using AlloyCI</p>
-                <%= link "Register Now!", to: user_path(@conn, :new), class: "btn btn-primary active mt-1" %>
+                <%= link "Register Now!", to: register_path(@conn, :register), class: "btn btn-primary active mt-1" %>
               </div>
             </div>
           </div>

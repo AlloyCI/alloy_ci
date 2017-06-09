@@ -7,7 +7,7 @@
   <meta name="description" content="Continuous Integration set free.">
   <meta name="author" content="Alloy CI">
   <meta name="keyword" content="Continuous Integration,CI,CD,GitHub,GitLab">
-  <!-- <link rel="shortcut icon" href="assets/ico/favicon.png"> -->
+  <link rel="shortcut icon" href="/favicon.ico">
 
   <title>Alloy CI | Register</title>
   <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">

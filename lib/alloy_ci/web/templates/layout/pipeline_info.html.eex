@@ -1,7 +1,20 @@
 <!-- Breadcrumb -->
 <ol class="breadcrumb">
-  <li class="breadcrumb-item"><%= icon("random") %> <%= @pipeline.ref %></li>
-  <li class="breadcrumb-item"><%= icon("github") %> <%= sha_link(@pipeline) %></li>
-  <li class="breadcrumb-item"><%= icon("book") %> <%= pretty_commit(@pipeline.commit["message"]) %></li>
-  <li class="breadcrumb-item"><%= icon("tasks") %> <%= String.capitalize(@pipeline.status) %> <%= status_icon(@pipeline.status) %></li>
+  <li class="breadcrumb-item">
+    <%= icon("random") %>
+    <%= @pipeline.ref %>
+  </li>
+  <li class="breadcrumb-item">
+    <%= icon("github") %>
+    <%= sha_link(@pipeline) %>
+  </li>
+  <li class="breadcrumb-item">
+    <%= icon("book") %>
+    <%= pretty_commit(@pipeline.commit["message"]) %>
+  </li>
+  <li class="breadcrumb-item">
+    <%= icon("tasks") %>
+    <%= String.capitalize(@pipeline.status) %>
+    <%= status_icon(@pipeline.status) %>
+  </li>
 </ol>

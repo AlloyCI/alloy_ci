@@ -3,7 +3,7 @@ defmodule AlloyCi.Web.ReposChannel do
   """
   use AlloyCi.Web, :channel
 
-  def join("repos:" <> user_id, _payload, socket) do
+  def join("repos:" <> _user_id, _payload, socket) do
     {:ok, socket}
   end
 
