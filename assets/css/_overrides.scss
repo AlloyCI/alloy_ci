@@ -75,6 +75,25 @@
   vertical-align: middle;
 }
 
+.super-center {
+  width: 550px;
+  height: 100px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.m-l-navbar {
+  margin-left: 200px;
+}
+
+.project-card {
+  cursor: pointer;
+}
+
 .vertical-align {
   display: inline-block;
   height: 100%;

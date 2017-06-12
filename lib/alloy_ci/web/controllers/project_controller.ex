@@ -30,7 +30,7 @@ defmodule AlloyCi.Web.ProjectController do
   end
 
   def show(conn, %{"id" => id} = params, current_user, _claims) do
-    case Projects.get_by(id, current_user, %{page: params["page"]}) do
+    case Projects.get_by(id, current_user, %{"page" => params["page"]}) do
       {:ok, {project, pipelines, kerosene}} ->
         render(conn, "show.html", project: project, pipelines: pipelines,
                kerosene: kerosene, current_user: current_user)

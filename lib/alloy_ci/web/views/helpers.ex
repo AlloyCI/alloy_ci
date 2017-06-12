@@ -1,6 +1,7 @@
 defmodule AlloyCi.Web.ViewHelpers do
   @moduledoc """
   """
+  use Phoenix.HTML
   @github_api Application.get_env(:alloy_ci, :github_api)
 
   def active_on_current(%{request_path: path}, path), do: "active"
@@ -13,6 +14,11 @@ defmodule AlloyCi.Web.ViewHelpers do
   def callout("failed"), do: "callout-danger"
   def callout("running"), do: "callout-warning"
   def callout(_), do: ""
+
+  def card_status("success"), do: "card-success"
+  def card_status("failed"), do: "card-danger"
+  def card_status("running"), do: "card-primary"
+  def card_status(_), do: "card-info"  
 
   def current_user(conn), do: Guardian.Plug.current_resource(conn)
 
@@ -32,12 +38,27 @@ defmodule AlloyCi.Web.ViewHelpers do
     msg |> String.split("\n") |> List.first
   end
 
+  def repo_icon("User"), do: icon("user")
+  def repo_icon("Organization"), do: icon("users")
+
+  def privacy_icon(private) do
+    if private do
+      icon("lock")
+    else
+      icon("unlock")
+    end
+  end
+
   def sha_link(pipeline) do
-    {:safe, "<a href='#{@github_api.sha_url(pipeline.project, pipeline)}'>#{pipeline.sha |> String.slice(0..7)}</a>"}
+    content_tag(:a, href: @github_api.sha_url(pipeline.project, pipeline)) do
+      pipeline.sha |> String.slice(0..7)
+    end
   end
 
   def sha_link(pipeline, project) do
-    {:safe, "<a href='#{@github_api.sha_url(project, pipeline)}'>#{pipeline.sha |> String.slice(0..7)}</a>"}
+    content_tag(:a, href: @github_api.sha_url(project, pipeline)) do
+      pipeline.sha |> String.slice(0..7)
+    end
   end
 
   def status_btn("success"), do: "btn-success"

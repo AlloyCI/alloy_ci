@@ -1,6 +1,6 @@
 defmodule AlloyCi.Web.ProjectView do
   use AlloyCi.Web, :view
-  alias AlloyCi.Accounts
+  alias AlloyCi.{Accounts, Projects}
   import Kerosene.HTML
 
   def has_github_auth(user) do

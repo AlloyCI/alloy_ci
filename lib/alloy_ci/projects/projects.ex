@@ -90,8 +90,17 @@ defmodule AlloyCi.Projects do
     query = from pp in ProjectPermission,
             where: pp.user_id == ^user.id,
             join: p in Project, on: p.id == pp.project_id,
+            order_by: [:updated_at],
             select: p
-    Repo.paginate(query, params)        
+    Repo.paginate(query, params)
+  end
+
+  def last_status(project) do
+    query = from p in "pipelines",
+            where: p.project_id == ^project.id,
+            order_by: [desc: :inserted_at], limit: 1,
+            select: p.status
+    Repo.one(query)
   end
 
   def latest(user) do
