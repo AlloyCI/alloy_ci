@@ -30,7 +30,6 @@ defmodule AlloyCi.Projects do
             %ProjectPermission{},
             %{project_id: project.id, repo_id: project.repo_id, user_id: user.id}
           )
-
         case Repo.insert(permissions_changeset) do
           {:ok, _} -> project
           {:error, changeset} -> changeset |> Repo.rollback
@@ -86,21 +85,12 @@ defmodule AlloyCi.Projects do
     |> Repo.get_by(token: token)
   end
 
-  def paginated_for(user, params) do
-    query = from pp in ProjectPermission,
-            where: pp.user_id == ^user.id,
-            join: p in Project, on: p.id == pp.project_id,
-            order_by: [:updated_at],
-            select: p
-    Repo.paginate(query, params)
-  end
-
   def last_status(project) do
     query = from p in "pipelines",
             where: p.project_id == ^project.id,
             order_by: [desc: :inserted_at], limit: 1,
             select: p.status
-    Repo.one(query)
+    Repo.one(query) || "unknown"
   end
 
   def latest(user) do
@@ -110,6 +100,29 @@ defmodule AlloyCi.Projects do
             order_by: [:updated_at], limit: 5,
             select: p
     Repo.all(query)
+  end
+
+  def paginated_for(user, params) do
+    query = from pp in ProjectPermission,
+            where: pp.user_id == ^user.id,
+            join: p in Project, on: p.id == pp.project_id,
+            order_by: [:updated_at],
+            select: p
+    Repo.paginate(query, params)
+  end
+
+  def repo_and_project(repo_id, existing_ids) do
+    result =
+      existing_ids
+      |> Enum.reject(fn {r_id, _} ->
+        r_id != repo_id
+      end)
+
+    if Enum.empty?(result) do
+      {:error, nil}
+    else
+      {:ok, List.first(result)}
+    end
   end
 
   def touch(id) do
