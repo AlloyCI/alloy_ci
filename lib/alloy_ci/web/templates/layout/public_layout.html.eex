@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="Continuous Integration set free.">
   <meta name="author" content="Alloy CI">
-  <meta name="keyword" content="Continuous Integration,CI,CD,GitHub,GitLab">
+  <meta name="keyword" content="Continuous Integration,CI,CD,GitHub,GitLab,Deployment,Delivery">
   <link rel="shortcut icon" href="/favicon.ico">
   <title>Alloy CI</title>
   <link rel="stylesheet" href="<%= static_path(@conn, "/css/freelancer.css") %>">
@@ -22,18 +22,25 @@
       <div class="collapse navbar-collapse" id="navbarExample">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-            <a class="nav-link" href="#portfolio">Portfolio</a>
+            <%= if @current_user do %>
+              <%= link "Projects", to: project_path(@conn, :index), class: "nav-link" %>
+            <% else %>
+              <a class="nav-link" href="/auth/login">Log in</a>
+            <% end %>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#portfolio">Features</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#about">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#contact">Contact</a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
+  <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+  <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+
   <!-- Header -->
   <header class="masthead">
     <div class="container">
@@ -41,13 +48,10 @@
       <div class="intro-text">
         <span class="name">Alloy CI</span>
         <hr class="star-light">
-        <span class="skills">Web Developer - Graphic Artist - User Experience Designer</span>
+        <span class="skills">[Continuous] |> Integration |> Deployment |> Delivery</span>
       </div>
     </div>
   </header>
-
-  <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-  <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
 
   <%= render @view_module, @view_template, assigns %>
 
@@ -63,7 +67,9 @@
             <h3>Around the Web</h3>
             <ul class="list-inline">
               <li class="list-inline-item">
-                <a class="btn-social btn-outline" href="#"><i class="fa fa-fw fa-twitter"></i></a>
+                <a class="btn-social btn-outline" href="https://twitter.com/AlloyCI" target="_blank">
+                  <%= icon("twitter", "fa-fw") %>
+                </a>
               </li>
             </ul>
           </div>
