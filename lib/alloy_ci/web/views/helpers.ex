@@ -15,12 +15,21 @@ defmodule AlloyCi.Web.ViewHelpers do
   def callout("running"), do: "callout-warning"
   def callout(_), do: ""
 
-  def card_status("success"), do: "card-success"
-  def card_status("failed"), do: "card-danger"
-  def card_status("running"), do: "card-primary"
-  def card_status(_), do: "card-info"  
+  def card_status("success"), do: "card-inverse card-success"
+  def card_status("failed"), do: "card-inverse card-danger"
+  def card_status("running"), do: "card-inverse card-primary"
+  def card_status("pending"), do: "card-inverse card-info"
+  def card_status(_), do: ""
 
   def current_user(conn), do: Guardian.Plug.current_resource(conn)
+
+  def fork_icon(fork) do
+    if fork do
+      icon("code-fork")
+    else
+      icon("archive")
+    end
+  end
 
   def icon(name) do
     {:safe, "<i class='fa fa-#{name}'></i>"}
@@ -38,8 +47,11 @@ defmodule AlloyCi.Web.ViewHelpers do
     msg |> String.split("\n") |> List.first
   end
 
-  def repo_icon("User"), do: icon("user")
-  def repo_icon("Organization"), do: icon("users")
+  def pretty_date(date) do
+    date
+    |> Timex.to_datetime
+    |> Timex.format!("%Y-%m-%d %H:%M %Z", :strftime)
+  end
 
   def privacy_icon(private) do
     if private do
@@ -48,6 +60,9 @@ defmodule AlloyCi.Web.ViewHelpers do
       icon("unlock")
     end
   end
+
+  def repo_icon("User"), do: icon("user")
+  def repo_icon("Organization"), do: icon("users")
 
   def sha_link(pipeline) do
     content_tag(:a, href: @github_api.sha_url(pipeline.project, pipeline)) do
@@ -71,4 +86,5 @@ defmodule AlloyCi.Web.ViewHelpers do
   def status_icon("pending"), do: icon("circle-o-notch")
   def status_icon("running"), do: icon("circle-o-notch", "fa-spin")
   def status_icon("success"), do: icon("check")
+  def status_icon(_), do: icon("ban")
 end
