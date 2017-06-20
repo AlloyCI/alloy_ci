@@ -41,6 +41,10 @@
   text-align: right;
 }
 
+.allign-center {
+  text-align: center;
+}
+
 .status-btn {
   margin-top: 10px;
 }
@@ -63,8 +67,14 @@
   margin: 0 !important;
 }
 
+.cancelled-background {
+  background-color: #EAEEF2;
+  min-height: 70px;
+  margin: 0 !important;
+}
+
 .running-background {
-  background-color: #FAFBFC;
+  background-color: #fef9e5;
   min-height: 70px;
   margin: 0 !important;
 }
@@ -76,8 +86,8 @@
 }
 
 .super-center {
-  width: 550px;
-  height: 100px;
+  width: 38.65%;
+  height: 9.28%;
   position: absolute;
   top: 0;
   bottom: 0;
@@ -86,8 +96,14 @@
   margin: auto;
 }
 
-.m-l-navbar {
-  margin-left: 200px;
+.empty-state {
+  height: 37%;
+  width: 39%;
+  min-width: 310px;
+}
+
+.content {
+  padding: 0 30px;
 }
 
 .project-card {
