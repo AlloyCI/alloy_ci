@@ -81,6 +81,9 @@ defmodule AlloyCi.Runners do
     |> Builds.start_build(runner)
   end
 
+  ##################
+  # Private funtions
+  ##################
   defp runner_params(params, runner_info) do
     tags =
       case String.split(params["tag_list"] || "", ", ") do

@@ -52,7 +52,7 @@
   </div>
 
   <footer class="app-footer">
-    <a href="https://alloy-ci.com">Alloy CI</a> © <%= Timex.now.year %> Insomniware, LLC.
+    <a href="https://alloy-ci.com">AlloyCI</a> © <%= Timex.now.year %> Insomniware, LLC.
     <span class="float-right">Powered by <a href="http://coreui.io">CoreUI</a></span>
   </footer>
 

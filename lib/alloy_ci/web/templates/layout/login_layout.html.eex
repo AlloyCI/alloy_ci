@@ -40,7 +40,7 @@
               <div>
                 <h2>Sign up</h2>
                 <p>Create your account today to start using AlloyCI</p>
-                <%= link "Register Now!", to: register_path(@conn, :register), class: "btn btn-primary active mt-1" %>
+                <%= link "Register Now!", to: register_path(@conn, :register), class: "btn btn-primary mt-1" %>
               </div>
             </div>
           </div>

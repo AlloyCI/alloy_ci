@@ -27,8 +27,8 @@ defmodule AlloyCi.ProjectPermission do
 
   def existing_ids do
     query = from p in "project_permissions",
-              distinct: true,
-              select: p.repo_id
+            distinct: true,
+            select: {p.repo_id, p.project_id}
     query |> Repo.all
   end
 end

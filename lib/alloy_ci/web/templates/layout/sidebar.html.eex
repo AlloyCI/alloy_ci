@@ -7,7 +7,7 @@
       <%= for project <- @projects do %>
         <li class="nav-item">
           <%= link to: project_path(@conn, :show, project), class: "nav-link" do %>
-            <%= icon("bookmark") %>
+            <%= icon("cube") %>
             <%= project.name %>
           <% end %>
         </li>
