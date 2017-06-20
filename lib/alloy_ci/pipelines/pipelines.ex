@@ -3,20 +3,41 @@ defmodule AlloyCi.Pipelines do
   The boundary for the Pipelines system.
   """
   import Ecto.Query, warn: false
-  alias AlloyCi.{Pipeline, Projects, Repo}
+  alias AlloyCi.{Builds, ExqEnqueuer, Pipeline, Projects, Repo, Workers.CreateBuildsWorker}
 
   @github_api Application.get_env(:alloy_ci, :github_api)
+
+  def cancel(pipeline) do
+    with {:ok, _} <- update_pipeline(pipeline, %{status: "cancelled"}) do
+      case Builds.cancel(pipeline) do
+        {_, nil} -> {:ok, nil}
+        {_, _}   -> :error
+      end
+    end
+  end
 
   def create_pipeline(pipeline, params) do
     pipeline
     |> Pipeline.changeset(params)
-    |> Repo.insert()
+    |> Repo.insert
+  end
+
+  def duplicate(pipeline) do
+    with {:ok, _} <- update_pipeline(pipeline, %{sha: pipeline.sha |> String.slice(0..7)}) do
+      case clone(pipeline) do
+        {:ok, clone} ->
+          ExqEnqueuer.push(CreateBuildsWorker, [clone.id])
+          {:ok, clone}
+      end
+    end
   end
 
   def failed!(pipeline) do
     pipeline = pipeline |> Repo.preload(:project)
     @github_api.notify_failure!(pipeline.project, pipeline)
-    {:ok, _} = update_pipeline(pipeline, %{status: "failed"})
+    finished_at = Timex.now
+    duration = Timex.diff(finished_at, Timex.to_datetime(pipeline.started_at, :utc), :seconds)
+    {:ok, _} = update_pipeline(pipeline, %{status: "failed", duration: duration, finished_at: finished_at})
     # Notify user that pipeline failed. (Email and badge)
   end
 
@@ -51,12 +72,13 @@ defmodule AlloyCi.Pipelines do
   def paginated(project_id, params) do
     Pipeline
     |> where(project_id: ^project_id)
+    |> order_by(desc: :inserted_at)
     |> Repo.paginate(params)
   end
 
   def run!(pipeline) do
     if pipeline.status == "pending" do
-      update_pipeline(pipeline, %{status: "running"})
+      update_pipeline(pipeline, %{status: "running", started_at: Timex.now})
     end
   end
 
@@ -78,8 +100,10 @@ defmodule AlloyCi.Pipelines do
 
     if (successful_builds + allowed_failures) == Enum.count(pipeline.builds) do
       @github_api.notify_success!(pipeline.project, pipeline)
-      update_pipeline(pipeline, %{status: "success"})
-      # Notify user of successfull pipeline
+      finished_at = Timex.now
+      duration = Timex.diff(finished_at, Timex.to_datetime(pipeline.started_at, :utc), :seconds)
+      update_pipeline(pipeline, %{status: "success", duration: duration, finished_at: finished_at})
+      # Notify user of successfull pipeline, email.
     end
   end
 
@@ -105,5 +129,15 @@ defmodule AlloyCi.Pipelines do
       %{status: "running"} -> update_pipeline(pipeline, %{status: "running"})
       _ -> nil
     end
+  end
+
+  ##################
+  # Private funtions
+  ##################
+  defp clone(pipeline) do
+    pipeline
+    |> Map.drop([:id, :inserted_at, :updated_at, :builds, :project, :status])
+    |> Map.merge(%{builds: []})
+    |> Repo.insert
   end
 end

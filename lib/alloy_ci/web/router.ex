@@ -65,7 +65,7 @@ defmodule AlloyCi.Web.Router do
     resources "/tokens", TokenController, only: [:index, :delete]
 
     resources "/projects", ProjectController do
-      resources "/pipelines", PipelineController, only: [:show]
+      resources "/pipelines", PipelineController, only: [:create, :delete, :show]
       resources "/builds", BuildController, only: [:show]
     end
   end

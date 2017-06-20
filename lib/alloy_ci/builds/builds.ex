@@ -17,9 +17,11 @@ defmodule AlloyCi.Builds do
   end
 
   def by_stage(pipeline) do
-    query = from b in Build, where: b.pipeline_id == ^pipeline.id,
+    query = from b in Build,
+            where: b.pipeline_id == ^pipeline.id,
             order_by: [asc: :stage_idx],
-            group_by: [b.stage, b.stage_idx], select: {b.stage, b.stage_idx, count(b.id)}
+            group_by: [b.stage, b.stage_idx],
+            select: {b.stage, b.stage_idx, count(b.id)}
     stages = Repo.all(query)
 
     Enum.map(stages, fn {stage, stage_idx, _} ->
@@ -29,6 +31,13 @@ defmodule AlloyCi.Builds do
               select: %{id: b.id, name: b.name, project_id: b.project_id, status: b.status}
       %{"#{stage}" => Repo.all(query)}
     end)
+  end
+
+  def cancel(pipeline) do
+    query = from b in Build,
+            where: b.pipeline_id == ^pipeline.id,
+            update: [set: [status: "cancelled"]]
+    Repo.update_all(query, [])
   end
 
   def create_builds_from_config(content, pipeline) do
