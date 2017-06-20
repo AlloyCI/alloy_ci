@@ -82,7 +82,7 @@ defmodule AlloyCi.Mixfile do
       {:phoenix_pubsub, "~> 1.0"},
       {:postgrex, ">= 0.0.0"},
       {:secure_random, "~> 0.5"},
-      {:tentacat, "~> 0.6", github: "supernova32/tentacat"},
+      {:tentacat, "~> 0.6", github: "supernova32/tentacat"}, #path: "../tentacat"},
       {:timex, "~> 3.1"},
       {:ueberauth_github, "~> 0.4"},
       {:ueberauth_identity, "~> 0.2.3"},
