@@ -1,0 +1,19 @@
+<div class="col-sm-4 col-md-3" id="card-<%= @repo["id"] %>">
+  <div class="card">
+    <div class="card-block">
+      <div class="pull-right">
+        <%= fork_icon(@repo["fork"]) %>
+      </div>
+      <div class="h2 text-muted text-xs-right">
+        <%= repo_icon(@repo["owner"]["type"]) %>
+      </div>
+      <div class="h5 m-b-0">
+        <div class="filter inline" data-id="<%= @repo["id"] %>">
+          <%= @repo["name"] %>
+        </div>
+        <small><%= privacy_icon(@repo["private"]) %></small>
+      </div>
+      <small class="text-muted text-uppercase font-weight-bold m-b-2"><%= @repo["owner"]["login"] %></small>
+    </div>
+  </div>
+</div>

@@ -11,6 +11,7 @@ config :alloy_ci,
   github_api: AlloyCi.Github.Live,
   github_domain: System.get_env("GITHUB_DOMAIN"),
   integration_id: System.get_env("GITHUB_INTEGRATION_ID"),
+  integration_url: System.get_env("GITHUB_INTEGRATION_URL"),
   private_key: System.get_env("GITHUB_PRIVATE_KEY"),
   runner_registration_token: System.get_env("RUNNER_REGISTRATION_TOKEN"),
   server_url: System.get_env("SERVER_URL")
@@ -31,7 +32,7 @@ config :logger, :console,
 # Configures Uberauth GitHub
 config :ueberauth, Ueberauth,
   providers: [
-    github: {Ueberauth.Strategy.Github, [default_scope: "user,repo"]},
+    github: {Ueberauth.Strategy.Github, [default_scope: "email,user,repo"]},
     identity: {Ueberauth.Strategy.Identity, [callback_methods: ["POST"]]}
   ]
 

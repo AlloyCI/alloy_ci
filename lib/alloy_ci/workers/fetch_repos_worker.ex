@@ -16,13 +16,14 @@ defmodule AlloyCi.Workers.FetchReposWorker do
         ProjectView,
         "repos.html",
         existing_ids: ProjectPermission.existing_ids,
+        is_installed: @github_api.is_installed?(auth.uid),
         repos: @github_api.fetch_repos(auth.token),
         changeset: Project.changeset(%Project{}),
         csrf: csrf_token
       )
 
     AlloyCi.Web.Endpoint.broadcast(
-      "repos:#{user_id}", 
+      "repos:#{user_id}",
       "repos_ready",
       %{html: rendered_content}
     )

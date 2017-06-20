@@ -35,6 +35,35 @@ defmodule AlloyCi.Github.Live do
     Tentacat.Repositories.list_mine(client, sort: "pushed")
   end
 
+  def integration_client do
+    key = JOSE.JWK.from_pem(Application.get_env(:alloy_ci, :private_key))
+    integration_id = Application.get_env(:alloy_ci, :integration_id)
+
+    payload = %{
+      "iat" => DateTime.utc_now |> Timex.to_unix,
+      "exp" => Timex.now |> Timex.shift(minutes: 9) |> Timex.to_unix,
+      "iss" => String.to_integer(integration_id)
+    }
+
+    signed_jwt = payload |> token() |> sign(rs256(key)) |> get_compact()
+
+    api_client(%{integration_jwt_token: signed_jwt})
+  end
+
+  def is_installed?(github_uid) do
+    result = Enum.reject(list_installations(), fn installation ->
+      installation["account"]["login"] != github_uid
+    end)
+
+    !Enum.empty?(result)
+  end
+
+  def list_installations do
+    client = integration_client()
+
+    Tentacat.Integrations.Installations.app_installations(client)
+  end
+
   def notify_pending!(project, pipeline) do
     params = %{
       state: "pending",
@@ -79,6 +108,9 @@ defmodule AlloyCi.Github.Live do
     "https://#{domain()}/#{project.owner}/#{project.name}/commit/#{pipeline.sha}"
   end
 
+  ##################
+  # Private funtions
+  ##################
   defp domain do
     Application.get_env(:alloy_ci, :github_domain)
   end
@@ -89,18 +121,7 @@ defmodule AlloyCi.Github.Live do
   end
 
   defp installation_token(installation_id) do
-    key = JOSE.JWK.from_pem(Application.get_env(:alloy_ci, :private_key))
-    integration_id = Application.get_env(:alloy_ci, :integration_id)
-
-    payload = %{
-      "iat" => DateTime.utc_now |> Timex.to_unix,
-      "exp" => Timex.now |> Timex.shift(minutes: 9) |> Timex.to_unix,
-      "iss" => String.to_integer(integration_id)
-    }
-
-    signed_jwt = payload |> token() |> sign(rs256(key)) |> get_compact()
-
-    client = api_client(%{integration_jwt_token: signed_jwt})
+    client = integration_client()
     {_, response} = Tentacat.Integrations.Installations.get_token(client, installation_id)
     response
   end

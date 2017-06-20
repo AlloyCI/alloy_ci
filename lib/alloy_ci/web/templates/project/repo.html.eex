@@ -1,0 +1,39 @@
+<div class="col-sm-12 col-md-6 col-xl-4" id="card-<%= @repo["id"] %>">
+  <div class="card">
+    <div class="card-block">
+      <div class="pull-right">
+        <%= fork_icon(@repo["fork"]) %>
+      </div>
+      <div class="h2 text-muted text-xs-right">
+        <%= repo_icon(@repo["owner"]["type"]) %>
+      </div>
+      <div class="h5 m-b-0">
+        <div class="filter inline" data-id="<%= @repo["id"] %>">
+          <%= @repo["name"] %>
+        </div>
+        <small><%= privacy_icon(@repo["private"]) %></small>
+      </div>
+
+      <small class="text-muted text-uppercase font-weight-bold m-b-2"><%= @repo["owner"]["login"] %></small>
+      <hr/>
+      <div class="btn-group">
+        <%= case Projects.repo_and_project(@repo["id"], @existing_ids) do %>
+          <% {:ok, {_, project_id}} -> %>
+            <%= link to: project_path(AlloyCi.Web.Endpoint, :show, project_id), class: "btn btn-outline-primary" do %>
+              <%= icon("cube") %>
+              View on AlloyCI
+            <% end %>
+          <% {:error, _} -> %>
+            <%= submit class: "btn btn-primary", form: @repo["id"] do %>
+              <%= icon("plus") %>
+              Add to AlloyCI
+            <% end %>
+        <% end %>
+        <%= link to: @repo["html_url"], class: "btn btn-info btn-block", target: "_blank" do %>
+          <%= icon("github") %>
+          View on GitHub
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

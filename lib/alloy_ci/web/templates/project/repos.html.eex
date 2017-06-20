@@ -1,49 +1,58 @@
 <div class="row">
+  <%= unless @is_installed do %>
+    <div class="col-sm-12">
+      <div class="card card-inverse card-danger text-xs-center">
+        <div class="card-header">
+          <%= icon("exclamation-triangle") %>
+          AlloyCI not installed!
+        </div>
+        <div class="card-block">
+          <blockquote class="card-blockquote">
+            <p>
+              AlloyCI has not been installed in your account/organization yet.
+              This means that you cannot add projects to your AlloyCI account.
+              To install, please click on the button below.
+            </p>
+            <%= link to: integration_url(), target: "_blank", class: "btn btn-secondary" do %>
+              <%= icon("rocket") %>
+              Install AlloyCI
+            <% end %>
+          </blockquote>
+        </div>
+      </div>
+    </div>
+  <% end %>
   <%= case @repos do %>
+    <% {_, _} -> %>
+      <p>No repos found</p>
     <% [] -> %>
       <p>No repos found</p>
     <% repos -> %>
       <%= for repo <- repos do %>
-        <div class="col-sm-4 col-md-3" id="card-<%= repo["id"] %>">
-          <div class="card">
-            <div class="card-block">
-              <div class="h2 text-muted text-xs-right">
-                <%= repo_icon(repo["owner"]["type"]) %>
-              </div>
-              <div class="h5 m-b-0">
-                <div class="filter inline" data-id="<%= repo["id"] %>">
-                  <%= repo["name"] %>
-                </div>
-                <small><%= privacy_icon(repo["private"]) %></small>
-              </div>
-
-              <small class="text-muted text-uppercase font-weight-bold m-b-2"><%= repo["owner"]["login"] %></small>
-              <%= if (repo["id"]) in @existing_ids do %>
-                <a href="#" class="btn btn-xs btn-outline-primary disabled btn-block">Already in AlloyCI</a>
-              <% else %>
-                <%= submit class: "btn btn-xs btn-primary btn-block", form: repo["id"] do %>
-                  <%= icon("plus") %>
-                  Add to AlloyCI
-                <% end %>
-              <% end %>
-            </div>
-          </div>
-        </div>
+        <%= if @is_installed do %>
+          <%= render "repo.html", repo: repo, existing_ids: @existing_ids %>
+        <% else %>
+          <%= render "show_repo.html", repo: repo %>
+        <% end %>
       <% end %>
   <% end %>
 </div>
 
-<%= case @repos do %>
-  <% [] -> %>
-    <div class="empty"></div>
-  <% repos -> %>
-    <%= for repo <- repos do %>
-      <%= form_for @changeset, "/projects", [csrf_token: false, id: repo["id"]], fn f -> %>
-        <%= tag :input, type: "hidden", name: "_csrf_token", value: @csrf %>
-        <%= hidden_input f, :name, value: repo["name"] %>
-        <%= hidden_input f, :owner, value: repo["owner"]["login"] %>
-        <%= hidden_input f, :private, value: repo["private"] |> to_string %>
-        <%= hidden_input f, :repo_id, value: repo["id"] %>
+<%= if @is_installed do %>
+  <%= case @repos do %>
+    <% {_, _} -> %>
+      <div class="empty"></div>
+    <% [] -> %>
+      <div class="empty"></div>
+    <% repos -> %>
+      <%= for repo <- repos do %>
+        <%= form_for @changeset, "/projects", [csrf_token: false, id: repo["id"]], fn f -> %>
+          <%= tag :input, type: "hidden", name: "_csrf_token", value: @csrf %>
+          <%= hidden_input f, :name, value: repo["name"] %>
+          <%= hidden_input f, :owner, value: repo["owner"]["login"] %>
+          <%= hidden_input f, :private, value: repo["private"] |> to_string %>
+          <%= hidden_input f, :repo_id, value: repo["id"] %>
+        <% end %>
       <% end %>
-    <% end %>
+  <% end %>
 <% end %>

@@ -1,27 +1,31 @@
-<div class="card">
-  <div class="card-header">
-    <strong>Add your repos to AlloyCI</strong>
-  </div>
-  <div class="card-block">
-    <div class="row">
-      <div class="col-sm-12">
-        <div class="input-group">
-          <span class="input-group-addon"><%= icon("search") %></i></span>
-          <input type="text" id="repo-filter" class="form-control" placeholder="Filter...">
+<div class="content">
+  <div class="card">
+    <div class="card-header">
+      <strong>Add your repos to AlloyCI</strong>
+    </div>
+    <div class="card-block">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="input-group">
+            <span class="input-group-addon"><%= icon("search") %></i></span>
+            <input type="text" id="repo-filter" class="form-control" placeholder="Filter...">
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<div id="repos-container">
-  <div class="super-center">
-    <div class="m-l-navbar">
-      <h4>
-        <%= icon("spinner", "fa-spin") %>
-        Fetching your repositories...
-      </h4>
+  <div id="repos-container">
+    <div class="super-center">
+      <div class="row">
+        <div class="col-6 offset-4">
+          <h4>
+            <%= icon("spinner", "fa-spin") %>
+            Fetching your repositories...
+          </h4>
+        </div>
+      </div>
     </div>
   </div>
+  <script>window.userID = "<%= @current_user.id %>"</script>
 </div>
-<script>window.userID = "<%= @current_user.id %>"</script>
