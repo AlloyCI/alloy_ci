@@ -2,6 +2,10 @@
   display: none;
 }
 
+.alert-margin {
+  margin-top: 46px;
+}
+
 .margin-right-imp {
   margin-right: 30px !important;
 }
@@ -62,13 +66,13 @@
 }
 
 .pending-background {
-  background-color: #EAEEF2;
+  background-color: #eaeef2;
   min-height: 70px;
   margin: 0 !important;
 }
 
 .cancelled-background {
-  background-color: #EAEEF2;
+  background-color: #d2d6d9;
   min-height: 70px;
   margin: 0 !important;
 }
@@ -104,6 +108,10 @@
 
 .content {
   padding: 0 30px;
+}
+
+.callout-general {
+  border-left-color: #757779 !important;
 }
 
 .project-card {
