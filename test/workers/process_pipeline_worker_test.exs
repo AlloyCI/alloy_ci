@@ -7,7 +7,7 @@ defmodule AlloyCi.ProcessPipelineWorkerTest do
 
   setup do
     project = insert(:project)
-    pipeline = insert(:clean_pipeline, project: project, status: "running")
+    pipeline = insert(:clean_pipeline, project: project, status: "running", started_at: Timex.now)
     {:ok, %{pipeline: pipeline, project: project}}
   end
 

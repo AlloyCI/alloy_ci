@@ -11,7 +11,7 @@ defmodule AlloyCi.PipelinesTest do
   setup do
     user = insert(:user_with_project)
     [project | _] = (user |> Repo.preload(:projects)).projects
-    pipeline = insert(:clean_pipeline, project: project)
+    pipeline = insert(:clean_pipeline, project: project, started_at: Timex.now)
     {:ok, %{
         user: user,
         project: project,
