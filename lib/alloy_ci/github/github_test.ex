@@ -28,8 +28,25 @@ defmodule AlloyCi.Github.Test do
     "https://x-access-token:#{token["token"]}@#{domain()}/#{project.owner}/#{project.name}.git"
   end
 
+  def integration_client do
+    api_client(%{integration_jwt_token: "v1.1f699f1069f60xxx"})
+  end
+
+  def is_installed?(_) do
+    true
+  end
+
   def fetch_repos(_token) do
     Poison.decode!(File.read!("test/fixtures/responses/repositories_list.json"))
+  end
+
+  def notify_cancelled!(project, pipeline) do
+    params = %{
+      state: "error",
+      description: "Pipeline has been cancelled"
+    }
+
+    notify!(project, pipeline, params)
   end
 
   def notify_pending!(project, pipeline) do
@@ -76,6 +93,9 @@ defmodule AlloyCi.Github.Test do
     "https://#{domain()}/#{project.owner}/#{project.name}/commit/#{pipeline.sha}"
   end
 
+  ##################
+  # Private funtions
+  ##################
   defp domain do
     Application.get_env(:alloy_ci, :github_domain)
   end

@@ -64,6 +64,15 @@ defmodule AlloyCi.Github.Live do
     Tentacat.Integrations.Installations.app_installations(client)
   end
 
+  def notify_cancelled!(project, pipeline) do
+    params = %{
+      state: "error",
+      description: "Pipeline has been cancelled"
+    }
+
+    notify!(project, pipeline, params)
+  end
+
   def notify_pending!(project, pipeline) do
     params = %{
       state: "pending",
