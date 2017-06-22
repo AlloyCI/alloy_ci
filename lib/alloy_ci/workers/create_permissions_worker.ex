@@ -6,17 +6,17 @@ defmodule AlloyCi.Workers.CreatePermissionsWorker do
   access.
   """
   alias AlloyCi.{Repo, ProjectPermission}
-  import AlloyCi.ProjectPermission, only: [existing_ids: 0]
+  import AlloyCi.ProjectPermission, only: [repo_ids: 0]
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
   def perform(user_id, token) do
-    repo_ids =
+    user_repo_ids =
       token
       |> @github_api.fetch_repos
       |> Enum.map(&(&1["id"]))
 
-    permission_ids = MapSet.intersection(MapSet.new(repo_ids), MapSet.new(existing_ids()))
+    permission_ids = MapSet.intersection(MapSet.new(user_repo_ids), MapSet.new(repo_ids()))
 
     Repo.transaction(fn ->
       Enum.each(permission_ids, fn(id) ->
@@ -24,7 +24,7 @@ defmodule AlloyCi.Workers.CreatePermissionsWorker do
         params = %{user_id: user_id, project_id: project_id, repo_id: id}
         %ProjectPermission{}
         |> ProjectPermission.changeset(params)
-        |> Repo.insert()
+        |> Repo.insert
       end)
     end)
   end
