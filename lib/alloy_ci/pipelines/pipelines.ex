@@ -10,7 +10,9 @@ defmodule AlloyCi.Pipelines do
   def cancel(pipeline) do
     with {:ok, _} <- update_pipeline(pipeline, %{status: "cancelled"}) do
       case Builds.cancel(pipeline) do
-        {_, nil} -> {:ok, nil}
+        {_, nil} ->
+          @github_api.notify_cancelled!(pipeline.project, pipeline)
+          {:ok, nil}
         {_, _}   -> :error
       end
     end
@@ -27,6 +29,7 @@ defmodule AlloyCi.Pipelines do
       case clone(pipeline) do
         {:ok, clone} ->
           ExqEnqueuer.push(CreateBuildsWorker, [clone.id])
+          @github_api.notify_pending!(pipeline.project, pipeline)
           {:ok, clone}
       end
     end
@@ -85,7 +88,7 @@ defmodule AlloyCi.Pipelines do
   def success!(pipeline_id) do
     pipeline =
       pipeline_id
-      |> get
+      |> get()
       |> Repo.preload([:builds, :project])
 
     query = from b in "builds",
