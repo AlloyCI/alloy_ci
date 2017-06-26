@@ -1,5 +1,0 @@
-<%= if @current_user do %>
-  <li>
-    <%= link "Logout", to: admin_logout_path(@conn, :logout), method: :delete, class: "btn btn-danger" %>
-  </li>
-<% end %>
