@@ -25,6 +25,18 @@ defmodule AlloyCi.RunnersTest do
     end
   end
 
+  describe "delete_by/1" do
+    test "it deletes a runner by it's token" do
+      runner = insert(:runner)
+      assert {:ok, _} = Runners.delete_by(token: runner.token)
+    end
+
+    test "it deletes a runner by it's id" do
+      runner = insert(:runner)
+      assert {:ok, _} = Runners.delete_by(id: runner.id)
+    end
+  end
+
   describe "get_by_token/1" do
     test "it gets the correct runner" do
       runner = insert(:runner)
