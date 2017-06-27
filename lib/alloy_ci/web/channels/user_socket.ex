@@ -41,6 +41,6 @@ defmodule AlloyCi.Web.UserSocket do
   def id(socket), do: "users_socket:#{socket.assigns.user_id}"
 
   def verified_user_id(token) do
-    Accounts.get_user_from_auth_token(token)
+    Accounts.get_user_id_from_auth_token(token)
   end
 end

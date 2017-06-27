@@ -13,7 +13,7 @@ defmodule AlloyCi.Web.ViewHelpers do
   def callout("success"), do: "callout-success"
   def callout("failed"), do: "callout-danger"
   def callout("running"), do: "callout-warning"
-  def callout(_), do: ""
+  def callout(_), do: "callout-general"
 
   def card_status("success"), do: "card-inverse card-success"
   def card_status("failed"), do: "card-inverse card-danger"

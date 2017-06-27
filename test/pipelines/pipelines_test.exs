@@ -5,8 +5,28 @@ defmodule AlloyCi.PipelinesTest do
   alias AlloyCi.Pipelines
   import AlloyCi.Factory
 
-  @update_attrs %{before_sha: "some updated before_sha", commit: %{message: "some new commit_message", email: "some new committer_email"}, duration: 43, finished_at: ~N[2011-05-18 15:01:01.000000], ref: "some updated ref", sha: "some updated sha", started_at: ~N[2011-05-18 15:01:01.000000], status: "some updated status"}
-  @invalid_attrs %{before_sha: nil, commit_message: nil, committer_email: nil, duration: nil, finished_at: nil, ref: nil, sha: nil, started_at: nil, status: nil}
+  @update_attrs %{
+    before_sha: "some updated before_sha",
+    commit: %{message: "some new commit_message",
+    email: "some new committer_email"},
+    duration: 43,
+    finished_at: ~N[2011-05-18 15:01:01.000000],
+    ref: "some updated ref",
+    sha: "some updated sha",
+    started_at: ~N[2011-05-18 15:01:01.000000],
+    status: "some updated status"
+  }
+  @invalid_attrs %{
+    before_sha: nil,
+    commit_message: nil,
+    committer_email: nil,
+    duration: nil,
+    finished_at: nil,
+    ref: nil,
+    sha: nil,
+    started_at: nil,
+    status: nil
+  }
 
   setup do
     user = insert(:user_with_project)
@@ -23,7 +43,9 @@ defmodule AlloyCi.PipelinesTest do
   describe "create_pipeline/2" do
     test "with valid data creates a pipeline" do
       project = insert(:project)
-      assert {:ok, pipeline} = Pipelines.create_pipeline(Ecto.build_assoc(project, :pipelines), params_for(:pipeline))
+      assert {:ok, pipeline} = 
+        Pipelines.create_pipeline(Ecto.build_assoc(project, :pipelines), params_for(:pipeline))
+
       assert pipeline.before_sha == "00000000"
       assert pipeline.ref == "master"
       assert pipeline.sha == "00000000"

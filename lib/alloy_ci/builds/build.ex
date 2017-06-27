@@ -30,7 +30,8 @@ defmodule AlloyCi.Build do
   end
 
   @required_fields ~w(commands name options pipeline_id project_id token)a
-  @optional_fields ~w(allow_failure finished_at queued_at runner_id stage started_at status tags trace variables when stage_idx)a
+  @optional_fields ~w(allow_failure finished_at queued_at runner_id stage
+                      started_at status tags trace variables when stage_idx)a
 
   def changeset(struct, params \\ %{}) do
     struct
