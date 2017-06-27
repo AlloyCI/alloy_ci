@@ -51,7 +51,7 @@ defmodule AlloyCi.AccountsTest do
   test "it returns the existing user when the authentication and user both exist", %{auth: auth} do
     {:ok, user} =
       %User{}
-      |> User.registration_changeset(%{email: @email, name: @name})
+      |> User.changeset(%{email: @email, name: @name})
       |> Repo.insert
 
     params = %{
@@ -76,16 +76,30 @@ defmodule AlloyCi.AccountsTest do
     assert authentication_count() == before_authentications
   end
 
-  test "it returns an existing user when the user has the same email", %{auth: auth} do
-    {:ok, user} =
+  test "it returns an error when the user has the same email and it is not logged in", %{auth: auth} do
+    {:ok, _} =
       %User{}
-      |> User.registration_changeset(%{email: @email, name: @name})
+      |> User.changeset(%{email: @email, name: @name})
       |> Repo.insert
 
     before_users = user_count()
     before_authentications = authentication_count()
-    {:ok, user_from_auth} = Accounts.get_or_create_user(auth, nil)
-    assert user_from_auth.id == user.id
+    assert {:error, _} = Accounts.get_or_create_user(auth, nil)
+
+    assert user_count() == before_users
+    assert authentication_count() == before_authentications
+  end
+
+  test "it creates a new auth when user is already logged in", %{auth: auth} do
+    {:ok, current_user} =
+      %User{}
+      |> User.changeset(%{email: @email, name: @name})
+      |> Repo.insert
+
+    before_users = user_count()
+    before_authentications = authentication_count()
+    assert {:ok, user} = Accounts.get_or_create_user(auth, current_user)
+    assert user.id == current_user.id
 
     assert user_count() == before_users
     assert authentication_count() == before_authentications + 1
@@ -94,7 +108,7 @@ defmodule AlloyCi.AccountsTest do
   test "it deletes the authentication and makes a new one when the old one is expired", %{auth: auth} do
     {:ok, user} =
       %User{}
-      |> User.registration_changeset(%{email: @email, name: @name})
+      |> User.changeset(%{email: @email, name: @name})
       |> Repo.insert
 
     params = %{
@@ -125,12 +139,12 @@ defmodule AlloyCi.AccountsTest do
   test "it returns an error if the user is not the current user", %{auth: auth} do
     {:ok, current_user} =
       %User{}
-      |> User.registration_changeset(%{email: "fred@example.com", name: @name})
+      |> User.changeset(%{email: "fred@example.com", name: @name})
       |> Repo.insert
 
     {:ok, user} =
       %User{}
-      |> User.registration_changeset(%{email: @email, name: @name})
+      |> User.changeset(%{email: @email, name: @name})
       |> Repo.insert
 
 

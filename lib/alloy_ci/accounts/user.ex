@@ -20,12 +20,6 @@ defmodule AlloyCi.User do
   @required_fields ~w(email)a
   @optional_fields ~w(is_admin name)a
 
-  def registration_changeset(model, params \\ :empty) do
-    model
-    |> cast(params, ~w(email name)a)
-    |> validate_required(@required_fields)
-  end
-
   @doc """
   Creates a changeset based on the `model` and `params`.
 
@@ -37,6 +31,7 @@ defmodule AlloyCi.User do
     |> cast(params, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
     |> validate_format(:email, ~r/@/)
+    |> unique_constraint(:email, name: :users_email_index)
   end
 
   def make_admin!(user) do

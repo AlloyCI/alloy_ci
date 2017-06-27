@@ -20,8 +20,10 @@ defmodule AlloyCi.Accounts do
 
   def get_or_create_user(auth, current_user) do
     case auth_and_validate(auth) do
-      {:error, :not_found} -> register_user_from_auth(auth, current_user)
-      {:error, reason} -> {:error, reason}
+      {:error, :not_found} ->
+        register_user_from_auth(auth, current_user)
+      {:error, reason} ->
+        {:error, reason}
       authentication ->
         if authentication.expires_at && authentication.expires_at < Guardian.Utils.timestamp do
           replace_authentication(authentication, auth, current_user)
@@ -31,9 +33,9 @@ defmodule AlloyCi.Accounts do
     end
   end
 
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user!(id), do: User |> Repo.get!(id)
 
-  def get_user_from_auth_token(token) do
+  def get_user_id_from_auth_token(token) do
     query = from a in Authentication,
             where: a.token == ^token, limit: 1,
             select: a.user_id
@@ -77,17 +79,17 @@ defmodule AlloyCi.Accounts do
   ##################
   # Private funtions
   ##################
-
   defp auth_and_validate(%{provider: :identity} = auth) do
     case Repo.get_by(Authentication, uid: uid_from_auth(auth), provider: to_string(auth.provider)) do
-      nil -> {:error, :wrong_credentials}
+      nil ->
+        {:error, :not_found}
       authentication ->
         case auth.credentials.other.password do
           pass when is_binary(pass) ->
             if Comeonin.Bcrypt.checkpw(auth.credentials.other.password, authentication.token) do
               authentication
             else
-              {:error, :wrong_credentials}
+              {:error, :invalid_credentials}
             end
           _ -> {:error, :password_required}
         end
@@ -96,7 +98,8 @@ defmodule AlloyCi.Accounts do
 
   defp auth_and_validate(%{provider: service} = auth)  when service in [:google, :facebook, :github] do
     case Repo.get_by(Authentication, uid: uid_from_auth(auth), provider: to_string(auth.provider)) do
-      nil -> {:error, :not_found}
+      nil ->
+        {:error, :not_found}
       authentication ->
         if authentication.uid == uid_from_auth(auth) do
           authentication
@@ -108,7 +111,8 @@ defmodule AlloyCi.Accounts do
 
   defp auth_and_validate(auth) do
     case Repo.get_by(Authentication, uid: uid_from_auth(auth), provider: to_string(auth.provider)) do
-      nil -> {:error, :not_found}
+      nil ->
+        {:error, :not_found}
       authentication ->
         if authentication.token == auth.credentials.token do
           authentication
@@ -140,7 +144,8 @@ defmodule AlloyCi.Accounts do
     case result do
       {:ok, auth} ->
         process_auth(auth)
-      {:error, reason} -> Repo.rollback(reason)
+      {:error, reason} ->
+        Repo.rollback(reason)
     end
   end
 
@@ -148,20 +153,28 @@ defmodule AlloyCi.Accounts do
     name = name_from_auth(auth)
     result =
       %User{}
-      |> User.registration_changeset(scrub(%{email: auth.info.email, name: name}))
+      |> User.changeset(scrub(%{email: auth.info.email, name: name}))
       |> Repo.insert
 
     case result do
-      {:ok, user} -> user
-      {:error, reason} -> Repo.rollback(reason)
+      {:ok, user} ->
+        user
+      {:error, reason} ->
+        Repo.rollback(reason)
     end
   end
 
   defp create_user_from_auth(auth, current_user) do
-    user = current_user || Repo.get_by(User, email: auth.info.email) || create_user(auth)
+    user = current_user || create_user(auth)
 
     authentication_from_auth(user, auth)
     {:ok, user}
+  end
+
+  defp error_details({message, values}) do
+    Enum.reduce values, message, fn {k, v}, acc ->
+      String.replace(acc, "%{#{k}}", to_string(v))
+    end
   end
 
   defp invalidate_authentication(authentication, user, auth) do
@@ -174,13 +187,16 @@ defmodule AlloyCi.Accounts do
 
   defp name_from_auth(auth) do
     cond do
-      auth.info.name -> auth.info.name
+      auth.info.name ->
+        auth.info.name
       auth.info.first_name && auth.info.last_name ->
         [auth.info.first_name, auth.info.last_name]
         |> Enum.filter(&(&1 != nil and String.strip(&1) != ""))
         |> Enum.join(" ")
-      auth.info.nickname -> auth.info.nickname
-      true -> auth.info.email
+      auth.info.nickname ->
+        auth.info.nickname
+      true ->
+        auth.info.email
     end
   end
 
@@ -196,10 +212,12 @@ defmodule AlloyCi.Accounts do
     with :ok <- validate_auth_for_registration(auth) do
       case Repo.transaction(fn -> create_user_from_auth(auth, current_user) end) do
         {:ok, response} -> response
-        {:error, reason} -> {:error, reason}
+        {:error, changeset} ->
+          reason = Enum.map(changeset.errors, fn {field, detail} ->
+            "#{field} #{error_details(detail)}"
+          end)
+          {:error, reason}
       end
-    else
-      {:error, reason} -> {:error, reason}
     end
   end
 
@@ -207,16 +225,14 @@ defmodule AlloyCi.Accounts do
     with :ok <- validate_auth_for_registration(auth),
          {:ok, user} <- user_from_authentication(authentication, current_user)
     do
-      case invalidate_authentication(authentication, user, auth) do
-        {:ok, user} -> {:ok, user}
-        {:error, reason} -> {:error, reason}
-      end
+      invalidate_authentication(authentication, user, auth)
     else
       {:error, reason} -> {:error, reason}
     end
   end
 
-  # We don't have any nested structures in our params that we are using scrub with so this is a very simple scrub
+  # We don't have any nested structures in our params that we are using scrub
+  # with so this is a very simple scrub
   defp scrub(params) do
     params
     |> Enum.filter(fn
@@ -231,7 +247,8 @@ defmodule AlloyCi.Accounts do
     case auth do
       %{credentials: %{other: %{password: pass}}} when not is_nil(pass) ->
         Comeonin.Bcrypt.hashpwsalt(pass)
-      _ -> nil
+      _ ->
+        nil
     end
   end
 
@@ -239,7 +256,8 @@ defmodule AlloyCi.Accounts do
 
   defp user_from_authentication(authentication, current_user) do
     case Repo.one(Ecto.assoc(authentication, :user)) do
-      nil -> {:error, :user_not_found}
+      nil ->
+        {:error, :user_not_found}
       user ->
         if current_user && current_user.id != user.id do
           {:error, :user_does_not_match}
@@ -263,12 +281,13 @@ defmodule AlloyCi.Accounts do
         {:error, :password_empty}
       ^pwc ->
         validate_pw_length(pw, email)
-      _ ->
+      value when pwc and value != pwc ->
         {:error, :password_confirmation_does_not_match}
+      _ ->
+        {:error, :invalid_credentials}
     end
   end
 
-  # All the other providers are oauth so should be good
   defp validate_auth_for_registration(_auth), do: :ok
 
   defp validate_pw_length(pw, email) when is_binary(pw) do
@@ -281,10 +300,8 @@ defmodule AlloyCi.Accounts do
 
   defp validate_email(email) when is_binary(email) do
     case Regex.run(~r/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/, email) do
-      nil ->
-        {:error, :invalid_email}
-      [_email] ->
-        :ok
+      nil      -> {:error, :invalid_email}
+      [_email] -> :ok
     end
   end
 end
