@@ -5,18 +5,22 @@ defmodule AlloyCi.Runners do
 
   @global_token Application.get_env(:alloy_ci, :runner_registration_token)
 
+  def all(params), do: Runner |> Repo.paginate(params)
+
   def create(%{"token" => @global_token, "info" => runner_info} = params) do
     new_runner =
       Enum.into(%{global: true}, runner_params(params, runner_info))
 
     case save(new_runner) do
-      {:ok, runner} -> runner
-      {:error, _} -> nil
+      {:ok, runner} ->
+        runner
+      {:error, _} ->
+        nil
     end
   end
 
   def create(%{"token" => token, "info" => runner_info} = params) do
-    with %Project{} = project <- Projects.get_by_token(token) do
+    with %Project{} = project <- Projects.get_by(token: token) do
       new_runner =
         %{
           global: false,
@@ -34,12 +38,18 @@ defmodule AlloyCi.Runners do
     end
   end
 
-  def delete(token) do
-    token
-    |> get_by_token()
+  def delete_by(token: token) do
+    Runner
+    |> Repo.get_by(token: token)
     |> Repo.delete
   rescue
     FunctionClauseError -> nil
+  end
+
+  def delete_by(id: id) do
+    Runner
+    |> Repo.get(id)
+    |> Repo.delete
   end
 
   def save(params) do
@@ -48,10 +58,9 @@ defmodule AlloyCi.Runners do
     |> Repo.insert
   end
 
-  def get_by_token(token) do
-    Runner
-    |> Repo.get_by(token: token)
-  end
+  def get(id), do: Runner |> Repo.get(id)
+
+  def get_by(token: token), do: Runner |> Repo.get_by(token: token)
 
   def update_info(runner, params) do
     runner

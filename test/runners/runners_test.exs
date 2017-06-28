@@ -37,16 +37,16 @@ defmodule AlloyCi.RunnersTest do
     end
   end
 
-  describe "get_by_token/1" do
+  describe "get_by/1" do
     test "it gets the correct runner" do
       runner = insert(:runner)
-      result = Runners.get_by_token(runner.token)
+      result = Runners.get_by(token: runner.token)
 
       assert result.id == runner.id
     end
 
     test "it returns nil when runner not found" do
-      result = Runners.get_by_token("invalid-token")
+      result = Runners.get_by(token: "invalid-token")
 
       assert result == nil
     end

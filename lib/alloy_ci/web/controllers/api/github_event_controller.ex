@@ -31,7 +31,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
   # Private funtions
   ##################
   defp handle_event(conn, params) do
-    with %AlloyCi.Project{} = project <- Projects.get_by_repo_id(params["repository"]["id"]),
+    with %AlloyCi.Project{} = project <- Projects.get_by(repo_id: params["repository"]["id"]),
          %{"content" => _} <- @github_api.alloy_ci_config(project, %{installation_id: params["installation"]["id"], sha: params["after"]})
     do
       pipeline_attrs = %{

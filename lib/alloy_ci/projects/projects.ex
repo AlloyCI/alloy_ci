@@ -5,6 +5,10 @@ defmodule AlloyCi.Projects do
   alias AlloyCi.{Pipelines, Project, ProjectPermission, Repo}
   import Ecto.Query
 
+  def all(params) do
+    Project |> order_by([desc: :updated_at]) |> Repo.paginate(params)
+  end
+
   def can_access?(id, user) do
     permission =
       ProjectPermission
@@ -46,6 +50,8 @@ defmodule AlloyCi.Projects do
     end
   end
 
+  def get(id), do: Project |> Repo.get(id)
+
   def get_by(id, user) do
     permission =
       ProjectPermission
@@ -75,12 +81,12 @@ defmodule AlloyCi.Projects do
     end
   end
 
-  def get_by_repo_id(id) do
+  def get_by(repo_id: id) do
     Project
     |> Repo.get_by(repo_id: id)
   end
 
-  def get_by_token(token) do
+  def get_by(token: token) do
     Project
     |> Repo.get_by(token: token)
   end
@@ -97,7 +103,7 @@ defmodule AlloyCi.Projects do
     query = from pp in ProjectPermission,
             where: pp.user_id == ^user.id,
             join: p in Project, on: p.id == pp.project_id,
-            order_by: [:updated_at], limit: 5,
+            order_by: [desc: p.updated_at], limit: 5,
             select: p
     Repo.all(query)
   end
@@ -106,7 +112,7 @@ defmodule AlloyCi.Projects do
     query = from pp in ProjectPermission,
             where: pp.user_id == ^user.id,
             join: p in Project, on: p.id == pp.project_id,
-            order_by: [:updated_at],
+            order_by: [desc: p.updated_at],
             select: p
     Repo.paginate(query, params)
   end

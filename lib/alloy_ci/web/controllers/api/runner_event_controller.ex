@@ -16,7 +16,7 @@ defmodule AlloyCi.Web.Api.RunnerEventController do
   end
 
   def verify(conn, params, _, _) do
-    case Runners.get_by_token(params["token"]) do
+    case Runners.get_by(token: params["token"]) do
       nil ->
         conn
         |> put_status(403)
@@ -29,7 +29,7 @@ defmodule AlloyCi.Web.Api.RunnerEventController do
   end
 
   def delete(conn, %{"token" => token}, _, _) do
-    case Runners.delete(token) do
+    case Runners.delete_by(token: token) do
       {:ok, _} ->
         conn
         |> put_status(204)

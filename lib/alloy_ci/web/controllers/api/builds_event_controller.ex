@@ -3,7 +3,7 @@ defmodule AlloyCi.Web.Api.BuildsEventController do
   alias AlloyCi.{Builds, Runner, Runners, Web.BuildsChannel}
 
   def request(conn, params, _, _) do
-    with %Runner{} = runner <- Runners.get_by_token(params["token"]) do
+    with %Runner{} = runner <- Runners.get_by(token: params["token"]) do
       Runners.update_info(runner, params["info"])
 
       case Runners.register_job(runner) do
@@ -35,7 +35,6 @@ defmodule AlloyCi.Web.Api.BuildsEventController do
 
     with {:ok, build} <- Builds.get_by(id, token),
          {:ok, build} <- Builds.append_trace(build, trace) do
-
       # Send notification to the channel listening on this build
       BuildsChannel.send_trace(build.id, trace)
 
@@ -44,7 +43,6 @@ defmodule AlloyCi.Web.Api.BuildsEventController do
       |> put_resp_header("job-status", build.status)
       |> put_resp_header("range", "0-100")
       |> json(%{message: "202 Trace was patched"})
-
     else
       {:error, _} ->
         conn
