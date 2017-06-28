@@ -6,7 +6,6 @@
           <%= icon("code-fork") %> Pipelines
         <% end %>
       </li>
-
       <li class="nav-title">Stages</li>
       <%= for stage <- @builds do %>
         <%= for {name, builds} <- stage do %>

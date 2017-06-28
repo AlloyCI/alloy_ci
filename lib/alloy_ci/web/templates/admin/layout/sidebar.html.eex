@@ -24,17 +24,7 @@
           Runners
         <% end %>
       </li>
-
-      <li class="nav-title">
-        Add
-      </li>
-      <li class="nav-item">
-        <%= link to: admin_runner_path(@conn, :new), class: "nav-link" do %>
-          <%= icon("plus") %>
-          New Runner
-          <span class="float-right"><%= icon("cog") %></span>
-        <% end %>
-      </li>
+      
       <li class="divider"></li>
     </ul>
   </nav>

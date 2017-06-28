@@ -54,7 +54,7 @@
 
   <footer class="app-footer">
     <a href="https://alloy-ci.com">AlloyCI</a> © <%= Timex.now.year %> Insomniware, LLC.
-    <span class="float-right">Powered by <a href="http://coreui.io">CoreUI</a>
+    <span class="float-right">Design by <a href="http://coreui.io">CoreUI</a>
     </span>
   </footer>
 
