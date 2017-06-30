@@ -2,7 +2,7 @@ defmodule AlloyCi.PipelinesTest do
   @moduledoc """
   """
   use AlloyCi.DataCase
-  alias AlloyCi.Pipelines
+  alias AlloyCi.{Builds, Pipelines}
   import AlloyCi.Factory
 
   @update_attrs %{
@@ -40,10 +40,17 @@ defmodule AlloyCi.PipelinesTest do
     }
   end
 
+  describe "cancel/1" do
+    test "it cancels the pipeline", %{pipeline: pipeline} do
+      assert {:ok, pipeline} = Pipelines.cancel(pipeline)
+      assert pipeline.status == "cancelled"
+    end
+  end
+
   describe "create_pipeline/2" do
     test "with valid data creates a pipeline" do
       project = insert(:project)
-      assert {:ok, pipeline} = 
+      assert {:ok, pipeline} =
         Pipelines.create_pipeline(Ecto.build_assoc(project, :pipelines), params_for(:pipeline))
 
       assert pipeline.before_sha == "00000000"
@@ -54,6 +61,28 @@ defmodule AlloyCi.PipelinesTest do
 
     test "with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Pipelines.create_pipeline(%AlloyCi.Pipeline{}, @invalid_attrs)
+    end
+  end
+
+  describe "delete_where/1" do
+    test "it deletes the pipeline and its builds", %{pipeline: pipeline} do
+      build = insert(:build, pipeline: pipeline, project: pipeline.project)
+      assert :ok = Pipelines.delete_where(project_id: pipeline.project_id)
+
+      pipeline = Pipelines.get(pipeline.id)
+      assert pipeline == nil
+
+      build = Builds.get(build.id)
+      assert build == nil
+    end
+  end
+
+  describe "duplicate/1" do
+    test "it clones the pipeline so it can be restarted", %{pipeline: pipeline} do
+      assert {:ok, clone} = Pipelines.duplicate(pipeline)
+      assert clone.id != pipeline.id
+      assert clone.commit == pipeline.commit
+      assert clone.ref == pipeline.ref
     end
   end
 
@@ -83,6 +112,19 @@ defmodule AlloyCi.PipelinesTest do
     test "it returns nil when no pipeline", %{user: user, project: project} do
       p = Pipelines.get_pipeline(100_076, project.id, user)
       assert p == nil
+    end
+  end
+
+  describe "run!/1" do
+    test "when pipeline is pending", %{pipeline: pipeline} do
+      assert {:ok, pipeline} = Pipelines.run!(pipeline)
+      assert pipeline.status == "running"
+    end
+
+    test "when pipeline is not pending" do
+      pipeline = insert(:pipeline, status: "running")
+      result = Pipelines.run!(pipeline)
+      assert result == nil
     end
   end
 

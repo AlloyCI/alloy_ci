@@ -8,12 +8,12 @@ defmodule AlloyCi.Pipelines do
   @github_api Application.get_env(:alloy_ci, :github_api)
 
   def cancel(pipeline) do
-    with {:ok, _} <- update_pipeline(pipeline, %{status: "cancelled"}) do
+    with {:ok, pipeline} <- update_pipeline(pipeline, %{status: "cancelled"}) do
       case Builds.cancel(pipeline) do
         {_, nil} ->
           @github_api.notify_cancelled!(pipeline.project, pipeline)
-          {:ok, nil}
-        {_, _}   -> :error
+          {:ok, pipeline}
+        _ -> :error
       end
     end
   end
@@ -24,14 +24,22 @@ defmodule AlloyCi.Pipelines do
     |> Repo.insert
   end
 
+  def delete_where(project_id: id) do
+    query = from p in "pipelines",
+            where: p.project_id == ^id
+    case Repo.delete_all(query) do
+      {_, nil} -> Builds.delete_where(project_id: id)
+             _ -> :error
+    end
+  end
+
   def duplicate(pipeline) do
-    with {:ok, _} <- update_pipeline(pipeline, %{sha: pipeline.sha |> String.slice(0..7)}) do
-      case clone(pipeline) do
-        {:ok, clone} ->
-          ExqEnqueuer.push(CreateBuildsWorker, [clone.id])
-          @github_api.notify_pending!(pipeline.project, pipeline)
-          {:ok, clone}
-      end
+    with {:ok, _} <- update_pipeline(pipeline, %{sha: pipeline.sha |> String.slice(0..7)}),
+         {:ok, clone} <- clone(pipeline)
+    do
+      ExqEnqueuer.push(CreateBuildsWorker, [clone.id])
+      @github_api.notify_pending!(pipeline.project, pipeline)
+      {:ok, clone}
     end
   end
 
@@ -54,7 +62,7 @@ defmodule AlloyCi.Pipelines do
 
   def get(id) do
     Pipeline
-    |> Repo.get_by(id: id)
+    |> Repo.get(id)
   end
 
   def get_pipeline(id, project_id, user) do
