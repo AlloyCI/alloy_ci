@@ -73,14 +73,25 @@ defmodule AlloyCi.Runners do
     |> Builds.start_build(runner)
   end
 
-  def register_job(%{project_id: nil, run_untagged: true} = runner) do
-    Builds.to_process
+  def register_job(%{project_id: nil, tags: [_|_], run_untagged: true} = runner) do
+    case Builds.for_runner(runner) do
+      nil ->
+        Builds.to_process
+        |> Builds.start_build(runner)
+      build ->
+        build
+        |> Builds.start_build(runner)
+    end
+  end
+
+  def register_job(%{project_id: nil, tags: [_|_]} = runner) do
+    runner
+    |> Builds.for_runner
     |> Builds.start_build(runner)
   end
 
   def register_job(%{project_id: nil} = runner) do
-    runner
-    |> Builds.for_runner
+    Builds.to_process
     |> Builds.start_build(runner)
   end
 

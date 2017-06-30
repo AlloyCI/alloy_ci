@@ -11,17 +11,33 @@ defmodule AlloyCi.RunnersTest do
     {:ok, %{build: build}}
   end
 
+  describe "all/1" do
+    test "it retruns all projects" do
+      insert(:runner)
+      {runners, _} = Runners.all(%{page: 1})
+
+      assert Enum.count(runners) == 1
+    end
+  end
+
   describe "create/1" do
     test "it creates a global runner" do
       params = %{
         "token" => Application.get_env(:alloy_ci, :runner_registration_token),
         "description" => "test runner",
-        "info" => %{"name" => "test"}
+        "info" => %{"name" => "test"},
+        "tag_list" => "elixir, postgres, linux",
+        "locked" => false,
+        "run_untagged" => false
       }
 
       result = Runners.create(params)
+      runner = Runners.get(result.id)
 
       assert result != nil
+      assert result.locked == false
+      assert result.tags == ~w(elixir postgres linux)
+      assert runner == result
     end
   end
 
@@ -53,8 +69,47 @@ defmodule AlloyCi.RunnersTest do
   end
 
   describe "register_job/1" do
-    test "it processes and starts the correct build", %{build: build} do
+    test "it processes and starts any correct build", %{build: build} do
       runner = insert(:runner)
+      {:ok, result} = Runners.register_job(runner)
+
+      assert result.id == build.id
+      assert result.status == "running"
+      assert result.runner_id == runner.id
+    end
+
+    test "it processes and starts tagged builds that match the runner's tags" do
+      runner = insert(:runner, tags: ~w(ruby elixir), run_untagged: false)
+      build = insert(:full_build, tags: ~w(elixir))
+
+      {:ok, result} = Runners.register_job(runner)
+
+      assert result.id == build.id
+      assert result.status == "running"
+      assert result.runner_id == runner.id
+    end
+
+    test "it processes and starts tagged builds first even if the runner can run untagged" do
+      runner = insert(:runner, tags: ~w(ruby elixir))
+      build = insert(:full_build, tags: ~w(elixir))
+      {:ok, result} = Runners.register_job(runner)
+
+      assert result.id == build.id
+      assert result.status == "running"
+      assert result.runner_id == runner.id
+    end
+
+    test "it processes and starts any build even if the runner is tagged", %{build: build} do
+      runner = insert(:runner, tags: ~w(ruby elixir))
+      {:ok, result} = Runners.register_job(runner)
+
+      assert result.id == build.id
+      assert result.status == "running"
+      assert result.runner_id == runner.id
+    end
+
+    test "it processes and starts a project's specific build", %{build: build} do
+      runner = insert(:runner, project_id: build.project_id)
       {:ok, result} = Runners.register_job(runner)
 
       assert result.id == build.id
@@ -65,7 +120,16 @@ defmodule AlloyCi.RunnersTest do
     test "it returns correct status when no build is found", %{build: build} do
       runner = insert(:runner)
       Repo.delete!(build)
-      {:no_build, result} = Runners.register_job(runner)
+      assert {:no_build, result} = Runners.register_job(runner)
+
+      assert result == nil
+    end
+
+    test "it returns correct status when build is tagged, but runner is not", %{build: build} do
+      runner = insert(:runner)
+      Repo.delete!(build)
+      insert(:full_build, tags: ~w(elixir))
+      assert {:no_build, result} = Runners.register_job(runner)
 
       assert result == nil
     end
