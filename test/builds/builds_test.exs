@@ -12,6 +12,25 @@ defmodule AlloyCi.BuildsTest do
     {:ok, %{project: project, pipeline: pipeline}}
   end
 
+  describe "append_trace/2" do
+    test "it appends the new trace after the old trace" do
+      build = insert(:full_build, status: "running", trace: "existing trace")
+      assert {:ok, _} = Builds.append_trace(build, "new trace")
+
+      build = Builds.get(build.id)
+      assert build.trace == "existing trace\nnew trace\n"
+    end
+  end
+
+  describe "by_stage/1" do
+    test "it returns the right grouping of builds by stage", %{pipeline: pipeline} do
+      build = insert(:build, pipeline: pipeline, project: pipeline.project)
+      result = Builds.by_stage(pipeline)
+
+      assert result == [%{"test" => [%{id: build.id, name: build.name, project_id: build.project_id, status: build.status}]}]
+    end
+  end
+
   describe "create_builds_from_config/2" do
     test "it creates build with the correct data", %{pipeline: pipeline} do
       content = File.read!(".alloy-ci.json")
@@ -31,10 +50,19 @@ defmodule AlloyCi.BuildsTest do
 
     test "it returns error on broken data", %{pipeline: pipeline} do
       content = File.read!("test/fixtures/broken_config.json")
-
       {:error, result} = Builds.create_builds_from_config(content, pipeline)
 
       assert result == "Unable to parse JSON config file."
+    end
+  end
+
+  describe "delete_where/1" do
+    test "it deletes the correct builds", %{pipeline: pipeline} do
+      build = insert(:build, pipeline: pipeline, project: pipeline.project)
+      assert :ok = Builds.delete_where(project_id: pipeline.project.id)
+
+      build = Builds.get(build.id)
+      assert build == nil
     end
   end
 
@@ -125,6 +153,7 @@ defmodule AlloyCi.BuildsTest do
       assert result.steps == expected_steps
       assert result.status == "running"
       assert result.runner_id == runner.id
+      assert %{key: "CI", public: true, value: "true"} in result.variables
     end
 
     test "it returns correct status when no build is found" do
@@ -177,6 +206,15 @@ defmodule AlloyCi.BuildsTest do
       result = Builds.transition_status(build)
 
       assert result.status == "running"
+    end
+  end
+
+  describe "update_trace/2" do
+    test "it overwrites the build trace" do
+      build = insert(:full_build, status: "running", trace: "existing trace")
+      assert {:ok, build} = Builds.update_trace(build, "new trace")
+
+      assert build.trace == "new trace"
     end
   end
 end

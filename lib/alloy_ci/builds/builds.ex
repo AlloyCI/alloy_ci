@@ -76,6 +76,15 @@ defmodule AlloyCi.Builds do
     end
   end
 
+  def delete_where(project_id: id) do
+    query = from b in "builds",
+            where: b.project_id == ^id
+    case Repo.delete_all(query) do
+      {_, nil} -> :ok
+             _ -> :error
+    end
+  end
+
   def enqueue(build) do
     if build.status == "created" do
       do_update_status(build, "pending")
@@ -177,7 +186,7 @@ defmodule AlloyCi.Builds do
 
   def to_process do
     Build
-    |> where([b], b.status == "pending" and is_nil(b.runner_id))
+    |> where([b], b.status == "pending" and is_nil(b.runner_id) and is_nil(b.tags))
     |> order_by(asc: :inserted_at)
     |> Repo.all
     |> List.first
