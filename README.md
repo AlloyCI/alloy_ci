@@ -6,20 +6,12 @@ Alloy CI aims to bridge the gap between GitLab's CI runner and GitHub. GitLab's
 CI runner is tightly coupled with GitLab, so it is not possible to use one of
 these runners from a GitHub codebase.
 
-With Alloy you will be able to register a GitLab CI runner to the platform,
+With AlloyCI you will be able to register a GitLab CI runner to the platform,
 connect it to one of your GitHub's repositories, and have it run your CI and
 CD pipelines.
 
-Alloy will report the status sent to the runner to your pull requests and
+AlloyCI will report the status of your pipelines to your pull requests and
 branches, so you can always know their status, just like any other CI service.
-
-## Installation
-
-### Heroku
-
-### Docker
-
-### Manual
 
 ## Goals
 
@@ -27,7 +19,7 @@ branches, so you can always know their status, just like any other CI service.
 - To provide an alternative to other open source CI services
 - To leverage the great open source project that is the GitLab CI runner
 - To provide GitHub users with the same top class CI/CD that GitLab has, without
-  having to switch to GitLab, or paying insane amounts for inferior service
+  having to switch to GitLab, or paying insane amounts for inferior services
 
 ### Stretch Goals
 
@@ -50,11 +42,19 @@ branches, so you can always know their status, just like any other CI service.
   - [ ] Can make use of `only` and `except` tags for jobs
 - [ ] Deployment functionality
   - [ ] Can manually start deployments (manual actions)
-  - [ ] Can do auto deploys
+  - [x] Can do auto deploys
   - [ ] Can start Review Apps
-- [ ] Autoscaling Support
-  - [ ] Can create runners on demand
-  - [ ] Can destroy runners when not in use
+- [x] Autoscaling Support (supported directly by the runner)
+  - [x] Can create runners on demand
+  - [x] Can destroy runners when not in use
+
+## Installation
+
+### Heroku
+
+### Docker
+
+### Manual  
 
 # To start your Phoenix app:
 
@@ -64,13 +64,3 @@ branches, so you can always know their status, just like any other CI service.
   * Start Phoenix endpoint with `mix phx.server`
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-
-Ready to run in production? Please [check our deployment guides](http://www.phoenixframework.org/docs/deployment).
-
-## Learn more
-
-  * Official website: http://www.phoenixframework.org/
-  * Guides: http://phoenixframework.org/docs/overview
-  * Docs: https://hexdocs.pm/phoenix
-  * Mailing list: http://groups.google.com/group/phoenix-talk
-  * Source: https://github.com/phoenixframework/phoenix
