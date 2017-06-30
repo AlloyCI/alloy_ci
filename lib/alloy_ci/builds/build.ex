@@ -14,7 +14,7 @@ defmodule AlloyCi.Build do
     field :queued_at, :naive_datetime
     field :runner_id, :integer
     field :stage, :string, default: "test"
-    field :stage_idx, :integer
+    field :stage_idx, :integer, default: 0
     field :started_at, :naive_datetime
     field :status, :string, default: "created"
     field :tags, {:array, :string}

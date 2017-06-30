@@ -29,8 +29,8 @@ defmodule AlloyCi.Factory do
     %Pipeline{
       installation_id: sequence(:installation_id, &(&1)),
       ref: "master",
-      sha: "00000000",
-      before_sha: "00000000",
+      sha: "0000000000000000000000",
+      before_sha: "0000000000000000000000",
       commit: %{"message" => "test", "username" => "supernova32"}
     }
   end
@@ -91,9 +91,10 @@ defmodule AlloyCi.Factory do
   end
 
   def project_permission_factory do
+    repo_id = sequence(:repo_id, &(&1))
     %ProjectPermission{
-      repo_id: sequence(:repo_id, &(&1)),
-      project: build(:project)
+      repo_id: repo_id,
+      project: build(:project, repo_id: repo_id)
     }
   end
 
