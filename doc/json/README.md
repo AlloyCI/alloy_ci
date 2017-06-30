@@ -345,7 +345,9 @@ assigned to them:
 ```
 
 The specification above, will make sure that `job` is built by a Runner that
-has both `ruby` AND `postgres` tags defined.
+has both `ruby` AND `postgres` tags defined. If a pipeline job has tags defined,
+but there are no runners registered with these tags, the job will not be picked
+up and it will remain in a `pending` state indefinitely.
 
 This parameter must be an array, even if it only contains a single tag.
 
