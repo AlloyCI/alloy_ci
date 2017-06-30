@@ -44,9 +44,15 @@ defmodule AlloyCi.Projects do
     end)
   end
 
-  def delete_project(id, user) do
+  def delete_by(id, user) do
     with {:ok, project} <- get_by(id, user) do
       Repo.delete(project)
+    end
+  end
+
+  def delete_by(id: id) do
+    with :ok <- Pipelines.delete_where(project_id: id) do
+      Project |> Repo.get(id) |> Repo.delete
     end
   end
 
