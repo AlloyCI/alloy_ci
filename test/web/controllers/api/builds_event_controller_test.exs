@@ -62,7 +62,7 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
   describe "update/4" do
     test "it updates the state of the build",  %{params: params} do
       build = insert(:full_build, status: "running")
-      params = Map.merge(params, %{state: "success", token: build.token})
+      params = Map.merge(params, %{state: "success", token: build.token, trace: "trace"})
 
       conn =
         build_conn()
@@ -73,6 +73,17 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
       assert conn.status == 200
       assert conn.resp_body =~ "OK"
       assert build.status == "success"
+    end
+
+    test "returns 403 when wrong token" do
+      build = insert(:full_build, status: "running")
+
+      conn =
+        build_conn()
+        |> put("/api/v4/jobs/#{build.id}", %{token: "token-1"})
+
+      assert conn.status == 403
+      assert conn.resp_body =~ "Forbidden"
     end
   end
 
@@ -95,6 +106,24 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
 
       assert conn.status == 202
       assert build.trace != nil
+    end
+
+    test "returns 403 when wrong token" do
+      build = insert(:full_build, status: "running")
+
+      raw_params =
+        "\x1b[0KRunning with gitlab-ci-multi-runner 9.1.1 (6104325) on localhost.lan (OFdlS21H)
+        \x1b[0;m\x1b[0KUsing Docker executor with image elixir:latest ...
+        \x1b[0;m"
+
+      conn =
+        build_conn()
+        |> put_req_header("job-token", "token-1")
+        |> put_req_header("content-type", "text/plain")
+        |> patch("/api/v4/jobs/#{build.id}/trace", raw_params)
+
+      assert conn.status == 403
+      assert conn.resp_body =~ "Forbidden"
     end
   end
 end
