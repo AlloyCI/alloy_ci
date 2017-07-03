@@ -31,11 +31,12 @@ branches, so you can always know their status, just like any other CI service.
 ## Features
 
 - [x] Basic CI functionality:
-  - [x] Can parse a basic `.alloy-ci.json` file correctly, and create build jobs accordingly
+  - [x] Can parse a basic [`.alloy-ci.json`](doc/json/README.md) file correctly, and create build jobs accordingly
   - [x] Can send the required build information to the runner for processing when requested
   - [x] Can receive status updates from runner
   - [x] Can report back to GitHub with the statuses
 - [ ] Advanced CI functionality
+  - [x] Can use a local build cache to speed up jobs
   - [ ] Can distinguishing between tags and branches
   - [ ] Can receive uploaded artifacts from runners
   - [ ] Can pass artifacts between build jobs
@@ -44,7 +45,7 @@ branches, so you can always know their status, just like any other CI service.
   - [ ] Can manually start deployments (manual actions)
   - [x] Can do auto deploys
   - [ ] Can start Review Apps
-- [x] Autoscaling Support (supported directly by the runner)
+- [x] [Autoscaling Support](doc/install/autoscaling.md) (supported directly by the runner)
   - [x] Can create runners on demand
   - [x] Can destroy runners when not in use
 
@@ -55,12 +56,3 @@ branches, so you can always know their status, just like any other CI service.
 ### Docker
 
 ### Manual  
-
-# To start your Phoenix app:
-
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.create && mix ecto.migrate`
-  * Install Node.js dependencies with `npm install`
-  * Start Phoenix endpoint with `mix phx.server`
-
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.

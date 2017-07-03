@@ -402,8 +402,6 @@ failure.
 1. `on_failure` - execute job only when at least one job from prior stages
     fails.
 1. `always` - execute job regardless of the status of jobs from prior stages.
-1. `manual` - execute job manually (added in GitLab 8.10). Read about
-    [manual actions](#manual-actions) below.
 
 For example:
 
@@ -435,13 +433,6 @@ For example:
       "make test"
     ]
   },
-  "deploy_job": {
-    "stage": "deploy",
-    "script": [
-      "make deploy"
-    ],
-    "when": "manual"
-  },
   "cleanup_job": {
     "stage": "cleanup",
     "script": [
@@ -457,7 +448,6 @@ The above script will:
 1. Execute `cleanup_build_job` only when `build_job` fails.
 2. Always execute `cleanup_job` as the last step in pipeline regardless of
    success or failure.
-3. Allow you to manually execute `deploy_job` from GitLab's UI.
 
 
 ### before_script and after_script
@@ -531,7 +521,7 @@ Note that for this feature to work correctly, the submodules must be configured
 
 ## Job stages attempts
 
-> Introduced in GitLab, it requires GitLab Runner v1.9+.
+> Requires GitLab Runner v1.9+.
 
 You can set the number for attempts the running job will try to execute each
 of the following stages:
@@ -569,8 +559,8 @@ capitalization, the pipeline and jobs will not be created.
 
 ## Examples
 
-Visit the [examples README][examples] to see a list of examples using GitLab
-CI with various languages.
+Visit the [examples README][examples] to see a list of examples using AlloyCI
+with various languages.
 
 [examples]: ../examples/README.md
 [variables]: ../variables/README.md
