@@ -59,6 +59,7 @@ defmodule AlloyCi.Accounts do
   def gravatar_url(user) do
     user.email
     |> Gravatar.new
+    |> Gravatar.secure
     |> to_string
   end
 
