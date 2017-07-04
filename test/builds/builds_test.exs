@@ -119,8 +119,8 @@ defmodule AlloyCi.BuildsTest do
     test "it returns the correct build that can be run by a certain runner", %{pipeline: pipeline, project: project} do
       insert(:build, pipeline_id: pipeline.id, stage_idx: 1, project_id: project.id)
 
-      build = insert(:build, pipeline_id: pipeline.id, stage_idx: 0, project_id: project.id, tags: ["elixir"])
-      runner = insert(:runner, tags: ["elixir", "ruby"])
+      build = insert(:build, pipeline_id: pipeline.id, stage_idx: 0, project_id: project.id, tags: ~w(elixir postgres))
+      runner = insert(:runner, tags: ~w(elixir postgres ruby))
       result = Builds.for_runner(runner)
 
       assert result.id == build.id
@@ -128,9 +128,9 @@ defmodule AlloyCi.BuildsTest do
 
     test "it returns nil if no build is found", %{pipeline: pipeline, project: project} do
       insert(:build, pipeline_id: pipeline.id, stage_idx: 0, status: "running", runner_id: 1, project_id: project.id)
-      insert(:build, pipeline_id: pipeline.id, stage_idx: 1, project_id: project.id)
+      insert(:build, pipeline_id: pipeline.id, stage_idx: 1, project_id: project.id, tags: ~w(ruby mysql))
 
-      runner = insert(:runner, tags: ["elixir", "ruby"])
+      runner = insert(:runner, tags: ~w(elixir ruby))
       result = Builds.for_runner(runner)
 
       assert result == nil
@@ -163,6 +163,7 @@ defmodule AlloyCi.BuildsTest do
       assert result == nil
     end
 
+    # TODO: Figure out how to test locks
     # test "it can handle conflicts" do
     #   build = insert(:full_build)
     #   runner = insert(:runner)

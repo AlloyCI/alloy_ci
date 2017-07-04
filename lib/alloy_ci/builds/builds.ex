@@ -120,8 +120,8 @@ defmodule AlloyCi.Builds do
   def for_runner(runner) do
     Build
     |> where([b], b.status == "pending" and is_nil(b.runner_id))
-    # Select builds that have a subset of the tags this runner has
-    |> where([b], fragment("? && ?", b.tags, ^runner.tags))
+    # Select builds whose tags are fully contained in the runner's tags
+    |> where([b], fragment("? <@ ?", b.tags, ^runner.tags))
     |> order_by(asc: :inserted_at)
     |> Repo.all
     |> List.first
@@ -265,20 +265,20 @@ defmodule AlloyCi.Builds do
 
   defp predefined_vars(build) do
     [
-      %{key: "CI", value: "true", public: true},
       %{key: "ALLOY_CI", value: "true", public: true},
-      %{key: "CI_SERVER_NAME", value: "AlloyCI", public: true},
-      %{key: "CI_SERVER_VERSION", value: AlloyCi.Mixfile.version, public: true},
-      %{key: "CI_SERVER_REVISION", value: AlloyCi.Mixfile.version, public: true},
+      %{key: "CI", value: "true", public: true},
+      %{key: "CI_COMMIT_REF_NAME", value: build.pipeline.ref, public: true},
+      %{key: "CI_COMMIT_REF_SLUG", value: build.pipeline.ref, public: true},
+      %{key: "CI_COMMIT_SHA", value: build.pipeline.sha, public: true},
       %{key: "CI_JOB_ID", value: Integer.to_string(build.id), public: true},
       %{key: "CI_JOB_NAME", value: build.name, public: true},
       %{key: "CI_JOB_STAGE", value: build.stage, public: true},
       %{key: "CI_JOB_TOKEN", value: build.token, public: false},
       %{key: "CI_PIPELINE_ID", value: Integer.to_string(build.project_id), public: true},
-      %{key: "CI_COMMIT_SHA", value: build.pipeline.sha, public: true},
-      %{key: "CI_COMMIT_REF_NAME", value: build.pipeline.ref, public: true},
-      %{key: "CI_COMMIT_REF_SLUG", value: build.pipeline.ref, public: true},
-      %{key: "CI_REPOSITORY_URL", value: @github_api.clone_url(build.project, build.pipeline), public: false}
+      %{key: "CI_REPOSITORY_URL", value: @github_api.clone_url(build.project, build.pipeline), public: false},
+      %{key: "CI_SERVER_NAME", value: "AlloyCI", public: true},
+      %{key: "CI_SERVER_VERSION", value: AlloyCi.Mixfile.version, public: true},
+      %{key: "CI_SERVER_REVISION", value: AlloyCi.Mixfile.version, public: true},
     ]
   end
 
