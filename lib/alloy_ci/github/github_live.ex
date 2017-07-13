@@ -8,7 +8,6 @@ defmodule AlloyCi.Github.Live do
   import Ecto.Query, warn: false
   alias AlloyCi.Repo
   import Joken
-  use Timex
 
   def alloy_ci_config(project, pipeline) do
     client = installation_client(pipeline)
@@ -35,6 +34,13 @@ defmodule AlloyCi.Github.Live do
     Tentacat.Repositories.list_mine(client, sort: "pushed")
   end
 
+  def installation_id_for(github_uid) do
+    github_uid
+    |> filter_installations()
+    |> List.first
+    |> Map.get("id")
+  end
+
   def integration_client do
     key = JOSE.JWK.from_pem(Application.get_env(:alloy_ci, :private_key))
     integration_id = Application.get_env(:alloy_ci, :integration_id)
@@ -51,16 +57,12 @@ defmodule AlloyCi.Github.Live do
   end
 
   def is_installed?(github_uid) do
-    result = Enum.reject(list_installations(), fn installation ->
-      installation["account"]["login"] != github_uid
-    end)
-
+    result = filter_installations(github_uid)
     !Enum.empty?(result)
   end
 
   def list_installations do
     client = integration_client()
-
     Tentacat.Integrations.Installations.app_installations(client)
   end
 
@@ -117,11 +119,17 @@ defmodule AlloyCi.Github.Live do
     "https://#{domain()}/#{project.owner}/#{project.name}/commit/#{pipeline.sha}"
   end
 
-  ##################
-  # Private funtions
-  ##################
+  ###################
+  # Private functions
+  ###################
   defp domain do
     Application.get_env(:alloy_ci, :github_domain)
+  end
+
+  defp filter_installations(github_uid) do
+    Enum.reject(list_installations(), fn installation ->
+      installation["account"]["login"] != github_uid
+    end)
   end
 
   defp installation_client(pipeline) do

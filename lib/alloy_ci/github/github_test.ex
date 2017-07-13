@@ -5,9 +5,6 @@ defmodule AlloyCi.Github.Test do
   """
   @behaviour AlloyCi.Github
 
-  import Ecto.Query, warn: false
-  alias AlloyCi.Repo
-
   def alloy_ci_config(_project, _pipeline) do
     contents = ".alloy-ci.json" |> File.read! |> :base64.encode
     %{"content" => contents}
@@ -26,6 +23,10 @@ defmodule AlloyCi.Github.Test do
     token = installation_token(pipeline.installation_id)
 
     "https://x-access-token:#{token["token"]}@#{domain()}/#{project.owner}/#{project.name}.git"
+  end
+
+  def installation_id_for(_) do
+    2190
   end
 
   def integration_client do
@@ -77,11 +78,7 @@ defmodule AlloyCi.Github.Test do
   end
 
   def repos_for(user) do
-    query = from auth in "authentications",
-              where: auth.user_id == ^user.id and auth.provider == "github",
-              select: auth.token
-    token = Repo.one(query)
-    fetch_repos(token)
+    fetch_repos(user)
   end
 
   def skip_ci?(commit_messsage) do
@@ -93,9 +90,9 @@ defmodule AlloyCi.Github.Test do
     "https://#{domain()}/#{project.owner}/#{project.name}/commit/#{pipeline.sha}"
   end
 
-  ##################
-  # Private funtions
-  ##################
+  ###################
+  # Private functions
+  ###################
   defp domain do
     Application.get_env(:alloy_ci, :github_domain)
   end

@@ -13,6 +13,8 @@ defmodule AlloyCi.Github do
 
   @callback fetch_repos(token :: String.t) :: Map.t
 
+  @callback installation_id_for(github_uid :: String.t) :: Integer.t
+
   @callback integration_client() :: any
 
   @callback is_installed?(github_uid :: String.t) :: boolean
