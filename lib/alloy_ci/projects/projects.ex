@@ -2,14 +2,32 @@ defmodule AlloyCi.Projects do
   @moduledoc """
   The boundary for the Projects system.
   """
-  alias AlloyCi.{Pipelines, Project, ProjectPermission, Repo}
+  alias AlloyCi.{Accounts, Pipelines, Project, ProjectPermission, Repo}
   import Ecto.Query
+
+  @github_api Application.get_env(:alloy_ci, :github_api)
 
   def all(params) do
     Project |> order_by([desc: :updated_at]) |> Repo.paginate(params)
   end
 
   def can_access?(id, user) do
+    with %Project{} = project <- get(id),
+         true <- project.private,
+         %ProjectPermission{} <- get_project_permission(id, user)
+    do
+      true
+    else
+      false ->
+        # Project is not private, so return true
+        true
+      nil ->
+        # Project is private and user does not have permission to access it
+        false
+    end
+  end
+
+  def can_manage?(id, user) do
     permission =
       ProjectPermission
       |> Repo.get_by(project_id: id, user_id: user.id)
@@ -21,31 +39,42 @@ defmodule AlloyCi.Projects do
   end
 
   def create_project(params, user) do
-    Repo.transaction(fn ->
-      changeset =
-        Project.changeset(
-          %Project{},
-          Enum.into(params, %{"token" => SecureRandom.urlsafe_base64(10)})
-        )
-
-      with {:ok, project} <- Repo.insert(changeset) do
-        permissions_changeset =
-          ProjectPermission.changeset(
-            %ProjectPermission{},
-            %{project_id: project.id, repo_id: project.repo_id, user_id: user.id}
+    installation_id = @github_api.installation_id_for(Accounts.github_auth(user).uid)
+    with %{"content" => _} <- @github_api.alloy_ci_config(
+                                %{name: params["name"], owner: params["owner"]},
+                                %{sha: "master", installation_id: installation_id}
+                              )
+    do
+      Repo.transaction(fn ->
+        changeset =
+          Project.changeset(
+            %Project{},
+            Enum.into(params, %{"token" => SecureRandom.urlsafe_base64(10)})
           )
-        case Repo.insert(permissions_changeset) do
-          {:ok, _} -> project
+
+        with {:ok, project} <- Repo.insert(changeset) do
+          permissions_changeset =
+            ProjectPermission.changeset(
+              %ProjectPermission{},
+              %{project_id: project.id, repo_id: project.repo_id, user_id: user.id}
+            )
+          case Repo.insert(permissions_changeset) do
+            {:ok, _} -> project
+            {:error, changeset} -> changeset |> Repo.rollback
+          end
+        else
           {:error, changeset} -> changeset |> Repo.rollback
         end
-      else
-        {:error, changeset} -> changeset |> Repo.rollback
-      end
-    end)
+      end)
+    else
+      _ -> {:missing_config, nil}
+    end
   end
 
   def delete_by(id, user) do
-    with {:ok, project} <- get_by(id, user) do
+    with {:ok, project} <- get_by(id, user),
+         :ok <- Pipelines.delete_where(project_id: id)
+    do
       Repo.delete(project)
     end
   end
@@ -72,21 +101,6 @@ defmodule AlloyCi.Projects do
     end
   end
 
-  def get_by(id, user, params) do
-    permission =
-      ProjectPermission
-      |> Repo.get_by(project_id: id, user_id: user.id)
-      |> Repo.preload(:project)
-
-    case permission do
-      %ProjectPermission{} ->
-        project = permission.project
-        {pipelines, kerosene} = Pipelines.paginated(id, params)
-        {:ok, {project, pipelines, kerosene}}
-      _ -> {:error, nil}
-    end
-  end
-
   def get_by(repo_id: id) do
     Project
     |> Repo.get_by(repo_id: id)
@@ -106,7 +120,7 @@ defmodule AlloyCi.Projects do
   end
 
   def latest(user) do
-    query = from pp in ProjectPermission,
+    query = from pp in "project_permissions",
             where: pp.user_id == ^user.id,
             join: p in Project, on: p.id == pp.project_id,
             order_by: [desc: p.updated_at], limit: 5,
@@ -137,10 +151,36 @@ defmodule AlloyCi.Projects do
     end
   end
 
+  def show_by(id, user, params) do
+    project = get(id)
+
+    with %Project{} <- project,
+         true <- project.private,
+         %ProjectPermission{} <- get_project_permission(id, user)
+    do
+      {pipelines, kerosene} = Pipelines.paginated(id, params)
+      {:ok, {project, pipelines, kerosene}}
+    else
+      false ->
+        {pipelines, kerosene} = Pipelines.paginated(id, params)
+        {:ok, {project, pipelines, kerosene}}
+      nil ->
+        {:error, nil}
+    end
+  end
+
   def touch(id) do
     Project
     |> Repo.get_by(id: id)
     |> Project.changeset
     |> Repo.update(force: true)
+  end
+
+  ###################
+  # Private functions
+  ###################
+  defp get_project_permission(id, user) do
+    ProjectPermission
+    |> Repo.get_by(project_id: id, user_id: user.id)
   end
 end

@@ -60,13 +60,10 @@ defmodule AlloyCi.Pipelines do
     |> Repo.all
   end
 
-  def get(id) do
-    Pipeline
-    |> Repo.get(id)
-  end
+  def get(id), do: Pipeline |> Repo.get(id)
 
   def get_pipeline(id, project_id, user) do
-    with true <- Projects.can_access?(project_id, user) do
+    with true <- Projects.can_manage?(project_id, user) do
       Pipeline
       |> where(project_id: ^project_id)
       |> Repo.get(id)
@@ -75,8 +72,8 @@ defmodule AlloyCi.Pipelines do
   end
 
   def get_with_project(id) do
-    Pipeline
-    |> Repo.get_by(id: id)
+    id
+    |> get()
     |> Repo.preload(:project)
   end
 
@@ -90,6 +87,15 @@ defmodule AlloyCi.Pipelines do
   def run!(pipeline) do
     if pipeline.status == "pending" do
       update_pipeline(pipeline, %{status: "running", started_at: Timex.now})
+    end
+  end
+
+  def show_pipeline(id, project_id, user) do
+    with true <- Projects.can_access?(project_id, user) do
+      Pipeline
+      |> where(project_id: ^project_id)
+      |> Repo.get(id)
+      |> Repo.preload(:project)
     end
   end
 
@@ -142,13 +148,14 @@ defmodule AlloyCi.Pipelines do
     end
   end
 
-  ##################
-  # Private funtions
-  ##################
+  ###################
+  # Private functions
+  ###################
   defp clone(pipeline) do
     pipeline
     |> Map.drop([:id, :inserted_at, :updated_at, :builds, :project, :status])
     |> Map.merge(%{builds: []})
+    |> Pipeline.changeset
     |> Repo.insert
   end
 end

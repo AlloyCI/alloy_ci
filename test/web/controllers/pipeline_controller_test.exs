@@ -2,11 +2,11 @@ defmodule AlloyCi.Web.PipelineControllerTest do
   @moduledoc """
   """
   use AlloyCi.Web.ConnCase
-  alias AlloyCi.Pipelines
+  alias AlloyCi.{Pipelines, Project, Repo}
   import AlloyCi.Factory
 
   setup do
-    project = insert(:project)
+    project = insert(:project, private: true)
     pipeline = insert(:clean_pipeline, project: project)
     user = insert(:user)
     insert(:clean_project_permission, project: project, user: user)
@@ -51,5 +51,17 @@ defmodule AlloyCi.Web.PipelineControllerTest do
       |> get("/projects/#{project.id}/pipelines/#{pipeline.id}")
 
     assert html_response(conn, 302) =~ "redirected"
+  end
+
+  test "it shows the pipeline if project is public", %{project: project, pipeline: pipeline} do
+    project |> Project.changeset(%{private: false}) |> Repo.update
+    
+    conn =
+      :user
+      |> insert()
+      |> guardian_login(:access)
+      |> get("/projects/#{project.id}/pipelines/#{pipeline.id}")
+
+    assert html_response(conn, 200) =~ "#{pipeline.commit["message"]}"
   end
 end

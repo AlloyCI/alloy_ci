@@ -9,7 +9,9 @@ defmodule AlloyCi.Web.ProjectControllerTest do
   @invalid_attrs %{repo_id: nil}
 
   setup do
-    {:ok, %{user: insert(:user_with_project)}}
+    user = insert(:user_with_project)
+    insert(:github_auth, user: user)
+    {:ok, %{user: user}}
   end
 
   test "lists all entries on index", %{user: user} do
@@ -63,7 +65,7 @@ defmodule AlloyCi.Web.ProjectControllerTest do
       |> guardian_login(:access)
       |> get(project_path(build_conn(), :edit, project))
 
-    assert html_response(conn, 200) =~ "Edit project"
+    assert html_response(conn, 200) =~ "Project Settings"
   end
 
   test "updates chosen resource and redirects when data is valid", %{user: user} do
@@ -73,7 +75,7 @@ defmodule AlloyCi.Web.ProjectControllerTest do
       |> guardian_login(:access)
       |> put(project_path(build_conn(), :update, project), project: @valid_attrs)
 
-    assert redirected_to(conn) == project_path(conn, :show, project)
+    assert redirected_to(conn) == project_path(conn, :edit, project)
     assert Repo.get_by(Project, @valid_attrs)
   end
 
@@ -84,7 +86,7 @@ defmodule AlloyCi.Web.ProjectControllerTest do
       |> guardian_login(:access)
       |> put(project_path(build_conn(), :update, project), project: @invalid_attrs)
 
-    assert html_response(conn, 200) =~ "Edit project"
+    assert html_response(conn, 200) =~ "Project Settings"
   end
 
   test "deletes chosen resource", %{user: user} do

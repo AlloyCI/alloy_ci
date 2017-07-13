@@ -1,7 +1,7 @@
 defmodule AlloyCi.Web.ProjectController do
   use AlloyCi.Web, :controller
-
   alias AlloyCi.{ExqEnqueuer, Project, Projects, Repo, Workers}
+  import Phoenix.HTML.Link
 
   plug EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access"
 
@@ -22,7 +22,11 @@ defmodule AlloyCi.Web.ProjectController do
         conn
         |> put_flash(:info, "Project created successfully.")
         |> redirect(to: project_path(conn, :show, project))
-      {:error, _changeset} ->
+      {:missing_config, _} ->
+        conn
+        |> put_flash(:error, ["The selected project doesn't have an .alloy-ci.json config file. Please see the ", link("docs", to: "https://github.com/AlloyCI/alloy_ci/tree/master/doc"), " for info on how to add one."])
+        |> redirect(to: project_path(conn, :index))
+      {:error, _} ->
         conn
         |> put_flash(:error, "There was an error creating your project. Please try again.")
         |> redirect(to: project_path(conn, :index))
@@ -30,7 +34,7 @@ defmodule AlloyCi.Web.ProjectController do
   end
 
   def show(conn, %{"id" => id} = params, current_user, _claims) do
-    case Projects.get_by(id, current_user, %{"page" => params["page"]}) do
+    case Projects.show_by(id, current_user, %{"page" => params["page"]}) do
       {:ok, {project, pipelines, kerosene}} ->
         render(conn, "show.html", project: project, pipelines: pipelines,
                kerosene: kerosene, current_user: current_user)
@@ -62,7 +66,7 @@ defmodule AlloyCi.Web.ProjectController do
           {:ok, project} ->
             conn
             |> put_flash(:info, "Project updated successfully.")
-            |> redirect(to: project_path(conn, :show, project))
+            |> redirect(to: project_path(conn, :edit, project))
           {:error, changeset} ->
             render(conn, "edit.html", project: project, changeset: changeset, current_user: current_user)
         end
@@ -74,7 +78,7 @@ defmodule AlloyCi.Web.ProjectController do
   end
 
   def delete(conn, %{"id" => id}, current_user, _claims) do
-    case Projects.delete_project(id, current_user) do
+    case Projects.delete_by(String.to_integer(id), current_user) do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Project deleted successfully.")
