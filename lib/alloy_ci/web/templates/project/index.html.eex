@@ -53,7 +53,8 @@
               <div class="row">
                 <%= for project <- @projects do %>
                   <div class="col-sm-6 col-lg-4 col-xl-3" id="card-<%= project.repo_id %>">
-                    <div class="card <%= card_status(Projects.last_status(project))%>">
+                    <% status = Projects.last_status(project) %>
+                    <div class="card <%= card_status(status)%>">
                       <div class="card-block project-card" data-url="<%= project_path(@conn, :show, project) %>">
                         <div class="btn-group pull-right">
                           <%= link to: project_path(@conn, :edit, project), class: "btn btn-warning p-a-0" do %>
@@ -73,7 +74,7 @@
                           <%= project.owner %>
                         </small>
                         <small class="text-muted text-uppercase font-weight-bold pull-right">
-                          Last status: <%= String.capitalize(Projects.last_status(project)) %>
+                          Last status: <%= String.capitalize(status) %>
                         </small>
                       </div>
                     </div>

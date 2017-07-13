@@ -56,7 +56,10 @@
                   <% end %>
                 </div>
                 <%= paginate @conn, @kerosene %>
-                <%= link "Edit", to: project_path(@conn, :edit, @project), class: "btn btn-warning btn-sm" %>
+                <%= link to: project_path(@conn, :edit, @project), class: "btn btn-warning btn-sm" do %>
+                  <%= icon("cogs") %>
+                  Settings
+                <% end %>
                 <%= link "Back", to: project_path(@conn, :index), class: "btn btn-outline-info btn-sm" %>
               </div>
             </div>

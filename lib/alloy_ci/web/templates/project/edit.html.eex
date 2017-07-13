@@ -1,6 +1,28 @@
-<h2>Edit project</h2>
+<div class="container-fluid">
+  <div class="animated fadeIn">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header">
+            <strong><%= @project.name %> |> Project Settings</strong>
+          </div>
+          <div class="card-block">
+            <%= render "edit_form.html", changeset: @changeset,
+                                    action: project_path(@conn, :update, @project) %>
+          </div>
+        </div>
+      </div>
 
-<%= render "edit_form.html", changeset: @changeset,
-                        action: project_path(@conn, :update, @project) %>
-
-<%= link "Back", to: project_path(@conn, :index) %>
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header">
+            <strong>Project specific runners</strong>
+          </div>
+          <div class="card-block">
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

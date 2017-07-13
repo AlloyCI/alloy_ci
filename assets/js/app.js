@@ -12,6 +12,7 @@
 // If you no longer want to use a dependency, remember
 // to also remove its path from "config.paths.watched".
 import "phoenix_html"
+import "chart.js"
 
 // Import local files
 //
@@ -21,6 +22,7 @@ import "phoenix_html"
 import "./builds"
 import "./core-ui"
 import "./landing"
+import "./projects"
 import "./repos"
 
 $('[data-submit="parent"]').click(function(e) {

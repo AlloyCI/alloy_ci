@@ -67,7 +67,7 @@ defmodule AlloyCi.Web do
       use Phoenix.HTML
 
       import AlloyCi.Web.Router.Helpers
-      import AlloyCi.Web.{ErrorHelpers, Gettext, ViewHelpers}
+      import AlloyCi.Web.{ErrorHelpers, Gettext, InputHelpers, ViewHelpers}
     end
   end
 
