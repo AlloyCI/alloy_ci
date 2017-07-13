@@ -13,6 +13,7 @@ defmodule AlloyCi.Web.Admin.SessionController do
   # we have everything we need to check email / passwords and oauth already
   # but we only want to provide access for folks using email/pass
   plug Ueberauth, base_path: "/admin/auth", providers: [:identity]
+  plug :put_layout, "login_layout.html"
 
   # Make sure that we have a valid token in the :admin area of the session
   # We've aliased Guardian.Plug.EnsureAuthenticated in our AlloyCi.Web.admin_controller macro

@@ -9,12 +9,18 @@
     <li class="nav-item px-1">
       <%= link "Projects", to: project_path(@conn, :index), class: "nav-link" %>
     </li>
-    <li class="nav-item px-1">
-      <a class="nav-link" href="#">Users</a>
-    </li>
-    <li class="nav-item px-1">
-      <a class="nav-link" href="#">Settings</a>
-    </li>
+
+    <%= if @current_user.is_admin do %>
+      <li class="nav-item px-1">
+        <%= link "Users", to: admin_user_path(@conn, :index), class: "nav-link" %>
+      </li>
+      <li class="nav-item px-1">
+        <%= link "Runners", to: admin_runner_path(@conn, :index), class: "nav-link" %>
+      </li>
+      <li class="nav-item px-1">
+        <a class="nav-link" href="#">Settings</a>
+      </li>
+    <% end %>
   </ul>
 
   <ul class="nav navbar-nav ml-auto">
@@ -40,7 +46,7 @@
         <% end %>
         <%= link to: project_path(@conn, :index), class: "dropdown-item" do %>
           <i class="fa fa-file"></i> Projects<span class="badge badge-primary">42</span>
-        <% end %>  
+        <% end %>
         <div class="divider"></div>
         <%= link to: auth_path(@conn, :logout), method: :delete, class: "dropdown-item" do %>
           <i class="fa fa-lock"></i> Logout</a>

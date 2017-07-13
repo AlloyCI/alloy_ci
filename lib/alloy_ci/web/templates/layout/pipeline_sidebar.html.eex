@@ -25,23 +25,25 @@
           <% end %>
         <% end %>
       <% end %>
-      <li class="nav-title">Actions</li>
-      <li class="nav-item">
-        <%= case @pipeline.status do %>
-          <% s when s in ~w(pending running) -> %>
-            <%= link to: project_pipeline_path(@conn, :delete, @pipeline.project_id, @pipeline), method: :delete, class: "nav-link" do %>
-              <%= icon("ban") %> Cancel pipeline
-            <% end %>
-          <% s when s in ~w(failed cancelled) -> %>
-            <%= link to: project_pipeline_path(@conn, :create, @pipeline.project_id, %{id: @pipeline.id}), method: :post, class: "nav-link" do %>
-              <%= icon("refresh") %> Restart pipeline
-            <% end %>
-          <% _ -> %>
-            <a class="nav-link">
-              <%= icon("heart") %> All good here
-            </a>
-        <% end %>
-      </li>
+      <%= if can_manage?(@pipeline, @current_user) do %>
+        <li class="nav-title">Actions</li>
+        <li class="nav-item">
+          <%= case @pipeline.status do %>
+            <% s when s in ~w(pending running) -> %>
+              <%= link to: project_pipeline_path(@conn, :delete, @pipeline.project_id, @pipeline), method: :delete, class: "nav-link" do %>
+                <%= icon("ban") %> Cancel pipeline
+              <% end %>
+            <% s when s in ~w(failed cancelled) -> %>
+              <%= link to: project_pipeline_path(@conn, :create, @pipeline.project_id, %{id: @pipeline.id}), method: :post, class: "nav-link" do %>
+                <%= icon("refresh") %> Restart pipeline
+              <% end %>
+            <% _ -> %>
+              <a class="nav-link">
+                <%= icon("heart") %> All good here
+              </a>
+          <% end %>
+        </li>
+      <% end %>
     </ul>
   </nav>
 </div>
