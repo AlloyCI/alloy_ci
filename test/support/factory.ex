@@ -59,6 +59,15 @@ defmodule AlloyCi.Factory do
     }
   end
 
+  def github_auth_factory do
+    %Authentication{
+      uid: sequence(:uid, &"uid-#{&1}"),
+      user: build(:user),
+      provider: "github",
+      token: Comeonin.Bcrypt.hashpwsalt("sekrit")
+    }
+  end
+
   def guardian_token_factory do
     %GuardianToken{
       jti: sequence(:jti, &"jti-#{&1}"),
