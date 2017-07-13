@@ -1,0 +1,118 @@
+<div class="container-fluid">
+  <div class="animated fadeIn">
+    <div class="row">
+      <div class="col-sm-12 col-xl-5">
+        <div class="card">
+          <div class="card-header">
+            <strong>Add new runner</strong>
+          </div>
+          <div class="card-block">
+            <h5>Runners allow you to execute and build your pipelines.</h5>
+            <hr>
+            <p>To add a global runner to AlloyCI, please follow these steps:</p>
+            <div class="m-b-2">
+              <b>Download and install the GitLab CI Runner for your operating system</b>
+              <hr>
+              Go to link
+            </div>
+            <div class="m-b-2">
+              <b>Register the runner</b>
+              <hr>
+              <p>
+                Once installed, run <code>gitlab-runner register</code> to start the
+                registration process
+              </p>
+              <p>
+                The registration wizard will ask you for information about the
+                coordinator. This is the AlloyCI server.
+                <ul>
+                  <li>As coordinator URL, enter <code><%= server_url() %></code></li>
+                  <li>As token, enter <code><%= global_token() %></code></li>
+                  <li>
+                    The description can be anything that will help you recognize
+                    this runner.
+                  </li>
+                  <li>
+                    If you would like this runner to process only certain builds,
+                    you can enter tags that will restrict the kind of builds this
+                    runner is able to pick up, e.g. <code>elixir</code>,
+                    <code>ios</code>,
+                    etc.
+                  </li>
+                  <li>
+                    If you add tags to the runner, the wizard will ask you if you
+                    would like to run untagged builds as well. The runner will prioritize
+                    builds that have a sub-set of its tags, but will also be able
+                    to pick up any builds.
+                  </li>
+                  <li>
+                    The wizard will also ask you if you want to lock the runner
+                    to a specific project. In this case it doesn't apply, it only
+                    applies if registering the runner with a project specific token.
+                  </li>
+                  <li>
+                    Finally, the wizard will ask you to select the executor type.
+                    You can choose between
+                    <code>
+                      docker-ssh+machine, docker, shell, docker+machine,
+                      virtualbox, kubernetes, docker-ssh, parallels, ssh
+                    </code>
+                    <br>
+                    For more information about the different executors, please have
+                    a look at the documentation <a href="https://github.com/AlloyCI/alloy_ci/tree/master/doc/runners/executors" target="_blank">here.</a>
+                  </li>
+                </ul>
+              </p>
+            </div>
+            <hr/>
+            <h6>Project specific runners can be added from their settings page.</h6>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-12 col-xl-7">
+        <div class="card">
+          <div class="card-header">
+            <strong>Registered Runners</strong>
+          </div>
+          <div class="card-block">
+            <div class="row">
+              <%= for runner <- @runners do %>
+                <div class="col-sm-6 col-lg-4">
+                  <div class="card">
+                    <div class="card-block project-card" data-url="<%= admin_runner_path(@conn, :show, runner) %>">
+                      <div class="btn-group pull-right">
+                        <%= link to: admin_runner_path(@conn, :delete, runner), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger p-a-0" do %>
+                          <%= icon("trash") %>
+                        <% end %>
+                      </div>
+                      <div class="h2 text-muted text-xs-right">
+                        <%= icon("cog") %>
+                      </div>
+                      <div class="h5 m-b-0">
+                        <div class="filter inline">
+                          <%= runner.description %>
+                        </div>
+                        <small class="text-muted font-weight-bold pull-right">
+                          <%= runner.version %>
+                        </small>
+                      </div>
+                      <small class="text-muted font-weight-bold">
+                        <b>Platform:</b> <%= runner.platform %>
+                      </small>
+                      <br>
+                      <small class="text-muted font-weight-bold">
+                        <b>Global?:</b> <%= runner.global %>
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+            <%= paginate @conn, @kerosene %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

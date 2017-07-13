@@ -1,0 +1,18 @@
+<div class="container-fluid">
+  <div class="animated fadeIn">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header">
+            <strong><%= @project.name %> |> Project</strong>
+          </div>
+          <div class="card-block">
+            <canvas class="chart" data-set="<%= builds_chart(@project) %>"
+                    data-title="Project's Build statistics" data-axis="Number of processed builds"
+                    data-label="Week of" data-type="line"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

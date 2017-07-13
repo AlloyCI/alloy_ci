@@ -92,7 +92,9 @@ defmodule AlloyCi.Web.Router do
     post "/impersonate/:user_id", SessionController, :impersonate, as: :impersonation
     delete "/impersonate", SessionController, :stop_impersonating
 
-    resources "/users", UserController
+    resources "/users", UserController, only: [:index, :show, :delete]
+    resources "/projects", ProjectController, only: [:index, :show, :delete]
+    resources "/runners", RunnerController, only: [:index, :show, :delete]
   end
 
   scope "/api/github", AlloyCi.Web.Api, as: :api do

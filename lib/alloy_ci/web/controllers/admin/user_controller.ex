@@ -7,9 +7,9 @@ defmodule AlloyCi.Web.Admin.UserController do
   # We've aliased Guardian.Plug.EnsureAuthenticated in our AlloyCi.Web.admin_controller macro
   plug EnsureAuthenticated, handler: __MODULE__, key: :admin
 
-  def index(conn, _params, current_user, _claims) do
-    users = Repo.all(User)
-    render conn, "index.html", users: users, current_user: current_user
+  def index(conn, params, current_user, _claims) do
+    {users, kerosene} = User |> Repo.paginate(params)
+    render conn, "index.html", kerosene: kerosene, users: users, current_user: current_user
   end
 
   def unauthenticated(conn, _params) do
