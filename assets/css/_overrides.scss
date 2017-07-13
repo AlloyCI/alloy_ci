@@ -4,6 +4,7 @@
 
 .alert-margin {
   margin-top: 46px;
+  margin-bottom: 0 !important;
 }
 
 .margin-right-imp {
@@ -16,6 +17,10 @@
 
 .m-b-2, .m-y-2 {
   margin-bottom: 1.5rem !important;
+}
+
+.m-r-1 {
+  margin-right: 0.5rem !important;
 }
 
 .m-x-auto {
@@ -56,31 +61,26 @@
 .success-background {
   background-color: #E4F2E4;
   min-height: 70px;
-  margin: 0 !important;
 }
 
 .failed-background {
   background-color: #F2E4E4;
   min-height: 70px;
-  margin: 0 !important;
 }
 
 .pending-background {
   background-color: #eaeef2;
   min-height: 70px;
-  margin: 0 !important;
 }
 
 .cancelled-background {
   background-color: #d2d6d9;
   min-height: 70px;
-  margin: 0 !important;
 }
 
 .running-background {
   background-color: #fef9e5;
   min-height: 70px;
-  margin: 0 !important;
 }
 
 .commmit-avatar {
