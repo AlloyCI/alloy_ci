@@ -11,9 +11,10 @@ defmodule AlloyCi.Project do
     field :tags, {:array, :string}
     field :token, :string
 
-    has_many :project_permissions, AlloyCi.ProjectPermission
-    has_many :users, through: [:project_permissions, :user]
     has_many :pipelines, AlloyCi.Pipeline
+    has_many :project_permissions, AlloyCi.ProjectPermission
+    has_many :runners, AlloyCi.Runner
+    has_many :users, through: [:project_permissions, :user]
 
     timestamps()
   end

@@ -61,7 +61,7 @@ defmodule AlloyCi.AccountsTest do
       refresh_token: @refresh_token,
       expires_at: Guardian.Utils.timestamp + 500
     }
-    {:ok, _authentication} =
+    {:ok, _} =
       user
       |> Ecto.build_assoc(:authentications)
       |> Authentication.changeset(params)
@@ -156,7 +156,7 @@ defmodule AlloyCi.AccountsTest do
       expires_at: Guardian.Utils.timestamp + 500
     }
 
-    {:ok, _authentication} =
+    {:ok, _} =
       user
       |> Ecto.build_assoc(:authentications)
       |> Authentication.changeset(params)

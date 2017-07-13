@@ -38,6 +38,12 @@ defmodule AlloyCi.Runners do
     end
   end
 
+  def delete_by(id: id) do
+    Runner
+    |> Repo.get(id)
+    |> Repo.delete
+  end
+
   def delete_by(token: token) do
     Runner
     |> Repo.get_by(token: token)
@@ -46,27 +52,9 @@ defmodule AlloyCi.Runners do
     FunctionClauseError -> nil
   end
 
-  def delete_by(id: id) do
-    Runner
-    |> Repo.get(id)
-    |> Repo.delete
-  end
-
-  def save(params) do
-    %Runner{}
-    |> Runner.changeset(params)
-    |> Repo.insert
-  end
-
   def get(id), do: Runner |> Repo.get(id)
 
   def get_by(token: token), do: Runner |> Repo.get_by(token: token)
-
-  def update_info(runner, params) do
-    runner
-    |> Runner.changeset(params)
-    |> Repo.update
-  end
 
   def register_job(%{project_id: nil, tags: nil} = runner) do
     Builds.to_process
@@ -101,9 +89,21 @@ defmodule AlloyCi.Runners do
     |> Builds.start_build(runner)
   end
 
-  ##################
-  # Private funtions
-  ##################
+  def save(params) do
+    %Runner{}
+    |> Runner.changeset(params)
+    |> Repo.insert
+  end
+
+  def update_info(runner, params) do
+    runner
+    |> Runner.changeset(params)
+    |> Repo.update
+  end
+
+  ###################
+  # Private functions
+  ###################
   defp runner_params(params, runner_info) do
     tags =
       case String.split(params["tag_list"] || "", ", ") do

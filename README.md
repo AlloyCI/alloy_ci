@@ -45,7 +45,7 @@ branches, so you can always know their status, just like any other CI service.
   - [ ] Can manually start deployments (manual actions)
   - [x] Can do auto deploys
   - [ ] Can start Review Apps
-- [x] [Autoscaling Support](doc/install/autoscaling.md) (supported directly by the runner)
+- [x] [Autoscaling Support](doc/runners/install/autoscaling.md) (supported directly by the runner)
   - [x] Can create runners on demand
   - [x] Can destroy runners when not in use
 

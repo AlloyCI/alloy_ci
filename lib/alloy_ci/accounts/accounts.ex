@@ -77,9 +77,9 @@ defmodule AlloyCi.Accounts do
     end
   end
 
-  ##################
-  # Private funtions
-  ##################
+  ###################
+  # Private functions
+  ###################
   defp auth_and_validate(%{provider: :identity} = auth) do
     case Repo.get_by(Authentication, uid: uid_from_auth(auth), provider: to_string(auth.provider)) do
       nil ->

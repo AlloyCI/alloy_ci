@@ -29,7 +29,7 @@ defmodule AlloyCi.Builds do
               where: b.pipeline_id == ^pipeline.id and b.stage_idx == ^stage_idx,
               order_by: [asc: :id],
               select: %{id: b.id, name: b.name, project_id: b.project_id, status: b.status}
-      %{"#{stage}" => Repo.all(query)}
+      %{stage => Repo.all(query)}
     end)
   end
 
@@ -127,10 +127,7 @@ defmodule AlloyCi.Builds do
     |> List.first
   end
 
-  def get(id) do
-    Build
-    |> Repo.get(id)
-  end
+  def get(id), do: Build |> Repo.get(id)
 
   def get_build(id, project_id, user) do
     with true <- Projects.can_access?(project_id, user) do
@@ -141,9 +138,7 @@ defmodule AlloyCi.Builds do
   end
 
   def get_by(id, token) do
-    build =
-      Build
-      |> Repo.get(id)
+    build = get(id)
 
     if build.token == token do
       {:ok, build}
@@ -206,9 +201,9 @@ defmodule AlloyCi.Builds do
     |> Repo.update
   end
 
-  ##################
-  # Private funtions
-  ##################
+  ###################
+  # Private functions
+  ###################
   defp append!(build, trace) do
     new_trace = "\n#{trace}\n"
 
@@ -259,9 +254,7 @@ defmodule AlloyCi.Builds do
     }
   end
 
-  defp generate_token do
-    SecureRandom.urlsafe_base64(10)
-  end
+  defp generate_token, do: SecureRandom.urlsafe_base64(10)
 
   defp predefined_vars(build) do
     [
