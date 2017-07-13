@@ -42,11 +42,13 @@
     <%= render "sidebar.html", current_user: @current_user, conn: @conn %>
 
     <!-- Main content -->
-    <main class="main padding-top">
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+    <main class="main">
+      <p class="alert alert-info fade show" role="alert"><%= render_flash(@conn, :info) %></p>
+      <p class="alert alert-danger fade show" role="alert"><%= render_flash(@conn, :error) %></p>
 
-      <%= render @view_module, @view_template, assigns %>
+      <div class="padding-top">
+        <%= render @view_module, @view_template, assigns %>
+      </div>
     </main>
     <%= render "right_menu.html", current_user: @current_user, conn: @conn %>
   </div>

@@ -61,6 +61,15 @@ defmodule AlloyCi.Web.ViewHelpers do
     end
   end
 
+  def render_flash(conn, type) do
+    flash = Phoenix.Controller.get_flash(conn, type)
+    if flash do
+      [content_tag :button, class: "close", data: [dismiss: "alert"] do
+        content_tag :span, "✖"
+      end, flash]
+    end
+  end
+
   def repo_icon("User"), do: icon("user")
   def repo_icon("Organization"), do: icon("users")
 

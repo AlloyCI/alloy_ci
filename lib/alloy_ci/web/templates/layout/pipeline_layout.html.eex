@@ -44,8 +44,8 @@
     <!-- Main content -->
     <main class="main">
       <%= render "pipeline_info.html", conn: @conn, pipeline: @pipeline %>
-      <p class="alert alert-margin alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-      <p class="alert alert-margin alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+      <p class="alert alert-margin alert-info fade show" role="alert"><%= render_flash(@conn, :info) %></p>
+      <p class="alert alert-margin alert-danger fade show" role="alert"><%= render_flash(@conn, :error) %></p>
 
       <%= render @view_module, @view_template, assigns %>
     </main>
