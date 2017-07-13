@@ -11,21 +11,22 @@ defmodule AlloyCi.Workers.FetchReposWorker do
       |> Accounts.get_user!
       |> Accounts.github_auth
 
-    rendered_content =
-      Phoenix.View.render_to_string(
-        ProjectView,
-        "repos.html",
-        existing_ids: ProjectPermission.existing_ids,
-        is_installed: @github_api.is_installed?(auth.uid),
-        repos: @github_api.fetch_repos(auth.token),
-        changeset: Project.changeset(%Project{}),
-        csrf: csrf_token
-      )
-
     AlloyCi.Web.Endpoint.broadcast(
       "repos:#{user_id}",
       "repos_ready",
-      %{html: rendered_content}
+      %{html: rendered_content(auth, csrf_token)}
+    )
+  end
+
+  def rendered_content(auth, csrf_token) do
+    Phoenix.View.render_to_string(
+      ProjectView,
+      "repos.html",
+      existing_ids: ProjectPermission.existing_ids,
+      is_installed: @github_api.is_installed?(auth.uid),
+      repos: @github_api.fetch_repos(auth.token),
+      changeset: Project.changeset(%Project{}),
+      csrf: csrf_token
     )
   end
 end
