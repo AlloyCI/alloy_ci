@@ -47,8 +47,10 @@ if(document.querySelector("#output")) {
     })
 
     channel.on("replace_trace", data => {
-      trace_update(data);
-      $(window).scrollTop($(document).height())
+      setTimeout(function(){
+        window.location.reload(true)
+        $(this).click()
+      }, 1500)
     })
   })
 }
