@@ -1,6 +1,6 @@
 defmodule AlloyCi.Web.ProjectController do
   use AlloyCi.Web, :controller
-  alias AlloyCi.{Queuer, Project, Projects, Repo, Workers}
+  alias AlloyCi.{Queuer, Project, Projects, Workers}
   import Phoenix.HTML.Link
 
   plug EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access"

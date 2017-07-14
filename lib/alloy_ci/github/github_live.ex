@@ -87,7 +87,7 @@ defmodule AlloyCi.Github.Live do
   def notify_success!(project, pipeline) do
     params = %{
       state: "success",
-      description: "Pipleine succeeded"
+      description: "Pipeline succeeded"
     }
 
     notify!(project, pipeline, params)
