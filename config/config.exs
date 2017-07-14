@@ -61,20 +61,6 @@ config :guardian_db, GuardianDb,
   repo: AlloyCi.Repo,
   sweep_interval: 60 # 60 minutes
 
-config :exq,
-  name: Exq,
-  url: System.get_env("REDIS_URL"),
-  concurrency: :infinite,
-  queues: ["default"],
-  poll_timeout: 50,
-  scheduler_poll_timeout: 200,
-  scheduler_enable: true,
-  max_retries: 25,
-  shutdown_timeout: 5000
-
-config :exq_ui,
-  server: false
-
 config :tentacat,
   :extra_headers, [{"Accept", "application/vnd.github.machine-man-preview+json"}]
 

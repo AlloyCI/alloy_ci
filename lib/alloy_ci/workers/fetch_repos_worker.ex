@@ -1,11 +1,12 @@
 defmodule AlloyCi.Workers.FetchReposWorker do
   @moduledoc """
   """
+  use Que.Worker
   alias AlloyCi.{Accounts, Project, ProjectPermission, Web.ProjectView}
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
-  def perform(user_id, csrf_token) do
+  def perform({user_id, csrf_token}) do
     auth =
       user_id
       |> Accounts.get_user!

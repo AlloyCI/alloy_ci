@@ -1,6 +1,6 @@
 defmodule AlloyCi.Web.ProjectController do
   use AlloyCi.Web, :controller
-  alias AlloyCi.{ExqEnqueuer, Project, Projects, Repo, Workers}
+  alias AlloyCi.{Queuer, Project, Projects, Repo, Workers}
   import Phoenix.HTML.Link
 
   plug EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access"
@@ -11,7 +11,7 @@ defmodule AlloyCi.Web.ProjectController do
   end
 
   def new(conn, _params, current_user, _claims) do
-    ExqEnqueuer.push(Workers.FetchReposWorker, [current_user.id, get_csrf_token()], max_retries: 0)
+    Queuer.push(Workers.FetchReposWorker, {current_user.id, get_csrf_token()})
 
     render(conn, "new.html", current_user: current_user)
   end
@@ -60,9 +60,7 @@ defmodule AlloyCi.Web.ProjectController do
   def update(conn, %{"id" => id, "project" => project_params}, current_user, _claims) do
     case Projects.get_by(id, current_user) do
       {:ok, project} ->
-        changeset = Project.changeset(project, project_params)
-
-        case Repo.update(changeset) do
+        case Projects.update(project, project_params) do
           {:ok, project} ->
             conn
             |> put_flash(:info, "Project updated successfully.")

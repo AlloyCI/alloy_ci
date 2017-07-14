@@ -176,6 +176,16 @@ defmodule AlloyCi.Projects do
     |> Repo.update(force: true)
   end
 
+  def update(project, params) do
+    unless params["tags"] do
+      params = Map.merge(params, %{"tags" => nil})
+    end
+    
+    project
+    |> Project.changeset(params)
+    |> Repo.update
+  end
+
   ###################
   # Private functions
   ###################

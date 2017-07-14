@@ -37,8 +37,6 @@ defmodule AlloyCi.Mixfile do
     [
       :comeonin,
       :cowboy,
-      :exq,
-      :exq_ui,
       :gettext,
       :logger,
       :phoenix,
@@ -50,7 +48,8 @@ defmodule AlloyCi.Mixfile do
       :ueberauth_github,
       :ueberauth_identity,
       :timex,
-      :tentacat
+      :tentacat,
+      :que
     ]
   end
 
@@ -69,8 +68,6 @@ defmodule AlloyCi.Mixfile do
     [
       {:comeonin, "~> 3.0"},
       {:cowboy, "~> 1.0"},
-      {:exq, "~> 0.8.6"},
-      {:exq_ui, "~> 0.8.6"},
       {:gettext, "~> 0.11"},
       {:gravatar, "~> 0.1.0"},
       {:guardian_db, "~> 0.8"},
@@ -86,6 +83,7 @@ defmodule AlloyCi.Mixfile do
       {:timex, "~> 3.1"},
       {:ueberauth_github, "~> 0.4"},
       {:ueberauth_identity, "~> 0.2.3"},
+      {:que, "~> 0.4.1"},
 
       # Test and Dev dependencies
       {:excoveralls, "~> 0.6", only: :test},

@@ -3,7 +3,7 @@ defmodule AlloyCi.Pipelines do
   The boundary for the Pipelines system.
   """
   import Ecto.Query, warn: false
-  alias AlloyCi.{Builds, ExqEnqueuer, Pipeline, Projects, Repo, Workers.CreateBuildsWorker}
+  alias AlloyCi.{Builds, Queuer, Pipeline, Projects, Repo, Workers.CreateBuildsWorker}
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
@@ -37,7 +37,7 @@ defmodule AlloyCi.Pipelines do
     with {:ok, _} <- update_pipeline(pipeline, %{sha: pipeline.sha |> String.slice(0..7)}),
          {:ok, clone} <- clone(pipeline)
     do
-      ExqEnqueuer.push(CreateBuildsWorker, [clone.id])
+      Queuer.push(CreateBuildsWorker, clone.id)
       @github_api.notify_pending!(pipeline.project, pipeline)
       {:ok, clone}
     end
