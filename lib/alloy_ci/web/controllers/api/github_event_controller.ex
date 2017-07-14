@@ -2,7 +2,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
   @moduledoc """
   """
   use AlloyCi.Web, :controller
-  alias AlloyCi.{ExqEnqueuer, Pipelines, Projects, Workers.CreateBuildsWorker}
+  alias AlloyCi.{Queuer, Pipelines, Projects, Workers.CreateBuildsWorker}
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
@@ -48,7 +48,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
 
       case Pipelines.create_pipeline(Ecto.build_assoc(project, :pipelines), pipeline_attrs) do
         {:ok, pipeline} ->
-          ExqEnqueuer.push(CreateBuildsWorker, [pipeline.id])
+          Queuer.push(CreateBuildsWorker, pipeline.id)
           event = %{status: :ok, message: "Pipeline with ID: #{pipeline.id} created sucessfully."}
           render(conn, "event.json", event: event)
         {:error, changeset} ->

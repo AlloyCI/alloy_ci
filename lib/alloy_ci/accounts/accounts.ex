@@ -1,7 +1,7 @@
 defmodule AlloyCi.Accounts do
   @moduledoc """
   """
-  alias AlloyCi.{Authentication, ExqEnqueuer, User, Repo}
+  alias AlloyCi.{Authentication, Queuer, User, Repo}
   alias AlloyCi.Workers.CreatePermissionsWorker
   alias Ueberauth.Auth
   import Ecto.Query
@@ -71,7 +71,7 @@ defmodule AlloyCi.Accounts do
   def process_auth(auth) do
     case auth.provider do
       "github" ->
-        ExqEnqueuer.push(CreatePermissionsWorker, [auth.user_id, auth.token])
+        Queuer.push(CreatePermissionsWorker, {auth.user_id, auth.token})
         auth
       _ -> auth
     end

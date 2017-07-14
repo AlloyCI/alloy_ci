@@ -2,7 +2,7 @@ defmodule AlloyCi.Builds do
   @moduledoc """
   The boundary for the Builds system.
   """
-  alias AlloyCi.{Build, ExqEnqueuer, Pipelines, Projects, Repo, Workers}
+  alias AlloyCi.{Build, Queuer, Pipelines, Projects, Repo, Workers}
   import Ecto.Query, warn: false
 
   @github_api Application.get_env(:alloy_ci, :github_api)
@@ -292,7 +292,7 @@ defmodule AlloyCi.Builds do
   defp update_status(build, status) do
     case do_update_status(build, status) do
       {:ok, build} ->
-        ExqEnqueuer.push(Workers.ProcessPipelineWorker, [build.pipeline_id])
+        Queuer.push(Workers.ProcessPipelineWorker, build.pipeline_id)
         build
       {:error, _} -> nil
     end

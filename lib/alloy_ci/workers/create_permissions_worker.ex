@@ -7,10 +7,11 @@ defmodule AlloyCi.Workers.CreatePermissionsWorker do
   """
   alias AlloyCi.{Repo, ProjectPermission}
   import AlloyCi.ProjectPermission, only: [repo_ids: 0]
+  use Que.Worker
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
-  def perform(user_id, token) do
+  def perform({user_id, token}) do
     user_repo_ids =
       token
       |> @github_api.fetch_repos
