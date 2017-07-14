@@ -9,9 +9,9 @@ defimpl Chartable, for: AlloyCi.Project do
 
   def builds_chart(project) do
     query = from b in "builds",
-            where: b.project_id == ^project.id and b.status in ~w(failed success) and b.inserted_at > ^Chart.interval,
-            group_by: [b.status, fragment("date_trunc('week', ?)", b.inserted_at)],
-            select: {fragment("date_trunc('week', ?)", b.inserted_at), b.status, count("*")}
+            where: b.project_id == ^project.id and b.status in ~w(failed success) and b.updated_at > ^Chart.interval,
+            group_by: [b.status, fragment("date_trunc('week', ?)", b.updated_at)],
+            select: {fragment("date_trunc('week', ?)", b.updated_at), b.status, count("*")}
     builds = Repo.all(query)
 
     Chart.line_chart(builds)
@@ -26,9 +26,9 @@ defimpl Chartable, for: AlloyCi.Runner do
 
   def builds_chart(runner) do
     query = from b in "builds",
-            where: b.runner_id == ^runner.id and b.status in ~w(failed success) and b.inserted_at > ^Chart.interval,
-            group_by: [b.status, fragment("date_trunc('week', ?)", b.inserted_at)],
-            select: {fragment("date_trunc('week', ?)", b.inserted_at), b.status, count("*")}
+            where: b.runner_id == ^runner.id and b.status in ~w(failed success) and b.updated_at > ^Chart.interval,
+            group_by: [b.status, fragment("date_trunc('week', ?)", b.updated_at)],
+            select: {fragment("date_trunc('week', ?)", b.updated_at), b.status, count("*")}
     builds = Repo.all(query)
 
     Chart.line_chart(builds)
@@ -36,7 +36,7 @@ defimpl Chartable, for: AlloyCi.Runner do
 
   def projects_chart(runner) do
     query = from b in "builds",
-            where: b.runner_id == ^runner.id and b.status in ~w(failed success) and b.inserted_at > ^Chart.interval,
+            where: b.runner_id == ^runner.id and b.status in ~w(failed success) and b.updated_at > ^Chart.interval,
             group_by: [b.project_id],
             select: {b.project_id, count("*")}
     builds = Repo.all(query)
