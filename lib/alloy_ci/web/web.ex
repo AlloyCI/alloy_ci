@@ -30,11 +30,7 @@ defmodule AlloyCi.Web do
       use Phoenix.Controller, namespace: AlloyCi.Web
       use Guardian.Phoenix.Controller
 
-      alias AlloyCi.Repo
       alias Guardian.Plug.{EnsureAuthenticated, EnsurePermissions}
-
-      import Ecto
-      import Ecto.Query
 
       import AlloyCi.Web.{Gettext, Router.Helpers, Controller.Helpers}
     end
@@ -45,11 +41,7 @@ defmodule AlloyCi.Web do
       use Phoenix.Controller, namespace: AlloyCi.Web.Admin
       use Guardian.Phoenix.Controller, key: :admin
 
-      alias AlloyCi.Repo
       alias Guardian.Plug.{EnsureAuthenticated, EnsurePermissions}
-
-      import Ecto.Schema
-      import Ecto.Query, only: [from: 1, from: 2]
 
       import AlloyCi.Web.{Router.Helpers, Controller.Helpers}
     end
@@ -80,10 +72,6 @@ defmodule AlloyCi.Web do
   def channel do
     quote do
       use Phoenix.Channel
-
-      alias AlloyCi.Repo
-      import Ecto
-      import Ecto.Query
     end
   end
 

@@ -7,7 +7,7 @@ defmodule AlloyCi.Web.Admin.SessionController do
   """
   use AlloyCi.Web, :admin_controller
 
-  alias AlloyCi.{Accounts, User}
+  alias AlloyCi.Accounts
 
   # We still want to use Ueberauth for checking the passwords etc
   # we have everything we need to check email / passwords and oauth already
@@ -58,8 +58,8 @@ defmodule AlloyCi.Web.Admin.SessionController do
     |> redirect(to: "/")
   end
 
-  def impersonate(conn, params, _current_user, _claims) do
-    user = Repo.get(User, params["user_id"])
+  def impersonate(conn, %{"user_id" => user_id}, _current_user, _claims) do
+    user = Accounts.get_user!(user_id)
     conn
     |> Guardian.Plug.sign_out(:default)
     |> Guardian.Plug.sign_in(user, :access, perms: %{default: Guardian.Permissions.max})

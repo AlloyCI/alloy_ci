@@ -1,7 +1,7 @@
 defmodule AlloyCi.Web.TokenController do
   use AlloyCi.Web, :controller
 
-  alias AlloyCi.GuardianToken
+  alias AlloyCi.{GuardianToken, Repo}
 
   plug EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access"
   plug EnsurePermissions, [handler: AlloyCi.Web.AuthController, default: ~w(read_token)] when action in [:index]
