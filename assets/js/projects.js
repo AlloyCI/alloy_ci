@@ -5,9 +5,18 @@ $(document).on("click", ".remove-tag", function(e) {
 
 $("#add-tag").click(function(e) {
   let value = $("#tag-input").val()
-  $("#tag-input").val("")
-  let element = $(this).data("prototype")
-  $("#tags-container").append(element.replace(/replace_me/g, value))
+  if(value) {
+    $("#tag-input").val("")
+    let element = $(this).data("prototype").replace(/gen_new_id/g, Math.random().toString(36).substring(5))
+    $("#tags-container").append(element.replace(/replace_me/g, value))
+  }
+})
+
+$(document).on("keypress", "#tag-input", function(args) {
+  if (args.keyCode == 13) {
+    $("#add-tag").click()
+    return false
+  }
 })
 
 

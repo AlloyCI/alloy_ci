@@ -49,7 +49,6 @@ if(document.querySelector("#output")) {
     channel.on("replace_trace", data => {
       setTimeout(function(){
         window.location.reload(true)
-        $(this).click()
       }, 1500)
     })
   })
