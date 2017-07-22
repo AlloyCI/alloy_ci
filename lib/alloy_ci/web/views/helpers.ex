@@ -21,7 +21,11 @@ defmodule AlloyCi.Web.ViewHelpers do
   def card_status("pending"), do: "card-inverse card-info"
   def card_status(_), do: ""
 
+  def clean_branch(branch), do: branch |> String.replace("refs/heads/", "")
+
   def current_user(conn), do: Guardian.Plug.current_resource(conn)
+
+  def duration(seconds), do: seconds |> TimeConvert.to_compound
 
   def fork_icon(fork) do
     if fork do

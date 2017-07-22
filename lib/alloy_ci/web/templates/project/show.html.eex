@@ -35,13 +35,13 @@
                           <div class="text-muted"><strong><%= pretty_commit(pipeline.commit["message"]) %></strong></div>
                           <br/>
                           <%= icon("user") %> <%= pipeline.commit["username"] %>
-                          |
+                          <span class="bullet">•</span>
                           <%= icon("github") %> <%= sha_link(pipeline, @project) %>
-                          |
-                          <%= icon("random") %> <%= pipeline.ref %>
-                          |
-                          <%= icon("hourglass") %> <%= pipeline.duration %>
-                          |
+                          <span class="bullet">•</span>
+                          <%= icon("random") %> <%= clean_branch(pipeline.ref) %>
+                          <span class="bullet">•</span>
+                          <%= icon("hourglass") %> <%= duration(pipeline.duration) %>
+                          <span class="bullet">•</span>
                           <%= icon("clock-o") %> <%= pretty_date(pipeline.inserted_at) %>
                         </div>
                         <div class="col-sm-3">
