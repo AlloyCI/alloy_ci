@@ -18,7 +18,7 @@ defmodule AlloyCi.Web.Admin.ProjectController do
   end
 
   def delete(conn, %{"id" => id}, _, _) do
-    {:ok, _} = Projects.delete_by(id: String.to_integer(id))
+    {:ok, _} = Projects.delete_by(id: id)
     conn
     |> put_flash(:info, "Project was deleted successfully")
     |> redirect(to: admin_project_path(conn, :index))

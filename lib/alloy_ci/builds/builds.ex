@@ -77,8 +77,10 @@ defmodule AlloyCi.Builds do
   end
 
   def delete_where(project_id: id) do
-    query = from b in "builds",
-            where: b.project_id == ^id
+    query =
+      Build
+      |> where(project_id: ^id)
+
     case Repo.delete_all(query) do
       {_, nil} -> :ok
              _ -> :error
@@ -270,8 +272,7 @@ defmodule AlloyCi.Builds do
       %{key: "CI_PIPELINE_ID", value: Integer.to_string(build.project_id), public: true},
       %{key: "CI_REPOSITORY_URL", value: @github_api.clone_url(build.project, build.pipeline), public: false},
       %{key: "CI_SERVER_NAME", value: "AlloyCI", public: true},
-      %{key: "CI_SERVER_VERSION", value: AlloyCi.Mixfile.version, public: true},
-      %{key: "CI_SERVER_REVISION", value: AlloyCi.Mixfile.version, public: true},
+      %{key: "CI_SERVER_VERSION", value: AlloyCi.Mixfile.version, public: true}
     ]
   end
 

@@ -25,8 +25,10 @@ defmodule AlloyCi.Pipelines do
   end
 
   def delete_where(project_id: id) do
-    query = from p in "pipelines",
-            where: p.project_id == ^id
+    query =
+      Pipeline
+      |> where(project_id: ^id)
+    
     case Repo.delete_all(query) do
       {_, nil} -> Builds.delete_where(project_id: id)
              _ -> :error
