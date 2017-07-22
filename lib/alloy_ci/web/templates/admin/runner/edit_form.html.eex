@@ -1,0 +1,57 @@
+<%= form_for @changeset, @action, fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <div class="control-label m-b-1">
+      <h5><strong>Tags</strong></h5>
+    </div>
+    <div class="input-group">
+      <input type="text" id="tag-input" class="form-control">
+      <span class="input-group-btn">
+        <%= content_tag :button, id: "add-tag", type: "button", class: "btn btn-primary", data: [prototype: tag_element(f, :tags, "replace_me", "gen_new_id") |> safe_to_string] do %>
+          Add
+        <% end %>
+      </span>
+    </div>
+    <span class="help-block">
+      If you add tags to a runner, it will only pick up builds that have at least
+      a subset of these tags, unless you allow the runner to run untagged builds.
+      In that case it will prioritize builds with these tags, but will also be able
+      to pick up any build job.
+    </span>
+    <%= error_tag f, :tags %>
+  </div>
+
+  <div class="control-label m-b-1">
+    <h5><strong>Existing Tags</strong></h5>
+  </div>
+  <%= array_input f, :tags %>
+  <div class="m-b-2">
+    <hr>
+    <span class="help-block">
+      <strong>Hint:</strong>
+      You can click on the <%= icon("close") %> icon to delete a tag. Don't forget
+      to click <code>Submit</code> after editing for the changes to be saved.
+    </span>
+  </div>
+
+  <div class="form-group">
+    <div class="control-label m-b-1">
+      <h5><strong>Run untagged builds?</strong></h5>
+    </div>
+    <label class="switch switch-lg switch-text switch-pill switch-primary-outline-alt">
+      <%= checkbox f, :run_untagged, class: "switch-input" %>
+      <span class="switch-label" data-on="✔" data-off="✖"></span>
+      <span class="switch-handle"></span>
+    </label>
+    <%= error_tag f, :run_untagged %>
+  </div>
+
+  <div class="form-group">
+    <%= submit "Submit", class: "btn btn-success" %>
+  </div>
+<% end %>
