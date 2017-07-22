@@ -95,6 +95,20 @@ defmodule AlloyCi.Runners do
     |> Repo.insert
   end
 
+  def update(runner, params) do
+    params =
+      case params["tags"] do
+        # if all tags are deleted on the frontend, params will not contain the
+        # tags element, so we set it explicitly here
+        nil -> Map.merge(params, %{"tags" => nil})
+        _ -> params
+      end
+
+    runner
+    |> Runner.changeset(params)
+    |> Repo.update
+  end
+
   def update_info(runner, params) do
     runner
     |> Runner.changeset(params)
