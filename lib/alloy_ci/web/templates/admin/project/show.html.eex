@@ -8,7 +8,8 @@
           </div>
           <div class="card-block">
             <canvas class="chart" data-set="<%= builds_chart(@project) %>"
-                    data-title="Project's Build statistics" data-axis="Number of processed builds"
+                    data-title="Project's Build statistics"
+                    data-axis="Number of processed builds"
                     data-label="Week of" data-type="line"></canvas>
           </div>
         </div>
