@@ -46,7 +46,7 @@ defmodule AlloyCi.Web.ProjectController do
   end
 
   def edit(conn, %{"id" => id}, current_user, _claims) do
-    case Projects.get_by(id, current_user) do
+    case Projects.get_by(id, current_user, preload: :runners) do
       {:ok, project} ->
         changeset = Project.changeset(project)
         render(conn, "edit.html", project: project, changeset: changeset, current_user: current_user)
@@ -76,7 +76,7 @@ defmodule AlloyCi.Web.ProjectController do
   end
 
   def delete(conn, %{"id" => id}, current_user, _claims) do
-    case Projects.delete_by(String.to_integer(id), current_user) do
+    case Projects.delete_by(id, current_user) do
       {:ok, _} ->
         conn
         |> put_flash(:info, "Project deleted successfully.")

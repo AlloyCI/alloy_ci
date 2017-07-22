@@ -11,6 +11,20 @@ defmodule AlloyCi.Projects do
     Project |> order_by([desc: :updated_at]) |> Repo.paginate(params)
   end
 
+  def build_badge(id, ref) do
+    status = last_status(%{id: String.to_integer(id)}, ref)
+    colors = %{
+      "success" => "#4c1",
+      "failed" => "#e05d44",
+      "running" => "#dfb317",
+      "pending" => "#dfb317",
+      "cancelled" => "#9f9f9f",
+      "unknown" => "#9f9f9f"
+    }
+
+    %{color: colors[status], status: status}
+  end
+
   def can_access?(id, user) do
     with %Project{} = project <- get(id),
          true <- project.private,
@@ -89,13 +103,25 @@ defmodule AlloyCi.Projects do
 
   def get_by(id, user) do
     permission =
-      ProjectPermission
-      |> Repo.get_by(project_id: id, user_id: user.id)
+      id
+      |> get_project_permission(user)
+      |> Repo.preload(:project)
+
+    case permission do
+      %ProjectPermission{} -> {:ok, permission.project}
+      _ -> {:error, nil}
+    end
+  end
+
+  def get_by(id, user, preload: subject) do
+    permission =
+      id
+      |> get_project_permission(user)
       |> Repo.preload(:project)
 
     case permission do
       %ProjectPermission{} ->
-        project = permission.project |> Repo.preload(:pipelines)
+        project = permission.project |> Repo.preload(subject)
         {:ok, project}
       _ -> {:error, nil}
     end
@@ -119,6 +145,14 @@ defmodule AlloyCi.Projects do
     Repo.one(query) || "unknown"
   end
 
+  def last_status(project, ref) do
+    query = from p in "pipelines",
+            where: [project_id: ^project.id, ref: ^"refs/heads/#{ref}"],
+            order_by: [desc: :inserted_at], limit: 1,
+            select: p.status
+    Repo.one(query) || "unknown"
+  end
+
   def latest(user) do
     query = from pp in "project_permissions",
             where: pp.user_id == ^user.id,
@@ -135,6 +169,13 @@ defmodule AlloyCi.Projects do
             order_by: [desc: p.updated_at],
             select: p
     Repo.paginate(query, params)
+  end
+
+  def private?(id) do
+    Project
+    |> where(id: ^id)
+    |> select([p], p.private)
+    |> Repo.one
   end
 
   def repo_and_project(repo_id, existing_ids) do
@@ -177,10 +218,14 @@ defmodule AlloyCi.Projects do
   end
 
   def update(project, params) do
-    unless params["tags"] do
-      params = Map.merge(params, %{"tags" => nil})
-    end
-    
+    params =
+      case params["tags"] do
+        # if all tags are deleted on the frontend, params will not contain the
+        # tags element, so we set it explicitly here
+        nil -> Map.merge(params, %{"tags" => nil})
+        _ -> params
+      end
+
     project
     |> Project.changeset(params)
     |> Repo.update

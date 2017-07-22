@@ -67,6 +67,7 @@ defmodule AlloyCi.Web.Router do
     resources "/projects", ProjectController do
       resources "/pipelines", PipelineController, only: [:create, :delete, :show]
       resources "/builds", BuildController, only: [:show]
+      resources "/badge/:ref", BadgeController, only: [:index]
     end
   end
 
@@ -94,7 +95,7 @@ defmodule AlloyCi.Web.Router do
 
     resources "/users", UserController, only: [:index, :show, :delete]
     resources "/projects", ProjectController, only: [:index, :show, :delete]
-    resources "/runners", RunnerController, only: [:index, :show, :delete]
+    resources "/runners", RunnerController, only: [:index, :show, :delete, :update]
   end
 
   scope "/api/github", AlloyCi.Web.Api, as: :api do
