@@ -10,6 +10,9 @@
       <%= link "My Projects", to: project_path(@conn, :index), class: "nav-link" %>
     </li>
     <li class="nav-item px-1">
+      <%= link "Admin", to: admin_user_path(@conn, :index), class: "nav-link" %>
+    </li>
+    <li class="nav-item px-1">
       <a class="nav-link" href="#">Settings</a>
     </li>
   </ul>

@@ -25,6 +25,7 @@ defmodule AlloyCi.Web.ViewHelpers do
 
   def current_user(conn), do: Guardian.Plug.current_resource(conn)
 
+  def duration(nil), do: "Pending"
   def duration(seconds), do: seconds |> TimeConvert.to_compound
 
   def fork_icon(fork) do
