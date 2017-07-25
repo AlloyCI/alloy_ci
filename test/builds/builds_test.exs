@@ -32,9 +32,8 @@ defmodule AlloyCi.BuildsTest do
   end
 
   describe "create_builds_from_config/2" do
-    test "it creates build with the correct data", %{pipeline: pipeline} do
+    test "it creates elixir build with the correct data", %{pipeline: pipeline} do
       content = File.read!(".alloy-ci.json")
-
       {:ok, result} = Builds.create_builds_from_config(content, pipeline)
 
       assert result == nil
@@ -46,6 +45,26 @@ defmodule AlloyCi.BuildsTest do
       assert build.project_id == pipeline.project_id
       assert build.when == "on_success"
       assert build.tags == ["elixir", "postgres"]
+    end
+
+    test "it creates rails build with the correct data", %{pipeline: pipeline, project: project} do
+      content = File.read!("test/fixtures/rails_config.json")
+      {:ok, result} = Builds.create_builds_from_config(content, pipeline)
+      assert result == nil
+
+      build = Repo.one(from b in Build, order_by: [desc: b.id], limit: 1)
+
+      assert build.name == "Rspec Tests"
+      assert build.commands == [
+        "bundle install --path vendor/bundle",
+        "bundle exec rake db:setup",
+        "bundle exec rspec"
+      ]
+      assert build.project_id == pipeline.project_id
+      assert build.when == "on_success"
+      assert build.tags == project.tags
+      assert build.stage_idx == 1
+      assert build.stage == "test"
     end
 
     test "it returns error on broken data", %{pipeline: pipeline} do

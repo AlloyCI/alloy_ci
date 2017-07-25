@@ -46,18 +46,19 @@ defmodule AlloyCi.Builds do
 
       global_options = Map.take(config, @global_config)
       stages = config["stages"] || ["build", "test", "deploy"]
-
       build_jobs = Map.drop(config, @global_config)
 
       Enum.each(build_jobs, fn {name, options} ->
         local_options = Map.merge(global_options, Map.take(options, @local_overrides))
+        stage = options["stage"] || "test"
+
         build_params = %{
           allow_failure: options["allow_failure"] || false,
           commands: options["script"],
           name: name,
           options: local_options,
-          stage: options["stage"] || "test",
-          stage_idx: Enum.find_index(stages, &(&1 == options["stage"])),
+          stage: stage,
+          stage_idx: Enum.find_index(stages, &(&1 == stage)),
           tags: options["tags"] || pipeline.project.tags,
           token: generate_token(),
           variables: local_options["variables"],
