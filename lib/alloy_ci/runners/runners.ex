@@ -101,7 +101,7 @@ defmodule AlloyCi.Runners do
         # if all tags are deleted on the frontend, params will not contain the
         # tags element, so we set it explicitly here
         nil -> Map.merge(params, %{"tags" => nil})
-        _ -> params
+          _ -> params
       end
 
     runner

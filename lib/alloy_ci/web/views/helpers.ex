@@ -78,6 +78,10 @@ defmodule AlloyCi.Web.ViewHelpers do
   def repo_icon("User"), do: icon("user")
   def repo_icon("Organization"), do: icon("users")
 
+  def server_url do
+    Application.get_env(:alloy_ci, :server_url)
+  end
+
   def sha_link(pipeline) do
     content_tag(:a, href: @github_api.sha_url(pipeline.project, pipeline)) do
       pipeline.sha |> String.slice(0..7)

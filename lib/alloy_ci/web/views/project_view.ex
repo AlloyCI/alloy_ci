@@ -19,8 +19,4 @@ defmodule AlloyCi.Web.ProjectView do
   def integration_url do
     Application.get_env(:alloy_ci, :integration_url)
   end
-
-  def server_url do
-    Application.get_env(:alloy_ci, :server_url)
-  end
 end

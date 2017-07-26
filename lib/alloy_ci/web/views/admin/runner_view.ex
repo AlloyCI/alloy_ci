@@ -17,8 +17,4 @@ defmodule AlloyCi.Web.Admin.RunnerView do
   def global_token do
     Application.get_env(:alloy_ci, :runner_registration_token)
   end
-
-  def server_url do
-    Application.get_env(:alloy_ci, :server_url)
-  end
 end
