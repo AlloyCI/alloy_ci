@@ -3,29 +3,10 @@ defmodule AlloyCi.Web.TokenControllerTest do
   """
   use AlloyCi.Web.ConnCase
   import AlloyCi.Factory
-  alias AlloyCi.Repo
-  alias AlloyCi.GuardianToken
+  alias AlloyCi.{GuardianToken, Repo}
 
   setup do
     {:ok, %{user: insert(:user)}}
-  end
-
-  test "GET /tokens without permission", %{user: user} do
-    conn =
-      user
-      |> guardian_login
-      |> get("/tokens")
-
-    assert html_response(conn, 302)
-  end
-
-  test "GET /tokens with permission", %{user: user} do
-    conn =
-      user
-      |> guardian_login(:access, perms: %{default: [:read_token]})
-      |> get("/tokens")
-
-    assert html_response(conn, 200)
   end
 
   test "DELETE /tokens/:jti with no login should fail" do

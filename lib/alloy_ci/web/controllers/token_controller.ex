@@ -4,16 +4,7 @@ defmodule AlloyCi.Web.TokenController do
   alias AlloyCi.{GuardianToken, Repo}
 
   plug EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access"
-  plug EnsurePermissions, [handler: AlloyCi.Web.AuthController, default: ~w(read_token)] when action in [:index]
   plug EnsurePermissions, [handler: AlloyCi.Web.AuthController, default: ~w(revoke_token)] when action in [:delete]
-
-  def index(conn, _params, current_user, {:ok, %{"jti" => jti}}) do
-    render conn,
-           "index.html",
-           current_user: current_user,
-           tokens: GuardianToken.for_user(current_user),
-           current_jti: jti
-  end
 
   def delete(conn, %{"id" => jti}, current_user, _claims) do
     case Repo.get(GuardianToken, jti) do
@@ -24,7 +15,7 @@ defmodule AlloyCi.Web.TokenController do
           if sub == token.sub do
             conn
             |> put_flash(:info, "Done")
-            |> redirect(to: token_path(conn, :index))
+            |> redirect(to: profile_path(conn, :index))
           else
             could_not_delete(conn)
           end

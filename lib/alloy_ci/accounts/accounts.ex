@@ -1,7 +1,7 @@
 defmodule AlloyCi.Accounts do
   @moduledoc """
   """
-  alias AlloyCi.{Authentication, Queuer, User, Repo}
+  alias AlloyCi.{Authentication, ProjectPermission, Queuer, User, Repo}
   alias AlloyCi.Workers.CreatePermissionsWorker
   alias Ueberauth.Auth
   import Ecto.Query
@@ -16,6 +16,25 @@ defmodule AlloyCi.Accounts do
     user = user |> Repo.preload(:authentications)
     user.authentications
     |> Enum.map(&(&1.provider))
+  end
+
+  def delete_auth(id, user) do
+    Authentication
+    |> where(id: ^id, user_id: ^user.id)
+    |> Repo.delete_all
+  end
+
+  def delete_user(id) do
+    query =
+      ProjectPermission
+      |> where(user_id: ^id)
+
+    case Repo.delete_all(query) do
+      {_, nil} ->
+        id |> get_user!() |> Repo.delete
+      _ ->
+        {:error, nil}
+    end
   end
 
   def get_or_create_user(auth, current_user) do
@@ -75,6 +94,12 @@ defmodule AlloyCi.Accounts do
         auth
       _ -> auth
     end
+  end
+
+  def update_profile(user, user_params) do
+    user
+    |> User.changeset(user_params)
+    |> Repo.update
   end
 
   ###################
@@ -192,7 +217,7 @@ defmodule AlloyCi.Accounts do
         auth.info.name
       auth.info.first_name && auth.info.last_name ->
         [auth.info.first_name, auth.info.last_name]
-        |> Enum.filter(&(&1 != nil and String.strip(&1) != ""))
+        |> Enum.filter(&(&1 != nil and String.trim(&1) != ""))
         |> Enum.join(" ")
       auth.info.nickname ->
         auth.info.nickname
@@ -237,7 +262,7 @@ defmodule AlloyCi.Accounts do
   defp scrub(params) do
     params
     |> Enum.filter(fn
-      {_key, val} when is_binary(val) -> String.strip(val) != ""
+      {_key, val} when is_binary(val) -> String.trim(val) != ""
       {_key, val} when is_nil(val) -> false
       _ -> true
     end)

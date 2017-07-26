@@ -61,8 +61,9 @@ defmodule AlloyCi.Web.Router do
     get "/register", PublicController, :register, as: :register
     delete "/logout", AuthController, :logout
 
-    resources "/authentications", AuthenticationController, only: [:index]
-    resources "/tokens", TokenController, only: [:index, :delete]
+    resources "/tokens", TokenController, only: [:delete]
+    resources "/profile", ProfileController, only: [:index, :update, :delete]
+    delete "/profile/:auth_id/delete", ProfileController, :delete, as: :auth_delete
 
     resources "/projects", ProjectController do
       resources "/pipelines", PipelineController, only: [:create, :delete, :show]
@@ -94,7 +95,7 @@ defmodule AlloyCi.Web.Router do
     delete "/impersonate", SessionController, :stop_impersonating
 
     resources "/users", UserController, only: [:index, :show, :delete]
-    resources "/projects", ProjectController, only: [:index, :show, :delete]
+    resources "/projects", ProjectController, only: [:index, :show, :update, :delete]
     resources "/runners", RunnerController, only: [:index, :show, :delete, :update]
   end
 
