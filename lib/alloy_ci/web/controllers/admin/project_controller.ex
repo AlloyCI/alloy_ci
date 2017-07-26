@@ -1,10 +1,8 @@
 defmodule AlloyCi.Web.Admin.ProjectController do
   use AlloyCi.Web, :admin_controller
 
-  alias AlloyCi.Projects
+  alias AlloyCi.{Project, Projects}
 
-  # Make sure that we have a valid token in the :admin area of the session
-  # We've aliased Guardian.Plug.EnsureAuthenticated in our AlloyCi.Web.admin_controller macro
   plug EnsureAuthenticated, handler: AlloyCi.Web.Admin.UserController, key: :admin
 
   def index(conn, params, current_user, _) do
@@ -14,7 +12,20 @@ defmodule AlloyCi.Web.Admin.ProjectController do
 
   def show(conn, %{"id" => id}, current_user, _) do
     project = Projects.get(id)
-    render conn, "show.html", current_user: current_user, project: project
+    changeset = Project.changeset(project)
+    render conn, "show.html", current_user: current_user, project: project, changeset: changeset
+  end
+
+  def update(conn, %{"id" => id, "project" => project_params}, current_user, _claims) do
+    project = Projects.get(id)
+    case Projects.update(project, project_params) do
+      {:ok, project} ->
+        conn
+        |> put_flash(:info, "Project updated successfully.")
+        |> redirect(to: admin_project_path(conn, :show, project))
+      {:error, changeset} ->
+        render(conn, "show.html", project: project, changeset: changeset, current_user: current_user)
+    end
   end
 
   def delete(conn, %{"id" => id}, _, _) do
