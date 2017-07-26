@@ -87,14 +87,17 @@ defmodule AlloyCi.Projects do
 
   def delete_by(id, user) do
     with {:ok, project} <- get_by(id, user),
-         :ok <- Pipelines.delete_where(project_id: id)
+         :ok <- Pipelines.delete_where(project_id: id),
+         :ok <- purge_permissions(id)
     do
       Repo.delete(project)
     end
   end
 
   def delete_by(id: id) do
-    with :ok <- Pipelines.delete_where(project_id: id) do
+    with :ok <- Pipelines.delete_where(project_id: id),
+         :ok <- purge_permissions(id)
+    do
       Project |> Repo.get(id) |> Repo.delete
     end
   end
@@ -108,8 +111,10 @@ defmodule AlloyCi.Projects do
       |> Repo.preload(:project)
 
     case permission do
-      %ProjectPermission{} -> {:ok, permission.project}
-      _ -> {:error, nil}
+      %ProjectPermission{} ->
+        {:ok, permission.project}
+      _ ->
+        {:error, nil}
     end
   end
 
@@ -123,7 +128,8 @@ defmodule AlloyCi.Projects do
       %ProjectPermission{} ->
         project = permission.project |> Repo.preload(subject)
         {:ok, project}
-      _ -> {:error, nil}
+      _ ->
+        {:error, nil}
     end
   end
 
@@ -237,5 +243,16 @@ defmodule AlloyCi.Projects do
   defp get_project_permission(id, user) do
     ProjectPermission
     |> Repo.get_by(project_id: id, user_id: user.id)
+  end
+
+  defp purge_permissions(project_id) do
+    query =
+      ProjectPermission
+      |> where(project_id: ^project_id)
+
+    case Repo.delete_all(query) do
+      {_, nil} -> :ok
+             _ -> :error
+    end
   end
 end
