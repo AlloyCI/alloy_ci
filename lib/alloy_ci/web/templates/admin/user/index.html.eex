@@ -28,7 +28,10 @@
                       <%= link "Impersonate",
                                to: admin_impersonation_path(@conn, :impersonate, to_string(user.id)),
                                method: :post,
-                               class: "btn btn-xs btn-warning" %>
+                               class: "btn btn-sm btn-warning" %>
+                      <%= link to: admin_user_path(@conn, :delete, user), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-sm btn-danger" do %>
+                        <%= icon("trash") %>
+                      <% end %>
                      </td>
                   </tr>
                 <% end %>
