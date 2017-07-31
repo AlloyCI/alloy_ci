@@ -4,6 +4,7 @@ defmodule AlloyCi.GuardianToken do
   it easier to revoke them.
   """
   use AlloyCi.Web, :model
+  import Ecto.Query
 
   alias AlloyCi.{GuardianSerializer, Repo}
 

@@ -20,8 +20,7 @@ defmodule AlloyCi.Web do
     quote do
       use Ecto.Schema
 
-      import Ecto
-      import Ecto.{Changeset, Query}
+      import Ecto.Changeset
     end
   end
 

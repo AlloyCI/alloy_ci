@@ -6,7 +6,7 @@ defmodule AlloyCi.Web.ProfileController do
   plug EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access"
   plug EnsurePermissions, [handler: AlloyCi.Web.AuthController, default: ~w(read_token)] when action in [:index]
 
-  def index(conn, _params, current_user, {:ok, %{"jti" => jti}}) do
+  def index(conn, _, current_user, {:ok, %{"jti" => jti}}) do
     render conn, "index.html", current_user: current_user,
            authentications: Accounts.authentications(current_user),
            tokens: GuardianToken.for_user(current_user),

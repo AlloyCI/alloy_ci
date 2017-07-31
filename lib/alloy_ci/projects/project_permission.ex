@@ -4,6 +4,7 @@ defmodule AlloyCi.ProjectPermission do
   """
   use AlloyCi.Web, :model
   alias AlloyCi.Repo
+  import Ecto.Query
 
   schema "project_permissions" do
     field :repo_id, :integer
