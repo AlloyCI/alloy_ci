@@ -25,9 +25,4 @@ import "./landing"
 import "./projects"
 import "./repos"
 
-$('[data-submit="parent"]').click(function(e) {
-  e.preventDefault;
-  $(this).parent().submit();
-});
-
 $('[data-toggle="tooltip"]').tooltip();
