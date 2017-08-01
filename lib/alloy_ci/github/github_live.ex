@@ -14,23 +14,14 @@ defmodule AlloyCi.Github.Live do
     Tentacat.Contents.find_in(project.owner, project.name, ".alloy-ci.json", pipeline.sha, client)
   end
 
-  def api_client(token) do
-    case domain() do
-      "github.com" ->
-        Tentacat.Client.new(token)
-      domain ->
-        Tentacat.Client.new(token, "https://#{domain}/")
-    end
-  end
-
   def clone_url(project, pipeline) do
     token = installation_token(pipeline.installation_id)
 
-    "https://x-access-token:#{token["token"]}@#{domain()}/#{project.owner}/#{project.name}.git"
+    "https://x-access-token:#{token["token"]}@github.com/#{project.owner}/#{project.name}.git"
   end
 
   def fetch_repos(token) do
-    client = api_client(%{access_token: token})
+    client = Tentacat.Client.new(%{access_token: token})
     Tentacat.Repositories.list_mine(client, sort: "pushed")
   end
 
@@ -53,7 +44,7 @@ defmodule AlloyCi.Github.Live do
 
     signed_jwt = payload |> token() |> sign(rs256(key)) |> get_compact()
 
-    api_client(%{integration_jwt_token: signed_jwt})
+    Tentacat.Client.new(%{integration_jwt_token: signed_jwt})
   end
 
   def is_installed?(github_uid) do
@@ -116,16 +107,12 @@ defmodule AlloyCi.Github.Live do
   end
 
   def sha_url(project, pipeline) do
-    "https://#{domain()}/#{project.owner}/#{project.name}/commit/#{pipeline.sha}"
+    "https://github.com/#{project.owner}/#{project.name}/commit/#{pipeline.sha}"
   end
 
   ###################
   # Private functions
   ###################
-  defp domain do
-    Application.get_env(:alloy_ci, :github_domain)
-  end
-
   defp filter_installations(github_uid) do
     Enum.reject(list_installations(), fn installation ->
       installation["account"]["login"] != github_uid
@@ -134,7 +121,7 @@ defmodule AlloyCi.Github.Live do
 
   defp installation_client(pipeline) do
     token = installation_token(pipeline.installation_id)
-    api_client(%{access_token: token["token"]})
+    Tentacat.Client.new(%{access_token: token["token"]})
   end
 
   defp installation_token(installation_id) do

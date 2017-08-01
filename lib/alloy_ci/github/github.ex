@@ -7,8 +7,6 @@ defmodule AlloyCi.Github do
 
   @callback alloy_ci_config(project :: %Project{}, pipeline :: %Pipeline{}) :: String.t
 
-  @callback api_client(token :: String.t) :: any
-
   @callback clone_url(project :: %Project{}, pipeline :: %Pipeline{}) :: String.t
 
   @callback fetch_repos(token :: String.t) :: Map.t

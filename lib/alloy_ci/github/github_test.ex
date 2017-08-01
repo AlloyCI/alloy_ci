@@ -10,19 +10,10 @@ defmodule AlloyCi.Github.Test do
     %{"content" => contents}
   end
 
-  def api_client(token) do
-    case domain() do
-      "github.com" ->
-        Tentacat.Client.new(token)
-      domain ->
-        Tentacat.Client.new(token, "https://#{domain}/")
-    end
-  end
-
   def clone_url(project, pipeline) do
     token = installation_token(pipeline.installation_id)
 
-    "https://x-access-token:#{token["token"]}@#{domain()}/#{project.owner}/#{project.name}.git"
+    "https://x-access-token:#{token["token"]}@github.com/#{project.owner}/#{project.name}.git"
   end
 
   def installation_id_for(_) do
@@ -30,7 +21,7 @@ defmodule AlloyCi.Github.Test do
   end
 
   def integration_client do
-    api_client(%{integration_jwt_token: "v1.1f699f1069f60xxx"})
+    Tentacat.Client.new(%{integration_jwt_token: "v1.1f699f1069f60xxx"})
   end
 
   def is_installed?(_) do
@@ -87,16 +78,12 @@ defmodule AlloyCi.Github.Test do
   end
 
   def sha_url(project, pipeline) do
-    "https://#{domain()}/#{project.owner}/#{project.name}/commit/#{pipeline.sha}"
+    "https://github.com/#{project.owner}/#{project.name}/commit/#{pipeline.sha}"
   end
 
   ###################
   # Private functions
   ###################
-  defp domain do
-    Application.get_env(:alloy_ci, :github_domain)
-  end
-
   defp installation_token(_installation_id) do
     %{"token" => "v1.1f699f1069f60xxx"}
   end
