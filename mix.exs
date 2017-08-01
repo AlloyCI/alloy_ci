@@ -37,24 +37,30 @@ defmodule AlloyCi.Mixfile do
     [
       :comeonin,
       :cowboy,
+      :elixir_make,
+      :ex_utils,
       :gettext,
+      :gravatar,
+      :guardian,
+      :guardian_db,
+      :joken,
+      :kerosene,
       :logger,
+      :mix,
+      :mix_docker,
       :phoenix,
       :phoenix_ecto,
       :phoenix_html,
       :phoenix_pubsub,
       :postgrex,
+      :secure_random,
+      :timex,
+      :tentacat,
       :ueberauth,
       :ueberauth_github,
       :ueberauth_identity,
-      :timex,
-      :tentacat,
       :que
     ]
-  end
-
-  def version do
-    @version
   end
 
   # Specifies which paths to compile per environment.
@@ -67,28 +73,30 @@ defmodule AlloyCi.Mixfile do
   defp deps do
     [
       {:comeonin, "~> 3.0"},
-      {:cowboy, "~> 1.0"},
+      {:cowboy, "~> 1.1"},
       {:gettext, "~> 0.11"},
       {:gravatar, "~> 0.1.0"},
       {:guardian_db, "~> 0.8"},
-      {:joken, "~> 1.4"},
+      {:httpoison, "~> 0.12"},
+      {:joken, "~> 1.5"},
       {:kerosene, "~> 0.7"},
-      {:phoenix, "~> 1.3.0-rc", override: true},
+      {:mix_docker, "~> 0.5"},
+      {:phoenix, "~> 1.3", override: true},
       {:phoenix_ecto, "~> 3.2"},
-      {:phoenix_html, "~> 2.6"},
+      {:phoenix_html, "~> 2.10"},
       {:phoenix_pubsub, "~> 1.0"},
       {:postgrex, ">= 0.0.0"},
       {:secure_random, "~> 0.5"},
       {:tentacat, "~> 0.6", github: "supernova32/tentacat"}, #path: "../tentacat"},
       {:timex, "~> 3.1"},
-      {:ueberauth_github, "~> 0.4"},
+      {:ueberauth_github, "~> 0.5"},
       {:ueberauth_identity, "~> 0.2.3"},
-      {:que, "~> 0.4.1"},
+      {:que, "~> 0.4.1", github: "supernova32/que"},
 
       # Test and Dev dependencies
-      {:excoveralls, "~> 0.6", only: :test},
+      {:excoveralls, "~> 0.7", only: :test},
       {:ex_machina, "~> 2.0", only: [:dev, :test]},
-      {:credo, "~> 0.7", only: [:dev, :test]},
+      {:credo, "~> 0.8", only: [:dev, :test]},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
     ]
   end
