@@ -273,7 +273,7 @@ defmodule AlloyCi.Builds do
       %{key: "CI_PIPELINE_ID", value: Integer.to_string(build.project_id), public: true},
       %{key: "CI_REPOSITORY_URL", value: @github_api.clone_url(build.project, build.pipeline), public: false},
       %{key: "CI_SERVER_NAME", value: "AlloyCI", public: true},
-      %{key: "CI_SERVER_VERSION", value: AlloyCi.Mixfile.version, public: true}
+      %{key: "CI_SERVER_VERSION", value: AlloyCi.Version.version, public: true}
     ]
   end
 
