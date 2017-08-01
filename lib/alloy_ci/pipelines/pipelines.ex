@@ -28,7 +28,7 @@ defmodule AlloyCi.Pipelines do
     query =
       Pipeline
       |> where(project_id: ^id)
-    
+
     case Repo.delete_all(query) do
       {_, nil} -> Builds.delete_where(project_id: id)
              _ -> :error
@@ -108,6 +108,11 @@ defmodule AlloyCi.Pipelines do
       |> Repo.preload([:builds, :project])
 
     query = from b in "builds",
+            where: b.pipeline_id == ^pipeline_id and b.status == "failed" and b.allow_failure == false,
+            select: count(b.id)
+    failed_builds = Repo.one(query)
+
+    query = from b in "builds",
             where: b.pipeline_id == ^pipeline.id and b.status == "success",
             select: count(b.id)
     successful_builds = Repo.one(query)
@@ -117,12 +122,18 @@ defmodule AlloyCi.Pipelines do
             select: count(b.id)
     allowed_failures = Repo.one(query)
 
-    if (successful_builds + allowed_failures) == Enum.count(pipeline.builds) do
-      @github_api.notify_success!(pipeline.project, pipeline)
-      finished_at = Timex.now
-      duration = Timex.diff(finished_at, Timex.to_datetime(pipeline.started_at, :utc), :seconds)
-      update_pipeline(pipeline, %{status: "success", duration: duration, finished_at: finished_at})
-      # Notify user of successfull pipeline, email.
+    total_builds = Enum.count(pipeline.builds)
+
+    if failed_builds > 0 || pipeline.status == "failed" do
+      failed!(pipeline)
+    else
+      if (successful_builds + allowed_failures) == total_builds do
+        @github_api.notify_success!(pipeline.project, pipeline)
+        finished_at = Timex.now
+        duration = Timex.diff(finished_at, Timex.to_datetime(pipeline.started_at, :utc), :seconds)
+        update_pipeline(pipeline, %{status: "success", duration: duration, finished_at: finished_at})
+        # Notify user of successfull pipeline, email.
+      end
     end
   end
 
@@ -155,7 +166,7 @@ defmodule AlloyCi.Pipelines do
   ###################
   defp clone(pipeline) do
     pipeline
-    |> Map.drop([:id, :inserted_at, :updated_at, :builds, :project, :status])
+    |> Map.drop([:id, :inserted_at, :updated_at, :builds, :project, :status, :duration])
     |> Map.merge(%{builds: []})
     |> Pipeline.changeset
     |> Repo.insert
