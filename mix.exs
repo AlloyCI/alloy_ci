@@ -11,8 +11,8 @@ defmodule AlloyCi.Mixfile do
      elixir: "~> 1.5",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
-     build_embedded: Mix.env == :prod,
-     start_permanent: Mix.env == :prod,
+     build_embedded: Mix.env in [:prod, :heroku],
+     start_permanent: Mix.env in [:prod, :heroku],
      test_coverage: [tool: ExCoveralls],
      preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test],
      aliases: aliases(),
@@ -29,7 +29,7 @@ defmodule AlloyCi.Mixfile do
     ]
   end
 
-  def applications(env) when env in [:test] do
+  def applications(:test) do
     applications(:default) ++ [:ex_machina]
   end
 
