@@ -24,3 +24,5 @@ erl_crash.dump
 # variables.
 /config/prod.secret.exs
 /.env
+alloy_ci.tar.gz
+docker-compose.yml

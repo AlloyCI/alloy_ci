@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "Running migrations"
+bin/alloy_ci migrate
+echo "Migrations run successfully"

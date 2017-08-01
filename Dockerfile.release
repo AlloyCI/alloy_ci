@@ -1,0 +1,11 @@
+FROM elixir:1.5.0
+
+EXPOSE 4000
+ENV PORT=4000 MIX_ENV=prod REPLACE_OS_VARS=true SHELL=/bin/sh
+
+WORKDIR /app
+COPY alloy_ci.tar.gz ./
+RUN tar xfz alloy_ci.tar.gz
+
+
+ENTRYPOINT ["bin/alloy_ci"]

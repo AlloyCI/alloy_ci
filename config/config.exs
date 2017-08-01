@@ -63,6 +63,9 @@ config :guardian_db, GuardianDb,
 config :tentacat,
   :extra_headers, [{"Accept", "application/vnd.github.machine-man-preview+json"}]
 
+config :mix_docker,
+  image: "alloyci/alloy_ci"
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"

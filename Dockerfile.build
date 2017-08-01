@@ -1,0 +1,34 @@
+FROM elixir:1.5.0
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV HOME=/opt/app/ TERM=xterm
+
+RUN \
+  curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
+  apt-get install -y nodejs
+
+# Install Hex+Rebar
+RUN mix local.hex --force && \
+    mix local.rebar --force
+
+WORKDIR /opt/app
+
+ENV MIX_ENV=prod
+
+# Cache elixir deps
+RUN mkdir config
+COPY config/* config/
+COPY mix.exs mix.lock ./
+RUN mix do deps.get, deps.compile
+
+# Cache node deps
+COPY assets/package.json ./assets/
+RUN cd ./assets && npm install
+
+COPY . .
+
+RUN cd ./assets && ./node_modules/brunch/bin/brunch b -p
+
+RUN mix phx.digest
+
+RUN MIX_ENV=prod mix release --env=prod --verbose
