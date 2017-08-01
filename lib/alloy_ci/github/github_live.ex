@@ -115,7 +115,7 @@ defmodule AlloyCi.Github.Live do
   ###################
   defp filter_installations(github_uid) do
     Enum.reject(list_installations(), fn installation ->
-      installation["account"]["login"] != github_uid
+      installation["target_id"] != String.to_integer(github_uid)
     end)
   end
 
