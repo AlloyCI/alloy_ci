@@ -105,7 +105,7 @@ defmodule AlloyCi.AccountsTest do
     assert authentication_count() == before_authentications + 1
   end
 
-  test "it deletes the authentication and makes a new one when the old one is expired", %{auth: auth} do
+  test "it updates the existing authentication when expired", %{auth: auth} do
     {:ok, user} =
       %User{}
       |> User.changeset(%{email: @email, name: @name})
@@ -133,7 +133,7 @@ defmodule AlloyCi.AccountsTest do
     assert before_users == user_count()
     assert authentication_count() == before_authentications
     auth2 = Repo.one(Ecto.assoc(user, :authentications))
-    refute auth2.id == authentication.id
+    assert auth2.id == authentication.id
   end
 
   test "it returns an error if the user is not the current user", %{auth: auth} do

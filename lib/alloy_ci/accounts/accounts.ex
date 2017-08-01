@@ -83,7 +83,7 @@ defmodule AlloyCi.Accounts do
   end
 
   @doc """
-  Process the current auth, and enqueue a worker that creates the proper
+  Process the current auth, and enqueues a worker that creates the proper
   project permissions for projects to which the user already has access,
   and have already been added to AlloyCI.
   """
@@ -128,7 +128,7 @@ defmodule AlloyCi.Accounts do
         {:error, :not_found}
       authentication ->
         if authentication.uid == uid_from_auth(auth) do
-          authentication
+          update_authentication(authentication, auth)
         else
           {:error, :uid_mismatch}
         end
@@ -252,9 +252,7 @@ defmodule AlloyCi.Accounts do
          {:ok, user} <- user_from_authentication(authentication, current_user)
     do
       invalidate_authentication(authentication, user, auth)
-    else
-      {:error, reason} -> {:error, reason}
-    end
+    end  
   end
 
   # We don't have any nested structures in our params that we are using scrub
@@ -280,6 +278,28 @@ defmodule AlloyCi.Accounts do
 
   defp token_from_auth(auth), do: auth.credentials.token
 
+  defp update_authentication(authentication, auth) do
+    result =
+      authentication
+      |> Authentication.changeset(
+          scrub(
+            %{
+              provider: to_string(auth.provider),
+              uid: uid_from_auth(auth),
+              token: token_from_auth(auth),
+              refresh_token: auth.credentials.refresh_token,
+              expires_at: auth.credentials.expires_at,
+            }
+          )
+        )
+      |> Repo.update
+
+    case result do
+      {:ok, authentication} -> authentication
+      {:error, _} -> {:error, :uid_mismatch}
+    end
+  end
+
   defp user_from_authentication(authentication, current_user) do
     case Repo.one(Ecto.assoc(authentication, :user)) do
       nil ->
@@ -293,7 +313,7 @@ defmodule AlloyCi.Accounts do
     end
   end
 
-  defp uid_from_auth(auth), do: auth.uid
+  defp uid_from_auth(auth), do: to_string(auth.uid)
 
   # We need to check the pw for the identity provider
   defp validate_auth_for_registration(%Auth{provider: :identity} = auth) do
