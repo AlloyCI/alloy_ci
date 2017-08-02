@@ -3,38 +3,22 @@ defmodule AlloyCi.Runners do
   """
   alias AlloyCi.{Builds, Project, Projects, Repo, Runner}
 
-  @global_token Application.get_env(:alloy_ci, :runner_registration_token)
-
   def all(params), do: Runner |> Repo.paginate(params)
 
-  def create(%{"token" => @global_token, "info" => runner_info} = params) do
-    new_runner =
-      Enum.into(%{global: true}, runner_params(params, runner_info))
-
-    case save(new_runner) do
-      {:ok, runner} ->
-        runner
-      {:error, _} ->
-        nil
-    end
-  end
-
   def create(%{"token" => token, "info" => runner_info} = params) do
-    with %Project{} = project <- Projects.get_by(token: token) do
+    if token == global_token() do
       new_runner =
-        %{
-          global: false,
-          project_id: project.id
-        }
-        |> Enum.into(runner_params(params, runner_info))
-
-      case save(new_runner) do
-        {:ok, runner} -> runner
-        {:error, _} -> nil
-      end
+        Enum.into(%{global: true}, runner_params(params, runner_info))
+      save(new_runner)
     else
-      _ ->
-        nil
+      with %Project{} = project <- Projects.get_by(token: token) do
+        new_runner =
+          %{global: false, project_id: project.id}
+          |> Enum.into(runner_params(params, runner_info))
+        save(new_runner)
+      else
+        _ -> nil
+      end
     end
   end
 
@@ -55,6 +39,10 @@ defmodule AlloyCi.Runners do
   def get(id), do: Runner |> Repo.get(id)
 
   def get_by(token: token), do: Runner |> Repo.get_by(token: token)
+
+  def global_token do
+    Application.get_env(:alloy_ci, :runner_registration_token)
+  end
 
   def register_job(%{project_id: nil, tags: nil} = runner) do
     Builds.to_process
@@ -90,9 +78,15 @@ defmodule AlloyCi.Runners do
   end
 
   def save(params) do
-    %Runner{}
-    |> Runner.changeset(params)
-    |> Repo.insert
+    result =
+      %Runner{}
+      |> Runner.changeset(params)
+      |> Repo.insert
+
+    case result do
+      {:ok, runner} -> runner
+      {:error, _} -> nil
+    end
   end
 
   def update(runner, params) do
@@ -120,7 +114,7 @@ defmodule AlloyCi.Runners do
   ###################
   defp runner_params(params, runner_info) do
     tags =
-      case String.split(params["tag_list"] || "", ", ") do
+      case String.split(params["tag_list"] || "", ",") do
         [""] -> nil
         list -> list
       end

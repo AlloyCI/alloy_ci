@@ -36,8 +36,28 @@ defmodule AlloyCi.RunnersTest do
 
       assert result != nil
       assert result.locked == false
+      assert result.global == true
       assert result.tags == ~w(elixir postgres linux)
       assert runner == result
+    end
+
+    test "it creates a project specific runner" do
+      project = insert(:project)
+      params = %{
+        "token" => project.token,
+        "description" => "test runner",
+        "info" => %{"name" => "test"},
+        "tag_list" => "elixir, postgres, linux",
+        "locked" => false,
+        "run_untagged" => false
+      }
+
+      result = Runners.create(params)
+
+      assert result != nil
+      assert result.global == false
+      assert result.tags == ~w(elixir postgres linux)
+      assert result.project_id == project.id
     end
   end
 
