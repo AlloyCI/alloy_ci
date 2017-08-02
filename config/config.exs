@@ -15,7 +15,6 @@ config :alloy_ci,
   runner_registration_token: System.get_env("RUNNER_REGISTRATION_TOKEN"),
   server_url: System.get_env("SERVER_URL")
 
-# Configures the endpoint
 config :alloy_ci, AlloyCi.Web.Endpoint,
   url: [host: "localhost"],
   secret_key_base: System.get_env("SECRET_KEY_BASE"),
@@ -23,12 +22,10 @@ config :alloy_ci, AlloyCi.Web.Endpoint,
   pubsub: [name: AlloyCi.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
-# Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
-# Configures Uberauth GitHub
 config :ueberauth, Ueberauth,
   providers: [
     github: {Ueberauth.Strategy.Github, [default_scope: "email,user,repo"]},
@@ -39,7 +36,6 @@ config :ueberauth, Ueberauth.Strategy.Github.OAuth,
   client_id: System.get_env("GITHUB_CLIENT_ID"),
   client_secret: System.get_env("GITHUB_CLIENT_SECRET")
 
-# Configures Guardian
 config :guardian, Guardian,
   issuer: "AlloyCi.#{Mix.env}",
   ttl: {30, :days},
