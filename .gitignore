@@ -26,3 +26,4 @@ erl_crash.dump
 /.env
 alloy_ci.tar.gz
 docker-compose.yml
+nginx.conf
