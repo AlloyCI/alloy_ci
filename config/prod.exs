@@ -21,7 +21,7 @@ config :alloy_ci,
 
 config :alloy_ci, AlloyCi.Web.Endpoint,
   http: [port: "${PORT}"],
-  url: [host: "${HOST}", port: "${PORT}"],
+  url: [host: "${HOST}", port: "${PORT}", scheme: "https"],
   # force_ssl: [rewrite_on: [:x_forwarded_proto]],
   # url: [host: "alloy-ci.com", port: 443],
   # force_ssl: [hsts: true],
@@ -44,6 +44,18 @@ config :alloy_ci, AlloyCi.Repo,
   url: "${DATABASE_URL}",
   pool_size: 20
   # ssl: true
+
+# Configures Uberauth
+config :ueberauth, Ueberauth,
+  providers: [
+    github: {
+      Ueberauth.Strategy.Github, [
+        default_scope: "email,user,repo",
+        send_redirect_uri: false
+      ]
+    },
+    identity: {Ueberauth.Strategy.Identity, [callback_methods: ["POST"]]}
+  ]
 
 # Configures Uberauth GitHub
 config :ueberauth, Ueberauth.Strategy.Github.OAuth,

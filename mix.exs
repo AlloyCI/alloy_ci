@@ -89,7 +89,7 @@ defmodule AlloyCi.Mixfile do
       {:secure_random, "~> 0.5"},
       {:tentacat, "~> 0.6", github: "supernova32/tentacat"}, #path: "../tentacat"},
       {:timex, "~> 3.1"},
-      {:ueberauth_github, "~> 0.5"},
+      {:ueberauth_github, "~> 0.5", github: "supernova32/ueberauth_github"},
       {:ueberauth_identity, "~> 0.2.3"},
       {:que, "~> 0.4.1", github: "supernova32/que"},
 
