@@ -26,7 +26,7 @@ defmodule AlloyCi.RunnersTest do
         "token" => Application.get_env(:alloy_ci, :runner_registration_token),
         "description" => "test runner",
         "info" => %{"name" => "test"},
-        "tag_list" => "elixir, postgres, linux",
+        "tag_list" => "elixir,postgres,linux",
         "locked" => false,
         "run_untagged" => false
       }
@@ -47,7 +47,7 @@ defmodule AlloyCi.RunnersTest do
         "token" => project.token,
         "description" => "test runner",
         "info" => %{"name" => "test"},
-        "tag_list" => "elixir, postgres, linux",
+        "tag_list" => "elixir,postgres,linux",
         "locked" => false,
         "run_untagged" => false
       }
