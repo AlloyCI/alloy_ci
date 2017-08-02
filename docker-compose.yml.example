@@ -6,10 +6,12 @@ services:
     depends_on:
       - db
     ports:
-      - "4000:4000"
+      # The first entry is the exposed port, the second is where the exposed
+      # port should bind to. Use the same second value here as PORT below
+      - "4000:80"
     environment:
       DATABASE_URL: "ecto://alloy_ci:<passowrd>@db/alloy_ci_prod"
-      PORT: 4000
+      PORT: 80 # Use 443 for SSL, even if you are proxying SSL via another web server
       HOST: "<hostaname>"
       RUNNER_REGISTRATION_TOKEN: "lustlmc3gMl59smZ"
       SERVER_URL: "https://<hostname>"
@@ -20,33 +22,34 @@ services:
       GITHUB_INTEGRATION_ID: "<GitHub Integration ID>"
       GITHUB_INTEGRATION_URL: "https://github.com/apps/<app_name>"
       # The private key for your GitHub integration. Each new line needs
-      # to have a trailing backward slash \ in order to be read properly, e.g.
-      GITHUB_PRIVATE_KEY: "----BEGIN RSA PRIVATE KEY-----\
-      MIIEpAIBAAKCAQEArq7JCtS05dPcofYA+QjSrwkFrayoUu5TDzm4SnRWHEB9PiaK\
-      BfEFEBbhbAtr8z/Sgm+iK6y3Bhq4Mmu2V9BFax9SS+hDhtdCEleRuPSipsiGLWZ7\
-      9YIgOVfCZ905NiBal8EB3fcGhA8fakSXmdxlTmPREBRuz9SaiYvIEr0PlTtUtMvW\
-      G0UHKVjOYkZWZPMJ2f/KgfkJKD/vNph1jiXUju8NM20zElTdjbqN8yg0R8XJYIXC\
-      k+QoiDiubBObSNeAvwdHagR7eH8500KLaa9Bi2KcdK6LKp0iTEGuDFHpNRFVBiWY\
-      BptwtEucI0wRGLUu10IpcslEf7HYiSkNNEC6jwIDAQABAoIBAHuih/abgAGexuz3\
-      Ac9BGGT8fMFkj6pKtgzzrGU+G+hZGIvRmSUFZrDxkND48Im1JVhejKhe0ReH99Dv\
-      /Zn/dfKQs524IXshhckXo7MFqs1i5dziSWAFnqsXWyhKIoEVuyjnWVvxx/HWBkUf\
-      kTE8FZO7ADBiVd/ROSObBJuGpq3WqgabvMlHRWDPY6LwNU99cCGtC4sIJ3yIEFp6\
-      l6/JLyA4r+ViB+BNVWA8ahztWE1nnXuXv3Txnb4r2JOrORCWxRPRIjfVRU1693ei\
-      S3WGlrEsKTbpoB3DNjqs3nr7f44QDq+KKURlt4T611Y3cRg3htbhRIv2o4Y5AMkO\
-      nkenrBkCgYEA1su28J3LeVu7q4Qn8Q024q/5AdVq7cUhlST3q281WYUVs1/EN8ZF\
-      oT2B17vSAlT7oBNnvFExg8xFyd20o7vfRtC7Eewa56SnvEPz3dvGNGV4nCByhvtp\
-      p4F1xf5dsujdNanF6dj8PRh+kBo45It7UeBuCF7OQlgeUdF+ROKMZLsCgYEA0DEu\
-      +L71LpaoGZxFqCb1jvcidH9YTJR6SdQyNDMwfDkLEjYnLDdGEaMaFbRXENuSVNyc\
-      VSVKxCCoH1eKYZEQz1PfywNys9Ew7p0cmnLOYG/hf/YssJokNWQb5frsqiT5/Im6\
-      3eXsn3lfDRQGnz6SKtA0tbWrnVKglY7KfjJ3jj0CgYEAtGzGLHO/mR8vEzGdg2QA\
-      OIZsedfVTAiM3wUAbaaqf5nE0rmczuTjVD+gM6D3FTJhcuMZ/huNphIOhTSQKgED\
-      2i43FSTorK+ongHOdQvI//ZES5EN4siIxUV/smKqPkBQoGUNdBLqPj+3AECmjYOE\
-      gRAuHSXVx/DQ9xUsJZzPJUUCgYBSdgiq0cf/SgEPE8yrS7Mbi1uEVSQ+QNknAPtZ\
-      naTorxdpgTWG1+XS+o1MZ3/M14tgPXlWaEzy3hR5RY00E+dal1ge6yC1hHgjKuu3\
-      aR3BKM9ihbkxwfvxgdNjBj5TLg4uLsdrOLS+fa5eWb49uOTgPFOEXY65445jbolZ\
-      7tdX6QKBgQCMJGBU1w6Hq5au/d0K77z+NdIA+r0UBPRkojY0/0nKPW4EM/pErtEn\
-      oPjmj1H4oRavtTNOIlWTUKJtOgAGPJAY4u2mMH4+F7b6j46d61ngE8u3M8+g1NNu\
-      dfCoKgfIDewuDOs8K0SD5wb3dY9PS/5qGoWV+0ivOWYuzhywDWWWcA==\
+      # to have a trailing line end and a backward slash \n\ in order to be
+      # read properly, e.g.
+      GITHUB_PRIVATE_KEY: "----BEGIN RSA PRIVATE KEY-----\n\
+      MIIEpAIBAAKCAQEArq7JCtS05dPcofYA+QjSrwkFrayoUu5TDzm4SnRWHEB9PiaK\n\
+      BfEFEBbhbAtr8z/Sgm+iK6y3Bhq4Mmu2V9BFax9SS+hDhtdCEleRuPSipsiGLWZ7\n\
+      9YIgOVfCZ905NiBal8EB3fcGhA8fakSXmdxlTmPREBRuz9SaiYvIEr0PlTtUtMvW\n\
+      G0UHKVjOYkZWZPMJ2f/KgfkJKD/vNph1jiXUju8NM20zElTdjbqN8yg0R8XJYIXC\n\
+      k+QoiDiubBObSNeAvwdHagR7eH8500KLaa9Bi2KcdK6LKp0iTEGuDFHpNRFVBiWY\n\
+      BptwtEucI0wRGLUu10IpcslEf7HYiSkNNEC6jwIDAQABAoIBAHuih/abgAGexuz3\n\
+      Ac9BGGT8fMFkj6pKtgzzrGU+G+hZGIvRmSUFZrDxkND48Im1JVhejKhe0ReH99Dv\n\
+      /Zn/dfKQs524IXshhckXo7MFqs1i5dziSWAFnqsXWyhKIoEVuyjnWVvxx/HWBkUf\n\
+      kTE8FZO7ADBiVd/ROSObBJuGpq3WqgabvMlHRWDPY6LwNU99cCGtC4sIJ3yIEFp6\n\
+      l6/JLyA4r+ViB+BNVWA8ahztWE1nnXuXv3Txnb4r2JOrORCWxRPRIjfVRU1693ei\n\
+      S3WGlrEsKTbpoB3DNjqs3nr7f44QDq+KKURlt4T611Y3cRg3htbhRIv2o4Y5AMkO\n\
+      nkenrBkCgYEA1su28J3LeVu7q4Qn8Q024q/5AdVq7cUhlST3q281WYUVs1/EN8ZF\n\
+      oT2B17vSAlT7oBNnvFExg8xFyd20o7vfRtC7Eewa56SnvEPz3dvGNGV4nCByhvtp\n\
+      p4F1xf5dsujdNanF6dj8PRh+kBo45It7UeBuCF7OQlgeUdF+ROKMZLsCgYEA0DEu\n\
+      +L71LpaoGZxFqCb1jvcidH9YTJR6SdQyNDMwfDkLEjYnLDdGEaMaFbRXENuSVNyc\n\
+      VSVKxCCoH1eKYZEQz1PfywNys9Ew7p0cmnLOYG/hf/YssJokNWQb5frsqiT5/Im6\n\
+      3eXsn3lfDRQGnz6SKtA0tbWrnVKglY7KfjJ3jj0CgYEAtGzGLHO/mR8vEzGdg2QA\n\
+      OIZsedfVTAiM3wUAbaaqf5nE0rmczuTjVD+gM6D3FTJhcuMZ/huNphIOhTSQKgED\n\
+      2i43FSTorK+ongHOdQvI//ZES5EN4siIxUV/smKqPkBQoGUNdBLqPj+3AECmjYOE\n\
+      gRAuHSXVx/DQ9xUsJZzPJUUCgYBSdgiq0cf/SgEPE8yrS7Mbi1uEVSQ+QNknAPtZ\n\
+      naTorxdpgTWG1+XS+o1MZ3/M14tgPXlWaEzy3hR5RY00E+dal1ge6yC1hHgjKuu3\n\
+      aR3BKM9ihbkxwfvxgdNjBj5TLg4uLsdrOLS+fa5eWb49uOTgPFOEXY65445jbolZ\n\
+      7tdX6QKBgQCMJGBU1w6Hq5au/d0K77z+NdIA+r0UBPRkojY0/0nKPW4EM/pErtEn\n\
+      oPjmj1H4oRavtTNOIlWTUKJtOgAGPJAY4u2mMH4+F7b6j46d61ngE8u3M8+g1NNu\n\
+      dfCoKgfIDewuDOs8K0SD5wb3dY9PS/5qGoWV+0ivOWYuzhywDWWWcA==\n\
       -----END RSA PRIVATE KEY-----"
 
   db:
