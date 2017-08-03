@@ -104,20 +104,12 @@ defmodule AlloyCi.Builds do
   end
 
   def for_project(project_id) do
-    pipelines = Pipelines.for_project(project_id)
-
-    mapper = fn(p) ->
-      Build
-      |> where(pipeline_id: ^p.id)
-      |> where([b], b.status == "pending" and is_nil(b.runner_id))
-      |> order_by(asc: :inserted_at)
-      |> Repo.all
-    end
-
-    pipelines
-    |> Enum.map(mapper)
-    |> List.flatten
-    |> List.first
+    Build
+    |> where(project_id: ^project_id)
+    |> where([b], b.status == "pending" and is_nil(b.runner_id))
+    |> order_by(asc: :inserted_at)
+    |> limit(1)
+    |> Repo.one
   end
 
   def for_runner(runner) do
@@ -126,8 +118,8 @@ defmodule AlloyCi.Builds do
     # Select builds whose tags are fully contained in the runner's tags
     |> where([b], fragment("? <@ ?", b.tags, ^runner.tags))
     |> order_by(asc: :inserted_at)
-    |> Repo.all
-    |> List.first
+    |> limit(1)
+    |> Repo.one
   end
 
   def get(id), do: Build |> Repo.get(id)
@@ -177,8 +169,7 @@ defmodule AlloyCi.Builds do
         end
       end)
     else
-      nil ->
-        {:no_build, nil}
+      nil -> {:no_build, nil}
     end
   end
 
@@ -186,8 +177,8 @@ defmodule AlloyCi.Builds do
     Build
     |> where([b], b.status == "pending" and is_nil(b.runner_id) and is_nil(b.tags))
     |> order_by(asc: :inserted_at)
-    |> Repo.all
-    |> List.first
+    |> limit(1)
+    |> Repo.one
   end
 
   def transition_status(build, status \\ nil) do
@@ -273,7 +264,14 @@ defmodule AlloyCi.Builds do
       %{key: "CI_PIPELINE_ID", value: Integer.to_string(build.project_id), public: true},
       %{key: "CI_REPOSITORY_URL", value: @github_api.clone_url(build.project, build.pipeline), public: false},
       %{key: "CI_SERVER_NAME", value: "AlloyCI", public: true},
-      %{key: "CI_SERVER_VERSION", value: AlloyCi.Version.version, public: true}
+      %{key: "CI_SERVER_VERSION", value: AlloyCi.Version.version, public: true},
+      # We need to set this key, because the GitLab CI Runner is a bit stupid in
+      # this regard. It fecthes the SSL certificate of the coordinator and tries
+      # to match it against the Git server. In GitLab's case they are one and the
+      # same, but here one is the AlloyCI server, and the other is GitHub.com.
+      # This means that if AlloyCI uses SSL, the Runner will try to match this
+      # certificate chain to GitHub's chain, resulting in an SSL error every time.
+      %{key: "GIT_SSL_NO_VERIFY", value: "true", public: true}
     ]
   end
 
