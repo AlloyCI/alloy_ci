@@ -15,7 +15,6 @@
     "GITHUB_CLIENT_ID": "fake-id",
     "GITHUB_CLIENT_SECRET": "fake-secret",
     "GITHUB_SECRET_TOKEN": "fake-token",
-    "GITHUB_DOMAIN": "github.com",
     "SECRET_KEY_BASE": "NULr4xlNDNzEwE77UHdId7cQU+vuaPJ+Q5x3l+7dppQngBsL5EkjEaMu0S9cCGbk",
     "GITHUB_INTEGRATION_ID": "1",
     "DATABASE_URL": "postgres://postgres@postgres:5432/alloy_ci_test"

@@ -28,7 +28,7 @@ config :logger, :console,
 
 config :ueberauth, Ueberauth,
   providers: [
-    github: {Ueberauth.Strategy.Github, [default_scope: "email,user,repo"]},
+    github: {Ueberauth.Strategy.Github, [default_scope: "user,repo"]},
     identity: {Ueberauth.Strategy.Identity, [callback_methods: ["POST"]]}
   ]
 

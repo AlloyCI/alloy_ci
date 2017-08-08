@@ -50,7 +50,7 @@ config :ueberauth, Ueberauth,
   providers: [
     github: {
       Ueberauth.Strategy.Github, [
-        default_scope: "email,user,repo",
+        default_scope: "user,repo",
         send_redirect_uri: false
       ]
     },
