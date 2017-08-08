@@ -2,7 +2,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
   @moduledoc """
   """
   use AlloyCi.Web, :controller
-  alias AlloyCi.{Queuer, Pipelines, Projects, Workers.CreateBuildsWorker}
+  alias AlloyCi.{Accounts, Pipelines, Projects, Queuer, Workers.CreateBuildsWorker}
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
@@ -19,6 +19,35 @@ defmodule AlloyCi.Web.Api.GithubEventController do
     else
       handle_event(conn, params)
     end
+  end
+
+  def handle_event(%{assigns: %{github_event: "installation"}} = conn, %{"action" => "created", "installation" => installation}, _, _) do
+    params = %{
+      login: installation["account"]["login"],
+      target_id: installation["target_id"],
+      target_type: installation["target_type"],
+      uid: installation["id"]
+    }
+
+    case Accounts.create_installation(params) do
+      {:ok, installation} ->
+        event = %{status: :ok, message: "Installation with ID: #{installation.id} created sucessfully."}
+        render(conn, "event.json", event: event)
+      {:error, changeset} ->
+        render(conn, "error.json", changeset: changeset)
+    end
+  end
+
+  def handle_event(%{assigns: %{github_event: "installation"}} = conn, %{"action" => "deleted", "installation" => installation}, _, _) do
+    event =
+      case Accounts.delete_installation(installation["id"]) do
+        {1, nil} ->
+          %{status: :ok, message: "Installation with UID: #{installation["id"]} deleted sucessfully."}
+        {_, _} ->
+          %{status: :error, message: "Failed to delete installation."}
+      end
+
+    render(conn, "event.json", event: event)
   end
 
   def handle_event(%{assigns: %{github_event: gh_event}} = conn, _params, _, _) do

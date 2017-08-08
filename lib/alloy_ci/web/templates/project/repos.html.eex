@@ -50,6 +50,7 @@
           <%= tag :input, type: "hidden", name: "_csrf_token", value: @csrf %>
           <%= hidden_input f, :name, value: repo["name"] %>
           <%= hidden_input f, :owner, value: repo["owner"]["login"] %>
+          <%= hidden_input f, :owner_id, value: repo["owner"]["id"] %>
           <%= hidden_input f, :private, value: repo["private"] |> to_string %>
           <%= hidden_input f, :repo_id, value: repo["id"] %>
         <% end %>

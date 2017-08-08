@@ -2,7 +2,7 @@ defmodule AlloyCi.Web.Api.GithubEventControllerTest do
   @moduledoc """
   """
   use AlloyCi.Web.ConnCase
-  alias AlloyCi.Pipeline
+  alias AlloyCi.{Installation, Pipeline}
   import AlloyCi.Factory
 
   test "handles push events" do
@@ -103,6 +103,38 @@ defmodule AlloyCi.Web.Api.GithubEventControllerTest do
       |> post("/api/github/handle_event", params)
 
     assert conn.resp_body =~ "errors"
+  end
+
+  test "handles installation created" do
+    params = Poison.decode!(File.read!("test/fixtures/responses/add_installation.json"))
+
+    conn =
+      build_conn()
+      |> put_req_header("x-github-event", "installation")
+      |> post("/api/github/handle_event", params)
+
+    installation =
+      Installation
+      |> where(uid: 44565)
+      |> Repo.one
+
+    assert installation.target_type == "Organization"
+    assert installation.target_id == 3367756
+    assert installation.login == "AlloyCI"
+
+    assert conn.resp_body =~ "Installation with ID: #{installation.id} created sucessfully."
+  end
+
+  test "handles installation deleted" do
+    installation = insert(:installation, uid: 44565)
+    params = Poison.decode!(File.read!("test/fixtures/responses/delete_installation.json"))
+
+    conn =
+      build_conn()
+      |> put_req_header("x-github-event", "installation")
+      |> post("/api/github/handle_event", params)
+
+    assert conn.resp_body =~ "Installation with UID: #{installation.uid} deleted sucessfully."
   end
 
   test "handles all other events" do

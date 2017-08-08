@@ -3,8 +3,8 @@ defmodule AlloyCi.Factory do
   """
   use ExMachina.Ecto, repo: AlloyCi.Repo
 
-  alias AlloyCi.{User, Authentication, GuardianToken, Project, ProjectPermission}
-  alias AlloyCi.{Pipeline, Build, Runner}
+  alias AlloyCi.{Authentication, Build, GuardianToken, Installation, Pipeline}
+  alias AlloyCi.{Project, ProjectPermission, Runner, User}
 
   def authentication_factory do
     %Authentication{
@@ -72,6 +72,15 @@ defmodule AlloyCi.Factory do
     %GuardianToken{
       jti: sequence(:jti, &"jti-#{&1}"),
       aud: sequence(:aud, &"aud-#{&1}")
+    }
+  end
+
+  def installation_factory do
+    %Installation{
+      login: sequence(:login, &"user-#{&1}"),
+      target_id: sequence(:target_id, &(&1)),
+      target_type: "User",
+      uid: sequence(:uid, &(&1))
     }
   end
 

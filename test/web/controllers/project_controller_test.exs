@@ -5,12 +5,13 @@ defmodule AlloyCi.Web.ProjectControllerTest do
   alias AlloyCi.Project
   import AlloyCi.Factory
 
-  @valid_attrs %{owner: "some_owner", name: "some content", private: true, repo_id: 69, tags: ["one", "two"]}
+  @valid_attrs %{owner: "some_owner", owner_id: 42, name: "some content", private: true, repo_id: 69, tags: ["one", "two"]}
   @invalid_attrs %{repo_id: nil}
 
   setup do
     user = insert(:user_with_project)
     insert(:github_auth, user: user)
+    insert(:installation, target_id: 42)
     {:ok, %{user: user}}
   end
 
@@ -32,7 +33,7 @@ defmodule AlloyCi.Web.ProjectControllerTest do
     project = Project |> last |> Repo.one
 
     assert redirected_to(conn) == project_path(conn, :show, project.id)
-    assert Repo.get_by(Project, @valid_attrs)
+    assert Repo.get(Project, project.id)
 
     permission = AlloyCi.ProjectPermission |> last |> Repo.one
     assert permission.repo_id == 69
@@ -76,7 +77,7 @@ defmodule AlloyCi.Web.ProjectControllerTest do
       |> put(project_path(build_conn(), :update, project), project: @valid_attrs)
 
     assert redirected_to(conn) == project_path(conn, :edit, project)
-    assert Repo.get_by(Project, @valid_attrs)
+    assert Repo.get(Project, project.id)
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{user: user} do

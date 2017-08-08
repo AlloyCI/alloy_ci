@@ -42,9 +42,7 @@ defmodule AlloyCi.Projects do
   end
 
   def can_manage?(id, user) do
-    permission =
-      ProjectPermission
-      |> Repo.get_by(project_id: id, user_id: user.id)
+    permission = get_project_permission(id, user)
 
     case permission do
       %ProjectPermission{} -> true
@@ -54,10 +52,11 @@ defmodule AlloyCi.Projects do
 
   def create_project(params, user) do
     installation_id = @github_api.installation_id_for(Accounts.github_auth(user).uid)
-    with %{"content" => _} <- @github_api.alloy_ci_config(
+    with true <- Accounts.installed_on_owner?(params["owner_id"]),
+         %{"content" => _} <- @github_api.alloy_ci_config(
                                 %{name: params["name"], owner: params["owner"]},
                                 %{sha: "master", installation_id: installation_id}
-                              )
+                              )                        
     do
       Repo.transaction(fn ->
         changeset =
@@ -81,7 +80,10 @@ defmodule AlloyCi.Projects do
         end
       end)
     else
-      _ -> {:missing_config, nil}
+      false ->
+        {:missing_installation, nil}
+      _ ->
+        {:missing_config, nil}
     end
   end
 
@@ -229,7 +231,7 @@ defmodule AlloyCi.Projects do
         # if all tags are deleted on the frontend, params will not contain the
         # tags element, so we set it explicitly here
         nil -> Map.merge(params, %{"tags" => nil})
-        _ -> params
+          _ -> params
       end
 
     project
@@ -241,8 +243,10 @@ defmodule AlloyCi.Projects do
   # Private functions
   ###################
   defp get_project_permission(id, user) do
-    ProjectPermission
-    |> Repo.get_by(project_id: id, user_id: user.id)
+    if user do
+      ProjectPermission
+      |> Repo.get_by(project_id: id, user_id: user.id)
+    end
   end
 
   defp purge_permissions(project_id) do

@@ -1,7 +1,7 @@
 defmodule AlloyCi.Accounts do
   @moduledoc """
   """
-  alias AlloyCi.{Authentication, ProjectPermission, Queuer, User, Repo}
+  alias AlloyCi.{Authentication, Installation, ProjectPermission, Queuer, User, Repo}
   alias AlloyCi.Workers.CreatePermissionsWorker
   alias Ueberauth.Auth
   import Ecto.Query
@@ -9,6 +9,25 @@ defmodule AlloyCi.Accounts do
   def authentications(user) do
     user = user |> Repo.preload(:authentications)
     user.authentications
+  end
+
+  def create_installation(params) do
+    %Installation{}
+    |> Installation.changeset(params)
+    |> Repo.insert
+  end
+
+  def installed_on_owner?(target_id) do
+    result =
+      Installation
+      |> where(target_id: ^target_id)
+      |> limit(1)
+      |> Repo.one
+
+    case result do
+      nil -> false
+        _ -> true
+    end
   end
 
   def current_auths(nil), do: []
@@ -21,6 +40,12 @@ defmodule AlloyCi.Accounts do
   def delete_auth(id, user) do
     Authentication
     |> where(id: ^id, user_id: ^user.id)
+    |> Repo.delete_all
+  end
+
+  def delete_installation(uid) do
+    Installation
+    |> where(uid: ^uid)
     |> Repo.delete_all
   end
 
@@ -252,7 +277,7 @@ defmodule AlloyCi.Accounts do
          {:ok, user} <- user_from_authentication(authentication, current_user)
     do
       invalidate_authentication(authentication, user, auth)
-    end  
+    end
   end
 
   # We don't have any nested structures in our params that we are using scrub

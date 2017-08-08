@@ -2,6 +2,7 @@ defmodule AlloyCi.Web.ProjectController do
   use AlloyCi.Web, :controller
   alias AlloyCi.{Queuer, Project, Projects, Workers}
   import Phoenix.HTML.Link
+  import AlloyCi.Web.ProjectView, only: [integration_url: 0]
 
   plug EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access"
 
@@ -22,9 +23,25 @@ defmodule AlloyCi.Web.ProjectController do
         conn
         |> put_flash(:info, "Project created successfully.")
         |> redirect(to: project_path(conn, :show, project))
+      {:missing_installation, _} ->
+        conn
+        |> put_flash(
+             :error, [
+               "This project's organization is not configured to use AlloyCI. Please go to the ",
+               link("GitHub integration", to: integration_url()),
+               " page to configure AlloyCI for this organization."
+             ]
+           )
+        |> redirect(to: project_path(conn, :index))
       {:missing_config, _} ->
         conn
-        |> put_flash(:error, ["The selected project doesn't have an .alloy-ci.json config file. Please see the ", link("docs", to: "https://github.com/AlloyCI/alloy_ci/tree/master/doc"), " for info on how to add one."])
+        |> put_flash(
+             :error, [
+               "The selected project doesn't have an .alloy-ci.json config file. Please see the ",
+               link("docs", to: "https://github.com/AlloyCI/alloy_ci/tree/master/doc"),
+               " for info on how to add one."
+             ]
+           )
         |> redirect(to: project_path(conn, :index))
       {:error, _} ->
         conn

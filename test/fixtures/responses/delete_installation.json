@@ -1,0 +1,36 @@
+{
+  "action": "deleted",
+  "installation": {
+    "id": 44565,
+    "account": {
+      "login": "AlloyCI",
+      "id": 3367756,
+      "type": "Organization",
+      "site_admin": false
+    },
+    "app_id": 1940,
+    "target_id": 3367756,
+    "target_type": "Organization",
+    "permissions": {
+      "statuses": "write",
+      "contents": "write",
+      "deployments": "write",
+      "pull_requests": "write",
+      "single_file": "write",
+      "members": "read",
+      "metadata": "read"
+    },
+    "events": [
+      "create",
+      "delete",
+      "deployment",
+      "deployment_status",
+      "pull_request",
+      "push",
+      "status"
+    ],
+    "created_at": "2017-08-07T18:26:19-05:00",
+    "updated_at": "2017-08-07T18:26:19-05:00",
+    "single_file_name": ".alloy-ci.json"
+  }
+}
