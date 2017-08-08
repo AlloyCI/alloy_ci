@@ -201,5 +201,9 @@ To jump into the specific documentation of each executor, visit:
 
 Read the [FAQ](faq/README.md) for troubleshooting common issues.
 
+## Copyright
+
+Copyright (c) 2011-2017 GitLab B.V.
+
 [golang]: https://golang.org/
 [TOML]: https://github.com/toml-lang/toml

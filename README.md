@@ -1,13 +1,15 @@
 # Alloy CI
 
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+AlloyCI is a Continuous Integration, Deployment, and Delivery coordinator,
+written in Elixir, that takes advantage of the GitLab CI Runner, and its
+capabilities as executor.
 
-Alloy CI aims to bridge the gap between GitLab's CI runner and GitHub. GitLab's
+It aims to bridge the gap between GitLab's CI runner and GitHub. GitLab's
 CI runner is tightly coupled with GitLab, so it is not possible to use one of
 these runners from a GitHub codebase.
 
 With AlloyCI you will be able to register a GitLab CI runner to the platform,
-connect it to one of your GitHub's repositories, and have it run your CI and
+connect it to one of your GitHub repositories, and have it run your CI and
 CD pipelines.
 
 AlloyCI will report the status of your pipelines to your pull requests and
@@ -23,10 +25,10 @@ branches, so you can always know their status, just like any other CI service.
 
 ### Stretch Goals
 
-- To create a SaaS based on AlloyCI and provide a more cost effective alternative
-  to the current CI service ecosystem
 - To provide all the CI/CD/Pipelines functionality, currently available only to
   GitLab EE, for free
+- To create a SaaS based on AlloyCI and provide a more cost effective alternative
+  to the current CI service ecosystem
 
 ## Features
 
@@ -51,8 +53,12 @@ branches, so you can always know their status, just like any other CI service.
 
 ## Installation
 
-### Heroku
+Head over to our [installation docs](doc/README.md#installation) for more information.
 
-### Docker
+## Copyright
 
-### Manual  
+Copyright (c) 2017 Patricio Cano. See [LICENSE](LICENSE) for details.
+
+### Documentation Copyright
+
+Documentation for the GitLab CI Runners is Copyright (c) 2011-2017 GitLab B.V.
