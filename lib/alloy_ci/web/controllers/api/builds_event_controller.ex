@@ -35,7 +35,6 @@ defmodule AlloyCi.Web.Api.BuildsEventController do
 
     with {:ok, build} <- Builds.get_by(id, token),
          {:ok, build} <- Builds.append_trace(build, trace) do
-      # Send notification to the channel listening on this build
       BuildsChannel.send_trace(build.id, trace)
 
       conn

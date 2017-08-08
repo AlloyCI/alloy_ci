@@ -10,7 +10,7 @@ defmodule AlloyCi.Github.Live do
   import Joken
 
   def alloy_ci_config(project, pipeline) do
-    client = installation_client(pipeline)
+    client = installation_client(pipeline.installation_id)
     Tentacat.Contents.find_in(project.owner, project.name, ".alloy-ci.json", pipeline.sha, client)
   end
 
@@ -119,8 +119,8 @@ defmodule AlloyCi.Github.Live do
     end)
   end
 
-  defp installation_client(pipeline) do
-    token = installation_token(pipeline.installation_id)
+  defp installation_client(installation_id) do
+    token = installation_token(installation_id)
     Tentacat.Client.new(%{access_token: token["token"]})
   end
 
@@ -136,7 +136,7 @@ defmodule AlloyCi.Github.Live do
       context: "ci/alloy-ci"
     }
     params = Map.merge(params, base)
-    client = installation_client(pipeline)
+    client = installation_client(pipeline.installation_id)
 
     Tentacat.Repositories.Statuses.create(
       project.owner, project.name, pipeline.sha, params, client
