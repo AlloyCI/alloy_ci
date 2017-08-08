@@ -1,4 +1,4 @@
-FROM elixir:1.5.0
+FROM elixir:1.5.1
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV HOME=/opt/app/ TERM=xterm

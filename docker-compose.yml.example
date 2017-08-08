@@ -1,4 +1,4 @@
-version: "2.0"
+version: "3"
 services:
   web:
     image: "alloyci/alloy_ci:<version>"
@@ -53,7 +53,7 @@ services:
       -----END RSA PRIVATE KEY-----"
 
   db:
-    image: postgres:9.6.2
+    image: postgres:9.6.3
     environment:
       POSTGRES_DB: "alloy_ci_prod"
       POSTGRES_USER: "alloy_ci"
