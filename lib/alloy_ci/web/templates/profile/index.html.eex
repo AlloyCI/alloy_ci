@@ -9,11 +9,15 @@
           <div class="card-block">
             <%= render "edit_form.html", changeset: @changeset,
                                     action: profile_path(@conn, :update, @current_user) %>
+            <%= link to: profile_path(@conn, :delete, @current_user.id), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger" do %>
+              <%= icon("trash") %>
+              Delete account
+            <% end %>
           </div>
         </div>
         <div class="card">
           <div class="card-header">
-            <strong>Authentications</strong>
+            <strong>Authentication Providers</strong>
           </div>
           <div class="card-block">
             <%= case @authentications do %>
