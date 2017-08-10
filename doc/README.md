@@ -19,9 +19,9 @@ started.
 
 Fill in the form with your data, and the following for the specified fields:
 
-`User authorization callback URL:` => https://example.com/auth/github/callback
-`Webhook URL:` => https://example.com/api/github/handle_event
-`Webhook secret (optional):` => A random string of characters
+- `User authorization callback URL:` => https://example.com/auth/github/callback
+- `Webhook URL:` => https://example.com/api/github/handle_event
+- `Webhook secret (optional):` => A random string of characters
 
 Under permissions, make sure that the following permissions are enabled and with
 the correct settings:
@@ -103,7 +103,7 @@ own, but it is common practice to use `ngnix`, `Apache`, or any other web server
 as a proxy, specially when SSL configuration is needed.
 
 For an example on how to configure `ngninx` as a reverse proxy, have a look at the
-[ngninx.conf.example](ngninx.conf.example) file.
+[ngninx.conf.example](../ngninx.conf.example) file.
 
 
 ## Configuration
@@ -136,7 +136,7 @@ them under `alloyci/alloy_ci` at [DockerHub](https://hub.docker.com/r/alloyci/al
 ### Docker Compose
 
 The easiest way to get AlloyCI up and running with Docker is to use Docker Compose.
-You will find an example [`docker-compose.yml` file](docker-compose.yml.example)
+You will find an example [`docker-compose.yml` file](../docker-compose.yml.example)
 that will get you most of the way there. All you need to do is replace the environment
 variables with the ones matching your environment.
 
@@ -150,7 +150,6 @@ image to use.
 >**Notice:** You will need to have Docker installed and configured in order to use
 Docker Compose. We suggest using Docker Machine with the Digital Ocean Driver to
 get a cloud server up and running, and ready for production use in mere minutes.
-
 > This procedure can also be used to install AlloyCI on AWS, Azure, or any other
 cloud server provider. It can also be used with Kubernetes.
 
@@ -176,7 +175,7 @@ steps you need to take.
 The guide assumes you have Elixir v1.5.1, and Erlang OTP v20 already installed and
 ready to run.
 
-**Notice:** The following steps can be performed on your local machine or directly
+>**Notice:** The following steps can be performed on your local machine or directly
 on the target server that will run AlloyCI in production.
 
 ### Clone
@@ -228,6 +227,7 @@ end
 ```
 
 Build the release again after changing these values.
+
 ---
 
 ### Configure Server
