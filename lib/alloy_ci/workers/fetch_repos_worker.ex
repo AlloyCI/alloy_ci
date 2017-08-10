@@ -24,7 +24,7 @@ defmodule AlloyCi.Workers.FetchReposWorker do
       ProjectView,
       "repos.html",
       existing_ids: ProjectPermission.existing_ids,
-      is_installed: @github_api.is_installed?(auth.uid),
+      is_installed: Accounts.installed_on_owner?(auth.uid),
       repos: @github_api.fetch_repos(auth.token),
       changeset: Project.changeset(%Project{}),
       csrf: csrf_token

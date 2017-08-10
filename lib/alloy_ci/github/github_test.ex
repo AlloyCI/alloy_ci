@@ -24,10 +24,6 @@ defmodule AlloyCi.Github.Test do
     Tentacat.Client.new(%{integration_jwt_token: "v1.1f699f1069f60xxx"})
   end
 
-  def is_installed?(_) do
-    true
-  end
-
   def fetch_repos(_token) do
     Poison.decode!(File.read!("test/fixtures/responses/repositories_list.json"))
   end

@@ -15,8 +15,6 @@ defmodule AlloyCi.Github do
 
   @callback integration_client() :: any
 
-  @callback is_installed?(github_uid :: String.t) :: boolean
-
   @callback notify_cancelled!(project :: %Project{}, pipeline :: %Pipeline{}) :: any
 
   @callback notify_pending!(project :: %Project{}, pipeline :: %Pipeline{}) :: any

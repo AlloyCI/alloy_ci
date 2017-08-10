@@ -47,11 +47,6 @@ defmodule AlloyCi.Github.Live do
     Tentacat.Client.new(%{integration_jwt_token: signed_jwt})
   end
 
-  def is_installed?(github_uid) do
-    result = filter_installations(github_uid)
-    !Enum.empty?(result)
-  end
-
   def list_installations do
     client = integration_client()
     Tentacat.Integrations.Installations.app_installations(client)
