@@ -43,6 +43,12 @@ defmodule AlloyCi.Accounts do
     |> Repo.delete_all
   end
 
+  def delete_auths(user_id) do
+    Authentication
+    |> where(user_id: ^user_id)
+    |> Repo.delete_all
+  end
+
   def delete_installation(uid) do
     Installation
     |> where(uid: ^uid)
@@ -54,9 +60,11 @@ defmodule AlloyCi.Accounts do
       ProjectPermission
       |> where(user_id: ^id)
 
-    case Repo.delete_all(query) do
-      {_, nil} ->
-        id |> get_user!() |> Repo.delete
+    with {_, nil} <- Repo.delete_all(query),
+         {_, nil} <- delete_auths(id)
+    do
+      id |> get_user!() |> Repo.delete
+    else
       _ ->
         {:error, nil}
     end
