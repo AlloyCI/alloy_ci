@@ -51,9 +51,10 @@
                 <input type="text" id="repo-filter" class="form-control" placeholder="Filter...">
               </div>
               <div class="row">
+                <% statuses = Projects.last_statuses(@projects) %>
                 <%= for project <- @projects do %>
+                  <% status = statuses |> Map.get(project.id, "unknown") %>
                   <div class="col-sm-6 col-lg-4 col-xl-3" id="card-<%= project.repo_id %>">
-                    <% status = Projects.last_status(project) %>
                     <div class="card <%= card_status(status)%>">
                       <div class="card-block project-card" data-url="<%= project_path(@conn, :show, project) %>">
                         <div class="btn-group pull-right">

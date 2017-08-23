@@ -45,8 +45,10 @@ defmodule AlloyCi.Projects do
     permission = get_project_permission(id, user)
 
     case permission do
-      %ProjectPermission{} -> true
-      _ -> false
+      %ProjectPermission{} ->
+         true
+      _ ->
+         false
     end
   end
 
@@ -56,7 +58,7 @@ defmodule AlloyCi.Projects do
          %{"content" => _} <- @github_api.alloy_ci_config(
                                 %{name: params["name"], owner: params["owner"]},
                                 %{sha: "master", installation_id: installation_id}
-                              )                        
+                              )
     do
       Repo.transaction(fn ->
         changeset =
@@ -145,14 +147,6 @@ defmodule AlloyCi.Projects do
     |> Repo.get_by(token: token)
   end
 
-  def last_status(project) do
-    query = from p in "pipelines",
-            where: p.project_id == ^project.id,
-            order_by: [desc: :inserted_at], limit: 1,
-            select: p.status
-    Repo.one(query) || "unknown"
-  end
-
   def last_status(project, ref) do
     query = from p in "pipelines",
             where: [project_id: ^project.id, ref: ^"refs/heads/#{ref}"],
@@ -161,19 +155,30 @@ defmodule AlloyCi.Projects do
     Repo.one(query) || "unknown"
   end
 
+  def last_statuses(projects) do
+    ids = projects |> Enum.map(fn(p) -> p.id end)
+    query = from p in "pipelines",
+            where: p.project_id in ^ids,
+            order_by: [desc: :inserted_at],
+            distinct: p.project_id,
+            select: {p.project_id, p.status}
+
+    query |> Repo.all |> Map.new
+  end
+
   def latest(user) do
-    query = from pp in "project_permissions",
+    query = from p in Project,
+            join: pp in "project_permissions", on: p.id == pp.project_id,
             where: pp.user_id == ^user.id,
-            join: p in Project, on: p.id == pp.project_id,
             order_by: [desc: p.updated_at], limit: 5,
-            select: p
+            select: %{id: p.id, name: p.name}
     Repo.all(query)
   end
 
   def paginated_for(user, params) do
-    query = from pp in ProjectPermission,
+    query = from p in Project,
+            join: pp in "project_permissions", on: p.id == pp.project_id,
             where: pp.user_id == ^user.id,
-            join: p in Project, on: p.id == pp.project_id,
             order_by: [desc: p.updated_at],
             select: p
     Repo.paginate(query, params)
