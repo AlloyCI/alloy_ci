@@ -1,6 +1,6 @@
 defmodule TimeConvert do
   @moduledoc """
-  Module to convert secods to compound time. Copied from
+  Module to convert seconds to compound time. Taken from
   https://rosettacode.org/wiki/Convert_seconds_to_compound_duration#Elixir
   """
   @minute 60
