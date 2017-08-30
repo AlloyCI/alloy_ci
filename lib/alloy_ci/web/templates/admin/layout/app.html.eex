@@ -36,7 +36,7 @@
 -->
 
 <body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
-  <%= render "navbar.html", current_user: @current_user, conn: @conn %>
+  <%= render AlloyCi.Web.SharedView, "navbar.html", current_user: @current_user, conn: @conn %>
 
   <div class="app-body">
     <%= render "sidebar.html", current_user: @current_user, conn: @conn %>
@@ -50,7 +50,6 @@
         <%= render @view_module, @view_template, assigns %>
       </div>
     </main>
-    <%= render "right_menu.html", current_user: @current_user, conn: @conn %>
   </div>
 
   <footer class="app-footer">

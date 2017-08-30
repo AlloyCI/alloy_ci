@@ -6,7 +6,7 @@
       </li>
       <%= for project <- @projects do %>
         <li class="nav-item">
-          <%= link to: project_path(@conn, :show, project), class: "nav-link" do %>
+          <%= link to: project_path(@conn, :show, project.id), class: "nav-link" do %>
             <%= icon("cube") %>
             <%= project.name %>
           <% end %>

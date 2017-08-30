@@ -58,10 +58,10 @@ defmodule AlloyCi.Web.Router do
     pipe_through [:browser, :browser_auth, :impersonation_browser_auth]
 
     get "/", PublicController, :index
-    get "/register", PublicController, :register, as: :register
     delete "/logout", AuthController, :logout
 
-    resources "/tokens", TokenController, only: [:delete]
+    resources "/notifications", NotificationController, only: [:index, :show, :update]
+
     resources "/profile", ProfileController, only: [:index, :update, :delete]
     delete "/profile/:auth_id/delete", ProfileController, :delete, as: :auth_delete
 
@@ -70,6 +70,10 @@ defmodule AlloyCi.Web.Router do
       resources "/builds", BuildController, only: [:show]
       resources "/badge/:ref", BadgeController, only: [:index]
     end
+
+    get "/register", PublicController, :register, as: :register
+
+    resources "/tokens", TokenController, only: [:delete]
   end
 
   # This scope is the main authentication area for Ueberauth
@@ -120,5 +124,9 @@ defmodule AlloyCi.Web.Router do
       patch "/:id/trace", BuildsEventController, :trace
       # add routes for artifacts here
     end
+  end
+
+  if Mix.env == :dev do
+    forward "/sent_emails", Bamboo.EmailPreviewPlug
   end
 end

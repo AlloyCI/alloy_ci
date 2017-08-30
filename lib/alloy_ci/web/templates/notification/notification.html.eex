@@ -1,0 +1,16 @@
+<div class="message">
+  <div>
+    <small class="text-muted">&nbsp;</small>
+    <small class="text-muted float-right mt-q"><%= pretty_date(@notification.inserted_at) %></small>
+  </div>
+  <div class="text-truncate font-weight-bold">
+    <%= link @notification.project.name, to: project_path(@conn, :show, @notification.project) %>
+  </div>
+  <div>
+    <%= notification_text(@notification) %>
+    <%= unless @notification.acknowledged do %>
+      <%= link "Acknowledge", to: notification_path(@conn, :update, @notification), class: "btn btn-secondary btn-sm", method: :put %>
+    <% end %>
+  </div>
+</div>
+<hr>

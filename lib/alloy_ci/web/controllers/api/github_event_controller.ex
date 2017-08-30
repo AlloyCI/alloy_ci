@@ -66,6 +66,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
       pipeline_attrs = %{
         before_sha: params["before"],
         commit: %{
+          pusher_email: params["pusher"]["email"],
           username: params["sender"]["login"],
           avatar_url: params["sender"]["avatar_url"],
           message: params["head_commit"]["message"]
