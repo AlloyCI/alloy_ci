@@ -11,6 +11,7 @@ defmodule AlloyCi.User do
     field :is_admin, :boolean
 
     has_many :authentications, AlloyCi.Authentication
+    has_many :notifications, AlloyCi.Notification
     has_many :project_permissions, AlloyCi.ProjectPermission
     has_many :projects, through: [:project_permissions, :project]
 
