@@ -2,7 +2,6 @@ defmodule AlloyCi.AccountsTest do
   @moduledoc """
   """
   use AlloyCi.DataCase
-
   import Ecto.Query
 
   alias AlloyCi.{Accounts, Authentication, User, Repo}
