@@ -67,6 +67,39 @@ defmodule AlloyCi.BuildsTest do
       assert build.stage == "test"
     end
 
+    test "it can override image settings to allow for testing against different lang versions", %{pipeline: pipeline} do
+      content = File.read!("test/fixtures/full_features_config.json")
+      {:ok, result} = Builds.create_builds_from_config(content, pipeline)
+      assert result == nil
+
+      build = Repo.one(from b in Build, order_by: [desc: b.id], limit: 1)
+
+      assert build.name == "mix"
+      assert build.commands == ["mix test"]
+      assert build.options == %{
+        "before_script" => ["mix local.hex --force",
+        "mix local.rebar --force", "mix deps.get", "mix ecto.setup"],
+        "cache" => %{"paths" => ["_build/", "deps/"]},
+        "image" => "elixir:1.5", "services" => ["postgres:9.6"],
+        "variables" => %{
+          "DATABASE_URL" => "postgres://postgres@postgres:5432/alloy_ci_test",
+          "GITHUB_CLIENT_ID" => "fake-id",
+          "GITHUB_CLIENT_SECRET" => "fake-secret",
+          "GITHUB_INTEGRATION_ID" => "1",
+          "GITHUB_SECRET_TOKEN" => "fake-token",
+          "MIX_ENV" => "test",
+          "RUNNER_REGISTRATION_TOKEN" => "lustlmc3gMl59smZ",
+          "SECRET_KEY_BASE" => "NULr4xlNDNzEwE77UHdId7cQU+vuaPJ+Q5x3l+7dppQngBsL5EkjEaMu0S9cCGbk"
+        }
+      }
+
+      assert build.project_id == pipeline.project_id
+      assert build.when == "on_success"
+      assert build.tags == ["elixir", "postgres"]
+      assert build.stage_idx == 1
+      assert build.stage == "test"
+    end
+
     test "it returns error on broken data", %{pipeline: pipeline} do
       content = File.read!("test/fixtures/broken_config.json")
       {:error, result} = Builds.create_builds_from_config(content, pipeline)

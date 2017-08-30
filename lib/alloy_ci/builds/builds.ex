@@ -7,8 +7,8 @@ defmodule AlloyCi.Builds do
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
-  @global_config ~w(image cache after_script before_script stages services variables)
-  @local_overrides ~w(after_script before_script cache variables)
+  @global_config ~w(after_script before_script cache image services stages variables)
+  @local_overrides ~w(after_script before_script cache image services variables)
 
   def append_trace(build, trace) do
     with {1, nil} <- append!(build, trace) do
