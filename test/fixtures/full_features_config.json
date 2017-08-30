@@ -1,7 +1,14 @@
 {
-  "image": "elixir:latest",
+  "image": {
+    "name": "elixir:latest",
+    "entrypoint": ["/bin/bash"]
+  },
   "services": [
-    "postgres:latest"
+    {
+      "name": "postgres:latest",
+      "alias": "postgres-1",
+      "command": ["/bin/sh"]
+    }
   ],
   "cache": {
     "paths": [

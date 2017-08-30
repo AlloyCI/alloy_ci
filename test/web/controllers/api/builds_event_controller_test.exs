@@ -40,6 +40,27 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
       assert conn.assigns.runner_id == runner.id
     end
 
+    test "fetches an extened build, starts it and returns the correct data", %{runner: runner, params: params} do
+      insert(:extended_build)
+      params = Map.put(params, :token, runner.token)
+
+      expected_services = [
+        %{"alias" => "post", "command" => ["/bin/sh"],
+          "entrypoint" => ["/bin/sh"], "name" => "postgres:latest"}
+      ]
+
+      conn =
+        build_conn()
+        |> post("/api/v4/jobs/request", params)
+
+      assert conn.status == 201
+      assert conn.resp_body =~ "variables"
+      assert conn.assigns.services == expected_services
+      assert conn.assigns.status == "running"
+      assert conn.assigns.image == %{"name" => "elixir:latest", "entrypoint" => ["/bin/bash"]}
+      assert conn.assigns.runner_id == runner.id
+    end
+
     test "returns 204 when there is no build", %{runner: runner} do
       conn =
         build_conn()

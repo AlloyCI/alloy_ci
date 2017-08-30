@@ -208,6 +208,24 @@ defmodule AlloyCi.BuildsTest do
       assert %{key: "CI", public: true, value: "true"} in result.variables
     end
 
+    test "updates the extended build status and returns the correct data" do
+      build = insert(:extended_build)
+      runner = insert(:runner)
+
+      expected_steps = [
+        %{name: :script, script: ["mix deps.get", "mix test"],
+          timeout: 3600, when: "on_success", allow_failure: false}
+      ]
+
+      {:ok, result} = Builds.start_build(build, runner)
+
+      assert result.services == [%{"alias" => "post", "command" => ["/bin/sh"], "entrypoint" => ["/bin/sh"], "name" => "postgres:latest"}]
+      assert result.steps == expected_steps
+      assert result.status == "running"
+      assert result.runner_id == runner.id
+      assert %{key: "CI", public: true, value: "true"} in result.variables
+    end
+
     test "it returns correct status when no build is found" do
       runner = insert(:runner)
       {:no_build, result} = Builds.start_build(nil, runner)

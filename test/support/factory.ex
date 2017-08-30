@@ -41,6 +41,25 @@ defmodule AlloyCi.Factory do
     }
   end
 
+  def extended_build_factory do
+    pipeline = insert(:pipeline)
+    %Build{
+      name: "full-build-1",
+      commands: ["mix test"],
+      options: %{
+        "variables" => %{"GITHUB" => "yes"},
+        "image" => %{"name" => "elixir:latest", "entrypoint" => ["/bin/bash"]},
+        "services" => [%{"name" => "postgres:latest", "alias" => "post", "command" => ["/bin/sh"], "entrypoint" => ["/bin/sh"]}],
+        "before_script" => ["mix deps.get"]
+      },
+      status: "pending",
+      stage_idx: 1,
+      pipeline: pipeline,
+      project: pipeline.project,
+      token: sequence("long-token")
+    }
+  end
+
   def full_build_factory do
     pipeline = insert(:pipeline)
     %Build{
@@ -142,6 +161,13 @@ defmodule AlloyCi.Factory do
   def with_pipeline(project, attrs \\ %{}) do
     attrs = Enum.into(attrs, %{project_id: project.id})
     insert(:clean_pipeline, attrs)
+    project
+  end
+
+  def with_user(project, attrs \\ %{}) do
+    user = insert(:user)
+    attrs = Enum.into(attrs, %{project: project, user_id: user.id})
+    insert(:project_permission, attrs)
     project
   end
 

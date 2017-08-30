@@ -25,9 +25,7 @@ defmodule AlloyCi.Web.Api.BuildsEventView do
       },
       variables: build.variables,
       steps: build.steps,
-      image: %{
-        name: build.options["image"]
-      },
+      image: build.image,
       services: build.services,
       # artifacts: [], # Implement artifacts in version 1.0
       cache: [build.options["cache"]] || []

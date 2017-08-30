@@ -270,14 +270,14 @@ A job is defined by a list of parameters that define the job behavior.
 | Keyword       | Required | Description | Type |
 |---------------|----------|-------------|------|
 | script        | yes      | Defines a shell script which is executed by Runner | String |
-| image         | no       | Use docker image, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) | String |
-| services      | no       | Use docker services, covered in [Using Docker Images](../docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) | Array |
+| image         | no       | Use docker image, covered in [Using Docker Images](../docker/README.md) | String or JSON Object |
+| services      | no       | Use docker services, covered in [Using Docker Images](../docker/README.md) | Array of: Strings or JSON Objects  |
 | stage         | no       | Defines a job stage (default: `test`) | String |
 | variables     | no       | Define job variables on a job level | JSON Object |
 | tags          | no       | Defines a list of tags which are used to select Runner | Array |
 | allow_failure | no       | Allow job to fail. Failed job doesn't contribute to commit status | Boolean |
 | when          | no       | Define when to run job. Can be `on_success`, `on_failure`, `always` or `manual` | String |
-| cache         | no       | Define list of files that should be cached between subsequent runs | JSON Object
+| cache         | no       | Define list of files that should be cached between subsequent runs | JSON Object |
 | before_script | no       | Override a set of commands that are executed before job | Array |
 | after_script  | no       | Override a set of commands that are executed after job | Array |
 
@@ -504,11 +504,7 @@ There are three possible values: `none`, `normal`, and `recursive`:
     ```
 
 Note that for this feature to work correctly, the submodules must be configured
-(in `.gitmodules`) with either:
-
-- the HTTP(S) URL of a publicly-accessible repository, or
-- a relative path to another repository on the same GitLab server. See the
-  [Git submodules](../git_submodules.md) documentation.
+(in `.gitmodules`) with the HTTP(S) URL of a publicly-accessible repository.
 
 ```json
 {
@@ -548,6 +544,8 @@ You can set them in the global [`variables`](#variables) section or the
 [`variables`](#job-variables) section for individual jobs.
 
 ## Validate the .alloy-ci.json
+
+**NOT IMPLEMENTED YET**
 
 Each instance of AlloyCI has an embedded debug tool called Lint.
 You can find the link under `/lint` of your AlloyCI instance.

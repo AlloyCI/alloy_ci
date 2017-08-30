@@ -239,16 +239,25 @@ defmodule AlloyCi.Builds do
       %{key: key, value: value, public: true}
     end)
 
-    services = Enum.map(build.options["services"] || [], &(%{name: &1}))
+    services = Enum.map(build.options["services"] || [], &map_service/1)
 
     %{
-      variables: predefined_vars(build) ++ variables,
+      image: map_service(build.options["image"]),
+      services: services,
       steps: steps(build),
-      services: services
+      variables: predefined_vars(build) ++ variables
     }
   end
 
   defp generate_token, do: SecureRandom.urlsafe_base64(10)
+
+  defp map_service(%{} = service) do
+    service
+  end
+
+  defp map_service(service) do
+    %{name: service}
+  end
 
   defp predefined_vars(build) do
     [
