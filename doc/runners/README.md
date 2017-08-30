@@ -142,7 +142,7 @@ installed.
 - Easy installation as a service for GNU/Linux, OSX and Windows
 - Embedded Prometheus metrics HTTP server
 
-## [Install GitLab Runner](install/index.md)
+## [Install GitLab Runner](install/README.md)
 
 GitLab Runner can be installed and used on GNU/Linux, macOS, FreeBSD and Windows.
 You can install it Using Docker, download the binary manually or use the
@@ -159,11 +159,11 @@ information on the different installation methods:
 - [Install on Kubernetes](install/kubernetes.md)
 - [Install the nightly binary manually (development)](install/bleeding-edge.md)
 
-## [Register GitLab Runner](register/index.md)
+## [Register GitLab Runner](register/README.md)
 
 Once GitLab Runner is installed, you need to register it with GitLab.
 
-Learn how to [register a GitLab Runner](register/index.md).
+Learn how to [register a GitLab Runner](register/README.md).
 
 ## Using the Runner
 
@@ -193,7 +193,7 @@ To jump into the specific documentation of each executor, visit:
 - [Use self-signed certificates](configuration/tls-self-signed.md) Configure certificates that are used to verify TLS peer when connecting to the GitLab server.
 - [Auto-scaling using Docker machine](configuration/autoscale.md) Execute jobs on machines that are created on demand using Docker machine.
 - [Supported shells](shells/README.md) Learn what shell script generators are supported that allow to execute builds on different systems.
-- [Security considerations](security/index.md) Be aware of potential security implications when running your jobs with GitLab Runner.
+- [Security considerations](security/README.md) Be aware of potential security implications when running your jobs with GitLab Runner.
 - [Runner monitoring](monitoring/README.md) Learn how to monitor Runner's behavior.
 - [Cleanup the Docker images automatically](https://gitlab.com/gitlab-org/gitlab-runner-docker-cleanup) A simple Docker application that automatically garbage collects the GitLab Runner caches and images when running low on disk space.
 
