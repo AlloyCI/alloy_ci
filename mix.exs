@@ -35,6 +35,8 @@ defmodule AlloyCi.Mixfile do
 
   def applications(_) do
     [
+      :bamboo,
+      :bamboo_smtp,
       :comeonin,
       :cowboy,
       :elixir_make,
@@ -72,6 +74,8 @@ defmodule AlloyCi.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:bamboo, "~> 0.8"},
+      {:bamboo_smtp, "~> 1.4"},
       {:comeonin, "~> 3.0"},
       {:cowboy, "~> 1.1"},
       {:gettext, "~> 0.11"},
@@ -95,7 +99,7 @@ defmodule AlloyCi.Mixfile do
 
       # Test and Dev dependencies
       {:excoveralls, "~> 0.7", only: :test},
-      {:ex_machina, "~> 2.0", only: [:dev, :test]},
+      {:ex_machina, "~> 2.0", github: "thoughtbot/ex_machina", only: [:dev, :test]},
       {:credo, "~> 0.8", only: [:dev, :test]},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
     ]
