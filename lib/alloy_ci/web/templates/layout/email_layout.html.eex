@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Continuous Integration set free.">
+    <meta name="author" content="Alloy CI">
+    <meta name="keyword" content="Continuous Integration,CI,CD,GitHub,GitLab">
+    <link rel="stylesheet" href="<%= static_url(AlloyCi.Web.Endpoint, "/css/app.css") %>">
+  </head>
+  <body>
+    <%= render @view_module, @view_template, assigns %>
+  </body>
+</html>

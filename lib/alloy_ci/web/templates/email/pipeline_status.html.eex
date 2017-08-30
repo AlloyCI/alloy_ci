@@ -1,0 +1,3 @@
+<h4><%= @notification.project.name %></h4>
+
+<%= notification_text(@notification) %>
