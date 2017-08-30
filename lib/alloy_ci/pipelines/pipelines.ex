@@ -3,7 +3,7 @@ defmodule AlloyCi.Pipelines do
   The boundary for the Pipelines system.
   """
   import Ecto.Query, warn: false
-  alias AlloyCi.{Builds, Queuer, Pipeline, Projects, Repo, Workers.CreateBuildsWorker}
+  alias AlloyCi.{Builds, Notifications, Pipeline, Projects, Queuer, Repo, Workers.CreateBuildsWorker}
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
@@ -50,8 +50,11 @@ defmodule AlloyCi.Pipelines do
     @github_api.notify_failure!(pipeline.project, pipeline)
     finished_at = Timex.now
     duration = Timex.diff(finished_at, Timex.to_datetime(pipeline.started_at, :utc), :seconds)
-    {:ok, _} = update_pipeline(pipeline, %{status: "failed", duration: duration, finished_at: finished_at})
-    # Notify user that pipeline failed. (Email and badge)
+
+    with {:ok, pipeline} <- update_pipeline(pipeline, %{status: "failed", duration: duration, finished_at: finished_at}) do
+      Notifications.send(pipeline, pipeline.project, "pipeline_failed")
+      {:ok, pipeline}
+    end
   end
 
   def for_project(project_id) do
@@ -131,8 +134,11 @@ defmodule AlloyCi.Pipelines do
         @github_api.notify_success!(pipeline.project, pipeline)
         finished_at = Timex.now
         duration = Timex.diff(finished_at, Timex.to_datetime(pipeline.started_at, :utc), :seconds)
-        update_pipeline(pipeline, %{status: "success", duration: duration, finished_at: finished_at})
-        # Notify user of successfull pipeline, email.
+
+        with {:ok, pipeline} <- update_pipeline(pipeline, %{status: "success", duration: duration, finished_at: finished_at}) do
+          Notifications.send(pipeline, pipeline.project, "pipeline_succeeded")
+          {:ok, pipeline}
+        end
       end
     end
   end
@@ -165,10 +171,12 @@ defmodule AlloyCi.Pipelines do
   # Private functions
   ###################
   defp clone(pipeline) do
-    pipeline
-    |> Map.drop([:id, :inserted_at, :updated_at, :builds, :project, :status, :duration])
-    |> Map.merge(%{builds: []})
-    |> Pipeline.changeset
+    params =
+      pipeline
+      |> Map.drop([:__meta__, :__struct__, :id, :inserted_at, :updated_at, :builds, :project, :status, :duration])
+      
+    %Pipeline{}
+    |> Pipeline.changeset(params)
     |> Repo.insert
   end
 end
