@@ -27,6 +27,10 @@ defmodule AlloyCi.Notifiers.Slack do
     Poison.encode!(payload)
   end
 
+  defp commit_message(notification) do
+    "*Commit message:* " <> notification.content["pipeline"]["commit"]["message"]
+  end
+
   defp config do
     :alloy_ci
     |> Application.fetch_env!(__MODULE__)
@@ -34,11 +38,13 @@ defmodule AlloyCi.Notifiers.Slack do
   end
 
   defp notification_text(%{notification_type: "pipeline_failed"} = notification) do
-    base_notification_text(notification) <> " has failed. You can view the full trace log of the pipeline " <> "<#{pipeline_url(notification)}|here.>"
+    base_notification_text(notification) <> " has failed. You can view the full trace log of the pipeline " <> "<#{pipeline_url(notification)}|here.>\n"
+    <> commit_message(notification)
   end
 
   defp notification_text(%{notification_type: "pipeline_succeeded"} = notification) do
-    base_notification_text(notification) <> " has finished correctly. You can view the full trace log of the pipeline " <> "<#{pipeline_url(notification)}|here.>"
+    base_notification_text(notification) <> " has finished correctly. You can view the full trace log of the pipeline " <> "<#{pipeline_url(notification)}|here.>\n"
+    <> commit_message(notification)
   end
 
   defp pipeline_url(notification) do

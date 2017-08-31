@@ -51,23 +51,30 @@ defmodule AlloyCi.Web.ViewHelpers do
   def logged_in?(conn), do: Guardian.Plug.authenticated?(conn)
 
   def notification_text(%{notification_type: "pipeline_failed"} = notification) do
-    content_tag(:p) do
-      [
-        base_notification_text(notification),
-        " has failed. You can view the full trace log of the pipeline ",
-        link_to_pipeline(notification)
-      ]
-    end
+    [
+      content_tag(:p) do
+        [
+          base_notification_text(notification),
+          " has failed. You can view the full trace log of the pipeline ",
+          link_to_pipeline(notification)
+        ]
+      end,
+      commit_message(notification)
+    ]
+
   end
 
   def notification_text(%{notification_type: "pipeline_succeeded"} = notification) do
-    content_tag(:p) do
-      [
-        base_notification_text(notification),
-        " has finished correctly. You can view the full trace log of the pipeline ",
-        link_to_pipeline(notification)
-      ]
-    end
+    [
+      content_tag(:p) do
+        [
+          base_notification_text(notification),
+          " has finished correctly. You can view the full trace log of the pipeline ",
+          link_to_pipeline(notification)
+        ]
+      end,
+      commit_message(notification)
+    ]
   end
 
   def pretty_commit(msg) do
@@ -143,5 +150,14 @@ defmodule AlloyCi.Web.ViewHelpers do
       "here.", to: project_pipeline_url(AlloyCi.Web.Endpoint, :show,
       notification.project_id, notification.content["pipeline"]["id"])
     )
+  end
+
+  defp commit_message(notification) do
+    content_tag(:p) do
+      [
+        content_tag(:b, "Commit message: "),
+        notification.content["pipeline"]["commit"]["message"]
+      ]
+    end
   end
 end
