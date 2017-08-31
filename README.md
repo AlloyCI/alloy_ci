@@ -37,9 +37,16 @@ branches, so you can always know their status, just like any other CI service.
   - [x] Can send the required build information to the runner for processing when requested
   - [x] Can receive status updates from runner
   - [x] Can report back to GitHub with the statuses
+  - [x] Can send notifications via email with the status of a pipeline
+  - [x] Can send notifications to Slack with the status of a pipeline
+- [ ] Extras
+  - [x] Build statistics per project
+  - [x] Build statistics per runner
 - [ ] Advanced CI functionality
+  - [x] Can run jobs on multiple environments (using the [`image` feature](doc/docker/README.md) of the Docker executor.)
   - [x] Can use a local build cache to speed up jobs
-  - [ ] Can distinguishing between tags and branches
+  - [ ] Can make use of secret variables stored on a per project basis
+  - [ ] Can distinguish between tags and branches
   - [ ] Can receive uploaded artifacts from runners
   - [ ] Can pass artifacts between build jobs
   - [ ] Can make use of `only` and `except` tags for jobs
