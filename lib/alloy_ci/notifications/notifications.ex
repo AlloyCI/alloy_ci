@@ -4,8 +4,8 @@ defmodule AlloyCi.Notifications do
   import Ecto.Query, warn: false
   alias AlloyCi.{Notification, Notifier, Repo, User}
 
-  def aknowledge!(id) do
-    with %Notification{} = notification <- get(id) do
+  def aknowledge!(id, user) do
+    with %Notification{} = notification <- get(id, user) do
       notification
       |> Notification.changeset(%{acknowledged: true})
       |> Repo.update
@@ -19,6 +19,12 @@ defmodule AlloyCi.Notifications do
     Repo.one(query)
   end
 
+  def delete(id, user) do
+    Notification
+    |> where([id: ^id, user_id: ^user.id])
+    |> Repo.delete_all
+  end
+
   def for_user(user, acknowledged \\ false) do
     Notification
     |> where([user_id: ^user.id, acknowledged: ^acknowledged])
@@ -30,6 +36,13 @@ defmodule AlloyCi.Notifications do
   def get(id) do
     Notification
     |> Repo.get(id)
+  end
+
+  def get(id, user) do
+    Notification
+    |> where([id: ^id, user_id: ^user.id])
+    |> limit(1)
+    |> Repo.one
   end
 
   def get_with_project_and_user(id) do

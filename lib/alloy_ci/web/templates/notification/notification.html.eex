@@ -8,7 +8,9 @@
   </div>
   <div>
     <%= notification_text(@notification) %>
-    <%= unless @notification.acknowledged do %>
+    <%= if @notification.acknowledged do %>
+      <%= link "Delete", to: notification_path(@conn, :delete, @notification), class: "btn btn-danger btn-sm", method: :delete %>
+    <% else %>
       <%= link "Acknowledge", to: notification_path(@conn, :update, @notification), class: "btn btn-secondary btn-sm", method: :put %>
     <% end %>
   </div>

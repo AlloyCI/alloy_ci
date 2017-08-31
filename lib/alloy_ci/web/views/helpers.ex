@@ -133,7 +133,7 @@ defmodule AlloyCi.Web.ViewHelpers do
   ###################
   defp base_notification_text(notification) do
     [
-      "The pipeline with ID: #{notification.content["pipeline"]["id"]} for ",
+      "The pipeline with ID: #{notification.content["pipeline"]["id"]} for the branch ",
       content_tag(:b, clean_branch(notification.content["pipeline"]["ref"]))
     ]
   end

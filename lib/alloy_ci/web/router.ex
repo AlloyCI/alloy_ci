@@ -60,7 +60,7 @@ defmodule AlloyCi.Web.Router do
     get "/", PublicController, :index
     delete "/logout", AuthController, :logout
 
-    resources "/notifications", NotificationController, only: [:index, :show, :update]
+    resources "/notifications", NotificationController, only: [:index, :delete, :update]
 
     resources "/profile", ProfileController, only: [:index, :update, :delete]
     delete "/profile/:auth_id/delete", ProfileController, :delete, as: :auth_delete
