@@ -66,6 +66,32 @@ config :ueberauth, Ueberauth.Strategy.Github.OAuth,
 config :guardian, Guardian,
   secret_key: "${SECRET_KEY_BASE}"
 
+# Configures Notifiers
+config :alloy_ci, AlloyCi.Notifier,
+  slack: "${ENABLE_SLACK_NOTIFICATIONS}",
+  email: "${ENABLE_EMAIL_NOTIFICATIONS}"
+
+# Configures Email Settings
+config :alloy_ci, AlloyCi.Notifiers.Email,
+  adapter: Bamboo.SMTPAdapter,
+  server: "${SMTP_SERVER}",
+  port: "${SMTP_PORT}",
+  username: "${SMTP_USERNAME}",
+  password: "${SMTP_PASSWORD}",
+  tls: :if_available, # can be `:always` or `:never`
+  allowed_tls_versions: "${ALLOWED_TLS_VERSIONS}", # comma seprated values (e.g. "tlsv1.1,tlsv1.2")
+  ssl: "${SMTP_SSL}",
+  retries: 1,
+  from_address: "${FROM_ADDRESS}",
+  reply_to_address: "${REPLY_TO_ADDRESS}"
+
+# Configures Slack settings
+config :alloy_ci, AlloyCi.Notifiers.Slack,
+    channel: "${SLACK_CHANNEL}",
+    service_name: "${SLACK_SERVICE_NAME}",
+    hook_url: "${SLACK_HOOK_URL}",
+    icon_emoji: "${SLACK_ICON}"
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key

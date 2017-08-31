@@ -62,6 +62,24 @@ config :tentacat,
 config :mix_docker,
   image: "alloyci/alloy_ci"
 
+# Configures Notifiers
+config :alloy_ci, AlloyCi.Notifier,
+  slack: System.get_env("ENABLE_SLACK_NOTIFICATIONS"),
+  email: System.get_env("ENABLE_EMAIL_NOTIFICATIONS")
+
+# Configures Email Settings
+config :alloy_ci, AlloyCi.Notifiers.Email,
+  adapter: Bamboo.LocalAdapter,
+  from_address: "info@alloy-ci.com",
+  reply_to_address: "no-reply@alloy-ci.com"
+
+# Configures Slack settings
+config :alloy_ci, AlloyCi.Notifiers.Slack,
+    channel: System.get_env("SLACK_CHANNEL"),
+    service_name: System.get_env("SLACK_SERVICE_NAME"),
+    hook_url: System.get_env("SLACK_HOOK_URL"),
+    icon_emoji: System.get_env("SLACK_ICON")
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"

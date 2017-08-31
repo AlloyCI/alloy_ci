@@ -10,9 +10,25 @@ services:
       # port should bind to. Use the same second value here as PORT below
       - "4000:80"
     environment:
+      ENABLE_SLACK_NOTIFICATIONS: true
+      SLACK_CHANNEL: "#ci"
+      SLACK_SERVICE_NAME: AlloyCI
+      SLACK_HOOK_URL: "https://hooks.slack.com/services/..."
+      #------
+      ENABLE_EMAIL_NOTIFICATIONS: true
+      SMTP_SERVER: mail.example.org
+      SMTP_PORT: 1176
+      SMTP_USERNAME: username
+      SMTP_PASSWORD: password
+      SMTP_SSL: true
+      ALLOWED_TLS_VERSIONS: "tlsv1.1,tlsv1.2"
+      FROM_ADDRESS: ci@example.org
+      REPLY_TO_ADDRESS: no-reply@example.org
+      #------
       DATABASE_URL: "ecto://alloy_ci:<passowrd>@db/alloy_ci_prod"
       PORT: 80 # Use 443 for SSL, even if you are proxying SSL via another web server
       HOST: "<hostaname>"
+      #------
       RUNNER_REGISTRATION_TOKEN: "lustlmc3gMl59smZ"
       SERVER_URL: "https://<hostname>"
       GITHUB_CLIENT_ID: "<GitHub OAuth Client ID>"
