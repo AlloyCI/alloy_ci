@@ -10,12 +10,12 @@ services:
       # port should bind to. Use the same second value here as PORT below
       - "4000:80"
     environment:
-      ENABLE_SLACK_NOTIFICATIONS: true
+      ENABLE_SLACK_NOTIFICATIONS: "true"
       SLACK_CHANNEL: "#ci"
       SLACK_SERVICE_NAME: AlloyCI
       SLACK_HOOK_URL: "https://hooks.slack.com/services/..."
       #------
-      ENABLE_EMAIL_NOTIFICATIONS: true
+      ENABLE_EMAIL_NOTIFICATIONS: "true"
       SMTP_SERVER: mail.example.org
       SMTP_PORT: 1176
       SMTP_USERNAME: username
