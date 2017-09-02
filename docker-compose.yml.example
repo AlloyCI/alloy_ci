@@ -20,7 +20,7 @@ services:
       SMTP_PORT: 1176
       SMTP_USERNAME: username
       SMTP_PASSWORD: password
-      SMTP_SSL: true
+      SMTP_SSL: "true"
       ALLOWED_TLS_VERSIONS: "tlsv1.1,tlsv1.2"
       FROM_ADDRESS: ci@example.org
       REPLY_TO_ADDRESS: no-reply@example.org
