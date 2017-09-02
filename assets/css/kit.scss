@@ -1,8 +1,7 @@
 $icon-font-path: '/fonts/'; // use fonts from priv/static/fonts/
 @import 'bootstrap';
 @import 'font-awesome';
-@import './freelancer/freelancer';
-@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700');
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700|Droid+Serif:400,400i,700,700i|Roboto:300,400,500,700|Lato:400,700,400italic,700italic');
 @import url('https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic');
 
 .alert:empty {

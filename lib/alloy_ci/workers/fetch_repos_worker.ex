@@ -7,6 +7,7 @@ defmodule AlloyCi.Workers.FetchReposWorker do
   @github_api Application.get_env(:alloy_ci, :github_api)
 
   def perform({user_id, csrf_token}) do
+    :timer.sleep(50)
     auth =
       user_id
       |> Accounts.get_user!

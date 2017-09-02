@@ -1,349 +1,139 @@
-<!-- Portfolio Grid Section -->
-<section id="portfolio">
+<section id="features" class="features-4 text-center">
   <div class="container">
-    <h2 class="text-center">Features</h2>
-    <hr class="star-primary">
+    <div class="row justify-center">
+      <div class="col-md-8 text-center" >
+        <h2>Features</h2>
+        <p class="lead mt-3">
+          AlloyCI is a Continuous Integration, Deployment, and Delivery
+          coordinator, written in Elixir, that takes advantage of the GitLab
+          CI Runner, and its capabilities as executor.
+        </p>
+        <div class="divider"></div>
+      </div>
+    </div>
     <div class="row">
-      <div class="col-sm-6 col-lg-4 portfolio-item">
-        <div class="portfolio-link" href="#portfolioModal1" data-toggle="modal">
-          <div class="caption">
-            <div class="caption-content">
-              <i class="fa fa-search-plus fa-3x"></i>
-            </div>
-          </div>
-          <img class="img-fluid" src="/images/portfolio/cabin.png" alt="">
+      <div class="col-md-3 col-feature">
+        <div class="rounded-circle justify-center">
+          <em class="fa fa-2x fa-code"></em>
         </div>
+        <h4>JSON Config File</h4>
+        <p>
+          Configure your pipeline with an easy to use, easy to understand
+          JSON file.
+        </p>
       </div>
-
-      <div class="col-sm-6 col-lg-4 portfolio-item">
-        <div class="portfolio-link" href="#portfolioModal2" data-toggle="modal">
-          <div class="caption">
-            <div class="caption-content">
-              <i class="fa fa-search-plus fa-3x"></i>
-            </div>
-          </div>
-          <img class="img-fluid" src="/images/portfolio/cake.png" alt="">
+      <div class="col-md-3 col-feature">
+        <div class="rounded-circle justify-center">
+          <em class="fa fa-2x fa-github"></em>
         </div>
+        <h4>Made for GitHub</h4>
+        <p>
+          Developed as a GitHub App, it can be easily installed on your account
+          and your organizations.
+        </p>
       </div>
-
-      <div class="col-sm-6 col-lg-4 portfolio-item">
-        <div class="portfolio-link" href="#portfolioModal3" data-toggle="modal">
-          <div class="caption">
-            <div class="caption-content">
-              <i class="fa fa-search-plus fa-3x"></i>
-            </div>
-          </div>
-          <img class="img-fluid" src="/images/portfolio/circus.png" alt="">
+      <div class="col-md-3 col-feature">
+        <div class="rounded-circle justify-center">
+          <em class="fa fa-2x fa-gitlab"></em>
         </div>
+        <h4>GitLab Runner</h4>
+        <p>
+          Take advantage of this feature-rich, powerful, open-source runner to
+          run your code in a variety of environments.
+        </p>
       </div>
-
-      <div class="col-sm-6 col-lg-4 portfolio-item">
-        <div class="portfolio-link" href="#portfolioModal4" data-toggle="modal">
-          <div class="caption">
-            <div class="caption-content">
-              <i class="fa fa-search-plus fa-3x"></i>
-            </div>
-          </div>
-          <img class="img-fluid" src="/images/portfolio/game.png" alt="">
+      <div class="col-md-3 col-feature">
+        <div class="rounded-circle justify-center">
+          <em class="fa fa-2x fa-code-fork"></em>
         </div>
+        <h4>Open Source</h4>
+        <p>
+          Is there something missing? You can help make AlloyCI better. Contribute
+          the missing feature, and it could be added to the main repo.
+        </p>
       </div>
+    </div>
 
-      <div class="col-sm-6 col-lg-4 portfolio-item">
-        <div class="portfolio-link" href="#portfolioModal5" data-toggle="modal">
-          <div class="caption">
-            <div class="caption-content">
-              <i class="fa fa-search-plus fa-3x"></i>
-            </div>
-          </div>
-          <img class="img-fluid" src="/images/portfolio/safe.png" alt="">
+    <div class="row">
+      <div class="col-md-3 col-feature">
+        <div class="rounded-circle justify-center">
+          <em class="fa fa-2x fa-area-chart"></em>
         </div>
+        <h4>Build Statistics</h4>
+        <p>
+          See build statistics scoped to a project, and to a runner.
+        </p>
       </div>
-
-      <div class="col-sm-6 col-lg-4 portfolio-item">
-        <div class="portfolio-link" href="#portfolioModal6" data-toggle="modal">
-          <div class="caption">
-            <div class="caption-content">
-              <i class="fa fa-search-plus fa-3x"></i>
-            </div>
-          </div>
-          <img class="img-fluid" src="/images/portfolio/submarine.png" alt="">
+      <div class="col-md-3 col-feature">
+        <div class="rounded-circle justify-center">
+          <em class="fa fa-2x fa-bell"></em>
         </div>
+        <h4>Clean Notification</h4>
+        <p>
+          Configurable notifications for email and/or Slack.
+        </p>
+      </div>
+      <div class="col-md-3 col-feature">
+        <div class="rounded-circle justify-center">
+          <em class="fa fa-2x fa-balance-scale"></em>
+        </div>
+        <h4>Runner auto-scalling</h4>
+        <p>
+          With auto-scalling, the amount of runners in use is adjusted to meet the demand.
+        </p>
+      </div>
+      <div class="col-md-3 col-feature">
+        <div class="rounded-circle justify-center">
+          <em class="fa fa-2x fa-globe"></em>
+        </div>
+        <h4>Multiple Build Envs</h4>
+        <p>
+          Run your tests on different environments to guarantee compatibility.
+        </p>
       </div>
     </div>
   </div>
 </section>
-<!-- About Section -->
-<section class="success" id="about">
+
+<section class="cta-5 text-center">
   <div class="container">
-    <h2 class="text-center">About</h2>
-    <hr class="star-light">
-    <div class="row">
-      <div class="col-lg-4 offset-lg-2">
-        <p>
-          AlloyCI is an open-source Continuous Integration, Deployment, and
-          Delivery coordinator, written in Elixir, that takes advantage of the
-          GitLab CI Runner, and its capabilities as executor.
+    <div class="row align-items-center">
+      <div class="col-lg-8 text-center text-lg-left">
+        <h2 class="mt-4 mb-2">Want to try it out?</h2>
+        <p class="lead mb-3">
+          Login with your GitHub account, add a project, and push some
+          code to see it in action.
         </p>
       </div>
       <div class="col-lg-4">
-        <p>
-          It aims to be 100% interoperable with the GitLab CI Runner, providing
-          features like, autoscalable runners, parallel builds, multiple build
-          stages and pipelines, etc.
-        </p>
-      </div>
-      <div class="col-lg-8 offset-lg-2 text-center">
-        <a href="#" class="btn btn-lg btn-outline">
-        <i class="fa fa-download"></i> Download Theme
+        <a href="/auth/login" class="btn btn-lg btn-success pill-btn mt-3">
+          <%= icon("github fa-lg") %>
+          Log In
         </a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
-<div class="scroll-top hidden-lg-up">
-  <a class="btn btn-primary page-scroll" href="#page-top">
-  <i class="fa fa-chevron-up"></i>
-  </a>
-</div>
-<!-- Portfolio Modals -->
-<div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="close-modal" data-dismiss="modal">
-        <div class="lr">
-          <div class="rl">
-          </div>
-        </div>
+<section id="download" class="cta-5 text-center features-4">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-4">
+        <a href="https://hub.docker.com/r/alloyci/alloy_ci/" class="btn btn-lg btn-success pill-btn mt-3">
+          <%= icon("download fa-lg") %>
+          Download
+        </a>
       </div>
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 offset-lg-2">
-            <div class="modal-body">
-              <h2>Project Title</h2>
-              <hr class="star-primary">
-              <img class="img-fluid img-centered" src="/images/portfolio/cabin.png" alt="">
-              <p>Use this area of the page to describe your project. The icon above is part of a free icon set by <a href="https://sellfy.com/p/8Q9P/jV3VZ/">Flat Icons</a>. On their website, you can download their free set with 16 icons, or you can purchase the entire set with 146 icons for only $12!</p>
-              <ul class="list-inline item-details">
-                <li>Client:
-                  <strong><a href="http://startbootstrap.com">Start Bootstrap</a>
-                  </strong>
-                </li>
-                <li>Date:
-                  <strong><a href="http://startbootstrap.com">April 2014</a>
-                  </strong>
-                </li>
-                <li>Service:
-                  <strong><a href="http://startbootstrap.com">Web Development</a>
-                  </strong>
-                </li>
-              </ul>
-              <button class="btn btn-success" type="button" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-            </div>
-          </div>
-        </div>
+      <div class="col-lg-8 text-center text-lg-right">
+        <h2 class="mt-4 mb-2">Run it on your servers</h2>
+        <p class="lead mb-3">
+          Download our Docker image, and follow our
+          <a href="https://github.com/AlloyCI/alloy_ci/tree/master/doc">
+            docs
+          </a>
+          to get started.
+        </p>
       </div>
     </div>
   </div>
-</div>
-
-<div class="portfolio-modal modal fade" id="portfolioModal2" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="close-modal" data-dismiss="modal">
-        <div class="lr">
-          <div class="rl">
-          </div>
-        </div>
-      </div>
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 offset-lg-2">
-            <div class="modal-body">
-              <h2>Project Title</h2>
-              <hr class="star-primary">
-              <img class="img-fluid img-centered" src="/images/portfolio/cake.png" alt="">
-              <p>Use this area of the page to describe your project. The icon above is part of a free icon set by <a href="https://sellfy.com/p/8Q9P/jV3VZ/">Flat Icons</a>. On their website, you can download their free set with 16 icons, or you can purchase the entire set with 146 icons for only $12!</p>
-              <ul class="list-inline item-details">
-                <li>Client:
-                  <strong><a href="http://startbootstrap.com">Start Bootstrap</a>
-                  </strong>
-                </li>
-                <li>Date:
-                  <strong><a href="http://startbootstrap.com">April 2014</a>
-                  </strong>
-                </li>
-                <li>Service:
-                  <strong><a href="http://startbootstrap.com">Web Development</a>
-                  </strong>
-                </li>
-              </ul>
-              <button class="btn btn-success" type="button" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="portfolio-modal modal fade" id="portfolioModal3" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="close-modal" data-dismiss="modal">
-        <div class="lr">
-          <div class="rl">
-          </div>
-        </div>
-      </div>
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 offset-lg-2">
-            <div class="modal-body">
-              <h2>Project Title</h2>
-              <hr class="star-primary">
-              <img class="img-fluid img-centered" src="/images/portfolio/circus.png" alt="">
-              <p>Use this area of the page to describe your project. The icon above is part of a free icon set by <a href="https://sellfy.com/p/8Q9P/jV3VZ/">Flat Icons</a>. On their website, you can download their free set with 16 icons, or you can purchase the entire set with 146 icons for only $12!</p>
-              <ul class="list-inline item-details">
-                <li>Client:
-                  <strong><a href="http://startbootstrap.com">Start Bootstrap</a>
-                  </strong>
-                </li>
-                <li>Date:
-                  <strong><a href="http://startbootstrap.com">April 2014</a>
-                  </strong>
-                </li>
-                <li>Service:
-                  <strong><a href="http://startbootstrap.com">Web Development</a>
-                  </strong>
-                </li>
-              </ul>
-              <button class="btn btn-success" type="button" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="portfolio-modal modal fade" id="portfolioModal4" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="close-modal" data-dismiss="modal">
-        <div class="lr">
-          <div class="rl">
-          </div>
-        </div>
-      </div>
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 offset-lg-2">
-            <div class="modal-body">
-              <h2>Project Title</h2>
-              <hr class="star-primary">
-              <img class="img-fluid img-centered" src="/images/portfolio/game.png" alt="">
-              <p>Use this area of the page to describe your project. The icon above is part of a free icon set by <a href="https://sellfy.com/p/8Q9P/jV3VZ/">Flat Icons</a>. On their website, you can download their free set with 16 icons, or you can purchase the entire set with 146 icons for only $12!</p>
-              <ul class="list-inline item-details">
-                <li>Client:
-                  <strong><a href="http://startbootstrap.com">Start Bootstrap</a>
-                  </strong>
-                </li>
-                <li>Date:
-                  <strong><a href="http://startbootstrap.com">April 2014</a>
-                  </strong>
-                </li>
-                <li>Service:
-                  <strong><a href="http://startbootstrap.com">Web Development</a>
-                  </strong>
-                </li>
-              </ul>
-              <button class="btn btn-success" type="button" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="portfolio-modal modal fade" id="portfolioModal5" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="close-modal" data-dismiss="modal">
-        <div class="lr">
-          <div class="rl">
-          </div>
-        </div>
-      </div>
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 offset-lg-2">
-            <div class="modal-body">
-              <h2>Project Title</h2>
-              <hr class="star-primary">
-              <img class="img-fluid img-centered" src="/images/portfolio/safe.png" alt="">
-              <p>Use this area of the page to describe your project. The icon above is part of a free icon set by <a href="https://sellfy.com/p/8Q9P/jV3VZ/">Flat Icons</a>. On their website, you can download their free set with 16 icons, or you can purchase the entire set with 146 icons for only $12!</p>
-              <ul class="list-inline item-details">
-                <li>Client:
-                  <strong><a href="http://startbootstrap.com">Start Bootstrap</a>
-                  </strong>
-                </li>
-                <li>Date:
-                  <strong><a href="http://startbootstrap.com">April 2014</a>
-                  </strong>
-                </li>
-                <li>Service:
-                  <strong><a href="http://startbootstrap.com">Web Development</a>
-                  </strong>
-                </li>
-              </ul>
-              <button class="btn btn-success" type="button" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="portfolio-modal modal fade" id="portfolioModal6" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="close-modal" data-dismiss="modal">
-        <div class="lr">
-          <div class="rl">
-          </div>
-        </div>
-      </div>
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 offset-lg-2">
-            <div class="modal-body">
-              <h2>Project Title</h2>
-              <hr class="star-primary">
-              <img class="img-fluid img-centered" src="/images/portfolio/submarine.png" alt="">
-              <p>Use this area of the page to describe your project. The icon above is part of a free icon set by <a href="https://sellfy.com/p/8Q9P/jV3VZ/">Flat Icons</a>. On their website, you can download their free set with 16 icons, or you can purchase the entire set with 146 icons for only $12!</p>
-              <ul class="list-inline item-details">
-                <li>Client:
-                  <strong><a href="http://startbootstrap.com">Start Bootstrap</a>
-                  </strong>
-                </li>
-                <li>Date:
-                  <strong><a href="http://startbootstrap.com">April 2014</a>
-                  </strong>
-                </li>
-                <li>Service:
-                  <strong><a href="http://startbootstrap.com">Web Development</a>
-                  </strong>
-                </li>
-              </ul>
-              <button class="btn btn-success" type="button" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+</section>

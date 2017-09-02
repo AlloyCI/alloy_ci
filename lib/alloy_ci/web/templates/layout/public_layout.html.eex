@@ -8,85 +8,78 @@
   <meta name="author" content="Alloy CI">
   <meta name="keyword" content="Continuous Integration,CI,CD,GitHub,GitLab,Deployment,Delivery">
   <link rel="shortcut icon" href="/favicon.ico">
-  <title>Alloy CI</title>
-  <link rel="stylesheet" href="<%= static_path(@conn, "/css/freelancer.css") %>">
+  <title>AlloyCI</title>
+  <link rel="stylesheet" href="<%= static_path(@conn, "/css/kit.css") %>">
 </head>
 <body class="index" id="page-top">
-  <!-- Navigation -->
-  <nav class="navbar fixed-top navbar-toggleable-md navbar-light" id="mainNav">
-    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarExample" aria-controls="navbarExample" aria-expanded="false" aria-label="Toggle navigation">
-    Menu <i class="fa fa-bars"></i>
-    </button>
-    <div class="container">
-      <a class="navbar-brand" href="#page-top">Alloy CI</a>
-      <div class="collapse navbar-collapse" id="navbarExample">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <%= if @current_user do %>
-              <%= link "Projects", to: project_path(@conn, :index), class: "nav-link" %>
-            <% else %>
-              <a class="nav-link" href="/auth/login">Log in</a>
-            <% end %>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#portfolio">Features</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#about">About</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-  <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-  <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
 
-  <!-- Header -->
-  <header class="masthead">
-    <div class="container">
-      <img class="img-fluid" src="/images/profile.png" alt="">
-      <div class="intro-text">
-        <span class="name">Alloy CI</span>
-        <hr class="star-light">
-        <span class="skills">[Continuous] |> Integration |> Deployment |> Delivery</span>
-      </div>
-    </div>
-  </header>
-
-  <%= render @view_module, @view_template, assigns %>
-
-  <!-- Footer -->
-  <footer class="text-center">
-    <div class="footer-above">
+  <section class="cover-5 text-center">
+    <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+    <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+    <!-- Navigation -->
+    <nav class="navbar navbar-toggleable-sm navbar-custom navbar-light">
       <div class="container">
-        <div class="row">
-          <div class="footer-col col-md-4">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarToggler-5" aria-controls="navbarToggler-5" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="#">
+          <img src="/images/logo.png" class="img-avatar" width="25%" alt="logo">
+          AlloyCI
+        </a>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarToggler-5">
+          <ul class="navbar-nav mt-2 mt-md-0">
+            <li class="nav-item">
+              <a class="nav-link" href="#features">Features</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#download">Download</a>
+            </li>
+            <li class="nav-item">
+              <%= if @current_user do %>
+                <%= link "Projects", to: project_path(@conn, :index), class: "btn btn-outline-success btn-outline" %>
+              <% else %>
+                <a class="btn btn-outline-success btn-outline" href="/auth/login">Log in</a>
+              <% end %>
+          </ul>
+        </div>
+      </div>
+    </nav>
 
-          </div>
-          <div class="footer-col col-md-4">
-            <h3>Around the Web</h3>
-            <ul class="list-inline">
-              <li class="list-inline-item">
-                <a class="btn-social btn-outline" href="https://twitter.com/AlloyCI" target="_blank">
-                  <%= icon("twitter", "fa-fw") %>
-                </a>
-              </li>
-            </ul>
+    <div class="cover-container pb-5 ">
+      <div class="cover-inner container">
+        <p class="lead">[Continuous] |> Integration |> Deployment |> Delivery</p>
+        <div class="divider"></div>
+        <h1 class="jumbotron-heading">Welcome to <em><strong>AlloyCI</strong></em></h1>
+        <div class="row">
+          <div class="offset-md-4 col-md-4 mt-5">
+            <a href="#download" class="btn btn-lg btn-success pill-btn">Get Started</a>
           </div>
         </div>
       </div>
     </div>
-    <div class="footer-below">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12">
-            Copyright &copy; <%= Timex.now.year %> Insomniware, LLC
-          </div>
+  </section>
+
+  <%= render @view_module, @view_template, assigns %>
+
+  <!-- Footer -->
+  <footer class="footer-3">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 text-center text-md-left mt-2 mb-3 pt-1">
+          <p>Copyright &copy; <%= Timex.now.year %> Insomniware, LLC</p>
+        </div>
+        <div class="col-md-6 text-center text-md-right mb-4">
+          <ul class="social">
+            <li><a href="https://twitter.com/AlloyCI" title="Twitter" class="fa fa-twitter"></a></li>
+            <li><a href="https://github.com/AlloyCI" title="GitHub" class="fa fa-github"></a></li>
+            <div class="clear"></div>
+          </ul>
         </div>
       </div>
     </div>
   </footer>
   <!-- Bootstrap core JavaScript -->
+  <script>window.userToken = "1";</script>
   <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
 </body>
 </html>

@@ -40,6 +40,10 @@ defmodule AlloyCi.Web.UserSocket do
   # Returning `nil` makes this socket anonymous.
   def id(socket), do: "users_socket:#{socket.assigns.user_id}"
 
+  def verified_user_id("1") do
+    nil
+  end
+
   def verified_user_id(token) do
     Accounts.get_user_id_from_auth_token(token)
   end
