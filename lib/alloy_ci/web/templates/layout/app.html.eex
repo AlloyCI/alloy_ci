@@ -10,7 +10,7 @@
   <meta name="keyword" content="Continuous Integration,CI,CD,GitHub,GitLab">
   <link rel="shortcut icon" href="/favicon.ico">
 
-  <title>Alloy CI</title>
+  <title>AlloyCI</title>
   <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
 </head>
 
