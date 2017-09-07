@@ -159,7 +159,7 @@ defmodule AlloyCi.Builds do
             build =
               build
               |> transition_status("running")
-              |> Repo.preload([:pipeline, :project])
+              |> Repo.preload([:pipeline, :project, :runner])
 
             Pipelines.run!(build.pipeline)
 
@@ -271,7 +271,10 @@ defmodule AlloyCi.Builds do
       %{key: "CI_JOB_STAGE", value: build.stage, public: true},
       %{key: "CI_JOB_TOKEN", value: build.token, public: false},
       %{key: "CI_PIPELINE_ID", value: Integer.to_string(build.project_id), public: true},
+      %{key: "CI_PROJECT_NAME", value: build.project.name, public: true},
       %{key: "CI_REPOSITORY_URL", value: @github_api.clone_url(build.project, build.pipeline), public: false},
+      %{key: "CI_RUNNER_ID", value: Integer.to_string(build.runner_id), public: true},
+      %{key: "CI_RUNNER_TAGS", value: runner_tags(build.runner), public: true},
       %{key: "CI_SERVER_NAME", value: "AlloyCI", public: true},
       %{key: "CI_SERVER_VERSION", value: AlloyCi.Version.version, public: true},
       # We need to set this key, because the GitLab CI Runner is a bit stupid in
@@ -282,6 +285,12 @@ defmodule AlloyCi.Builds do
       # certificate chain to GitHub's chain, resulting in an SSL error every time.
       %{key: "GIT_SSL_NO_VERIFY", value: "true", public: true}
     ]
+  end
+
+  defp runner_tags(runner) do
+    if runner.tags do
+      runner.tags |> Enum.join(",")
+    end
   end
 
   defp steps(build) do
