@@ -91,11 +91,11 @@ defmodule AlloyCi.Mixfile do
       {:phoenix_pubsub, "~> 1.0"},
       {:postgrex, ">= 0.0.0"},
       {:secure_random, "~> 0.5"},
-      {:tentacat, "~> 0.6", github: "supernova32/tentacat"}, #path: "../tentacat"},
+      {:tentacat, "~> 0.6", github: "AlloyCI/tentacat"},
       {:timex, "~> 3.1"},
-      {:ueberauth_github, "~> 0.5", github: "supernova32/ueberauth_github"},
+      {:ueberauth_github, "~> 0.5", github: "ueberauth/ueberauth_github"},
       {:ueberauth_identity, "~> 0.2.3"},
-      {:que, "~> 0.4.1", github: "supernova32/que"},
+      {:que, "~> 0.4.1", github: "AlloyCI/que"},
 
       # Test and Dev dependencies
       {:excoveralls, "~> 0.7", only: :test},
