@@ -1,0 +1,66 @@
+{
+  "name": "AlloyCI",
+  "description": "An open-source, Elixir based CI coordinator",
+  "repository": "https://github.com/AlloyCI/alloy_ci",
+  "website": "https://alloy-ci.com/",
+  "logo": "https://alloy-ci.com/images/logo.png",
+  "keywords": ["github", "continuous-delivery" "continuous-integration", "continuous-testing", "elixir", "phoenix"],
+
+  "success_url": "/",
+  "env": {
+    "MIX_ENV": {
+      "description": "Env to run the application in",
+      "value": "heroku"
+    },
+    "RUNNER_REGISTRATION_TOKEN": {
+      "description": "Token that allows registration of global runners"
+    },
+    "SERVER_URL": {
+      "description": "Where AlloyCI will be running (probably https://<app name>.herokuapp.com/)"
+    },
+    "HOST": {
+      "description": "FQDN of where AlloyCI will be running"
+    },
+    "SECRET_KEY_BASE": {
+      "description": "A secret key for verifying the integrity of cookies",
+      "generator": "mix phx.gen.secret"
+    },
+    "GITHUB_CLIENT_ID": {
+      "description": "GitHub OAuth client ID"
+    },
+    "GITHUB_CLIENT_SECRET": {
+      "description": "GitHub OAuth client secret"
+    },
+    "GITHUB_INTEGRATION_ID": {
+      "description": "GitHub Integration ID"
+    },
+    "GITHUB_PRIVATE_KEY": {
+      "description": "GitHub Integration private key (download the file, and paste the contents here)"
+    },
+    "GITHUB_SECRET_TOKEN": {
+      "description": "Github Integration webhook secret"
+    },
+    "GITHUB_INTEGRATION_URL": {
+      "description": "The URL of your integration, so users can install it"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [
+    "heroku-postgresql:hobby-dev"
+  ],
+  "buildpacks": [
+    {
+      "url": "https://github.com/HashNuke/heroku-buildpack-elixir.git"
+    },
+    {
+      "url": "https://github.com/gjaldon/heroku-buildpack-phoenix-static.git"
+    }
+  ],
+  "scripts": {
+    "postdeploy": "MIX_ENV=heroku mix ecto.migrate"
+  }
+}
