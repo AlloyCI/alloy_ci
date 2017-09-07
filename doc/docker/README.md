@@ -607,7 +607,7 @@ containers as well as all volumes (`-v`) that were created with the container
 creation.
 
 [Docker Fundamentals]: https://docs.docker.com/engine/understanding-docker/
-[docker pull policy]: ../runner/executors/docker.md#how-pull-policies-work
+[docker pull policy]: ../runners/executors/docker.md#how-pull-policies-work
 [hub]: https://hub.docker.com/
 [linking-containers]: https://docs.docker.com/engine/userguide/networking/default_network/dockerlinks/
 [tutum/wordpress]: https://hub.docker.com/r/tutum/wordpress/

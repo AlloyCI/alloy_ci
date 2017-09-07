@@ -1,10 +1,21 @@
-# Documentation
+# AlloyCI Documentation
 
-This document will hold the table of contents for the documentation of Alloy CI.
+- [Installation](#installation)
+  - [First Steps](#first-steps)
+  - [Requirements](#requirements)
+  - [Configuration](#configuration)
+  - [Docker Installation](#docker)
+  - [Deploy to Heroku](#heroku)
+  - [Manual Installation](#manual)
+  - [First Run](#first-run)
+- [Configuration File](json/)
+  - [Job Environment Variables](variables/)
+  - [Examples](examples/)
+- [Runners](runners/)
 
 # Installation
 
-## First steps
+## First Steps
 
 Before installing AlloyCI on your server, there are some actions that you need to
 take in order for AlloyCI to be able to function properly.
@@ -92,9 +103,6 @@ with the DB data encoded in the following format:
 postgres://<user>:<password>@<hostname>:<port>/<db_name>
 ```
 
-The AlloyCI release is already set up to run any database migrations necessary at
-boot time, so once all containers have started, AlloyCI will be ready to go.
-
 ### Proxy Server (optional)
 
 AlloyCI, being a Phoenix application, starts a Web Server process to serve HTTP
@@ -114,21 +122,47 @@ your requirements.
 
 The required variables are as follows:
 
-| Name                      | Description                                      |
-|---------------------------|--------------------------------------------------|
-| DATABASE_URL              | Full PostgreSQL URL to the database server       |
-| HOST                      | FQDN of the server running AlloyCI               |
-| RUNNER_REGISTRATION_TOKEN | Random string used to register global runners    |
-| SERVER_URL                | Full URL via which AlloyCI will be accessible    |
-| SECRET_KEY_BASE           | 65 chars long random string used to sign cookies |
-| GITHUB_CLIENT_ID          | OAuth Client ID of your GitHub App               |
-| GITHUB_CLIENT_SECRET      | OAuth Client Secret of your GitHub App           |
-| GITHUB_INTEGRATION_ID     | The ID of the installation created before        |
-| GITHUB_INTEGRATION_URL    | The URL where users can add the installation to their accounts |
-| GITHUB_PRIVATE_KEY        | The full private key used to sign GitHub's auth token |
-| GITHUB_SECRET_TOKEN       | Integration token used to verify GitHub payloads |
+| Name                       | Description                                      |
+|----------------------------|--------------------------------------------------|
+| DATABASE_URL               | Full PostgreSQL URL to the database server       |
+| HOST                       | FQDN of the server running AlloyCI               |
+| RUNNER_REGISTRATION_TOKEN  | Random string used to register global runners    |
+| SERVER_URL                 | Full URL via which AlloyCI will be accessible    |
+| SECRET_KEY_BASE            | 65 chars long random string used to sign cookies |
+| GITHUB_CLIENT_ID           | OAuth Client ID of your GitHub App               |
+| GITHUB_CLIENT_SECRET       | OAuth Client Secret of your GitHub App           |
+| GITHUB_INTEGRATION_ID      | The ID of the installation created before        |
+| GITHUB_INTEGRATION_URL     | The URL where users can add the installation to their accounts |
+| GITHUB_PRIVATE_KEY         | The full private key used to sign GitHub's auth token |
+| GITHUB_SECRET_TOKEN        | Integration token used to verify GitHub payloads |
+| ENABLE_SLACK_NOTIFICATIONS | Please set it to "true" or "false" |
+| ENABLE_EMAIL_NOTIFICATIONS | Please set it to "true" or "false" |
 
-## Docker
+Configuration variables, depending on which notification method is enabled:
+
+**Slack:**
+
+| Name                 | Description                                     |
+|----------------------|-------------------------------------------------|
+| SLACK_CHANNEL        | Name of the Slack channel to post notifications |
+| SLACK_SERVICE_NAME   | Name of the service, e.g. AlloyCI               |
+| SLACK_HOOK_URL       | URL of the WebHook created for notifications    |
+
+**Email:**
+
+| Name                 | Description                                     |
+|----------------------|-------------------------------------------------|
+| SMTP_SERVER          | SMTP Server to use for email connections        |
+| SMTP_PORT            | SMTP Port                                       |
+| SMTP_USERNAME        | Username for server authentication              |
+| SMTP_PASSWORD        | Password for said username                      |
+| SMTP_SSL             | Please set it to "true" or "false"              |
+| ALLOWED_TLS_VERSIONS | e.g. "tlsv1.1,tlsv1.2"                          |
+| FROM_ADDRESS         | Email address that will appear as sender        |
+| REPLY_TO_ADDRESS     | Where the user will reply                       |
+
+
+## Docker Installation
 
 The recommended way of running AlloyCI is via our Docker images. You will find
 them under `alloyci/alloy_ci` at [DockerHub](https://hub.docker.com/r/alloyci/alloy_ci/).
@@ -153,15 +187,33 @@ get a cloud server up and running, and ready for production use in mere minutes.
 > This procedure can also be used to install AlloyCI on AWS, Azure, or any other
 cloud server provider. It can also be used with Kubernetes.
 
+### Migrations
+
+Database migrations are run automatically when the application starts, so there is
+no need to run them manually.
+
 Continue over to [First Run](#first-run) to set up the admin user for your instance.
 
-## Heroku
+## Deploy to Heroku
+
+The easiest way to deploy AlloyCI to Heroku is to use the button below:
 
 [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 
-COMING SOON!
+Heroku should ask you to fill in the required environment variables. If it doesn't,
+you will need to create them yourself. They are the same as the ones stated above,
+plus `MIX_ENV` which needs to be set to `heroku`.
 
-## Manual
+### Migrations
+
+Database migrations need to be run manually. After the Heroku app has beed deployed,
+please run the following command from your terminal:
+
+```bash
+$ heroku run -a <app_name> "MIX_ENV=heroku mix ecto.migrate"
+```
+
+## Manual Installation
 
 The reason why we recommend Docker as the preferred installation method is because
 of how Elixir applications are prepared for release. Elixir applications need to be
@@ -253,7 +305,12 @@ following commands:
 - Foreground: `bin/alloy_ci foreground`
 - Daemon: `bin/alloy_ci start`
 
-## First run
+### Migrations
+
+Database migrations are run automatically when the application starts, so there is
+no need to run them manually.
+
+## First Run
 
 After installing AlloyCI, you will still need to setup an admin user for your
 instance. In order to do this, go to `/register` to register a new account. Once
@@ -267,7 +324,7 @@ $ docker exec -it <container_id> bin/alloy_ci remote_console
 
 **Heroku:**
 ```shell
-$ heroku run "MIX_ENV=heroku iex -S mix"
+$ heroku run -a <app_name> "MIX_ENV=heroku iex -S mix"
 ```
 
 **Manual:**
@@ -296,15 +353,19 @@ Now that everything is set up, it is time to actually use AlloyCI. Adding projec
 is quite easy via the WebUI, but before you add one, you will need to create the
 configuration file needed for AlloyCI to know what to do with your project.
 
-You need to add a [`.alloy-ci.json`](json/README.md) file to the root of your
-folder. You can read the full documentation to see all that available features, or
-you can head over to the [examples](examples/README.md) to see a basic `.alloy-ci.json`
+You need to add a [`.alloy-ci.json`](json/) file to the root of your
+project. You can read the full documentation to see all that available features, or
+you can head over to the [examples](examples/) to see a basic `.alloy-ci.json`
 file for different programming languages and get a quick start.
 
 ### Runners
 
 Without Runners, there is no machine to actually run your code. Head over to the
-[Runners documentation](runners/README.md) to see how you can install, register,
+[Runners documentation](runners/) to see how you can install, register,
 and configure your Runner for AlloyCI.
 
 ### What's next?
+
+Once a project has been added, AlloyCI will be notified by GitHub whenever a new
+push happens on your project. With these information, AlloyCI will proceed to create
+a new pipeline and configure the build jobs found on the `.alloy-ci.json` file.

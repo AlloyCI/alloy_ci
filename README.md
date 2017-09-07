@@ -39,7 +39,7 @@ branches, so you can always know their status, just like any other CI service.
   - [x] Can report back to GitHub with the statuses
   - [x] Can send notifications via email with the status of a pipeline
   - [x] Can send notifications to Slack with the status of a pipeline
-- [ ] Extras
+- [x] Extras
   - [x] Build statistics per project
   - [x] Build statistics per runner
 - [ ] Advanced CI functionality
@@ -60,7 +60,21 @@ branches, so you can always know their status, just like any other CI service.
 
 ## Installation
 
-Head over to our [installation docs](doc/README.md#installation) for more information.
+Head over to our [documentation](doc/) for more information.
+
+## Contributing
+
+Pull requests are always welcome!
+
+1. Clone the Repository
+1. Run `mix deps.get` to install all dependencies
+1. Make sure all environment variables are present. See [here](doc/README.md#configuration) for more info
+1. Create and migrate database with `mix ecto.setup`
+1. Run tests with `mix test`
+1. Code & send your PR when ready
+
+Before contributing, please read our [Code of Conduct](CODE_OF_CONDUCT.md) and
+make sure you fully understand it. Violations will not be tolerated.
 
 ## Copyright
 
@@ -68,4 +82,4 @@ Copyright (c) 2017 Patricio Cano. See [LICENSE](LICENSE) for details.
 
 ### Documentation Copyright
 
-Documentation for the GitLab CI Runners is Copyright (c) 2011-2017 GitLab B.V.
+Documentation for the GitLab CI Runners and related is Copyright (c) 2011-2017 GitLab B.V.
