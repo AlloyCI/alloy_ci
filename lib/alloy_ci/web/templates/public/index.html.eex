@@ -6,7 +6,8 @@
         <p class="lead mt-3">
           AlloyCI is a Continuous Integration, Deployment, and Delivery
           coordinator, written in Elixir, that takes advantage of the GitLab
-          CI Runner, and its capabilities as executor.
+          CI Runner, and its capabilities as executor, to prepare and run your
+          pipelines.
         </p>
         <div class="divider"></div>
       </div>
@@ -39,7 +40,7 @@
         <h4>GitLab Runner</h4>
         <p>
           Take advantage of this feature-rich, powerful, open-source runner to
-          run your code in a variety of environments.
+          execute your code on a variety of environments.
         </p>
       </div>
       <div class="col-md-3 col-feature">
@@ -48,8 +49,8 @@
         </div>
         <h4>Open Source</h4>
         <p>
-          Is there something missing? You can help make AlloyCI better. Contribute
-          the missing feature, and it could be added to the main repo.
+          GPLv3 licensed. See what's under the hood, make any changes you need, and help
+          make AlloyCI better.
         </p>
       </div>
     </div>
@@ -68,7 +69,7 @@
         <div class="rounded-circle justify-center">
           <em class="fa fa-2x fa-bell"></em>
         </div>
-        <h4>Clean Notification</h4>
+        <h4>Clean Notifications</h4>
         <p>
           Configurable notifications for email and/or Slack.
         </p>

@@ -29,6 +29,9 @@
         <div class="collapse navbar-collapse justify-content-end" id="navbarToggler-5">
           <ul class="navbar-nav mt-2 mt-md-0">
             <li class="nav-item">
+              <a class="nav-link" href="https://github.com/AlloyCI/alloy_ci/tree/master/doc">Documentation</a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="#features">Features</a>
             </li>
             <li class="nav-item">
