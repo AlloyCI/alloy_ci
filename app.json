@@ -4,8 +4,7 @@
   "repository": "https://github.com/AlloyCI/alloy_ci",
   "website": "https://alloy-ci.com/",
   "logo": "https://alloy-ci.com/images/logo.png",
-  "keywords": ["github", "continuous-delivery" "continuous-integration", "continuous-testing", "elixir", "phoenix"],
-
+  "keywords": ["github", "continuous-delivery", "continuous-integration", "continuous-testing", "elixir", "phoenix"],
   "success_url": "/",
   "env": {
     "MIX_ENV": {
@@ -13,40 +12,50 @@
       "value": "heroku"
     },
     "RUNNER_REGISTRATION_TOKEN": {
-      "description": "Token that allows registration of global runners"
+      "description": "Token that allows registration of global runners",
+      "value": ""
     },
     "SERVER_URL": {
-      "description": "Where AlloyCI will be running (probably https://<app name>.herokuapp.com/)"
+      "description": "Where AlloyCI will be running (probably https://<app name>.herokuapp.com/)",
+      "value": ""
     },
     "HOST": {
-      "description": "FQDN of where AlloyCI will be running"
+      "description": "FQDN of where AlloyCI will be running",
+      "value": ""
     },
     "SECRET_KEY_BASE": {
       "description": "A secret key for verifying the integrity of cookies",
       "generator": "mix phx.gen.secret"
     },
     "GITHUB_CLIENT_ID": {
-      "description": "GitHub OAuth client ID"
+      "description": "GitHub OAuth client ID",
+      "value": ""
     },
     "GITHUB_CLIENT_SECRET": {
-      "description": "GitHub OAuth client secret"
+      "description": "GitHub OAuth client secret",
+      "value": ""
     },
     "GITHUB_INTEGRATION_ID": {
-      "description": "GitHub Integration ID"
+      "description": "GitHub Integration ID",
+      "value": ""
     },
     "GITHUB_PRIVATE_KEY": {
-      "description": "GitHub Integration private key (download the file, and paste the contents here)"
+      "description": "GitHub Integration private key (download the file, and paste the contents here)",
+      "value": ""
     },
     "GITHUB_SECRET_TOKEN": {
-      "description": "Github Integration webhook secret"
+      "description": "Github Integration webhook secret",
+      "value": ""
     },
     "GITHUB_INTEGRATION_URL": {
-      "description": "The URL of your integration, so users can install it"
+      "description": "The URL of your integration, so users can install it",
+      "value": ""
     }
   },
   "formation": {
     "web": {
-      "quantity": 1
+      "quantity": 1,
+      "size": "free"
     }
   },
   "addons": [
