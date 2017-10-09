@@ -52,56 +52,68 @@
       "value": ""
     },
     "ENABLE_SLACK_NOTIFICATIONS": {
-      "description": "Enable Slack Notifications",
+      "description": "Enable Slack Notifications. All Slack related variables are required if this is set to 'true'",
       "value": "false"
     },
     "SLACK_CHANNEL": {
       "description": "Channel for notification posts",
-      "value": ""
+      "value": "",
+      "required": "false"
     },
     "SLACK_SERVICE_NAME": {
       "description": "Name of the Slack Service",
-      "value": "AlloyCI"
+      "value": "AlloyCI",
+      "required": "false"
     },
     "SLACK_HOOK_URL": {
       "description": "URL of the Slack Web Hook",
-      "value": ""
+      "value": "",
+      "required": "false"
     },
     "ENABLE_EMAIL_NOTIFICATIONS": {
-      "description": "Enable Email Notifications",
-      "value": "false"
+      "description": "Enable Email Notifications. All Email related variables are required if this is set to 'true'",
+      "value": "false",
+      "required": "false"
     },
     "SMTP_SERVER": {
       "description": "SMTP Server domain or IP address",
-      "value": ""
+      "value": "",
+      "required": "false"
     },
     "SMTP_PORT": {
       "description": "SMTP Port",
-      "value": ""
+      "value": "",
+      "required": "false"
     },
     "SMTP_USERNAME": {
       "description": "SMTP Username",
-      "value": ""
+      "value": "",
+      "required": "false"
     },
     "SMTP_PASSWORD": {
       "description": "SMTP Password",
-      "value": ""
+      "value": "",
+      "required": "false"
     },
     "SMTP_SSL": {
       "description": "SMTP SSL",
-      "value": "true"
+      "value": "true",
+      "required": "false"
     },
     "ALLOWED_TLS_VERSIONS": {
       "description": "Allowed TLS versions",
-      "value": "tlsv1.1,tlsv1.2"
+      "value": "tlsv1.1,tlsv1.2",
+      "required": "false"
     },
     "FROM_ADDRESS": {
       "description": "Email sender address",
-      "value": ""
+      "value": "",
+      "required": "false"
     },
     "REPLY_TO_ADDRESS": {
       "description": "Email address for replies",
-      "value": ""
+      "value": "",
+      "required": "false"
     }
   },
   "formation": {
