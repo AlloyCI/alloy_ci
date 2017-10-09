@@ -50,6 +50,58 @@
     "GITHUB_INTEGRATION_URL": {
       "description": "The URL of your integration, so users can install it",
       "value": ""
+    },
+    "ENABLE_SLACK_NOTIFICATIONS": {
+      "description": "Enable Slack Notifications",
+      "value": "false"
+    },
+    "SLACK_CHANNEL": {
+      "description": "Channel for notification posts",
+      "value": ""
+    },
+    "SLACK_SERVICE_NAME": {
+      "description": "Name of the Slack Service",
+      "value": "AlloyCI"
+    },
+    "SLACK_HOOK_URL": {
+      "description": "URL of the Slack Web Hook",
+      "value": ""
+    },
+    "ENABLE_EMAIL_NOTIFICATIONS": {
+      "description": "Enable Email Notifications",
+      "value": "false"
+    },
+    "SMTP_SERVER": {
+      "description": "SMTP Server domain or IP address",
+      "value": ""
+    },
+    "SMTP_PORT": {
+      "description": "SMTP Port",
+      "value": ""
+    },
+    "SMTP_USERNAME": {
+      "description": "SMTP Username",
+      "value": ""
+    },
+    "SMTP_PASSWORD": {
+      "description": "SMTP Password",
+      "value": ""
+    },
+    "SMTP_SSL": {
+      "description": "SMTP SSL",
+      "value": "true"
+    },
+    "ALLOWED_TLS_VERSIONS": {
+      "description": "Allowed TLS versions",
+      "value": "tlsv1.1,tlsv1.2"
+    },
+    "FROM_ADDRESS": {
+      "description": "Email sender address",
+      "value": ""
+    },
+    "REPLY_TO_ADDRESS": {
+      "description": "Email address for replies",
+      "value": ""
     }
   },
   "formation": {
