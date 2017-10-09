@@ -1,5 +1,7 @@
 # Alloy CI
 
+![build status](https://alloy-ci.com/projects/1/badge/master)
+
 AlloyCI is a Continuous Integration, Deployment, and Delivery coordinator,
 written in Elixir, that takes advantage of the GitLab CI Runner, and its
 capabilities as executor.

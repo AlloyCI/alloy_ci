@@ -3,7 +3,7 @@ defmodule AlloyCi.Mixfile do
   """
   use Mix.Project
 
-  @version "0.0.1"
+  @version "0.1.0"
 
   def project do
     [app: :alloy_ci,
@@ -91,7 +91,7 @@ defmodule AlloyCi.Mixfile do
       {:phoenix_pubsub, "~> 1.0"},
       {:postgrex, ">= 0.0.0"},
       {:secure_random, "~> 0.5"},
-      {:tentacat, "~> 0.6", github: "AlloyCI/tentacat"},
+      {:tentacat, "~> 0.7", github: "AlloyCI/tentacat"},
       {:timex, "~> 3.1"},
       {:ueberauth_github, "~> 0.5", github: "ueberauth/ueberauth_github"},
       {:ueberauth_identity, "~> 0.2.3"},
