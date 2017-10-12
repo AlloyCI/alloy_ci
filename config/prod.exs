@@ -14,7 +14,7 @@ use Mix.Config
 # General application configuration
 config :alloy_ci,
   integration_id: "${GITHUB_INTEGRATION_ID}",
-  integration_url: "${GITHUB_INTEGRATION_URL}",
+  app_url: "${GITHUB_APP_URL}",
   private_key: "${GITHUB_PRIVATE_KEY}",
   runner_registration_token: "${RUNNER_REGISTRATION_TOKEN}",
   server_url: "${SERVER_URL}"

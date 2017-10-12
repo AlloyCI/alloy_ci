@@ -10,7 +10,7 @@ config :alloy_ci,
   ecto_repos: [AlloyCi.Repo],
   github_api: AlloyCi.Github.Live,
   integration_id: System.get_env("GITHUB_INTEGRATION_ID"),
-  integration_url: System.get_env("GITHUB_INTEGRATION_URL"),
+  app_url: System.get_env("GITHUB_APP_URL"),
   private_key: System.get_env("GITHUB_PRIVATE_KEY"),
   runner_registration_token: System.get_env("RUNNER_REGISTRATION_TOKEN"),
   server_url: System.get_env("SERVER_URL")

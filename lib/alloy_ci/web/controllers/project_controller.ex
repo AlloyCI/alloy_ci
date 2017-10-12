@@ -2,7 +2,7 @@ defmodule AlloyCi.Web.ProjectController do
   use AlloyCi.Web, :controller
   alias AlloyCi.{Queuer, Project, Projects, Workers}
   import Phoenix.HTML.Link
-  import AlloyCi.Web.ProjectView, only: [integration_url: 0]
+  import AlloyCi.Web.ProjectView, only: [app_url: 0]
 
   plug EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access"
 
@@ -28,7 +28,7 @@ defmodule AlloyCi.Web.ProjectController do
         |> put_flash(
              :error, [
                "This project's organization is not configured to use AlloyCI. Please go to the ",
-               link("GitHub integration", to: integration_url()),
+               link("GitHub integration", to: app_url()),
                " page to configure AlloyCI for this organization."
              ]
            )

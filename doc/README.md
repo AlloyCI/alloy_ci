@@ -63,7 +63,7 @@ to generate a new key.
 
 The `GITHUB_INTEGRATION_ID` appears on the right column, right at the end.
 
-The `GITHUB_INTEGRATION_URL` will be the public link to your app. This field will
+The `GITHUB_APP_URL` will be the public link to your app. This field will
 only show up, if you chose to make your installation public.
 
 The Webhook secret you selected before will go to the `GITHUB_SECRET_TOKEN` variable.
@@ -132,7 +132,7 @@ The required variables are as follows:
 | GITHUB_CLIENT_ID           | OAuth Client ID of your GitHub App               |
 | GITHUB_CLIENT_SECRET       | OAuth Client Secret of your GitHub App           |
 | GITHUB_INTEGRATION_ID      | The ID of the installation created before        |
-| GITHUB_INTEGRATION_URL     | The URL where users can add the installation to their accounts |
+| GITHUB_APP_URL             | The URL where users can add the App to their accounts |
 | GITHUB_PRIVATE_KEY         | The full private key used to sign GitHub's auth token |
 | GITHUB_SECRET_TOKEN        | Integration token used to verify GitHub payloads |
 | ENABLE_SLACK_NOTIFICATIONS | Please set it to "true" or "false" |

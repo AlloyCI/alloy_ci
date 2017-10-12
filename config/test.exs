@@ -5,7 +5,7 @@ config :alloy_ci,
   ecto_repos: [AlloyCi.Repo],
   github_api: AlloyCi.Github.Test,
   integration_id: "1",
-  integration_url: "https://github.com/alloy-ci",
+  app_url: "https://github.com/alloy-ci",
   private_key: "priv-key",
   runner_registration_token: "lustlmc3gMl59smZ",
   server_url: "https://alloy-ci.com"

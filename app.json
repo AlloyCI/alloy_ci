@@ -47,8 +47,8 @@
       "description": "Github Integration webhook secret",
       "value": ""
     },
-    "GITHUB_INTEGRATION_URL": {
-      "description": "The URL of your integration, so users can install it",
+    "GITHUB_APP_URL": {
+      "description": "The URL of your GitHub App, so users can install it",
       "value": ""
     },
     "ENABLE_SLACK_NOTIFICATIONS": {
