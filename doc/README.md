@@ -68,12 +68,12 @@ only show up, if you chose to make your installation public.
 
 The Webhook secret you selected before will go to the `GITHUB_SECRET_TOKEN` variable.
 
-On this page you will also find some OAuth credentials. Unfortunately, due to a
-bug in GitHub's OAuth system, we cannot use these credentials for the
+**Important:** On this page you will also find some OAuth credentials. Unfortunately,
+due to a bug in GitHub's OAuth system, we cannot use these credentials for the
 `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` variables. We will need to create
 a new OAuth application in order to allow users to sign up via GitHub.
 
-If you prefer your users to manually create an account, and then linking that
+If you prefer your users to **manually create an account**, and then link that
 account to their GitHub accounts, you can use these credentials and skip the next
 step.
 
@@ -185,7 +185,7 @@ image to use.
 Docker Compose. We suggest using Docker Machine with the Digital Ocean Driver to
 get a cloud server up and running, and ready for production use in mere minutes.
 > This procedure can also be used to install AlloyCI on AWS, Azure, or any other
-cloud server provider. It can also be used with Kubernetes.
+cloud server provider that supports Docker. It can also be used with Kubernetes.
 
 ### Migrations
 
@@ -193,6 +193,13 @@ Database migrations are run automatically when the application starts, so there 
 no need to run them manually.
 
 Continue over to [First Run](#first-run) to set up the admin user for your instance.
+
+### Reverse proxy
+
+You can use ngnix as a reverse proxy for AlloyCI and its Docker Container, if you
+don't want to directly expose the container. The setup is the same as with any
+other reverse proxy configuration, and you can find and example in the [nginx.conf.example](../nginx.conf.example) 
+file.
 
 ## Deploy to Heroku
 
