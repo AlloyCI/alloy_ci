@@ -266,7 +266,7 @@ version as the one building the release, so it does not include the Erlang Runti
 
 If you wish to include the entire Erlang VM with your release, and not worry
 about the Erlang version running on your target server, under `rel/config.exs`
-change add/change the following code to:
+add/change the following code to:
 
 ```elixir
 ...
@@ -367,5 +367,5 @@ and configure your Runner for AlloyCI.
 ### What's next?
 
 Once a project has been added, AlloyCI will be notified by GitHub whenever a new
-push happens on your project. With these information, AlloyCI will proceed to create
+push happens on your project. With this information, AlloyCI will proceed to create
 a new pipeline and configure the build jobs found on the `.alloy-ci.json` file.
