@@ -35,8 +35,8 @@
       "description": "GitHub OAuth client secret",
       "value": ""
     },
-    "GITHUB_INTEGRATION_ID": {
-      "description": "GitHub Integration ID",
+    "GITHUB_APP_ID": {
+      "description": "GitHub App ID",
       "value": ""
     },
     "GITHUB_PRIVATE_KEY": {

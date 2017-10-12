@@ -35,7 +35,7 @@ services:
       GITHUB_CLIENT_SECRET: "<GitHub OAuth Client Secret>"
       GITHUB_SECRET_TOKEN: "<GitHub Secret Token>"
       SECRET_KEY_BASE: "<random 65 chars string>"
-      GITHUB_INTEGRATION_ID: "<GitHub Integration ID>"
+      GITHUB_APP_ID: "<GitHub App ID>"
       GITHUB_INTEGRATION_URL: "https://github.com/apps/<app_name>"
       # The private key for your GitHub integration. Each new line needs
       # to have a trailing line end and a backward slash \n\ in order to be

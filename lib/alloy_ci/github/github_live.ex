@@ -34,12 +34,12 @@ defmodule AlloyCi.Github.Live do
 
   def integration_client do
     key = JOSE.JWK.from_pem(Application.get_env(:alloy_ci, :private_key))
-    integration_id = Application.get_env(:alloy_ci, :integration_id)
+    app_id = Application.get_env(:alloy_ci, :app_id)
 
     payload = %{
       "iat" => DateTime.utc_now |> Timex.to_unix,
       "exp" => Timex.now |> Timex.shift(minutes: 9) |> Timex.to_unix,
-      "iss" => String.to_integer(integration_id)
+      "iss" => String.to_integer(app_id)
     }
 
     signed_jwt = payload |> token() |> sign(rs256(key)) |> get_compact()

@@ -61,7 +61,7 @@ Do so, and save the generated file. The contents of this file will be used for t
 `GITHUB_PRIVATE_KEY` environment variable. Don't lose this file, or you will have
 to generate a new key.
 
-The `GITHUB_INTEGRATION_ID` appears on the right column, right at the end.
+The `GITHUB_APP_ID` appears on the right column, right at the end.
 
 The `GITHUB_INTEGRATION_URL` will be the public link to your app. This field will
 only show up, if you chose to make your installation public.
@@ -131,7 +131,7 @@ The required variables are as follows:
 | SECRET_KEY_BASE            | 65 chars long random string used to sign cookies |
 | GITHUB_CLIENT_ID           | OAuth Client ID of your GitHub App               |
 | GITHUB_CLIENT_SECRET       | OAuth Client Secret of your GitHub App           |
-| GITHUB_INTEGRATION_ID      | The ID of the installation created before        |
+| GITHUB_APP_ID              | The ID of the App created before        |
 | GITHUB_INTEGRATION_URL     | The URL where users can add the installation to their accounts |
 | GITHUB_PRIVATE_KEY         | The full private key used to sign GitHub's auth token |
 | GITHUB_SECRET_TOKEN        | Integration token used to verify GitHub payloads |

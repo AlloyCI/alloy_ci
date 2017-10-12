@@ -4,7 +4,7 @@ use Mix.Config
 config :alloy_ci,
   ecto_repos: [AlloyCi.Repo],
   github_api: AlloyCi.Github.Test,
-  integration_id: "1",
+  app_id: "1",
   integration_url: "https://github.com/alloy-ci",
   private_key: "priv-key",
   runner_registration_token: "lustlmc3gMl59smZ",
@@ -25,6 +25,11 @@ config :alloy_ci, AlloyCi.Notifier,
   email: "false"
 
 # Configure your database
+# username: "postgres",
+  # password: "postgres",
+  # database: "alloy_ci_dev",
+  # hostname: "localhost",
+  # pool_size: 10
 config :alloy_ci, AlloyCi.Repo,
   adapter: Ecto.Adapters.Postgres,
   url: System.get_env("DATABASE_URL"),

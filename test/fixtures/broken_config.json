@@ -12,7 +12,7 @@
     "GITHUB_SECRET_TOKEN": "fake-token",
     "GITHUB_DOMAIN": "github.com",
     "SECRET_KEY_BASE": "VfQZ5LWy5OdluDZ60vJjC8Rx8OUjYvswXRpUvuqFcf1qrrj7TtE",
-    "GITHUB_INTEGRATION_ID": 1,
+    "GITHUB_APP_ID": 1,
     "GITHUB_PRIVATE_KEY": "-----BEGIN RSA PRIVATE KEY-----",
     "DATABSE_URL": "postgres",
     "REDIS_URL" "redis://redis:6379"

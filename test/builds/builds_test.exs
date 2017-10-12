@@ -85,7 +85,7 @@ defmodule AlloyCi.BuildsTest do
           "DATABASE_URL" => "postgres://postgres@postgres:5432/alloy_ci_test",
           "GITHUB_CLIENT_ID" => "fake-id",
           "GITHUB_CLIENT_SECRET" => "fake-secret",
-          "GITHUB_INTEGRATION_ID" => "1",
+          "GITHUB_APP_ID" => "1",
           "GITHUB_SECRET_TOKEN" => "fake-token",
           "MIX_ENV" => "test",
           "RUNNER_REGISTRATION_TOKEN" => "lustlmc3gMl59smZ",

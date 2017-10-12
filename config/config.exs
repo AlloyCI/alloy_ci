@@ -9,7 +9,7 @@ use Mix.Config
 config :alloy_ci,
   ecto_repos: [AlloyCi.Repo],
   github_api: AlloyCi.Github.Live,
-  integration_id: System.get_env("GITHUB_INTEGRATION_ID"),
+  app_id: System.get_env("GITHUB_APP_ID"),
   integration_url: System.get_env("GITHUB_INTEGRATION_URL"),
   private_key: System.get_env("GITHUB_PRIVATE_KEY"),
   runner_registration_token: System.get_env("RUNNER_REGISTRATION_TOKEN"),
