@@ -19,7 +19,6 @@ $(document).on("keypress", "#tag-input", function(args) {
   }
 })
 
-
 if(document.querySelector(".chart")) {
   function scales(ctx) {
     let result = {}
