@@ -13,7 +13,7 @@ use Mix.Config
 # which you typically run after static files are built.
 # General application configuration
 config :alloy_ci,
-  integration_id: "${GITHUB_INTEGRATION_ID}",
+  app_id: "${GITHUB_APP_ID}",
   app_url: "${GITHUB_APP_URL}",
   private_key: "${GITHUB_PRIVATE_KEY}",
   runner_registration_token: "${RUNNER_REGISTRATION_TOKEN}",

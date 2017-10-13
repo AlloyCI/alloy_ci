@@ -34,7 +34,7 @@ defmodule AlloyCi.Github.Live do
 
   def app_client do
     key = JOSE.JWK.from_pem(Application.get_env(:alloy_ci, :private_key))
-    app_id = Application.get_env(:alloy_ci, :integration_id)
+    app_id = Application.get_env(:alloy_ci, :app_id)
 
     payload = %{
       "iat" => DateTime.utc_now |> Timex.to_unix,
