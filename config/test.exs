@@ -25,11 +25,6 @@ config :alloy_ci, AlloyCi.Notifier,
   email: "false"
 
 # Configure your database
-# username: "postgres",
-  # password: "postgres",
-  # database: "alloy_ci_dev",
-  # hostname: "localhost",
-  # pool_size: 10
 config :alloy_ci, AlloyCi.Repo,
   adapter: Ecto.Adapters.Postgres,
   url: System.get_env("DATABASE_URL"),
