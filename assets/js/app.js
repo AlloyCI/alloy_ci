@@ -21,7 +21,6 @@ import "chart.js"
 
 import "./builds"
 import "./core-ui"
-import "./landing"
 import "./projects"
 import "./repos"
 

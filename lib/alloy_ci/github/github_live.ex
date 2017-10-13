@@ -32,7 +32,7 @@ defmodule AlloyCi.Github.Live do
     |> Map.get("id")
   end
 
-  def integration_client do
+  def app_client do
     key = JOSE.JWK.from_pem(Application.get_env(:alloy_ci, :private_key))
     app_id = Application.get_env(:alloy_ci, :app_id)
 
@@ -44,12 +44,12 @@ defmodule AlloyCi.Github.Live do
 
     signed_jwt = payload |> token() |> sign(rs256(key)) |> get_compact()
 
-    Tentacat.Client.new(%{integration_jwt_token: signed_jwt})
+    Tentacat.Client.new(%{app_jwt_token: signed_jwt})
   end
 
   def list_installations do
-    client = integration_client()
-    Tentacat.Integrations.Installations.app_installations(client)
+    client = app_client()
+    Tentacat.Apps.Installations.get(client)
   end
 
   def notify_cancelled!(project, pipeline) do
@@ -120,8 +120,8 @@ defmodule AlloyCi.Github.Live do
   end
 
   defp installation_token(installation_id) do
-    client = integration_client()
-    {_, response} = Tentacat.Integrations.Installations.get_token(client, installation_id)
+    client = app_client()
+    {_, response} = Tentacat.Apps.Installations.get_token(client, installation_id)
     response
   end
 

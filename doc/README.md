@@ -63,17 +63,17 @@ to generate a new key.
 
 The `GITHUB_APP_ID` appears on the right column, right at the end.
 
-The `GITHUB_INTEGRATION_URL` will be the public link to your app. This field will
+The `GITHUB_APP_URL` will be the public link to your app. This field will
 only show up, if you chose to make your installation public.
 
 The Webhook secret you selected before will go to the `GITHUB_SECRET_TOKEN` variable.
 
-On this page you will also find some OAuth credentials. Unfortunately, due to a
-bug in GitHub's OAuth system, we cannot use these credentials for the
+**Important:** On this page you will also find some OAuth credentials. Unfortunately,
+due to a bug in GitHub's OAuth system, we cannot use these credentials for the
 `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` variables. We will need to create
 a new OAuth application in order to allow users to sign up via GitHub.
 
-If you prefer your users to manually create an account, and then linking that
+If you prefer your users to **manually create an account**, and then link that
 account to their GitHub accounts, you can use these credentials and skip the next
 step.
 
@@ -132,7 +132,7 @@ The required variables are as follows:
 | GITHUB_CLIENT_ID           | OAuth Client ID of your GitHub App               |
 | GITHUB_CLIENT_SECRET       | OAuth Client Secret of your GitHub App           |
 | GITHUB_APP_ID              | The ID of the App created before        |
-| GITHUB_INTEGRATION_URL     | The URL where users can add the installation to their accounts |
+| GITHUB_APP_URL             | The URL where users can add the App to their accounts |
 | GITHUB_PRIVATE_KEY         | The full private key used to sign GitHub's auth token |
 | GITHUB_SECRET_TOKEN        | Integration token used to verify GitHub payloads |
 | ENABLE_SLACK_NOTIFICATIONS | Please set it to "true" or "false" |
@@ -185,7 +185,7 @@ image to use.
 Docker Compose. We suggest using Docker Machine with the Digital Ocean Driver to
 get a cloud server up and running, and ready for production use in mere minutes.
 > This procedure can also be used to install AlloyCI on AWS, Azure, or any other
-cloud server provider. It can also be used with Kubernetes.
+cloud server provider that supports Docker. It can also be used with Kubernetes.
 
 ### Migrations
 
@@ -193,6 +193,13 @@ Database migrations are run automatically when the application starts, so there 
 no need to run them manually.
 
 Continue over to [First Run](#first-run) to set up the admin user for your instance.
+
+### Reverse proxy
+
+You can use ngnix as a reverse proxy for AlloyCI and its Docker Container, if you
+don't want to directly expose the container. The setup is the same as with any
+other reverse proxy configuration, and you can find and example in the [nginx.conf.example](../nginx.conf.example) 
+file.
 
 ## Deploy to Heroku
 
@@ -266,7 +273,7 @@ version as the one building the release, so it does not include the Erlang Runti
 
 If you wish to include the entire Erlang VM with your release, and not worry
 about the Erlang version running on your target server, under `rel/config.exs`
-change add/change the following code to:
+add/change the following code to:
 
 ```elixir
 ...
@@ -367,5 +374,5 @@ and configure your Runner for AlloyCI.
 ### What's next?
 
 Once a project has been added, AlloyCI will be notified by GitHub whenever a new
-push happens on your project. With these information, AlloyCI will proceed to create
+push happens on your project. With this information, AlloyCI will proceed to create
 a new pipeline and configure the build jobs found on the `.alloy-ci.json` file.
