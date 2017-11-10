@@ -1,7 +1,7 @@
 defmodule AlloyCi.Notification do
   @moduledoc """
   """
-  use AlloyCi.Web, :model
+  use AlloyCi.Web, :schema
   alias AlloyCi.Notification
 
   schema "notifications" do

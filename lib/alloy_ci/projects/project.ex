@@ -1,7 +1,7 @@
 defmodule AlloyCi.Project do
   @moduledoc """
   """
-  use AlloyCi.Web, :model
+  use AlloyCi.Web, :schema
 
   schema "projects" do
     field :name, :string

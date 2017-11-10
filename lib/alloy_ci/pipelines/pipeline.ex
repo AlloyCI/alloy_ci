@@ -3,7 +3,7 @@ defmodule AlloyCi.Pipeline do
   A Pipeline represents the entire set of jobs, and all the information they
   contain. It maps directly to a single repository push.
   """
-  use AlloyCi.Web, :model
+  use AlloyCi.Web, :schema
 
   schema "pipelines" do
     field :before_sha, :string

@@ -3,7 +3,7 @@ defmodule AlloyCi.Authentication do
   An Authentication struct represents a set of credentials with which a
   User can gain access to the system.
   """
-  use AlloyCi.Web, :model
+  use AlloyCi.Web, :schema
 
   schema "authentications" do
     field :provider, :string
@@ -23,13 +23,13 @@ defmodule AlloyCi.Authentication do
   @optional_fields ~w(refresh_token expires_at)a
 
   @doc """
-  Creates a changeset based on the `model` and `params`.
+  Creates a changeset based on the `struct` and `params`.
 
   If no params are provided, an invalid changeset is returned
   with no validation performed.
   """
-  def changeset(model, params \\ :empty) do
-    model
+  def changeset(struct, params \\ :empty) do
+    struct
     |> cast(params, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
     |> foreign_key_constraint(:user_id)

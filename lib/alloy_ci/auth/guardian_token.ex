@@ -3,7 +3,7 @@ defmodule AlloyCi.GuardianToken do
   JWT Tokens used for authetication. They are stored in DB in order to make
   it easier to revoke them.
   """
-  use AlloyCi.Web, :model
+  use Ecto.Schema
   import Ecto.Query
 
   alias AlloyCi.{GuardianSerializer, Repo}

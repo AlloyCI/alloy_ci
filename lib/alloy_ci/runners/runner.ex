@@ -1,7 +1,7 @@
 defmodule AlloyCi.Runner do
   @moduledoc """
   """
-  use AlloyCi.Web, :model
+  use AlloyCi.Web, :schema
 
   schema "runners" do
     field :active, :boolean, default: true

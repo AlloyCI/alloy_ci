@@ -3,7 +3,7 @@ defmodule AlloyCi.Build do
   A Build represents a single job unit for a Pipeline. Each job defined in
   the `.alloy-ci.json` file will be stored as a Build.
   """
-  use AlloyCi.Web, :model
+  use AlloyCi.Web, :schema
 
   schema "builds" do
     field :allow_failure, :boolean, default: false

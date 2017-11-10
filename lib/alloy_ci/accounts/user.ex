@@ -1,7 +1,7 @@
 defmodule AlloyCi.User do
   @moduledoc """
   """
-  use AlloyCi.Web, :model
+  use AlloyCi.Web, :schema
 
   alias AlloyCi.Repo
 
@@ -22,13 +22,13 @@ defmodule AlloyCi.User do
   @optional_fields ~w(is_admin name)a
 
   @doc """
-  Creates a changeset based on the `model` and `params`.
+  Creates a changeset based on the `struct` and `params`.
 
   If no params are provided, an invalid changeset is returned
   with no validation performed.
   """
-  def changeset(model, params \\ %{}) do
-    model
+  def changeset(struct, params \\ %{}) do
+    struct
     |> cast(params, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
     |> validate_format(:email, ~r/@/)
