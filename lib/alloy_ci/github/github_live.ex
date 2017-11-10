@@ -14,6 +14,21 @@ defmodule AlloyCi.Github.Live do
     Tentacat.Contents.find_in(project.owner, project.name, ".alloy-ci.json", pipeline.sha, client)
   end
 
+  def app_client do
+    key = JOSE.JWK.from_pem(Application.get_env(:alloy_ci, :private_key))
+    app_id = Application.get_env(:alloy_ci, :app_id)
+
+    payload = %{
+      "iat" => DateTime.utc_now |> Timex.to_unix,
+      "exp" => Timex.now |> Timex.shift(minutes: 9) |> Timex.to_unix,
+      "iss" => String.to_integer(app_id)
+    }
+
+    signed_jwt = payload |> token() |> sign(rs256(key)) |> get_compact()
+
+    Tentacat.Client.new(%{app_jwt_token: signed_jwt})
+  end
+
   def clone_url(project, pipeline) do
     token = installation_token(pipeline.installation_id)
 
@@ -30,21 +45,6 @@ defmodule AlloyCi.Github.Live do
     |> filter_installations()
     |> List.first
     |> Map.get("id")
-  end
-
-  def app_client do
-    key = JOSE.JWK.from_pem(Application.get_env(:alloy_ci, :private_key))
-    app_id = Application.get_env(:alloy_ci, :app_id)
-
-    payload = %{
-      "iat" => DateTime.utc_now |> Timex.to_unix,
-      "exp" => Timex.now |> Timex.shift(minutes: 9) |> Timex.to_unix,
-      "iss" => String.to_integer(app_id)
-    }
-
-    signed_jwt = payload |> token() |> sign(rs256(key)) |> get_compact()
-
-    Tentacat.Client.new(%{app_jwt_token: signed_jwt})
   end
 
   def list_installations do

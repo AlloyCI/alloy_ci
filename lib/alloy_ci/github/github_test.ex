@@ -10,6 +10,10 @@ defmodule AlloyCi.Github.Test do
     %{"content" => contents}
   end
 
+  def app_client do
+    Tentacat.Client.new(%{app_jwt_token: "v1.1f699f1069f60xxx"})
+  end
+
   def clone_url(project, pipeline) do
     token = installation_token(pipeline.installation_id)
 
@@ -18,10 +22,6 @@ defmodule AlloyCi.Github.Test do
 
   def installation_id_for(_) do
     2190
-  end
-
-  def integration_client do
-    Tentacat.Client.new(%{app_jwt_token: "v1.1f699f1069f60xxx"})
   end
 
   def fetch_repos(_token) do
