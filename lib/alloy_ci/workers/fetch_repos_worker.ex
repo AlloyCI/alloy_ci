@@ -2,7 +2,7 @@ defmodule AlloyCi.Workers.FetchReposWorker do
   @moduledoc """
   """
   use Que.Worker
-  alias AlloyCi.{Accounts, Project, ProjectPermission, Web.ProjectView}
+  alias AlloyCi.{Accounts, Project, ProjectPermission, Web.ProjectView, Web.ReposChannel}
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
@@ -13,11 +13,7 @@ defmodule AlloyCi.Workers.FetchReposWorker do
       |> Accounts.get_user!
       |> Accounts.github_auth
 
-    AlloyCi.Web.Endpoint.broadcast(
-      "repos:#{user_id}",
-      "repos_ready",
-      %{html: rendered_content(auth, csrf_token)}
-    )
+    ReposChannel.ready(user_id, rendered_content(auth, csrf_token))
   end
 
   def rendered_content(auth, csrf_token) do

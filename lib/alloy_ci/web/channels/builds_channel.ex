@@ -1,7 +1,7 @@
 defmodule AlloyCi.Web.BuildsChannel do
   @moduledoc """
   """
-  alias AlloyCi.{Builds, Projects}
+  alias AlloyCi.{Builds, Projects, Web.Endpoint}
   use AlloyCi.Web, :channel
 
   # Channels can be used in a request/response fashion
@@ -28,10 +28,10 @@ defmodule AlloyCi.Web.BuildsChannel do
   end
 
   def replace_trace(build_id, trace) do
-    AlloyCi.Web.Endpoint.broadcast("builds:#{build_id}", "replace_trace", %{trace: trace})
+    Endpoint.broadcast("builds:#{build_id}", "replace_trace", %{trace: trace})
   end
 
   def send_trace(build_id, trace) do
-    AlloyCi.Web.Endpoint.broadcast("builds:#{build_id}", "append_trace", %{trace: trace})
+    Endpoint.broadcast("builds:#{build_id}", "append_trace", %{trace: trace})
   end
 end
