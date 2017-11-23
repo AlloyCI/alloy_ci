@@ -24,6 +24,8 @@ erl_crash.dump
 # variables.
 /config/prod.secret.exs
 /.env
+/.elixir_ls
+/.vscode
 alloy_ci.tar.gz
 docker-compose.yml
 nginx.conf
