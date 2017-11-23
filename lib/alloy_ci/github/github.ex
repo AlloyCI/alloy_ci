@@ -5,7 +5,7 @@ defmodule AlloyCi.Github do
   """
   alias AlloyCi.{Pipeline, Project, User}
 
-  @callback alloy_ci_config(project :: %Project{}, pipeline :: %Pipeline{}) :: String.t
+  @callback alloy_ci_config(project :: %Project{}, pipeline :: %Pipeline{}) :: Map.t
 
   @callback app_client() :: any
 
