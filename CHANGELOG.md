@@ -1,4 +1,4 @@
-<a name="v0.1.0"></a>
+<a name="v0.2.0"></a>
 ### v0.2.0 (2017-10-16)
 
 #### Breaking changes
