@@ -46,9 +46,9 @@ defmodule AlloyCi.Projects do
 
     case permission do
       %ProjectPermission{} ->
-         true
+        true
       _ ->
-         false
+        false
     end
   end
 
