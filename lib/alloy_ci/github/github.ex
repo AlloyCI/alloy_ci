@@ -13,6 +13,8 @@ defmodule AlloyCi.Github do
 
   @callback fetch_repos(token :: String.t) :: Map.t
 
+  @callback get_pull_request(project :: %Project{}, pr_number :: Integer.t, installation_id :: Integer.t) :: Map.t
+
   @callback installation_id_for(github_uid :: String.t) :: Integer.t
 
   @callback notify_cancelled!(project :: %Project{}, pipeline :: %Pipeline{}) :: any

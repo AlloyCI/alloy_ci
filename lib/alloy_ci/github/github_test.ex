@@ -28,6 +28,10 @@ defmodule AlloyCi.Github.Test do
     Poison.decode!(File.read!("test/fixtures/responses/repositories_list.json"))
   end
 
+  def get_pull_request(_project, _pr_number, _installation_id) do
+    Poison.decode!(File.read!("test/fixtures/responses/test_pull_response.json"))
+  end
+
   def notify_cancelled!(project, pipeline) do
     params = %{
       state: "error",

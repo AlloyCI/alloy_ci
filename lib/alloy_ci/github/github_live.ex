@@ -40,6 +40,11 @@ defmodule AlloyCi.Github.Live do
     Tentacat.Repositories.list_mine(client, sort: "pushed")
   end
 
+  def get_pull_request(project, pr_number, installation_id) do
+    client = installation_client(installation_id)
+    Tentacat.Pulls.find(project.owner, project.name, pr_number, client)
+  end
+
   def installation_id_for(github_uid) do
     github_uid
     |> filter_installations()
@@ -61,6 +66,15 @@ defmodule AlloyCi.Github.Live do
     notify!(project, pipeline, params)
   end
 
+  def notify_failure!(project, pipeline) do
+    params = %{
+      state: "failure",
+      description: "Pipeline failed"
+    }
+
+    notify!(project, pipeline, params)
+  end
+
   def notify_pending!(project, pipeline) do
     params = %{
       state: "pending",
@@ -74,15 +88,6 @@ defmodule AlloyCi.Github.Live do
     params = %{
       state: "success",
       description: "Pipeline succeeded"
-    }
-
-    notify!(project, pipeline, params)
-  end
-
-  def notify_failure!(project, pipeline) do
-    params = %{
-      state: "failure",
-      description: "Pipeline failed"
     }
 
     notify!(project, pipeline, params)
