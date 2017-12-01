@@ -20,16 +20,16 @@ defmodule AlloyCi.Github.Test do
     "https://x-access-token:#{token["token"]}@github.com/#{project.owner}/#{project.name}.git"
   end
 
+  def commit(_, sha, _) do
+    %{"sha" => sha, "commit" => %{"message" => "test commit"}}
+  end
+
   def installation_id_for(_) do
     2190
   end
 
   def fetch_repos(_token) do
     Poison.decode!(File.read!("test/fixtures/responses/repositories_list.json"))
-  end
-
-  def get_pull_request(_project, _pr_number, _installation_id) do
-    Poison.decode!(File.read!("test/fixtures/responses/test_pull_response.json"))
   end
 
   def notify_cancelled!(project, pipeline) do
@@ -66,6 +66,10 @@ defmodule AlloyCi.Github.Test do
     }
 
     notify!(project, pipeline, params)
+  end
+
+  def pull_request(_project, _pr_number, _installation_id) do
+    Poison.decode!(File.read!("test/fixtures/responses/test_pull_response.json"))
   end
 
   def repos_for(user) do

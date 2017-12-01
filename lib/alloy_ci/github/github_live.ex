@@ -35,14 +35,14 @@ defmodule AlloyCi.Github.Live do
     "https://x-access-token:#{token["token"]}@github.com/#{project.owner}/#{project.name}.git"
   end
 
+  def commit(project, sha, installation_id) do
+    client = installation_client(installation_id)
+    Tentacat.Commits.find(sha, project.owner, project.name, client)  
+  end
+
   def fetch_repos(token) do
     client = Tentacat.Client.new(%{access_token: token})
     Tentacat.Repositories.list_mine(client, sort: "pushed")
-  end
-
-  def get_pull_request(project, pr_number, installation_id) do
-    client = installation_client(installation_id)
-    Tentacat.Pulls.find(project.owner, project.name, pr_number, client)
   end
 
   def installation_id_for(github_uid) do
@@ -91,6 +91,11 @@ defmodule AlloyCi.Github.Live do
     }
 
     notify!(project, pipeline, params)
+  end
+
+  def pull_request(project, pr_number, installation_id) do
+    client = installation_client(installation_id)
+    Tentacat.Pulls.find(project.owner, project.name, pr_number, client)
   end
 
   def repos_for(user) do

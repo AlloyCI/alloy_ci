@@ -11,9 +11,9 @@ defmodule AlloyCi.Github do
 
   @callback clone_url(project :: %Project{}, pipeline :: %Pipeline{}) :: String.t
 
-  @callback fetch_repos(token :: String.t) :: Map.t
+  @callback commit(project :: %Project{}, sha :: String.t, installation_id :: Integer.t) :: Map.t 
 
-  @callback get_pull_request(project :: %Project{}, pr_number :: Integer.t, installation_id :: Integer.t) :: Map.t
+  @callback fetch_repos(token :: String.t) :: Map.t
 
   @callback installation_id_for(github_uid :: String.t) :: Integer.t
 
@@ -24,6 +24,8 @@ defmodule AlloyCi.Github do
   @callback notify_success!(project :: %Project{}, pipeline :: %Pipeline{}) :: any
 
   @callback notify_failure!(project :: %Project{}, pipeline :: %Pipeline{}) :: any
+
+  @callback pull_request(project :: %Project{}, pr_number :: Integer.t, installation_id :: Integer.t) :: Map.t  
 
   @callback repos_for(user :: %User{}) :: Map.t
 end
