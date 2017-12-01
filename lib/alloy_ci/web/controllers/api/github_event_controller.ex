@@ -2,7 +2,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
   @moduledoc """
   """
   use AlloyCi.Web, :controller
-  alias AlloyCi.{Accounts, Pipelines, Projects, Queuer, Workers.CreateBuildsWorker}
+  alias AlloyCi.{Accounts, Pipelines, Projects, Queuer, Workers.CreateBuildsWorker, Workers.ProcessPullRequestWorker}
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
@@ -46,6 +46,13 @@ defmodule AlloyCi.Web.Api.GithubEventController do
         {_, _} ->
           %{status: :error, message: "Failed to delete installation."}
       end
+
+    render(conn, "event.json", event: event)
+  end
+
+  def handle_event(%{assigns: %{github_event: "pull_request"}} = conn, %{"action" => "opened"} = params, _, _) do
+    Queuer.push(ProcessPullRequestWorker, params)
+    event = %{status: :ok, message: "Pull request pipeline creation has been scheduled."}
 
     render(conn, "event.json", event: event)
   end

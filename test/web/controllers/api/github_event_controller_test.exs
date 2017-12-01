@@ -62,19 +62,6 @@ defmodule AlloyCi.Web.Api.GithubEventControllerTest do
     assert conn.resp_body =~ "Pipeline creation skipped"
   end
 
-  test "when commit message contains [ci skip]" do
-    params = %{
-      head_commit: %{message: "Test [ci skip]"}
-    }
-
-    conn =
-      build_conn()
-      |> put_req_header("x-github-event", "push")
-      |> post("/api/github/handle_event", params)
-
-    assert conn.resp_body =~ "Pipeline creation skipped"
-  end
-
   test "when pipeline exists already" do
     pipeline_params = %{
       ref: "refs/heads/changes",
@@ -103,6 +90,17 @@ defmodule AlloyCi.Web.Api.GithubEventControllerTest do
       |> post("/api/github/handle_event", params)
 
     assert conn.resp_body =~ "errors"
+  end
+
+  test "when pull request from fork is created" do
+    params = Poison.decode!(File.read!("test/fixtures/requests/pull_request_created.json"))
+
+    conn =
+      build_conn()
+      |> put_req_header("x-github-event", "pull_request")
+      |> post("/api/github/handle_event", params)
+
+     assert conn.resp_body =~ "Pull request pipeline creation has been scheduled."  
   end
 
   test "handles installation created" do
