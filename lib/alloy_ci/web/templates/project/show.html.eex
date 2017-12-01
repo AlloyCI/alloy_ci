@@ -32,7 +32,14 @@
                           <img src='<%= pipeline.commit["avatar_url"] %>' class="commmit-avatar" alt='<%= pipeline.commit["username"] %>'>
                         </div>
                         <div class="col-sm-8">
-                          <div class="text-muted"><strong><%= pretty_commit(pipeline.commit["message"]) %></strong></div>
+                          <div class="text-muted">
+                            <strong>
+                              <%= pretty_commit(pipeline.commit["message"]) %>
+                              <%= if pipeline.commit["pr_commit_message"] do %>
+                                | <%= icon("code-fork") %> <%= pretty_commit(pipeline.commit["pr_commit_message"]) %>
+                              <% end %>
+                            </strong>
+                          </div>
                           <br/>
                           <%= icon("user") %> <%= pipeline.commit["username"] %>
                           <span class="bullet">•</span>

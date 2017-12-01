@@ -17,4 +17,10 @@
     <%= String.capitalize(@pipeline.status) %>
     <%= status_icon(@pipeline.status) %>
   </li>
+  <%= if @pipeline.commit["pr_commit_message"] do %>
+    <li class="breadcrumb-item">
+      <%= icon("code-fork") %>
+      <%= @pipeline.commit["pr_commit_message"] %>
+    </li>
+  <% end %>
 </ol>

@@ -13,7 +13,8 @@ defmodule AlloyCi.Workers.ProcessPullRequestWorker do
 
   def perform(%{"pull_request" => %{"head" => %{"repo" => %{"fork" => true}}, "base" => base}, "number" => pull_id} = params) do
     with %AlloyCi.Project{} = project <- Projects.get_by(repo_id: base["repo"]["id"]),
-         pull_request <- @github_api.get_pull_request(project, pull_id, params["installation"]["id"]),
+         pull_request <- @github_api.pull_request(project, pull_id, params["installation"]["id"]),
+         %{"commit" => %{"message" => message}} <- @github_api.commit(project, pull_request["head"]["sha"], params["installation"]["id"]),
          %{"content" => _} <- @github_api.alloy_ci_config(project, %{installation_id: params["installation"]["id"], sha: pull_request["head"]["sha"]})
     do
       pipeline_attrs = %{
@@ -21,7 +22,8 @@ defmodule AlloyCi.Workers.ProcessPullRequestWorker do
         commit: %{
           username: params["sender"]["login"],
           avatar_url: params["sender"]["avatar_url"],
-          message: "PR ##{pull_id}: #{pull_request["title"]}"
+          message: "PR ##{pull_id}: #{pull_request["title"]}",
+          pr_commit_message: message
         },
         ref: pull_request["head"]["label"],
         sha: pull_request["head"]["sha"],

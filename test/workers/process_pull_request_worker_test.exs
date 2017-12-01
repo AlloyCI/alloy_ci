@@ -22,6 +22,8 @@ defmodule AlloyCi.ProcessPullRequestWorkerTest do
     assert pipeline.before_sha == "9049f1265b7d61be4a8904a9a27120d2064dab3b"
     assert pipeline.sha == "0d1a26e67d8f5eaf1f6ba5c57fc3c7d91ac0fd1c"
     assert pipeline.installation_id == params["installation"]["id"] 
+    assert pipeline.commit["pr_commit_message"] =~ "test commit"
+    assert pipeline.commit["message"] =~ "README"
   end
 
   test "it creates nothing if PR not from fork", %{project: project} do
