@@ -28,6 +28,7 @@ defmodule AlloyCi.Notifications do
   def for_user(user, acknowledged \\ false) do
     Notification
     |> where([user_id: ^user.id, acknowledged: ^acknowledged])
+    |> order_by(desc: :inserted_at)
     |> limit(20)
     |> Repo.all
     |> Repo.preload(:project)
