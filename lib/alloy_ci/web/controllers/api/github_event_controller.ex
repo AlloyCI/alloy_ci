@@ -50,7 +50,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
     render(conn, "event.json", event: event)
   end
 
-  def handle_event(%{assigns: %{github_event: "pull_request"}} = conn, %{"action" => "opened"} = params, _, _) do
+  def handle_event(%{assigns: %{github_event: "pull_request"}} = conn, %{"action" => action} = params, _, _) when action in ~w(opened synchronize) do
     Queuer.push(ProcessPullRequestWorker, params)
     event = %{status: :ok, message: "Pull request pipeline creation has been scheduled."}
 
