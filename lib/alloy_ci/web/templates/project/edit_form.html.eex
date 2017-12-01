@@ -52,5 +52,8 @@
 
   <div class="form-group">
     <%= submit "Submit", class: "btn btn-success" %>
+    <%= link to: project_path(@conn, :delete, @project), method: :delete, data: [confirm: "Are you sure?"], class: "inline btn btn-danger p-a-0" do %>
+      Delete Project
+    <% end %>    
   </div>
 <% end %>

@@ -7,8 +7,7 @@
             <strong><%= @project.name %> |> Project Settings</strong>
           </div>
           <div class="card-block">
-            <%= render "edit_form.html", changeset: @changeset,
-                                    action: project_path(@conn, :update, @project) %>
+            <%= render "edit_form.html", changeset: @changeset, action: project_path(@conn, :update, @project), project: @project, conn: @conn %>                    
           </div>
         </div>
       </div>
