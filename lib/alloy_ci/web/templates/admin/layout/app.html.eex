@@ -54,6 +54,7 @@
 
   <footer class="app-footer">
     <a href="https://alloy-ci.com">AlloyCI - Admin</a> © <%= Timex.now.year %> Insomniware, LLC.
+    <b>Version: <%= AlloyCi.Version.version %></b>
     <span class="float-right">Design by <a href="http://coreui.io">CoreUI</a></span>
   </footer>
 
