@@ -12,7 +12,7 @@ defmodule AlloyCi.Web.TokenControllerTest do
   test "DELETE /tokens/:jti with no login should fail" do
     token = insert(:guardian_token)
     conn = build_conn()
-    conn = delete conn, token_path(conn, :delete, token.jti)
+    conn = delete(conn, token_path(conn, :delete, token.jti))
 
     assert html_response(conn, 302)
     assert Repo.get(GuardianToken, token.jti).jti == token.jti
@@ -20,6 +20,7 @@ defmodule AlloyCi.Web.TokenControllerTest do
 
   test "DELETE /tokens/:jti without revoke permission should fail", %{user: user} do
     token = insert(:guardian_token)
+
     conn =
       user
       |> guardian_login(:access)

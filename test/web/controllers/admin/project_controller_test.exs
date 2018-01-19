@@ -20,6 +20,7 @@ defmodule AlloyCi.Web.Admin.ProjectControllerTest do
 
   test "shows chosen resource", %{user: user} do
     [project | _] = (user |> Repo.preload(:projects)).projects
+
     conn =
       user
       |> guardian_login(:token, key: :admin)
@@ -30,6 +31,7 @@ defmodule AlloyCi.Web.Admin.ProjectControllerTest do
 
   test "deletes chosen resource", %{user: user} do
     [project | _] = (user |> Repo.preload(:projects)).projects
+
     conn =
       user
       |> guardian_login(:token, key: :admin)

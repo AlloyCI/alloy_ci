@@ -35,8 +35,8 @@ defmodule AlloyCi.Web.BuildControllerTest do
   end
 
   test "it responds with the chose trace if project is public", %{project: project, build: build} do
-    project |> Project.changeset(%{private: false}) |> Repo.update
-    
+    project |> Project.changeset(%{private: false}) |> Repo.update()
+
     conn =
       :user
       |> insert()

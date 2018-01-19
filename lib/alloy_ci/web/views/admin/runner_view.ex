@@ -4,14 +4,14 @@ defmodule AlloyCi.Web.Admin.RunnerView do
 
   def builds_chart(runner) do
     runner
-    |> Chartable.builds_chart
-    |> Poison.encode!
+    |> Chartable.builds_chart()
+    |> Poison.encode!()
   end
 
   def projects_chart(runner) do
     runner
-    |> Chartable.projects_chart
-    |> Poison.encode!
+    |> Chartable.projects_chart()
+    |> Poison.encode!()
   end
 
   def global_token do

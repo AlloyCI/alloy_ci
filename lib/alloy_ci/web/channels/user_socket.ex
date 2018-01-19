@@ -3,11 +3,11 @@ defmodule AlloyCi.Web.UserSocket do
   alias AlloyCi.Accounts
 
   ## Channels
-  channel "builds:*", AlloyCi.Web.BuildsChannel
-  channel "repos:*", AlloyCi.Web.ReposChannel
+  channel("builds:*", AlloyCi.Web.BuildsChannel)
+  channel("repos:*", AlloyCi.Web.ReposChannel)
 
   ## Transports
-  transport :websocket, Phoenix.Transports.WebSocket
+  transport(:websocket, Phoenix.Transports.WebSocket)
   # transport :longpoll, Phoenix.Transports.LongPoll
 
   # Socket params are passed from the client and can
@@ -23,7 +23,7 @@ defmodule AlloyCi.Web.UserSocket do
   # performing token verification on connect.
   def connect(%{"token" => token}, socket) do
     case verified_user_id(token) do
-      nil     -> :error
+      nil -> :error
       user_id -> {:ok, assign(socket, :user_id, user_id)}
     end
   end

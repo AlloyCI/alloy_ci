@@ -4,7 +4,7 @@ defmodule AlloyCi.Web.ProjectController do
   import Phoenix.HTML.Link
   import AlloyCi.Web.ProjectView, only: [app_url: 0]
 
-  plug EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access"
+  plug(EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access")
 
   def index(conn, params, current_user, _claims) do
     {projects, kerosene} = Projects.paginated_for(current_user, params)
@@ -23,26 +23,25 @@ defmodule AlloyCi.Web.ProjectController do
         conn
         |> put_flash(:info, "Project created successfully.")
         |> redirect(to: project_path(conn, :show, project))
+
       {:missing_installation, _} ->
         conn
-        |> put_flash(
-             :error, [
-               "This project's organization is not configured to use AlloyCI. Please go to the ",
-               link("GitHub integration", to: app_url()),
-               " page to configure AlloyCI for this organization."
-             ]
-           )
+        |> put_flash(:error, [
+          "This project's organization is not configured to use AlloyCI. Please go to the ",
+          link("GitHub integration", to: app_url()),
+          " page to configure AlloyCI for this organization."
+        ])
         |> redirect(to: project_path(conn, :index))
+
       {:missing_config, _} ->
         conn
-        |> put_flash(
-             :error, [
-               "The selected project doesn't have an .alloy-ci.json config file. Please see the ",
-               link("docs", to: "https://github.com/AlloyCI/alloy_ci/tree/master/doc"),
-               " for info on how to add one."
-             ]
-           )
+        |> put_flash(:error, [
+          "The selected project doesn't have an .alloy-ci.json config file. Please see the ",
+          link("docs", to: "https://github.com/AlloyCI/alloy_ci/tree/master/doc"),
+          " for info on how to add one."
+        ])
         |> redirect(to: project_path(conn, :index))
+
       {:error, _} ->
         conn
         |> put_flash(:error, "There was an error creating your project. Please try again.")
@@ -53,8 +52,15 @@ defmodule AlloyCi.Web.ProjectController do
   def show(conn, %{"id" => id} = params, current_user, _claims) do
     case Projects.show_by(id, current_user, %{"page" => params["page"]}) do
       {:ok, {project, pipelines, kerosene}} ->
-        render(conn, "show.html", project: project, pipelines: pipelines,
-               kerosene: kerosene, current_user: current_user)
+        render(
+          conn,
+          "show.html",
+          project: project,
+          pipelines: pipelines,
+          kerosene: kerosene,
+          current_user: current_user
+        )
+
       {:error, nil} ->
         conn
         |> put_flash(:info, "Project not found")
@@ -66,7 +72,15 @@ defmodule AlloyCi.Web.ProjectController do
     case Projects.get_by(id, current_user, preload: :runners) do
       {:ok, project} ->
         changeset = Project.changeset(project)
-        render(conn, "edit.html", project: project, changeset: changeset, current_user: current_user)
+
+        render(
+          conn,
+          "edit.html",
+          project: project,
+          changeset: changeset,
+          current_user: current_user
+        )
+
       {:error, nil} ->
         conn
         |> put_flash(:info, "Project not found")
@@ -82,9 +96,17 @@ defmodule AlloyCi.Web.ProjectController do
             conn
             |> put_flash(:info, "Project updated successfully.")
             |> redirect(to: project_path(conn, :edit, project))
+
           {:error, changeset} ->
-            render(conn, "edit.html", project: project, changeset: changeset, current_user: current_user)
+            render(
+              conn,
+              "edit.html",
+              project: project,
+              changeset: changeset,
+              current_user: current_user
+            )
         end
+
       {:error, nil} ->
         conn
         |> put_flash(:info, "Project not found")
@@ -98,6 +120,7 @@ defmodule AlloyCi.Web.ProjectController do
         conn
         |> put_flash(:info, "Project deleted successfully.")
         |> redirect(to: project_path(conn, :index))
+
       {:error, nil} ->
         conn
         |> put_flash(:info, "Project not found")

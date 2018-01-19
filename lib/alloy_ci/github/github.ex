@@ -5,17 +5,18 @@ defmodule AlloyCi.Github do
   """
   alias AlloyCi.{Pipeline, Project, User}
 
-  @callback alloy_ci_config(project :: %Project{}, pipeline :: %Pipeline{}) :: Map.t
+  @callback alloy_ci_config(project :: %Project{}, pipeline :: %Pipeline{}) :: Map.t()
 
   @callback app_client() :: any
 
-  @callback clone_url(project :: %Project{}, pipeline :: %Pipeline{}) :: String.t
+  @callback clone_url(project :: %Project{}, pipeline :: %Pipeline{}) :: String.t()
 
-  @callback commit(project :: %Project{}, sha :: String.t, installation_id :: Integer.t) :: Map.t 
+  @callback commit(project :: %Project{}, sha :: String.t(), installation_id :: Integer.t()) ::
+              Map.t()
 
-  @callback fetch_repos(token :: String.t) :: Map.t
+  @callback fetch_repos(token :: String.t()) :: Map.t()
 
-  @callback installation_id_for(github_uid :: String.t) :: Integer.t
+  @callback installation_id_for(github_uid :: String.t()) :: Integer.t()
 
   @callback notify_cancelled!(project :: %Project{}, pipeline :: %Pipeline{}) :: any
 
@@ -25,7 +26,11 @@ defmodule AlloyCi.Github do
 
   @callback notify_failure!(project :: %Project{}, pipeline :: %Pipeline{}) :: any
 
-  @callback pull_request(project :: %Project{}, pr_number :: Integer.t, installation_id :: Integer.t) :: Map.t  
+  @callback pull_request(
+              project :: %Project{},
+              pr_number :: Integer.t(),
+              installation_id :: Integer.t()
+            ) :: Map.t()
 
-  @callback repos_for(user :: %User{}) :: Map.t
+  @callback repos_for(user :: %User{}) :: Map.t()
 end

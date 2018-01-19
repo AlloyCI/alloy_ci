@@ -36,5 +36,12 @@
     "script": [
       "mix credo"
     ]
+  },
+  "formatter": {
+    "stage": "test",
+    "tags": ["elixir"],
+    "script": [
+      "mix format --check-formatted"
+    ]
   }
 }

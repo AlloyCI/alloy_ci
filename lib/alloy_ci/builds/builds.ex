@@ -17,26 +17,38 @@ defmodule AlloyCi.Builds do
   end
 
   def by_stage(pipeline) do
-    query = from b in Build,
-            where: b.pipeline_id == ^pipeline.id,
-            order_by: [asc: :stage_idx],
-            group_by: [b.stage, b.stage_idx],
-            select: {b.stage, b.stage_idx, count(b.id)}
+    query =
+      from(
+        b in Build,
+        where: b.pipeline_id == ^pipeline.id,
+        order_by: [asc: :stage_idx],
+        group_by: [b.stage, b.stage_idx],
+        select: {b.stage, b.stage_idx, count(b.id)}
+      )
+
     stages = Repo.all(query)
 
     Enum.map(stages, fn {stage, stage_idx, _} ->
-      query = from b in Build,
-              where: b.pipeline_id == ^pipeline.id and b.stage_idx == ^stage_idx,
-              order_by: [asc: :id],
-              select: %{id: b.id, name: b.name, project_id: b.project_id, status: b.status}
+      query =
+        from(
+          b in Build,
+          where: b.pipeline_id == ^pipeline.id and b.stage_idx == ^stage_idx,
+          order_by: [asc: :id],
+          select: %{id: b.id, name: b.name, project_id: b.project_id, status: b.status}
+        )
+
       %{stage => Repo.all(query)}
     end)
   end
 
   def cancel(pipeline) do
-    query = from b in Build,
-            where: b.pipeline_id == ^pipeline.id,
-            update: [set: [status: "cancelled"]]
+    query =
+      from(
+        b in Build,
+        where: b.pipeline_id == ^pipeline.id,
+        update: [set: [status: "cancelled"]]
+      )
+
     Repo.update_all(query, [])
   end
 
@@ -84,7 +96,7 @@ defmodule AlloyCi.Builds do
 
     case Repo.delete_all(query) do
       {_, nil} -> :ok
-             _ -> :error
+      _ -> :error
     end
   end
 
@@ -100,7 +112,7 @@ defmodule AlloyCi.Builds do
     Build
     |> where(pipeline_id: ^pipeline_id)
     |> where(stage_idx: ^stage_idx)
-    |> Repo.all
+    |> Repo.all()
   end
 
   def for_project(project_id) do
@@ -109,17 +121,17 @@ defmodule AlloyCi.Builds do
     |> where([b], b.status == "pending" and is_nil(b.runner_id))
     |> order_by(asc: :inserted_at)
     |> limit(1)
-    |> Repo.one
+    |> Repo.one()
   end
 
   def for_runner(runner) do
+    # Select builds whose tags are fully contained in the runner's tags
     Build
     |> where([b], b.status == "pending" and is_nil(b.runner_id))
-    # Select builds whose tags are fully contained in the runner's tags
     |> where([b], fragment("? <@ ?", b.tags, ^runner.tags))
     |> order_by(asc: :inserted_at)
     |> limit(1)
-    |> Repo.one
+    |> Repo.one()
   end
 
   def get(id), do: Build |> Repo.get(id)
@@ -150,7 +162,7 @@ defmodule AlloyCi.Builds do
           Build
           |> where(id: ^build.id)
           |> lock("FOR UPDATE")
-          |> Repo.one
+          |> Repo.one()
           |> Build.changeset(%{runner_id: runner.id})
 
         case Repo.update(changeset) do
@@ -164,6 +176,7 @@ defmodule AlloyCi.Builds do
             Pipelines.run!(build.pipeline)
 
             Map.merge(build, extra_fields(build))
+
           {:error, changeset} ->
             Repo.rollback(changeset)
         end
@@ -178,7 +191,7 @@ defmodule AlloyCi.Builds do
     |> where([b], b.status == "pending" and is_nil(b.runner_id) and is_nil(b.tags))
     |> order_by(asc: :inserted_at)
     |> limit(1)
-    |> Repo.one
+    |> Repo.one()
   end
 
   def transition_status(build, status \\ nil) do
@@ -192,7 +205,7 @@ defmodule AlloyCi.Builds do
   def update_trace(build, trace) do
     build
     |> Build.changeset(%{trace: trace})
-    |> Repo.update
+    |> Repo.update()
   end
 
   ###################
@@ -201,16 +214,21 @@ defmodule AlloyCi.Builds do
   defp append!(build, trace) do
     new_trace = "\n#{trace}\n"
 
-    query = from b in Build,
-            where: b.id == ^build.id,
-            update: [set: [trace: fragment("? || ?", b.trace, ^new_trace)]]
+    query =
+      from(
+        b in Build,
+        where: b.id == ^build.id,
+        update: [set: [trace: fragment("? || ?", b.trace, ^new_trace)]]
+      )
 
     Repo.update_all(query, [])
   end
 
   defp after_script(build) do
     case build.options["after_script"] do
-      nil -> nil
+      nil ->
+        nil
+
       _ ->
         %{
           name: :after_script,
@@ -225,19 +243,20 @@ defmodule AlloyCi.Builds do
   defp create_build(params) do
     %Build{}
     |> Build.changeset(params)
-    |> Repo.insert!
+    |> Repo.insert!()
   end
 
   defp do_update_status(build, status) do
     build
     |> Build.changeset(%{status: status})
-    |> Repo.update
+    |> Repo.update()
   end
 
   defp extra_fields(build) do
-    variables = Enum.map(build.variables || [], fn {key, value} ->
-      %{key: key, value: value, public: true}
-    end)
+    variables =
+      Enum.map(build.variables || [], fn {key, value} ->
+        %{key: key, value: value, public: true}
+      end)
 
     services = Enum.map(build.options["services"] || [], &map_service/1)
 
@@ -272,11 +291,15 @@ defmodule AlloyCi.Builds do
       %{key: "CI_JOB_TOKEN", value: build.token, public: false},
       %{key: "CI_PIPELINE_ID", value: Integer.to_string(build.project_id), public: true},
       %{key: "CI_PROJECT_NAME", value: build.project.name, public: true},
-      %{key: "CI_REPOSITORY_URL", value: @github_api.clone_url(build.project, build.pipeline), public: false},
+      %{
+        key: "CI_REPOSITORY_URL",
+        value: @github_api.clone_url(build.project, build.pipeline),
+        public: false
+      },
       %{key: "CI_RUNNER_ID", value: Integer.to_string(build.runner_id), public: true},
       %{key: "CI_RUNNER_TAGS", value: runner_tags(build.runner), public: true},
       %{key: "CI_SERVER_NAME", value: "AlloyCI", public: true},
-      %{key: "CI_SERVER_VERSION", value: AlloyCi.Version.version, public: true},
+      %{key: "CI_SERVER_VERSION", value: AlloyCi.Version.version(), public: true},
       # We need to set this key, because the GitLab CI Runner is a bit stupid in
       # this regard. It fecthes the SSL certificate of the coordinator and tries
       # to match it against the Git server. In GitLab's case they are one and the
@@ -312,7 +335,9 @@ defmodule AlloyCi.Builds do
       {:ok, build} ->
         Queuer.push(Workers.ProcessPipelineWorker, build.pipeline_id)
         build
-      {:error, _} -> nil
+
+      {:error, _} ->
+        nil
     end
   end
 end

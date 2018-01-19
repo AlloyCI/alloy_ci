@@ -5,12 +5,12 @@ defmodule AlloyCi.Notification do
   alias AlloyCi.Notification
 
   schema "notifications" do
-    field :acknowledged, :boolean, default: false
-    field :content, :map
-    field :notification_type, :string, default: "pipeline_failed"
+    field(:acknowledged, :boolean, default: false)
+    field(:content, :map)
+    field(:notification_type, :string, default: "pipeline_failed")
 
-    belongs_to :project, AlloyCi.Project
-    belongs_to :user, AlloyCi.User
+    belongs_to(:project, AlloyCi.Project)
+    belongs_to(:user, AlloyCi.User)
 
     timestamps()
   end

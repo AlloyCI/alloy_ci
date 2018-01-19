@@ -7,14 +7,14 @@ defmodule AlloyCi.Runners do
 
   def create(%{"token" => token, "info" => runner_info} = params) do
     if token == global_token() do
-      new_runner =
-        Enum.into(%{global: true}, runner_params(params, runner_info))
+      new_runner = Enum.into(%{global: true}, runner_params(params, runner_info))
       save(new_runner)
     else
       with %Project{} = project <- Projects.get_by(token: token) do
         new_runner =
           %{global: false, project_id: project.id}
           |> Enum.into(runner_params(params, runner_info))
+
         save(new_runner)
       else
         _ -> nil
@@ -25,13 +25,13 @@ defmodule AlloyCi.Runners do
   def delete_by(id: id) do
     Runner
     |> Repo.get(id)
-    |> Repo.delete
+    |> Repo.delete()
   end
 
   def delete_by(token: token) do
     Runner
     |> Repo.get_by(token: token)
-    |> Repo.delete
+    |> Repo.delete()
   rescue
     FunctionClauseError -> nil
   end
@@ -45,35 +45,36 @@ defmodule AlloyCi.Runners do
   end
 
   def register_job(%{project_id: nil, tags: nil} = runner) do
-    Builds.to_process
+    Builds.to_process()
     |> Builds.start_build(runner)
   end
 
-  def register_job(%{project_id: nil, tags: [_|_], run_untagged: true} = runner) do
+  def register_job(%{project_id: nil, tags: [_ | _], run_untagged: true} = runner) do
     case Builds.for_runner(runner) do
       nil ->
-        Builds.to_process
+        Builds.to_process()
         |> Builds.start_build(runner)
+
       build ->
         build
         |> Builds.start_build(runner)
     end
   end
 
-  def register_job(%{project_id: nil, tags: [_|_]} = runner) do
+  def register_job(%{project_id: nil, tags: [_ | _]} = runner) do
     runner
-    |> Builds.for_runner
+    |> Builds.for_runner()
     |> Builds.start_build(runner)
   end
 
   def register_job(%{project_id: nil} = runner) do
-    Builds.to_process
+    Builds.to_process()
     |> Builds.start_build(runner)
   end
 
   def register_job(%{project_id: project_id} = runner) do
     project_id
-    |> Builds.for_project
+    |> Builds.for_project()
     |> Builds.start_build(runner)
   end
 
@@ -81,7 +82,7 @@ defmodule AlloyCi.Runners do
     result =
       %Runner{}
       |> Runner.changeset(params)
-      |> Repo.insert
+      |> Repo.insert()
 
     case result do
       {:ok, runner} -> runner
@@ -94,19 +95,22 @@ defmodule AlloyCi.Runners do
       case params["tags"] do
         # if all tags are deleted on the frontend, params will not contain the
         # tags element, so we set it explicitly here
-        nil -> Map.merge(params, %{"tags" => nil})
-          _ -> params
+        nil ->
+          Map.merge(params, %{"tags" => nil})
+
+        _ ->
+          params
       end
 
     runner
     |> Runner.changeset(params)
-    |> Repo.update
+    |> Repo.update()
   end
 
   def update_info(runner, params) do
     runner
     |> Runner.changeset(params)
-    |> Repo.update
+    |> Repo.update()
   end
 
   ###################

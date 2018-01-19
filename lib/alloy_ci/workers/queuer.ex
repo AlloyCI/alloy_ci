@@ -5,7 +5,7 @@ defmodule AlloyCi.Queuer do
   """
 
   def push(worker, args) do
-    unless Mix.env == :test do
+    unless Mix.env() == :test do
       Que.add(worker, args)
     end
   end

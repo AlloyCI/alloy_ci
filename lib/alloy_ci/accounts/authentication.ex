@@ -6,15 +6,15 @@ defmodule AlloyCi.Authentication do
   use AlloyCi.Web, :schema
 
   schema "authentications" do
-    field :provider, :string
-    field :uid, :string
-    field :token, :string
-    field :refresh_token, :string
-    field :expires_at, :integer
-    field :password, :string, virtual: true
-    field :password_confirmation, :string, virtual: true
+    field(:provider, :string)
+    field(:uid, :string)
+    field(:token, :string)
+    field(:refresh_token, :string)
+    field(:expires_at, :integer)
+    field(:password, :string, virtual: true)
+    field(:password_confirmation, :string, virtual: true)
 
-    belongs_to :user, AlloyCi.User
+    belongs_to(:user, AlloyCi.User)
 
     timestamps()
   end

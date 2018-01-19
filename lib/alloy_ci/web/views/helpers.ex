@@ -28,7 +28,7 @@ defmodule AlloyCi.Web.ViewHelpers do
   def current_user(conn), do: Guardian.Plug.current_resource(conn)
 
   def duration(nil), do: "Pending"
-  def duration(seconds), do: seconds |> TimeConvert.to_compound
+  def duration(seconds), do: seconds |> TimeConvert.to_compound()
 
   def fork_icon(fork) do
     if fork do
@@ -52,7 +52,7 @@ defmodule AlloyCi.Web.ViewHelpers do
 
   def notification_text(%{notification_type: "pipeline_failed"} = notification) do
     [
-      content_tag(:p) do
+      content_tag :p do
         [
           base_notification_text(notification),
           " has failed. You can view the full trace log of the pipeline ",
@@ -61,12 +61,11 @@ defmodule AlloyCi.Web.ViewHelpers do
       end,
       commit_message(notification)
     ]
-
   end
 
   def notification_text(%{notification_type: "pipeline_succeeded"} = notification) do
     [
-      content_tag(:p) do
+      content_tag :p do
         [
           base_notification_text(notification),
           " has finished correctly. You can view the full trace log of the pipeline ",
@@ -78,12 +77,12 @@ defmodule AlloyCi.Web.ViewHelpers do
   end
 
   def pretty_commit(msg) do
-    msg |> String.split("\n") |> List.first
+    msg |> String.split("\n") |> List.first()
   end
 
   def pretty_date(date) do
     date
-    |> Timex.to_datetime
+    |> Timex.to_datetime()
     |> Timex.format!("%Y-%m-%d %H:%M %Z", :strftime)
   end
 
@@ -97,10 +96,14 @@ defmodule AlloyCi.Web.ViewHelpers do
 
   def render_flash(conn, type) do
     flash = Phoenix.Controller.get_flash(conn, type)
+
     if flash do
-      [content_tag :button, class: "close", data: [dismiss: "alert"] do
-        content_tag :span, "✖"
-      end, flash]
+      [
+        content_tag :button, class: "close", data: [dismiss: "alert"] do
+          content_tag(:span, "✖")
+        end,
+        flash
+      ]
     end
   end
 
@@ -112,13 +115,13 @@ defmodule AlloyCi.Web.ViewHelpers do
   end
 
   def sha_link(pipeline) do
-    content_tag(:a, href: @github_api.sha_url(pipeline.project, pipeline)) do
+    content_tag :a, href: @github_api.sha_url(pipeline.project, pipeline) do
       pipeline.sha |> String.slice(0..7)
     end
   end
 
   def sha_link(pipeline, project) do
-    content_tag(:a, href: @github_api.sha_url(project, pipeline)) do
+    content_tag :a, href: @github_api.sha_url(project, pipeline) do
       pipeline.sha |> String.slice(0..7)
     end
   end
@@ -129,7 +132,7 @@ defmodule AlloyCi.Web.ViewHelpers do
   def status_btn(_), do: "btn-outline-secondary active"
 
   def status_icon("created"), do: icon("calendar")
-  def status_icon("failed"),  do: icon("close")
+  def status_icon("failed"), do: icon("close")
   def status_icon("pending"), do: icon("circle-o-notch")
   def status_icon("running"), do: icon("circle-o-notch", "fa-spin")
   def status_icon("success"), do: icon("check")
@@ -147,13 +150,19 @@ defmodule AlloyCi.Web.ViewHelpers do
 
   defp link_to_pipeline(notification) do
     link(
-      "here.", to: project_pipeline_url(AlloyCi.Web.Endpoint, :show,
-      notification.project_id, notification.content["pipeline"]["id"])
+      "here.",
+      to:
+        project_pipeline_url(
+          AlloyCi.Web.Endpoint,
+          :show,
+          notification.project_id,
+          notification.content["pipeline"]["id"]
+        )
     )
   end
 
   defp commit_message(notification) do
-    content_tag(:p) do
+    content_tag :p do
       [
         content_tag(:b, "Commit message: "),
         notification.content["pipeline"]["commit"]["message"]

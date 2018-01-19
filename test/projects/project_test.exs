@@ -4,7 +4,13 @@ defmodule AlloyCi.ProjectTest do
   use AlloyCi.DataCase
   alias AlloyCi.Project
 
-  @valid_attrs %{owner: "some_owner", name: "some content", private: true, repo_id: 42, token: "long-token"}
+  @valid_attrs %{
+    owner: "some_owner",
+    name: "some content",
+    private: true,
+    repo_id: 42,
+    token: "long-token"
+  }
   @invalid_attrs %{repo_id: nil}
 
   test "changeset with valid attributes" do

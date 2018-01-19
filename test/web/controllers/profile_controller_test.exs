@@ -52,6 +52,6 @@ defmodule AlloyCi.Web.ProfileControllerTest do
       |> guardian_login(:access, perms: %{default: [:read_token]})
       |> delete("/profile/#{auth.id}/delete")
 
-    assert html_response(conn, 302)      
+    assert html_response(conn, 302)
   end
 end

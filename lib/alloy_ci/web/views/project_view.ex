@@ -5,8 +5,8 @@ defmodule AlloyCi.Web.ProjectView do
 
   def builds_chart(project) do
     project
-    |> Chartable.builds_chart
-    |> Poison.encode!
+    |> Chartable.builds_chart()
+    |> Poison.encode!()
   end
 
   def has_github_auth(user) do

@@ -20,6 +20,7 @@ defmodule AlloyCi.Workers.CreateBuildsWorker do
           @github_api.notify_pending!(project, pipeline)
 
           ProcessPipelineWorker.perform(pipeline_id)
+
         {:error, reason} ->
           Logger.info(reason)
       end

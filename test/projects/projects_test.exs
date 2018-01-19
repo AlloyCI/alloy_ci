@@ -23,7 +23,10 @@ defmodule AlloyCi.ProjectsTest do
   end
 
   describe "delete_by" do
-    test "delete_by/2 deletes the project if it belongs to the user", %{project: project, user: user} do
+    test "delete_by/2 deletes the project if it belongs to the user", %{
+      project: project,
+      user: user
+    } do
       assert {:ok, _} = Projects.delete_by(project.id, user)
       project = Projects.get(project.id)
 

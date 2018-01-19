@@ -6,14 +6,14 @@ defmodule AlloyCi.User do
   alias AlloyCi.Repo
 
   schema "users" do
-    field :name, :string
-    field :email, :string
-    field :is_admin, :boolean
+    field(:name, :string)
+    field(:email, :string)
+    field(:is_admin, :boolean)
 
-    has_many :authentications, AlloyCi.Authentication
-    has_many :notifications, AlloyCi.Notification
-    has_many :project_permissions, AlloyCi.ProjectPermission
-    has_many :projects, through: [:project_permissions, :project]
+    has_many(:authentications, AlloyCi.Authentication)
+    has_many(:notifications, AlloyCi.Notification)
+    has_many(:project_permissions, AlloyCi.ProjectPermission)
+    has_many(:projects, through: [:project_permissions, :project])
 
     timestamps()
   end
@@ -38,6 +38,6 @@ defmodule AlloyCi.User do
   def make_admin!(user) do
     user
     |> cast(%{is_admin: true}, ~w(is_admin)a)
-    |> Repo.update!
+    |> Repo.update!()
   end
 end

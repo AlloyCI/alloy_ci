@@ -7,8 +7,7 @@ defmodule AlloyCi.PipelinesTest do
 
   @update_attrs %{
     before_sha: "some updated before_sha",
-    commit: %{message: "some new commit_message",
-    email: "some new committer_email"},
+    commit: %{message: "some new commit_message", email: "some new committer_email"},
     duration: 43,
     finished_at: ~N[2011-05-18 15:01:01.000000],
     ref: "some updated ref",
@@ -31,13 +30,14 @@ defmodule AlloyCi.PipelinesTest do
   setup do
     user = insert(:user_with_project)
     [project | _] = (user |> Repo.preload(:projects)).projects
-    pipeline = insert(:clean_pipeline, project: project, started_at: Timex.now)
-    {:ok, %{
-        user: user,
-        project: project,
-        pipeline: pipeline
-      }
-    }
+    pipeline = insert(:clean_pipeline, project: project, started_at: Timex.now())
+
+    {:ok,
+     %{
+       user: user,
+       project: project,
+       pipeline: pipeline
+     }}
   end
 
   describe "cancel/1" do
@@ -50,8 +50,12 @@ defmodule AlloyCi.PipelinesTest do
   describe "create_pipeline/2" do
     test "with valid data creates a pipeline" do
       project = insert(:project)
+
       assert {:ok, pipeline} =
-        Pipelines.create_pipeline(Ecto.build_assoc(project, :pipelines), params_for(:pipeline))
+               Pipelines.create_pipeline(
+                 Ecto.build_assoc(project, :pipelines),
+                 params_for(:pipeline)
+               )
 
       assert pipeline.before_sha == "00000000"
       assert pipeline.ref == "master"
@@ -60,7 +64,8 @@ defmodule AlloyCi.PipelinesTest do
     end
 
     test "with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Pipelines.create_pipeline(%AlloyCi.Pipeline{}, @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} =
+               Pipelines.create_pipeline(%AlloyCi.Pipeline{}, @invalid_attrs)
     end
   end
 
@@ -104,7 +109,11 @@ defmodule AlloyCi.PipelinesTest do
   end
 
   describe "get_pipeline/3" do
-    test "it returns the pipeline with given id", %{user: user, project: project, pipeline: pipeline} do
+    test "it returns the pipeline with given id", %{
+      user: user,
+      project: project,
+      pipeline: pipeline
+    } do
       p = Pipelines.get_pipeline(pipeline.id, project.id, user)
       assert p.id == pipeline.id
     end
@@ -140,7 +149,15 @@ defmodule AlloyCi.PipelinesTest do
 
     test "when build is allowed to fail", %{pipeline: pipeline} do
       insert(:full_build, pipeline: pipeline, project: pipeline.project, status: "success")
-      insert(:full_build, pipeline: pipeline, project: pipeline.project, status: "failed", allow_failure: true)
+
+      insert(
+        :full_build,
+        pipeline: pipeline,
+        project: pipeline.project,
+        status: "failed",
+        allow_failure: true
+      )
+
       {:ok, result} = Pipelines.success!(pipeline.id)
 
       assert result.status == "success"
@@ -175,7 +192,14 @@ defmodule AlloyCi.PipelinesTest do
     end
 
     test "it does not mark as failed", %{pipeline: pipeline} do
-      insert(:full_build, pipeline: pipeline, project: pipeline.project, status: "failed", allow_failure: true)
+      insert(
+        :full_build,
+        pipeline: pipeline,
+        project: pipeline.project,
+        status: "failed",
+        allow_failure: true
+      )
+
       result = Pipelines.update_status(pipeline.id)
 
       assert result == nil

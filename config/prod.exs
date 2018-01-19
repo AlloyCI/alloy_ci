@@ -43,13 +43,15 @@ config :alloy_ci, AlloyCi.Repo,
   adapter: Ecto.Adapters.Postgres,
   url: "${DATABASE_URL}",
   pool_size: 20
-  # ssl: true
+
+# ssl: true
 
 # Configures Uberauth
 config :ueberauth, Ueberauth,
   providers: [
     github: {
-      Ueberauth.Strategy.Github, [
+      Ueberauth.Strategy.Github,
+      [
         default_scope: "user,repo",
         send_redirect_uri: false
       ]
@@ -63,8 +65,7 @@ config :ueberauth, Ueberauth.Strategy.Github.OAuth,
   client_secret: "${GITHUB_CLIENT_SECRET}"
 
 # Configures Guardian
-config :guardian, Guardian,
-  secret_key: "${SECRET_KEY_BASE}"
+config :guardian, Guardian, secret_key: "${SECRET_KEY_BASE}"
 
 # Configures Notifiers
 config :alloy_ci, AlloyCi.Notifier,
@@ -78,8 +79,10 @@ config :alloy_ci, AlloyCi.Notifiers.Email,
   port: "${SMTP_PORT}",
   username: "${SMTP_USERNAME}",
   password: "${SMTP_PASSWORD}",
-  tls: :if_available, # can be `:always` or `:never`
-  allowed_tls_versions: "${ALLOWED_TLS_VERSIONS}", # comma seprated values (e.g. "tlsv1.1,tlsv1.2")
+  # can be `:always` or `:never`
+  tls: :if_available,
+  # comma seprated values (e.g. "tlsv1.1,tlsv1.2")
+  allowed_tls_versions: "${ALLOWED_TLS_VERSIONS}",
   ssl: "${SMTP_SSL}",
   retries: 1,
   from_address: "${FROM_ADDRESS}",
@@ -87,10 +90,10 @@ config :alloy_ci, AlloyCi.Notifiers.Email,
 
 # Configures Slack settings
 config :alloy_ci, AlloyCi.Notifiers.Slack,
-    channel: "${SLACK_CHANNEL}",
-    service_name: "${SLACK_SERVICE_NAME}",
-    hook_url: "${SLACK_HOOK_URL}",
-    icon_emoji: "${SLACK_ICON}"
+  channel: "${SLACK_CHANNEL}",
+  service_name: "${SLACK_SERVICE_NAME}",
+  hook_url: "${SLACK_HOOK_URL}",
+  icon_emoji: "${SLACK_ICON}"
 
 # ## SSL Support
 #

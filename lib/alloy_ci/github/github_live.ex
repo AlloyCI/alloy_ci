@@ -19,8 +19,8 @@ defmodule AlloyCi.Github.Live do
     app_id = Application.get_env(:alloy_ci, :app_id)
 
     payload = %{
-      "iat" => DateTime.utc_now |> Timex.to_unix,
-      "exp" => Timex.now |> Timex.shift(minutes: 9) |> Timex.to_unix,
+      "iat" => DateTime.utc_now() |> Timex.to_unix(),
+      "exp" => Timex.now() |> Timex.shift(minutes: 9) |> Timex.to_unix(),
       "iss" => String.to_integer(app_id)
     }
 
@@ -37,7 +37,7 @@ defmodule AlloyCi.Github.Live do
 
   def commit(project, sha, installation_id) do
     client = installation_client(installation_id)
-    Tentacat.Commits.find(sha, project.owner, project.name, client)  
+    Tentacat.Commits.find(sha, project.owner, project.name, client)
   end
 
   def fetch_repos(token) do
@@ -48,7 +48,7 @@ defmodule AlloyCi.Github.Live do
   def installation_id_for(github_uid) do
     github_uid
     |> filter_installations()
-    |> List.first
+    |> List.first()
     |> Map.get("id")
   end
 
@@ -99,16 +99,20 @@ defmodule AlloyCi.Github.Live do
   end
 
   def repos_for(user) do
-    query = from auth in "authentications",
-            where: auth.user_id == ^user.id and auth.provider == "github",
-            select: auth.token
+    query =
+      from(
+        auth in "authentications",
+        where: auth.user_id == ^user.id and auth.provider == "github",
+        select: auth.token
+      )
+
     token = Repo.one(query)
     fetch_repos(token)
   end
 
   def skip_ci?(commit_messsage) do
     String.match?(commit_messsage, ~r/\[skip ci\]/) ||
-    String.match?(commit_messsage, ~r/\[ci skip\]/)
+      String.match?(commit_messsage, ~r/\[ci skip\]/)
   end
 
   def sha_url(project, pipeline) do
@@ -140,11 +144,16 @@ defmodule AlloyCi.Github.Live do
       target_url: pipeline_url(project, pipeline),
       context: "ci/alloy-ci"
     }
+
     params = Map.merge(params, base)
     client = installation_client(pipeline.installation_id)
 
     Tentacat.Repositories.Statuses.create(
-      project.owner, project.name, pipeline.sha, params, client
+      project.owner,
+      project.name,
+      pipeline.sha,
+      params,
+      client
     )
   end
 

@@ -5,7 +5,14 @@ defmodule AlloyCi.Web.ProjectControllerTest do
   alias AlloyCi.Project
   import AlloyCi.Factory
 
-  @valid_attrs %{owner: "some_owner", owner_id: 42, name: "some content", private: true, repo_id: 69, tags: ["one", "two"]}
+  @valid_attrs %{
+    owner: "some_owner",
+    owner_id: 42,
+    name: "some content",
+    private: true,
+    repo_id: 69,
+    tags: ["one", "two"]
+  }
   @invalid_attrs %{repo_id: nil}
 
   setup do
@@ -30,12 +37,12 @@ defmodule AlloyCi.Web.ProjectControllerTest do
       |> guardian_login(:access)
       |> post(project_path(build_conn(), :create), project: @valid_attrs)
 
-    project = Project |> last |> Repo.one
+    project = Project |> last |> Repo.one()
 
     assert redirected_to(conn) == project_path(conn, :show, project.id)
     assert Repo.get(Project, project.id)
 
-    permission = AlloyCi.ProjectPermission |> last |> Repo.one
+    permission = AlloyCi.ProjectPermission |> last |> Repo.one()
     assert permission.repo_id == 69
     assert permission.user_id == user.id
   end
@@ -51,6 +58,7 @@ defmodule AlloyCi.Web.ProjectControllerTest do
 
   test "shows chosen resource", %{user: user} do
     [project | _] = (user |> Repo.preload(:projects)).projects
+
     conn =
       user
       |> guardian_login(:access)
@@ -61,6 +69,7 @@ defmodule AlloyCi.Web.ProjectControllerTest do
 
   test "renders form for editing chosen resource", %{user: user} do
     [project | _] = (user |> Repo.preload(:projects)).projects
+
     conn =
       user
       |> guardian_login(:access)
@@ -71,6 +80,7 @@ defmodule AlloyCi.Web.ProjectControllerTest do
 
   test "updates chosen resource and redirects when data is valid", %{user: user} do
     [project | _] = (user |> Repo.preload(:projects)).projects
+
     conn =
       user
       |> guardian_login(:access)
@@ -82,6 +92,7 @@ defmodule AlloyCi.Web.ProjectControllerTest do
 
   test "does not update chosen resource and renders errors when data is invalid", %{user: user} do
     [project | _] = (user |> Repo.preload(:projects)).projects
+
     conn =
       user
       |> guardian_login(:access)
@@ -92,6 +103,7 @@ defmodule AlloyCi.Web.ProjectControllerTest do
 
   test "deletes chosen resource", %{user: user} do
     [project | _] = (user |> Repo.preload(:projects)).projects
+
     conn =
       user
       |> guardian_login(:access)

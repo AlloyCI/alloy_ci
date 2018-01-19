@@ -4,19 +4,19 @@ defmodule AlloyCi.Runner do
   use AlloyCi.Web, :schema
 
   schema "runners" do
-    field :active, :boolean, default: true
-    field :architecture, :string
-    field :contacted_at, :naive_datetime
-    field :description, :string
-    field :global, :boolean, default: false
-    field :locked, :boolean, default: false
-    field :name, :string
-    field :platform, :string
-    field :project_id, :integer
-    field :run_untagged, :boolean, default: true
-    field :token, :string
-    field :tags, {:array, :string}
-    field :version, :string
+    field(:active, :boolean, default: true)
+    field(:architecture, :string)
+    field(:contacted_at, :naive_datetime)
+    field(:description, :string)
+    field(:global, :boolean, default: false)
+    field(:locked, :boolean, default: false)
+    field(:name, :string)
+    field(:platform, :string)
+    field(:project_id, :integer)
+    field(:run_untagged, :boolean, default: true)
+    field(:token, :string)
+    field(:tags, {:array, :string})
+    field(:version, :string)
 
     timestamps()
   end

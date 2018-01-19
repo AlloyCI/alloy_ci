@@ -11,7 +11,7 @@ defmodule AlloyCi.CreateBuildsWorkerTest do
 
   test "creation of the correct builds", %{pipeline: pipeline} do
     CreateBuildsWorker.perform(pipeline.id)
-    build = Repo.one(from b in Build, order_by: [desc: b.id], limit: 1)
+    build = Repo.one(from(b in Build, order_by: [desc: b.id], limit: 1))
 
     assert build.name == "mix"
     assert build.commands == ["mix test"]

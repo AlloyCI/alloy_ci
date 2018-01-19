@@ -5,7 +5,7 @@ defmodule AlloyCi.FetchReposWorkerTest do
   alias AlloyCi.Workers.FetchReposWorker
 
   test "it properly renders the repos from GitHub" do
-    result = FetchReposWorker.rendered_content(%{uid: 765242, token: "token"}, "csrf-token")
+    result = FetchReposWorker.rendered_content(%{uid: 765_242, token: "token"}, "csrf-token")
 
     assert result =~ "pacman"
   end

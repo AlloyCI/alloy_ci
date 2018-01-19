@@ -9,7 +9,7 @@ defmodule AlloyCi.Application do
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: AlloyCi.Supervisor]
-    Supervisor.start_link(children(Mix.env), opts)
+    Supervisor.start_link(children(Mix.env()), opts)
   end
 
   def children(env) when env != "test" do
@@ -24,7 +24,7 @@ defmodule AlloyCi.Application do
       # Start the Ecto repository
       supervisor(AlloyCi.Repo, []),
       # Start the endpoint when the application starts
-      supervisor(AlloyCi.Web.Endpoint, []),
+      supervisor(AlloyCi.Web.Endpoint, [])
       # Start your own worker by calling: AlloyCi.Worker.start_link(arg1, arg2, arg3)
       # worker(AlloyCi.Worker, [arg1, arg2, arg3]),
     ]

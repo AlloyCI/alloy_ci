@@ -1,7 +1,7 @@
 defmodule AlloyCi.Web.NotificationController do
   use AlloyCi.Web, :controller
   alias AlloyCi.Notifications
-  plug EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access"
+  plug(EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access")
 
   def delete(conn, %{"id" => id}, current_user, _) do
     with {1, _} <- Notifications.delete(id, current_user) do
@@ -20,7 +20,13 @@ defmodule AlloyCi.Web.NotificationController do
     unread = Notifications.for_user(current_user)
     acknowledged = Notifications.for_user(current_user, true)
 
-    render(conn, "index.html", unread: unread, acknowledged: acknowledged, current_user: current_user)
+    render(
+      conn,
+      "index.html",
+      unread: unread,
+      acknowledged: acknowledged,
+      current_user: current_user
+    )
   end
 
   def update(conn, %{"id" => id}, current_user, _) do

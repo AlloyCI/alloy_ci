@@ -12,6 +12,7 @@ defmodule AlloyCi.Web.BadgeController do
           true ->
             badge = Projects.build_badge(id, ref)
             render(conn, "index.svg", badge: badge)
+
           _ ->
             conn
             |> put_flash(:info, "Project not found")

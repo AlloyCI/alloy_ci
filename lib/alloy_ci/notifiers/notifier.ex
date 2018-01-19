@@ -6,7 +6,7 @@ defmodule AlloyCi.Notifier do
 
   def notify!(notification_id) do
     notification_id
-    |> Notifications.get_with_project_and_user
+    |> Notifications.get_with_project_and_user()
     |> send_notifications(config())
   end
 
@@ -16,7 +16,7 @@ defmodule AlloyCi.Notifier do
   defp config do
     :alloy_ci
     |> Application.fetch_env!(__MODULE__)
-    |> Map.new
+    |> Map.new()
   end
 
   defp send_notifications(notification, %{email: "true", slack: "true"}) do

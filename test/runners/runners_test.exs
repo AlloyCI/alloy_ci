@@ -43,6 +43,7 @@ defmodule AlloyCi.RunnersTest do
 
     test "it creates a project specific runner" do
       project = insert(:project)
+
       params = %{
         "token" => project.token,
         "description" => "test runner",

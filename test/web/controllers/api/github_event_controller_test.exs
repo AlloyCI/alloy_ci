@@ -7,6 +7,7 @@ defmodule AlloyCi.Web.Api.GithubEventControllerTest do
 
   test "handles push events" do
     project = insert(:project, repo_id: "14321")
+
     params = %{
       ref: "refs/heads/changes",
       before: "9049f1265b7d61be4a8904a9a27120d2064dab3b",
@@ -19,6 +20,7 @@ defmodule AlloyCi.Web.Api.GithubEventControllerTest do
       },
       installation: %{id: "2030"}
     }
+
     conn =
       build_conn()
       |> put_req_header("x-github-event", "push")
@@ -27,7 +29,7 @@ defmodule AlloyCi.Web.Api.GithubEventControllerTest do
     pipeline =
       Pipeline
       |> where(project_id: ^project.id)
-      |> Repo.one
+      |> Repo.one()
 
     assert conn.resp_body =~ "Pipeline with ID: #{pipeline.id} created sucessfully."
   end
@@ -100,7 +102,7 @@ defmodule AlloyCi.Web.Api.GithubEventControllerTest do
       |> put_req_header("x-github-event", "pull_request")
       |> post("/api/github/handle_event", params)
 
-     assert conn.resp_body =~ "Pull request pipeline creation has been scheduled."  
+    assert conn.resp_body =~ "Pull request pipeline creation has been scheduled."
   end
 
   test "handles installation created" do
@@ -114,10 +116,10 @@ defmodule AlloyCi.Web.Api.GithubEventControllerTest do
     installation =
       Installation
       |> where(uid: 44565)
-      |> Repo.one
+      |> Repo.one()
 
     assert installation.target_type == "Organization"
-    assert installation.target_id == 3367756
+    assert installation.target_id == 3_367_756
     assert installation.login == "AlloyCI"
 
     assert conn.resp_body =~ "Installation with ID: #{installation.id} created sucessfully."

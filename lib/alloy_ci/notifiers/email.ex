@@ -6,14 +6,14 @@ defmodule AlloyCi.Notifiers.Email do
 
   def send_notification(notification) do
     notification
-    |> Emails.notification_email
-    |> __MODULE__.deliver_now
+    |> Emails.notification_email()
+    |> __MODULE__.deliver_now()
   end
 
   def config do
     :alloy_ci
     |> Application.fetch_env!(__MODULE__)
-    |> Map.new
+    |> Map.new()
   end
 end
 
@@ -36,8 +36,8 @@ defmodule AlloyCi.Emails do
   ###################
   defp base_email do
     new_email()
-    |> from(Email.config[:from_address])
-    |> put_header("Reply-To", Email.config[:reply_to_address])
+    |> from(Email.config()[:from_address])
+    |> put_header("Reply-To", Email.config()[:reply_to_address])
     |> put_html_layout({AlloyCi.Web.LayoutView, "email_layout.html"})
   end
 

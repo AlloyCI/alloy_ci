@@ -7,6 +7,7 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
 
   setup do
     runner = insert(:runner)
+
     params = %{
       info: %{
         name: "runner",
@@ -15,18 +16,26 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
         architecture: "amd64"
       }
     }
+
     {:ok, %{runner: runner, params: params}}
   end
 
   describe "request/4" do
-    test "fetches a build, starts it and returns the correct data", %{runner: runner, params: params} do
+    test "fetches a build, starts it and returns the correct data", %{
+      runner: runner,
+      params: params
+    } do
       insert(:full_build)
       params = Map.put(params, :token, runner.token)
 
       expected_steps = [
-        %{allow_failure: false, name: :script,
+        %{
+          allow_failure: false,
+          name: :script,
           script: ["mix deps.get", "mix test"],
-          timeout: 3600, when: "on_success"}
+          timeout: 3600,
+          when: "on_success"
+        }
       ]
 
       conn =
@@ -40,13 +49,20 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
       assert conn.assigns.runner_id == runner.id
     end
 
-    test "fetches an extened build, starts it and returns the correct data", %{runner: runner, params: params} do
+    test "fetches an extened build, starts it and returns the correct data", %{
+      runner: runner,
+      params: params
+    } do
       insert(:extended_build)
       params = Map.put(params, :token, runner.token)
 
       expected_services = [
-        %{"alias" => "post", "command" => ["/bin/sh"],
-          "entrypoint" => ["/bin/sh"], "name" => "postgres:latest"}
+        %{
+          "alias" => "post",
+          "command" => ["/bin/sh"],
+          "entrypoint" => ["/bin/sh"],
+          "name" => "postgres:latest"
+        }
       ]
 
       conn =
@@ -81,7 +97,7 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
   end
 
   describe "update/4" do
-    test "it updates the state of the build",  %{params: params} do
+    test "it updates the state of the build", %{params: params} do
       build = insert(:full_build, status: "running")
       params = Map.merge(params, %{state: "success", token: build.token, trace: "trace"})
 

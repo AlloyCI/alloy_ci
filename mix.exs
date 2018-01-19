@@ -6,17 +6,24 @@ defmodule AlloyCi.Mixfile do
   @version "0.2.0"
 
   def project do
-    [app: :alloy_ci,
-     version: @version,
-     elixir: "~> 1.5",
-     elixirc_paths: elixirc_paths(Mix.env),
-     compilers: [:phoenix, :gettext] ++ Mix.compilers,
-     build_embedded: Mix.env in [:prod, :heroku],
-     start_permanent: Mix.env in [:prod, :heroku],
-     test_coverage: [tool: ExCoveralls],
-     preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test],
-     aliases: aliases(),
-     deps: deps()]
+    [
+      app: :alloy_ci,
+      version: @version,
+      elixir: "~> 1.6",
+      elixirc_paths: elixirc_paths(Mix.env()),
+      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      build_embedded: Mix.env() in [:prod, :heroku],
+      start_permanent: Mix.env() in [:prod, :heroku],
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ],
+      aliases: aliases(),
+      deps: deps()
+    ]
   end
 
   # Configuration for the OTP application.
@@ -25,7 +32,7 @@ defmodule AlloyCi.Mixfile do
   def application do
     [
       mod: {AlloyCi.Application, []},
-      applications: applications(Mix.env)
+      applications: applications(Mix.env())
     ]
   end
 
@@ -67,7 +74,7 @@ defmodule AlloyCi.Mixfile do
 
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/support"]
-  defp elixirc_paths(_),     do: ["lib"]
+  defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
   #
@@ -101,7 +108,7 @@ defmodule AlloyCi.Mixfile do
       {:excoveralls, "~> 0.7", only: :test},
       {:ex_machina, "~> 2.0", github: "thoughtbot/ex_machina", only: [:dev, :test]},
       {:credo, "~> 0.8", only: [:dev, :test]},
-      {:phoenix_live_reload, "~> 1.0", only: :dev},
+      {:phoenix_live_reload, "~> 1.0", only: :dev}
     ]
   end
 
@@ -112,8 +119,10 @@ defmodule AlloyCi.Mixfile do
   #
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
-    ["ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
-     "ecto.reset": ["ecto.drop", "ecto.setup"],
-     "test": ["ecto.create --quiet", "ecto.migrate", "test"]]
+    [
+      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
+      test: ["ecto.create --quiet", "ecto.migrate", "test"]
+    ]
   end
 end

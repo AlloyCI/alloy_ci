@@ -4,10 +4,10 @@ defmodule AlloyCi.Installation do
   use AlloyCi.Web, :schema
 
   schema "installations" do
-    field :login, :string, null: false
-    field :target_id, :integer, null: false
-    field :target_type, :string, null: false
-    field :uid, :integer, null: false
+    field(:login, :string, null: false)
+    field(:target_id, :integer, null: false)
+    field(:target_type, :string, null: false)
+    field(:uid, :integer, null: false)
 
     timestamps()
   end

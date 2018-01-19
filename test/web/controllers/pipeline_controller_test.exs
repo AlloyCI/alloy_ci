@@ -54,8 +54,8 @@ defmodule AlloyCi.Web.PipelineControllerTest do
   end
 
   test "it shows the pipeline if project is public", %{project: project, pipeline: pipeline} do
-    project |> Project.changeset(%{private: false}) |> Repo.update
-    
+    project |> Project.changeset(%{private: false}) |> Repo.update()
+
     conn =
       :user
       |> insert()

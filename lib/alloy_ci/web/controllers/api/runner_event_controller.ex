@@ -8,6 +8,7 @@ defmodule AlloyCi.Web.Api.RunnerEventController do
         conn
         |> put_status(403)
         |> json(%{message: "403 Forbidden"})
+
       runner ->
         conn
         |> put_status(201)
@@ -21,6 +22,7 @@ defmodule AlloyCi.Web.Api.RunnerEventController do
         conn
         |> put_status(403)
         |> json(%{message: "403 Forbidden"})
+
       _ ->
         conn
         |> put_status(200)
@@ -34,6 +36,7 @@ defmodule AlloyCi.Web.Api.RunnerEventController do
         conn
         |> put_status(204)
         |> json(%{message: "204 Runner was deleted"})
+
       _ ->
         conn
         |> put_status(403)

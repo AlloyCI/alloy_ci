@@ -11,11 +11,13 @@ defmodule AlloyCi.Web.Api.BuildsEventController do
           conn
           |> put_status(201)
           |> render("build.json", build)
+
         {:no_build, _} ->
           conn
           |> put_req_header("x-gitlab-last-update", SecureRandom.hex())
           |> put_status(204)
           |> json(%{message: "204 No Content"})
+
         {:error, _} ->
           conn
           |> put_status(409)
@@ -56,6 +58,7 @@ defmodule AlloyCi.Web.Api.BuildsEventController do
         conn
         |> put_status(403)
         |> json(%{message: "403 Forbidden"})
+
       {:ok, build} ->
         case params["state"] do
           "failed" -> Builds.transition_status(build, "failed")
@@ -64,7 +67,9 @@ defmodule AlloyCi.Web.Api.BuildsEventController do
         end
 
         case params["trace"] do
-          nil -> :ok
+          nil ->
+            :ok
+
           _ ->
             Builds.update_trace(build, params["trace"])
             BuildsChannel.replace_trace(build.id, params["trace"])

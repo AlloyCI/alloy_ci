@@ -8,10 +8,11 @@ defmodule AlloyCi.Workers.FetchReposWorker do
 
   def perform({user_id, csrf_token}) do
     :timer.sleep(50)
+
     auth =
       user_id
-      |> Accounts.get_user!
-      |> Accounts.github_auth
+      |> Accounts.get_user!()
+      |> Accounts.github_auth()
 
     ReposChannel.ready(user_id, rendered_content(auth, csrf_token))
   end
@@ -20,7 +21,7 @@ defmodule AlloyCi.Workers.FetchReposWorker do
     Phoenix.View.render_to_string(
       ProjectView,
       "repos.html",
-      existing_ids: ProjectPermission.existing_ids,
+      existing_ids: ProjectPermission.existing_ids(),
       is_installed: Accounts.installed_on_owner?(auth.uid),
       repos: @github_api.fetch_repos(auth.token),
       changeset: Project.changeset(%Project{}),

@@ -13,7 +13,7 @@ defmodule AlloyCi.Web.ReposChannel do
   # It is also common to receive messages from the client and
   # broadcast to everyone in the current topic (repos:lobby).
   def handle_in("shout", payload, socket) do
-    broadcast socket, "shout", payload
+    broadcast(socket, "shout", payload)
     {:noreply, socket}
   end
 
@@ -22,10 +22,6 @@ defmodule AlloyCi.Web.ReposChannel do
   end
 
   def ready(user_id, content) do
-    Endpoint.broadcast(
-      "repos:#{user_id}",
-      "repos_ready",
-      %{html: content}
-    )
+    Endpoint.broadcast("repos:#{user_id}", "repos_ready", %{html: content})
   end
 end

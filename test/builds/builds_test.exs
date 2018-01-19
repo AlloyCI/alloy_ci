@@ -27,7 +27,18 @@ defmodule AlloyCi.BuildsTest do
       build = insert(:build, pipeline: pipeline, project: pipeline.project)
       result = Builds.by_stage(pipeline)
 
-      assert result == [%{"test" => [%{id: build.id, name: build.name, project_id: build.project_id, status: build.status}]}]
+      assert result == [
+               %{
+                 "test" => [
+                   %{
+                     id: build.id,
+                     name: build.name,
+                     project_id: build.project_id,
+                     status: build.status
+                   }
+                 ]
+               }
+             ]
     end
   end
 
@@ -38,7 +49,7 @@ defmodule AlloyCi.BuildsTest do
 
       assert result == nil
 
-      build = Repo.one(from b in Build, order_by: [desc: b.id], limit: 1)
+      build = Repo.one(from(b in Build, order_by: [desc: b.id], limit: 1))
 
       assert build.name == "mix"
       assert build.commands == ["mix test"]
@@ -52,14 +63,16 @@ defmodule AlloyCi.BuildsTest do
       {:ok, result} = Builds.create_builds_from_config(content, pipeline)
       assert result == nil
 
-      build = Repo.one(from b in Build, order_by: [desc: b.id], limit: 1)
+      build = Repo.one(from(b in Build, order_by: [desc: b.id], limit: 1))
 
       assert build.name == "Rspec Tests"
+
       assert build.commands == [
-        "bundle install --path vendor/bundle",
-        "bundle exec rake db:setup",
-        "bundle exec rspec"
-      ]
+               "bundle install --path vendor/bundle",
+               "bundle exec rake db:setup",
+               "bundle exec rspec"
+             ]
+
       assert build.project_id == pipeline.project_id
       assert build.when == "on_success"
       assert build.tags == project.tags
@@ -67,31 +80,40 @@ defmodule AlloyCi.BuildsTest do
       assert build.stage == "test"
     end
 
-    test "it can override image settings to allow for testing against different lang versions", %{pipeline: pipeline} do
+    test "it can override image settings to allow for testing against different lang versions", %{
+      pipeline: pipeline
+    } do
       content = File.read!("test/fixtures/full_features_config.json")
       {:ok, result} = Builds.create_builds_from_config(content, pipeline)
       assert result == nil
 
-      build = Repo.one(from b in Build, order_by: [desc: b.id], limit: 1)
+      build = Repo.one(from(b in Build, order_by: [desc: b.id], limit: 1))
 
       assert build.name == "mix"
       assert build.commands == ["mix test"]
+
       assert build.options == %{
-        "before_script" => ["mix local.hex --force",
-        "mix local.rebar --force", "mix deps.get", "mix ecto.setup"],
-        "cache" => %{"paths" => ["_build/", "deps/"]},
-        "image" => "elixir:1.5", "services" => ["postgres:9.6"],
-        "variables" => %{
-          "DATABASE_URL" => "postgres://postgres@postgres:5432/alloy_ci_test",
-          "GITHUB_CLIENT_ID" => "fake-id",
-          "GITHUB_CLIENT_SECRET" => "fake-secret",
-          "GITHUB_APP_ID" => "1",
-          "GITHUB_SECRET_TOKEN" => "fake-token",
-          "MIX_ENV" => "test",
-          "RUNNER_REGISTRATION_TOKEN" => "lustlmc3gMl59smZ",
-          "SECRET_KEY_BASE" => "NULr4xlNDNzEwE77UHdId7cQU+vuaPJ+Q5x3l+7dppQngBsL5EkjEaMu0S9cCGbk"
-        }
-      }
+               "before_script" => [
+                 "mix local.hex --force",
+                 "mix local.rebar --force",
+                 "mix deps.get",
+                 "mix ecto.setup"
+               ],
+               "cache" => %{"paths" => ["_build/", "deps/"]},
+               "image" => "elixir:1.5",
+               "services" => ["postgres:9.6"],
+               "variables" => %{
+                 "DATABASE_URL" => "postgres://postgres@postgres:5432/alloy_ci_test",
+                 "GITHUB_CLIENT_ID" => "fake-id",
+                 "GITHUB_CLIENT_SECRET" => "fake-secret",
+                 "GITHUB_APP_ID" => "1",
+                 "GITHUB_SECRET_TOKEN" => "fake-token",
+                 "MIX_ENV" => "test",
+                 "RUNNER_REGISTRATION_TOKEN" => "lustlmc3gMl59smZ",
+                 "SECRET_KEY_BASE" =>
+                   "NULr4xlNDNzEwE77UHdId7cQU+vuaPJ+Q5x3l+7dppQngBsL5EkjEaMu0S9cCGbk"
+               }
+             }
 
       assert build.project_id == pipeline.project_id
       assert build.when == "on_success"
@@ -147,9 +169,26 @@ defmodule AlloyCi.BuildsTest do
   end
 
   describe "for_project/1" do
-    test "it returns the oldest pending build of the current stage", %{pipeline: pipeline, project: project} do
-      insert(:build, pipeline_id: pipeline.id, stage_idx: 0, status: "running", runner_id: 1, project_id: project.id)
-      insert(:build, pipeline_id: pipeline.id, stage_idx: 1, project_id: project.id, status: "created")
+    test "it returns the oldest pending build of the current stage", %{
+      pipeline: pipeline,
+      project: project
+    } do
+      insert(
+        :build,
+        pipeline_id: pipeline.id,
+        stage_idx: 0,
+        status: "running",
+        runner_id: 1,
+        project_id: project.id
+      )
+
+      insert(
+        :build,
+        pipeline_id: pipeline.id,
+        stage_idx: 1,
+        project_id: project.id,
+        status: "created"
+      )
 
       build = insert(:build, pipeline_id: pipeline.id, stage_idx: 0, project_id: project.id)
       result = Builds.for_project(project.id)
@@ -158,8 +197,23 @@ defmodule AlloyCi.BuildsTest do
     end
 
     test "it returns nil if no build is found", %{pipeline: pipeline, project: project} do
-      insert(:build, pipeline_id: pipeline.id, stage_idx: 0, status: "running", runner_id: 1, project_id: project.id)
-      insert(:build, pipeline_id: pipeline.id, stage_idx: 1, status: "running", runner_id: 2, project_id: project.id)
+      insert(
+        :build,
+        pipeline_id: pipeline.id,
+        stage_idx: 0,
+        status: "running",
+        runner_id: 1,
+        project_id: project.id
+      )
+
+      insert(
+        :build,
+        pipeline_id: pipeline.id,
+        stage_idx: 1,
+        status: "running",
+        runner_id: 2,
+        project_id: project.id
+      )
 
       result = Builds.for_project(project.id)
 
@@ -168,10 +222,21 @@ defmodule AlloyCi.BuildsTest do
   end
 
   describe "for_runner/1" do
-    test "it returns the correct build that can be run by a certain runner", %{pipeline: pipeline, project: project} do
+    test "it returns the correct build that can be run by a certain runner", %{
+      pipeline: pipeline,
+      project: project
+    } do
       insert(:build, pipeline_id: pipeline.id, stage_idx: 1, project_id: project.id)
 
-      build = insert(:build, pipeline_id: pipeline.id, stage_idx: 0, project_id: project.id, tags: ~w(elixir postgres))
+      build =
+        insert(
+          :build,
+          pipeline_id: pipeline.id,
+          stage_idx: 0,
+          project_id: project.id,
+          tags: ~w(elixir postgres)
+        )
+
       runner = insert(:runner, tags: ~w(elixir postgres ruby))
       result = Builds.for_runner(runner)
 
@@ -179,8 +244,22 @@ defmodule AlloyCi.BuildsTest do
     end
 
     test "it returns nil if no build is found", %{pipeline: pipeline, project: project} do
-      insert(:build, pipeline_id: pipeline.id, stage_idx: 0, status: "running", runner_id: 1, project_id: project.id)
-      insert(:build, pipeline_id: pipeline.id, stage_idx: 1, project_id: project.id, tags: ~w(ruby mysql))
+      insert(
+        :build,
+        pipeline_id: pipeline.id,
+        stage_idx: 0,
+        status: "running",
+        runner_id: 1,
+        project_id: project.id
+      )
+
+      insert(
+        :build,
+        pipeline_id: pipeline.id,
+        stage_idx: 1,
+        project_id: project.id,
+        tags: ~w(ruby mysql)
+      )
 
       runner = insert(:runner, tags: ~w(elixir ruby))
       result = Builds.for_runner(runner)
@@ -195,8 +274,13 @@ defmodule AlloyCi.BuildsTest do
       runner = insert(:runner)
 
       expected_steps = [
-        %{name: :script, script: ["mix deps.get", "mix test"],
-          timeout: 3600, when: "on_success", allow_failure: false}
+        %{
+          name: :script,
+          script: ["mix deps.get", "mix test"],
+          timeout: 3600,
+          when: "on_success",
+          allow_failure: false
+        }
       ]
 
       {:ok, result} = Builds.start_build(build, runner)
@@ -213,13 +297,26 @@ defmodule AlloyCi.BuildsTest do
       runner = insert(:runner)
 
       expected_steps = [
-        %{name: :script, script: ["mix deps.get", "mix test"],
-          timeout: 3600, when: "on_success", allow_failure: false}
+        %{
+          name: :script,
+          script: ["mix deps.get", "mix test"],
+          timeout: 3600,
+          when: "on_success",
+          allow_failure: false
+        }
       ]
 
       {:ok, result} = Builds.start_build(build, runner)
 
-      assert result.services == [%{"alias" => "post", "command" => ["/bin/sh"], "entrypoint" => ["/bin/sh"], "name" => "postgres:latest"}]
+      assert result.services == [
+               %{
+                 "alias" => "post",
+                 "command" => ["/bin/sh"],
+                 "entrypoint" => ["/bin/sh"],
+                 "name" => "postgres:latest"
+               }
+             ]
+
       assert result.steps == expected_steps
       assert result.status == "running"
       assert result.runner_id == runner.id
@@ -253,7 +350,10 @@ defmodule AlloyCi.BuildsTest do
   end
 
   describe "to_process" do
-    test "it returns the oldest available build to process", %{pipeline: pipeline, project: project} do
+    test "it returns the oldest available build to process", %{
+      pipeline: pipeline,
+      project: project
+    } do
       build = insert(:build, pipeline_id: pipeline.id, stage_idx: 1, project_id: project.id)
       phoenix = insert(:project)
       ph_pipeline = insert(:clean_pipeline, project: phoenix)
@@ -272,7 +372,10 @@ defmodule AlloyCi.BuildsTest do
   end
 
   describe "transition_status/2" do
-    test "it transitions the status of the build accordingly", %{pipeline: pipeline, project: project} do
+    test "it transitions the status of the build accordingly", %{
+      pipeline: pipeline,
+      project: project
+    } do
       build = insert(:build, pipeline_id: pipeline.id, stage_idx: 1, project_id: project.id)
       result = Builds.transition_status(build)
 

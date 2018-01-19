@@ -6,18 +6,18 @@ defmodule AlloyCi.Pipeline do
   use AlloyCi.Web, :schema
 
   schema "pipelines" do
-    field :before_sha, :string
-    field :commit, :map
-    field :duration, :integer
-    field :finished_at, :naive_datetime
-    field :installation_id, :integer
-    field :ref, :string
-    field :sha, :string
-    field :started_at, :naive_datetime
-    field :status, :string, default: "pending"
+    field(:before_sha, :string)
+    field(:commit, :map)
+    field(:duration, :integer)
+    field(:finished_at, :naive_datetime)
+    field(:installation_id, :integer)
+    field(:ref, :string)
+    field(:sha, :string)
+    field(:started_at, :naive_datetime)
+    field(:status, :string, default: "pending")
 
-    belongs_to :project, AlloyCi.Project
-    has_many :builds, AlloyCi.Build
+    belongs_to(:project, AlloyCi.Project)
+    has_many(:builds, AlloyCi.Build)
 
     timestamps()
   end

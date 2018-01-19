@@ -4,17 +4,17 @@ defmodule AlloyCi.Project do
   use AlloyCi.Web, :schema
 
   schema "projects" do
-    field :name, :string
-    field :owner, :string
-    field :private, :boolean, default: false
-    field :repo_id, :integer
-    field :tags, {:array, :string}
-    field :token, :string
+    field(:name, :string)
+    field(:owner, :string)
+    field(:private, :boolean, default: false)
+    field(:repo_id, :integer)
+    field(:tags, {:array, :string})
+    field(:token, :string)
 
-    has_many :pipelines, AlloyCi.Pipeline
-    has_many :project_permissions, AlloyCi.ProjectPermission
-    has_many :runners, AlloyCi.Runner
-    has_many :users, through: [:project_permissions, :user]
+    has_many(:pipelines, AlloyCi.Pipeline)
+    has_many(:project_permissions, AlloyCi.ProjectPermission)
+    has_many(:runners, AlloyCi.Runner)
+    has_many(:users, through: [:project_permissions, :user])
 
     timestamps()
   end

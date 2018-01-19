@@ -3,7 +3,16 @@ defmodule AlloyCi.Pipelines do
   The boundary for the Pipelines system.
   """
   import Ecto.Query, warn: false
-  alias AlloyCi.{Builds, Notifications, Pipeline, Projects, Queuer, Repo, Workers.CreateBuildsWorker}
+
+  alias AlloyCi.{
+    Builds,
+    Notifications,
+    Pipeline,
+    Projects,
+    Queuer,
+    Repo,
+    Workers.CreateBuildsWorker
+  }
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
@@ -13,7 +22,9 @@ defmodule AlloyCi.Pipelines do
         {_, nil} ->
           @github_api.notify_cancelled!(pipeline.project, pipeline)
           {:ok, pipeline}
-        _ -> :error
+
+        _ ->
+          :error
       end
     end
   end
@@ -21,7 +32,7 @@ defmodule AlloyCi.Pipelines do
   def create_pipeline(pipeline, params) do
     pipeline
     |> Pipeline.changeset(params)
-    |> Repo.insert
+    |> Repo.insert()
   end
 
   def delete_where(project_id: id) do
@@ -31,14 +42,13 @@ defmodule AlloyCi.Pipelines do
 
     case Repo.delete_all(query) do
       {_, nil} -> Builds.delete_where(project_id: id)
-             _ -> :error
+      _ -> :error
     end
   end
 
   def duplicate(pipeline) do
     with {:ok, _} <- update_pipeline(pipeline, %{sha: pipeline.sha |> String.slice(0..7)}),
-         {:ok, clone} <- clone(pipeline)
-    do
+         {:ok, clone} <- clone(pipeline) do
       Queuer.push(CreateBuildsWorker, clone.id)
       @github_api.notify_pending!(pipeline.project, pipeline)
       {:ok, clone}
@@ -48,10 +58,15 @@ defmodule AlloyCi.Pipelines do
   def failed!(pipeline) do
     pipeline = pipeline |> Repo.preload(:project)
     @github_api.notify_failure!(pipeline.project, pipeline)
-    finished_at = Timex.now
+    finished_at = Timex.now()
     duration = Timex.diff(finished_at, Timex.to_datetime(pipeline.started_at, :utc), :seconds)
 
-    with {:ok, pipeline} <- update_pipeline(pipeline, %{status: "failed", duration: duration, finished_at: finished_at}) do
+    with {:ok, pipeline} <-
+           update_pipeline(pipeline, %{
+             status: "failed",
+             duration: duration,
+             finished_at: finished_at
+           }) do
       Notifications.send(pipeline, pipeline.project, "pipeline_failed")
       {:ok, pipeline}
     end
@@ -62,7 +77,7 @@ defmodule AlloyCi.Pipelines do
     |> where(project_id: ^project_id)
     |> where([p], p.status == "pending" or p.status == "running")
     |> order_by(asc: :inserted_at)
-    |> Repo.all
+    |> Repo.all()
   end
 
   def get(id), do: Pipeline |> Repo.get(id)
@@ -91,7 +106,7 @@ defmodule AlloyCi.Pipelines do
 
   def run!(pipeline) do
     if pipeline.status == "pending" do
-      update_pipeline(pipeline, %{status: "running", started_at: Timex.now})
+      update_pipeline(pipeline, %{status: "running", started_at: Timex.now()})
     end
   end
 
@@ -110,19 +125,31 @@ defmodule AlloyCi.Pipelines do
       |> get()
       |> Repo.preload([:builds, :project])
 
-    query = from b in "builds",
-            where: b.pipeline_id == ^pipeline_id and b.status == "failed" and b.allow_failure == false,
-            select: count(b.id)
+    query =
+      from(
+        b in "builds",
+        where: b.pipeline_id == ^pipeline_id and b.status == "failed" and b.allow_failure == false,
+        select: count(b.id)
+      )
+
     failed_builds = Repo.one(query)
 
-    query = from b in "builds",
-            where: b.pipeline_id == ^pipeline.id and b.status == "success",
-            select: count(b.id)
+    query =
+      from(
+        b in "builds",
+        where: b.pipeline_id == ^pipeline.id and b.status == "success",
+        select: count(b.id)
+      )
+
     successful_builds = Repo.one(query)
 
-    query = from b in "builds",
-            where: b.pipeline_id == ^pipeline.id and b.status == "failed" and b.allow_failure == true,
-            select: count(b.id)
+    query =
+      from(
+        b in "builds",
+        where: b.pipeline_id == ^pipeline.id and b.status == "failed" and b.allow_failure == true,
+        select: count(b.id)
+      )
+
     allowed_failures = Repo.one(query)
 
     total_builds = Enum.count(pipeline.builds)
@@ -130,12 +157,17 @@ defmodule AlloyCi.Pipelines do
     if failed_builds > 0 || pipeline.status == "failed" do
       failed!(pipeline)
     else
-      if (successful_builds + allowed_failures) == total_builds do
+      if successful_builds + allowed_failures == total_builds do
         @github_api.notify_success!(pipeline.project, pipeline)
-        finished_at = Timex.now
+        finished_at = Timex.now()
         duration = Timex.diff(finished_at, Timex.to_datetime(pipeline.started_at, :utc), :seconds)
 
-        with {:ok, pipeline} <- update_pipeline(pipeline, %{status: "success", duration: duration, finished_at: finished_at}) do
+        with {:ok, pipeline} <-
+               update_pipeline(pipeline, %{
+                 status: "success",
+                 duration: duration,
+                 finished_at: finished_at
+               }) do
           Notifications.send(pipeline, pipeline.project, "pipeline_succeeded")
           {:ok, pipeline}
         end
@@ -146,16 +178,22 @@ defmodule AlloyCi.Pipelines do
   def update_pipeline(%Pipeline{} = pipeline, params) do
     pipeline
     |> Pipeline.changeset(params)
-    |> Repo.update
+    |> Repo.update()
   end
 
   def update_status(pipeline_id) do
     pipeline = get(pipeline_id)
 
-    query = from b in "builds",
-            where: b.pipeline_id == ^pipeline_id and b.status in ~w(pending running success failed skipped),
-            order_by: [desc: b.id], limit: 1,
-            select: %{status: b.status, allow_failure: b.allow_failure}
+    query =
+      from(
+        b in "builds",
+        where:
+          b.pipeline_id == ^pipeline_id and b.status in ~w(pending running success failed skipped),
+        order_by: [desc: b.id],
+        limit: 1,
+        select: %{status: b.status, allow_failure: b.allow_failure}
+      )
+
     last_status = Repo.one(query) || %{status: "skipped", allow_failure: false}
 
     case last_status do
@@ -173,10 +211,20 @@ defmodule AlloyCi.Pipelines do
   defp clone(pipeline) do
     params =
       pipeline
-      |> Map.drop([:__meta__, :__struct__, :id, :inserted_at, :updated_at, :builds, :project, :status, :duration])
-      
+      |> Map.drop([
+        :__meta__,
+        :__struct__,
+        :id,
+        :inserted_at,
+        :updated_at,
+        :builds,
+        :project,
+        :status,
+        :duration
+      ])
+
     %Pipeline{}
     |> Pipeline.changeset(params)
-    |> Repo.insert
+    |> Repo.insert()
   end
 end

@@ -7,13 +7,34 @@ defmodule AlloyCi.ProcessPipelineWorkerTest do
 
   setup do
     project = insert(:project) |> with_user()
-    pipeline = insert(:clean_pipeline, project: project, status: "running", started_at: Timex.now)
+
+    pipeline =
+      insert(:clean_pipeline, project: project, status: "running", started_at: Timex.now())
+
     {:ok, %{pipeline: pipeline, project: project}}
   end
 
-  test "it processes the pipeline and updates the statuses of builds", %{pipeline: pipeline, project: project} do
-    build1 = insert(:build, pipeline_id: pipeline.id, stage_idx: 0, project_id: project.id, status: "success")
-    build2 = insert(:build, pipeline_id: pipeline.id, stage_idx: 1, project_id: project.id, status: "created")
+  test "it processes the pipeline and updates the statuses of builds", %{
+    pipeline: pipeline,
+    project: project
+  } do
+    build1 =
+      insert(
+        :build,
+        pipeline_id: pipeline.id,
+        stage_idx: 0,
+        project_id: project.id,
+        status: "success"
+      )
+
+    build2 =
+      insert(
+        :build,
+        pipeline_id: pipeline.id,
+        stage_idx: 1,
+        project_id: project.id,
+        status: "created"
+      )
 
     ProcessPipelineWorker.perform(pipeline.id)
 

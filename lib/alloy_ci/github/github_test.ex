@@ -6,7 +6,7 @@ defmodule AlloyCi.Github.Test do
   @behaviour AlloyCi.Github
 
   def alloy_ci_config(_project, _pipeline) do
-    contents = ".alloy-ci.json" |> File.read! |> :base64.encode
+    contents = ".alloy-ci.json" |> File.read!() |> :base64.encode()
     %{"content" => contents}
   end
 
@@ -78,7 +78,7 @@ defmodule AlloyCi.Github.Test do
 
   def skip_ci?(commit_messsage) do
     String.match?(commit_messsage, ~r/\[skip ci\]/) ||
-    String.match?(commit_messsage, ~r/\[ci skip\]/)
+      String.match?(commit_messsage, ~r/\[ci skip\]/)
   end
 
   def sha_url(project, pipeline) do

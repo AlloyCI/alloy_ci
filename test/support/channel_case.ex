@@ -23,7 +23,6 @@ defmodule AlloyCi.Web.ChannelCase do
       import Ecto
       import Ecto.{Changeset, Query}
 
-
       # The default endpoint for testing
       @endpoint AlloyCi.Web.Endpoint
     end

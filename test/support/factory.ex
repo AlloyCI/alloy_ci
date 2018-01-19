@@ -27,7 +27,7 @@ defmodule AlloyCi.Factory do
 
   def clean_pipeline_factory do
     %Pipeline{
-      installation_id: sequence(:installation_id, &(&1)),
+      installation_id: sequence(:installation_id, & &1),
       ref: "master",
       sha: "0000000000000000000000",
       before_sha: "0000000000000000000000",
@@ -37,19 +37,27 @@ defmodule AlloyCi.Factory do
 
   def clean_project_permission_factory do
     %ProjectPermission{
-      repo_id: sequence(:repo_id, &(&1))
+      repo_id: sequence(:repo_id, & &1)
     }
   end
 
   def extended_build_factory do
     pipeline = insert(:pipeline)
+
     %Build{
       name: "full-build-1",
       commands: ["mix test"],
       options: %{
         "variables" => %{"GITHUB" => "yes"},
         "image" => %{"name" => "elixir:latest", "entrypoint" => ["/bin/bash"]},
-        "services" => [%{"name" => "postgres:latest", "alias" => "post", "command" => ["/bin/sh"], "entrypoint" => ["/bin/sh"]}],
+        "services" => [
+          %{
+            "name" => "postgres:latest",
+            "alias" => "post",
+            "command" => ["/bin/sh"],
+            "entrypoint" => ["/bin/sh"]
+          }
+        ],
         "before_script" => ["mix deps.get"]
       },
       status: "pending",
@@ -62,6 +70,7 @@ defmodule AlloyCi.Factory do
 
   def full_build_factory do
     pipeline = insert(:pipeline)
+
     %Build{
       name: "full-build-1",
       commands: ["mix test"],
@@ -97,16 +106,17 @@ defmodule AlloyCi.Factory do
   def installation_factory do
     %Installation{
       login: sequence(:login, &"user-#{&1}"),
-      target_id: sequence(:target_id, &(&1)),
+      target_id: sequence(:target_id, & &1),
       target_type: "User",
-      uid: sequence(:uid, &(&1))
+      uid: sequence(:uid, & &1)
     }
   end
 
   def pipeline_factory do
     project = insert(:project)
+
     %Pipeline{
-      installation_id: sequence(:installation_id, &(&1)),
+      installation_id: sequence(:installation_id, & &1),
       project: project,
       ref: "master",
       sha: "00000000",
@@ -120,7 +130,7 @@ defmodule AlloyCi.Factory do
     %Project{
       name: "elixir",
       owner: "elixir-lang",
-      repo_id: sequence(:repo_id, &(&1)),
+      repo_id: sequence(:repo_id, & &1),
       private: false,
       tags: ["elixir", "phoenix"],
       token: sequence("long-token")
@@ -128,7 +138,8 @@ defmodule AlloyCi.Factory do
   end
 
   def project_permission_factory do
-    repo_id = sequence(:repo_id, &(&1))
+    repo_id = sequence(:repo_id, & &1)
+
     %ProjectPermission{
       repo_id: repo_id,
       project: build(:project, repo_id: repo_id)
@@ -146,7 +157,7 @@ defmodule AlloyCi.Factory do
   def user_factory do
     %User{
       name: "Bob Belcher",
-      email: sequence(:email, &"email-#{&1}@alloy-ci.com"),
+      email: sequence(:email, &"email-#{&1}@alloy-ci.com")
     }
   end
 

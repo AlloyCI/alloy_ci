@@ -11,12 +11,21 @@ defmodule AlloyCi.Workers.ProcessPullRequestWorker do
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
-  def perform(%{"pull_request" => %{"head" => %{"repo" => %{"fork" => true}}, "base" => base}, "number" => pull_id} = params) do
+  def perform(
+        %{
+          "pull_request" => %{"head" => %{"repo" => %{"fork" => true}}, "base" => base},
+          "number" => pull_id
+        } = params
+      ) do
     with %AlloyCi.Project{} = project <- Projects.get_by(repo_id: base["repo"]["id"]),
          pull_request <- @github_api.pull_request(project, pull_id, params["installation"]["id"]),
-         %{"commit" => %{"message" => message}} <- @github_api.commit(project, pull_request["head"]["sha"], params["installation"]["id"]),
-         %{"content" => _} <- @github_api.alloy_ci_config(project, %{installation_id: params["installation"]["id"], sha: pull_request["head"]["sha"]})
-    do
+         %{"commit" => %{"message" => message}} <-
+           @github_api.commit(project, pull_request["head"]["sha"], params["installation"]["id"]),
+         %{"content" => _} <-
+           @github_api.alloy_ci_config(project, %{
+             installation_id: params["installation"]["id"],
+             sha: pull_request["head"]["sha"]
+           }) do
       pipeline_attrs = %{
         before_sha: pull_request["base"]["sha"],
         commit: %{
@@ -34,14 +43,18 @@ defmodule AlloyCi.Workers.ProcessPullRequestWorker do
         {:ok, pipeline} ->
           Queuer.push(CreateBuildsWorker, pipeline.id)
           Logger.info("Pipeline with ID: #{pipeline.id} created sucessfully.")
+
         {:error, _} ->
           Logger.info("Unable to create pipeline.")
       end
     else
       nil ->
         Logger.info("Project not found when attempting to create pipeline for fork.")
+
       _ ->
-        Logger.info("Unable to create pipeline.")
+        Logger.info(
+          "Unable to find necessary params (config file or commit message) for pipeline creation."
+        )
     end
   end
 

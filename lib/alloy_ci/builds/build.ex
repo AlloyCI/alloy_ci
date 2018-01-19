@@ -6,25 +6,25 @@ defmodule AlloyCi.Build do
   use AlloyCi.Web, :schema
 
   schema "builds" do
-    field :allow_failure, :boolean, default: false
-    field :commands, {:array, :string}
-    field :finished_at, :naive_datetime
-    field :name, :string
-    field :options, :map
-    field :queued_at, :naive_datetime
-    field :stage, :string, default: "test"
-    field :stage_idx, :integer, default: 0
-    field :started_at, :naive_datetime
-    field :status, :string, default: "created"
-    field :tags, {:array, :string}
-    field :token, :string
-    field :trace, :string, default: ""
-    field :variables, :map
-    field :when, :string, default: "on_success"
+    field(:allow_failure, :boolean, default: false)
+    field(:commands, {:array, :string})
+    field(:finished_at, :naive_datetime)
+    field(:name, :string)
+    field(:options, :map)
+    field(:queued_at, :naive_datetime)
+    field(:stage, :string, default: "test")
+    field(:stage_idx, :integer, default: 0)
+    field(:started_at, :naive_datetime)
+    field(:status, :string, default: "created")
+    field(:tags, {:array, :string})
+    field(:token, :string)
+    field(:trace, :string, default: "")
+    field(:variables, :map)
+    field(:when, :string, default: "on_success")
 
-    belongs_to :pipeline, AlloyCi.Pipeline
-    belongs_to :project, AlloyCi.Project
-    belongs_to :runner, AlloyCi.Runner
+    belongs_to(:pipeline, AlloyCi.Pipeline)
+    belongs_to(:project, AlloyCi.Project)
+    belongs_to(:runner, AlloyCi.Runner)
 
     timestamps()
   end
