@@ -11,7 +11,7 @@ defmodule AlloyCi.Github.Test do
   end
 
   def app_client do
-    Tentacat.Client.new(%{app_jwt_token: "v1.1f699f1069f60xxx"})
+    Tentacat.Client.new(%{jwt: "v1.1f699f1069f60xxx"})
   end
 
   def clone_url(project, pipeline) do

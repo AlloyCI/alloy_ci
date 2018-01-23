@@ -26,7 +26,7 @@ defmodule AlloyCi.Github.Live do
 
     signed_jwt = payload |> token() |> sign(rs256(key)) |> get_compact()
 
-    Tentacat.Client.new(%{app_jwt_token: signed_jwt})
+    Tentacat.Client.new(%{jwt: signed_jwt})
   end
 
   def clone_url(project, pipeline) do
@@ -54,7 +54,7 @@ defmodule AlloyCi.Github.Live do
 
   def list_installations do
     client = app_client()
-    Tentacat.Apps.Installations.get(client)
+    Tentacat.App.Installations.list_mine(client)
   end
 
   def notify_cancelled!(project, pipeline) do
@@ -135,7 +135,7 @@ defmodule AlloyCi.Github.Live do
 
   defp installation_token(installation_id) do
     client = app_client()
-    {_, response} = Tentacat.Apps.Installations.get_token(client, installation_id)
+    {_, response} = Tentacat.App.Installations.token(installation_id, client)
     response
   end
 
