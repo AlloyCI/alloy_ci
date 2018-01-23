@@ -2,7 +2,7 @@ AlloyCI is a Continuous Integration, Deployment, and Delivery coordinator,
 written in Elixir, that takes advantage of the GitLab CI Runner, and its
 capabilities as executor.
 
-Copyright (C) 2017 Patricio Cano
+Copyright (C) 2018 Patricio Cano
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

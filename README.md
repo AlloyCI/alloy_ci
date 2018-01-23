@@ -47,11 +47,12 @@ branches, so you can always know their status, just like any other CI service.
 - [ ] Advanced CI functionality
   - [x] Can run jobs on multiple environments (using the [`image` feature](doc/docker/README.md) of the Docker executor.)
   - [x] Can use a local build cache to speed up jobs
-  - [ ] Can make use of secret variables stored on a per project basis
+  - [x] Can build and test from pull requests coming from a fork
   - [ ] Can distinguish between tags and branches
+  - [ ] Can make use of `only` and `except` tags for jobs
+  - [ ] Can make use of secret variables stored on a per project basis
   - [ ] Can receive uploaded artifacts from runners
   - [ ] Can pass artifacts between build jobs
-  - [ ] Can make use of `only` and `except` tags for jobs
 - [ ] Deployment functionality
   - [ ] Can manually start deployments (manual actions)
   - [x] Can do auto deploys
@@ -81,7 +82,7 @@ make sure you fully understand it. Violations will not be tolerated.
 
 ## Copyright
 
-Copyright (c) 2017 Patricio Cano. See [LICENSE](LICENSE) for details.
+Copyright (c) 2018 Patricio Cano. See [LICENSE](LICENSE) for details.
 
 ### Documentation Copyright
 
