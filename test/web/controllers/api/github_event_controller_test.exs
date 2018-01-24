@@ -31,7 +31,7 @@ defmodule AlloyCi.Web.Api.GithubEventControllerTest do
       |> where(project_id: ^project.id)
       |> Repo.one()
 
-    assert conn.resp_body =~ "Pipeline with ID: #{pipeline.id} created sucessfully."
+    assert conn.resp_body =~ "Pipeline with ID: #{pipeline.id} created successfully."
   end
 
   test "when branch was deleted" do
@@ -122,7 +122,7 @@ defmodule AlloyCi.Web.Api.GithubEventControllerTest do
     assert installation.target_id == 3_367_756
     assert installation.login == "AlloyCI"
 
-    assert conn.resp_body =~ "Installation with ID: #{installation.id} created sucessfully."
+    assert conn.resp_body =~ "Installation with ID: #{installation.id} created successfully."
   end
 
   test "handles installation deleted" do
@@ -134,7 +134,7 @@ defmodule AlloyCi.Web.Api.GithubEventControllerTest do
       |> put_req_header("x-github-event", "installation")
       |> post("/api/github/handle_event", params)
 
-    assert conn.resp_body =~ "Installation with UID: #{installation.uid} deleted sucessfully."
+    assert conn.resp_body =~ "Installation with UID: #{installation.uid} deleted successfully."
   end
 
   test "handles all other events" do

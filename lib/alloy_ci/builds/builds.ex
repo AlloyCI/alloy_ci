@@ -301,7 +301,7 @@ defmodule AlloyCi.Builds do
       %{key: "CI_SERVER_NAME", value: "AlloyCI", public: true},
       %{key: "CI_SERVER_VERSION", value: AlloyCi.Version.version(), public: true},
       # We need to set this key, because the GitLab CI Runner is a bit stupid in
-      # this regard. It fecthes the SSL certificate of the coordinator and tries
+      # this regard. It fetches the SSL certificate of the coordinator and tries
       # to match it against the Git server. In GitLab's case they are one and the
       # same, but here one is the AlloyCI server, and the other is GitHub.com.
       # This means that if AlloyCI uses SSL, the Runner will try to match this

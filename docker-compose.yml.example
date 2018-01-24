@@ -10,9 +10,9 @@ services:
       # port should bind to. Use the same second value here as PORT below
       - "4000:80"
     environment:
-      DATABASE_URL: "ecto://alloy_ci:<passowrd>@db/alloy_ci_prod"
+      DATABASE_URL: "ecto://alloy_ci:<password>@db/alloy_ci_prod"
       PORT: 80 # Use 443 for SSL, even if you are proxying SSL via another web server
-      HOST: "<hostaname>"
+      HOST: "<hostname>"
       #------
       ENABLE_SLACK_NOTIFICATIONS: "true"
       SLACK_CHANNEL: "#ci"

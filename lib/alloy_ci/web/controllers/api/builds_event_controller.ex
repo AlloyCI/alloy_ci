@@ -27,7 +27,7 @@ defmodule AlloyCi.Web.Api.BuildsEventController do
       nil ->
         conn
         |> put_status(401)
-        |> json(%{messgae: "401 Unauthorized"})
+        |> json(%{message: "401 Unauthorized"})
     end
   end
 

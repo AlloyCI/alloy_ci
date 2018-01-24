@@ -1,7 +1,7 @@
 defmodule AlloyCi.Queuer do
   @moduledoc """
-  Wraper around Que.add so that we don't need to check the env
-  everytime we need to enqueue a worker
+  Wrapper around Que.add so that we don't need to check the env
+  every time we need to enqueue a worker
   """
 
   def push(worker, args) do

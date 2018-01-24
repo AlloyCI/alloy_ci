@@ -19,7 +19,7 @@ defmodule AlloyCi.Web.Router do
 
   # This pipeline is created for use within the admin namespace.
   # It looks for a valid token in the session - but in the 'admin' location of guardian
-  # This keeps the session credentials seperate for the main site, and the admin site
+  # This keeps the session credentials separate for the main site, and the admin site
   # It's very possible that a user is logged into the main site but not the admin
   # or it could be that you're logged into both.
   # This does not conflict with the browser_auth pipeline.

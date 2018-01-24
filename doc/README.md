@@ -107,11 +107,11 @@ postgres://<user>:<password>@<hostname>:<port>/<db_name>
 
 AlloyCI, being a Phoenix application, starts a Web Server process to serve HTTP
 requests. This server is perfectly capable of handling all HTTP requests on its
-own, but it is common practice to use `ngnix`, `Apache`, or any other web server
+own, but it is common practice to use `nginx`, `Apache`, or any other web server
 as a proxy, specially when SSL configuration is needed.
 
-For an example on how to configure `ngninx` as a reverse proxy, have a look at the
-[ngninx.conf.example](../ngninx.conf.example) file.
+For an example on how to configure `nginx` as a reverse proxy, have a look at the
+[nginx.conf.example](../nginx.conf.example) file.
 
 
 ## Configuration
@@ -196,7 +196,7 @@ Continue over to [First Run](#first-run) to set up the admin user for your insta
 
 ### Reverse proxy
 
-You can use ngnix as a reverse proxy for AlloyCI and its Docker Container, if you
+You can use nginx as a reverse proxy for AlloyCI and its Docker Container, if you
 don't want to directly expose the container. The setup is the same as with any
 other reverse proxy configuration, and you can find and example in the [nginx.conf.example](../nginx.conf.example) 
 file.

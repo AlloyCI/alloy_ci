@@ -4,7 +4,7 @@ defmodule AlloyCi.Notifications do
   import Ecto.Query, warn: false
   alias AlloyCi.{Notification, Notifier, Repo, User}
 
-  def aknowledge!(id, user) do
+  def acknowledge!(id, user) do
     with %Notification{} = notification <- get(id, user) do
       notification
       |> Notification.changeset(%{acknowledged: true})

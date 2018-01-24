@@ -56,7 +56,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
       {:ok, installation} ->
         event = %{
           status: :ok,
-          message: "Installation with ID: #{installation.id} created sucessfully."
+          message: "Installation with ID: #{installation.id} created successfully."
         }
 
         render(conn, "event.json", event: event)
@@ -77,7 +77,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
         {1, nil} ->
           %{
             status: :ok,
-            message: "Installation with UID: #{installation["id"]} deleted sucessfully."
+            message: "Installation with UID: #{installation["id"]} deleted successfully."
           }
 
         {_, _} ->
@@ -132,7 +132,12 @@ defmodule AlloyCi.Web.Api.GithubEventController do
       case Pipelines.create_pipeline(Ecto.build_assoc(project, :pipelines), pipeline_attrs) do
         {:ok, pipeline} ->
           Queuer.push(CreateBuildsWorker, pipeline.id)
-          event = %{status: :ok, message: "Pipeline with ID: #{pipeline.id} created sucessfully."}
+
+          event = %{
+            status: :ok,
+            message: "Pipeline with ID: #{pipeline.id} created successfully."
+          }
+
           render(conn, "event.json", event: event)
 
         {:error, changeset} ->

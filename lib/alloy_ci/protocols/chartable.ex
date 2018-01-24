@@ -1,5 +1,29 @@
 defprotocol Chartable do
+  @doc """
+  Prepares an array of 3 element tuples, which is then turned into a map containing the
+  data needed to draw a chart detailing the build statuses per week.
+
+  The tuple is created by grouping the builds by the week in which they were created and
+  their status. This allows us to select the `updated_at` and the `status` fields, and
+  count them.
+
+  Example intermediate result:
+
+      [{{{2017, 11, 27}, {0, 0, 0, 0}}, "success", 1}]
+  """
   def builds_chart(subject)
+
+  @doc """
+  Prepares an array of tuples, which is then turned into a map containing the data needed 
+  to draw a chart detailing how many builds have run for a specific project and runner.
+
+  The tuple is created by grouping the builds by their project and returning the `project_id`
+  and count.
+
+  Example intermediate result: 
+
+      [{4, 15}]
+  """
   def projects_chart(subject)
 end
 
@@ -65,9 +89,19 @@ end
 
 defmodule Chart do
   @moduledoc """
+  Provides access to the functions that actually build the necessary data for
+  Chart.js to do its thing.
+
+  Exposes 2 functions: `Chart.doughnut_chart/1` and `Chart.line_chart/1`
   """
   alias AlloyCi.Projects
 
+  @doc """
+  Prepares a map with the data necessary to create a doughnut chart. Since it groups
+  the number of builds by their project, it returns a random color for each project.
+
+  Used only for runners.
+  """
   def doughnut_chart(builds) do
     {_, result} =
       Enum.map_reduce(builds, %{}, fn {project, count}, acc ->
@@ -90,6 +124,13 @@ defmodule Chart do
     }
   end
 
+  @doc """
+  Prepares a map with the data necessary to create a line chart. It groups the builds
+  by the week in which they were updated, and creates a point based on their status.
+  It thens plots a line between the points.
+
+  Used for projects.
+  """
   def line_chart(builds) do
     {_, result} =
       Enum.map_reduce(builds, %{}, fn {day, status, count}, acc ->

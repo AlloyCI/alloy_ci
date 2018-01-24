@@ -110,9 +110,9 @@ defmodule AlloyCi.Github.Live do
     fetch_repos(token)
   end
 
-  def skip_ci?(commit_messsage) do
-    String.match?(commit_messsage, ~r/\[skip ci\]/) ||
-      String.match?(commit_messsage, ~r/\[ci skip\]/)
+  def skip_ci?(commit_message) do
+    String.match?(commit_message, ~r/\[skip ci\]/) ||
+      String.match?(commit_message, ~r/\[ci skip\]/)
   end
 
   def sha_url(project, pipeline) do

@@ -1,6 +1,6 @@
 defmodule AlloyCi.GuardianToken do
   @moduledoc """
-  JWT Tokens used for authetication. They are stored in DB in order to make
+  JWT Tokens used for authentication. They are stored in DB in order to make
   it easier to revoke them.
   """
   use Ecto.Schema

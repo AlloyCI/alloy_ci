@@ -1,7 +1,7 @@
 defmodule AlloyCi.Web.Admin.SessionController do
   @moduledoc """
   Provides login and logout for the admin part of the site.
-  We keep the logins seperate rather than use a permission for this because
+  We keep the logins separate rather than use a permission for this because
   keeping the tokens in separate locations allows us to more easily manage the
   different requirements between the normal site and the admin site
   """
@@ -10,7 +10,7 @@ defmodule AlloyCi.Web.Admin.SessionController do
   alias AlloyCi.Accounts
 
   # We still want to use Ueberauth for checking the passwords etc
-  # we have everything we need to check email / passwords and oauth already
+  # we have everything we need to check email / passwords and OAuth already
   # but we only want to provide access for folks using email/pass
   plug(Ueberauth, base_path: "/admin/auth", providers: [:identity])
   plug(:put_layout, "login_layout.html")

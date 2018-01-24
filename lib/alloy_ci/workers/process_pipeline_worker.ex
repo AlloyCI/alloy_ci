@@ -1,7 +1,7 @@
 defmodule AlloyCi.Workers.ProcessPipelineWorker do
   @moduledoc """
   This worker takes care of processing and updating a pipeline. It is enqueued
-  whenever the staus of a build is updated. Its main purpose is to make sure the
+  whenever the status of a build is updated. Its main purpose is to make sure the
   correct stage is enqueued, and that builds are enqueued based on their `when`
   constraint.
   """

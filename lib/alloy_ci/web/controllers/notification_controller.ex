@@ -30,9 +30,9 @@ defmodule AlloyCi.Web.NotificationController do
   end
 
   def update(conn, %{"id" => id}, current_user, _) do
-    with {:ok, _} <- Notifications.aknowledge!(id, current_user) do
+    with {:ok, _} <- Notifications.acknowledge!(id, current_user) do
       conn
-      |> put_flash(:info, "Notification was aknowledged")
+      |> put_flash(:info, "Notification was acknowledged")
       |> redirect(to: notification_path(conn, :index))
     else
       _ ->

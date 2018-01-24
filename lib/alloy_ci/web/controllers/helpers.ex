@@ -6,7 +6,7 @@ defmodule AlloyCi.Web.Controller.Helpers do
   def redirect_back(conn, alternative \\ "/") do
     path =
       conn
-      |> get_req_header("referer")
+      |> get_req_header("referrer")
       |> referrer
 
     path || alternative

@@ -14,7 +14,7 @@ defmodule AlloyCi.ProjectsTest do
   end
 
   describe "all/1" do
-    test "it retruns all projects" do
+    test "it returns all projects" do
       insert(:project)
       {projects, _} = Projects.all(%{page: 1})
 

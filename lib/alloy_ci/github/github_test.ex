@@ -1,6 +1,6 @@
 defmodule AlloyCi.Github.Test do
   @moduledoc """
-  Test impelementation of the GitHub API behavior. It is a mock module that
+  Test implementation of the GitHub API behavior. It is a mock module that
   simulates the communication with the GitHub API.
   """
   @behaviour AlloyCi.Github
@@ -53,7 +53,7 @@ defmodule AlloyCi.Github.Test do
   def notify_success!(project, pipeline) do
     params = %{
       state: "success",
-      description: "Pipleine succeeded"
+      description: "Pipeline succeeded"
     }
 
     notify!(project, pipeline, params)
@@ -76,9 +76,9 @@ defmodule AlloyCi.Github.Test do
     fetch_repos(user)
   end
 
-  def skip_ci?(commit_messsage) do
-    String.match?(commit_messsage, ~r/\[skip ci\]/) ||
-      String.match?(commit_messsage, ~r/\[ci skip\]/)
+  def skip_ci?(commit_message) do
+    String.match?(commit_message, ~r/\[skip ci\]/) ||
+      String.match?(commit_message, ~r/\[ci skip\]/)
   end
 
   def sha_url(project, pipeline) do

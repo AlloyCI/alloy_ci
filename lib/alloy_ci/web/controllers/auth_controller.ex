@@ -1,6 +1,6 @@
 defmodule AlloyCi.Web.AuthController do
   @moduledoc """
-  Handles the Überauth integration.
+  Handles the Ueberauth integration.
   This controller implements the request and callback phases for all providers.
   The actual creation and lookup of users/authentications is handled by Accounts
   """

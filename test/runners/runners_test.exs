@@ -12,7 +12,7 @@ defmodule AlloyCi.RunnersTest do
   end
 
   describe "all/1" do
-    test "it retruns all projects" do
+    test "it returns all projects" do
       insert(:runner)
       {runners, _} = Runners.all(%{page: 1})
 

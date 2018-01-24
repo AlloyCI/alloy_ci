@@ -49,7 +49,7 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
       assert conn.assigns.runner_id == runner.id
     end
 
-    test "fetches an extened build, starts it and returns the correct data", %{
+    test "fetches an extended build, starts it and returns the correct data", %{
       runner: runner,
       params: params
     } do
