@@ -35,6 +35,10 @@ if(document.querySelector(".chart")) {
           }],
           yAxes: [{
             display: true,
+            ticks: {
+              min: 0,
+              stepSize: 1
+            }, 
             scaleLabel: {
               display: true,
               labelString: ctx.data("axis")
