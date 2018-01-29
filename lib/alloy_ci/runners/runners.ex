@@ -5,6 +5,16 @@ defmodule AlloyCi.Runners do
 
   def all(params), do: Runner |> Repo.paginate(params)
 
+  def can_manage?(id, user) do
+    with %Runner{} = runner <- get(id),
+         true <- Projects.can_manage?(runner.project_id, user) do
+      {:ok, runner}
+    else
+      _ ->
+        {:error, nil}
+    end
+  end
+
   def create(%{"token" => token, "info" => runner_info} = params) do
     if token == global_token() do
       new_runner = Enum.into(%{global: true}, runner_params(params, runner_info))

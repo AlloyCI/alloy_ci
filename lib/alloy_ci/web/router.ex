@@ -72,6 +72,7 @@ defmodule AlloyCi.Web.Router do
     end
 
     get("/register", PublicController, :register, as: :register)
+    resources("/runners", RunnerController, only: [:show, :delete, :update])
 
     resources("/tokens", TokenController, only: [:delete])
   end

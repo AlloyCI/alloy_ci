@@ -1,7 +1,7 @@
 <div class="container-fluid">
   <div class="animated fadeIn">
     <div class="row">
-      <div class="col-sm-12 col-xl-7">
+      <div class="col-sm-12 col-xl-5">
         <div class="card">
           <div class="card-header">
             <strong><%= @project.name %> |> Project Settings</strong>
@@ -11,7 +11,19 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-12 col-xl-5">
+       <div class="col-sm-12 col-xl-7">
+        <div class="card">
+          <div class="card-header">
+            <strong>Build statistics</strong>
+          </div>
+          <div class="card-block">
+            <canvas class="chart" data-set="<%= builds_chart(@project) %>"
+                    data-title="Project's Build statistics" data-axis="Number of processed builds"
+                    data-label="Week of" data-type="line"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-xl-12">
         <div class="card">
           <div class="card-header">
             <strong>Build status</strong>
@@ -31,18 +43,6 @@
 
             <strong>HTML</strong>
             <pre class="code highlight"><code>&lt;img alt="build status" src="<%= project_badge_url(@conn, :index, @project, "master") %>"/&gt;</code></pre>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-12 col-xl-7">
-        <div class="card">
-          <div class="card-header">
-            <strong>Build stats</strong>
-          </div>
-          <div class="card-block">
-            <canvas class="chart" data-set="<%= builds_chart(@project) %>"
-                    data-title="Project's Build statistics" data-axis="Number of processed builds"
-                    data-label="Week of" data-type="line"></canvas>
           </div>
         </div>
       </div>
@@ -111,6 +111,20 @@
                 </ul>
               </p>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-12 col-xl-7">
+        <div class="card">
+          <div class="card-header">
+            <strong>Registered runners</strong>
+          </div>
+          <div class="card-block">
+            <%= for runner <- @project.runners do %>
+                <%= render AlloyCi.Web.SharedView, "runner.html", 
+                           runner: runner, delete_path: runner_path(@conn, :delete, runner), show_path: runner_path(@conn, :show, runner) %>
+              <% end %>
           </div>
         </div>
       </div>

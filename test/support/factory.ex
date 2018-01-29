@@ -182,6 +182,13 @@ defmodule AlloyCi.Factory do
     project
   end
 
+  def with_user_return_both(project, attrs \\ %{}) do
+    user = insert(:user)
+    attrs = Enum.into(attrs, %{project: project, user_id: user.id})
+    insert(:project_permission, attrs)
+    {user, project}
+  end
+
   def with_authentication(user, opts \\ %{}) do
     attrs = Enum.into(opts, %{user: user, uid: user.email})
     insert(:authentication, attrs)

@@ -89,7 +89,7 @@ defmodule AlloyCi.Web.ProjectController do
   end
 
   def update(conn, %{"id" => id, "project" => project_params}, current_user, _claims) do
-    case Projects.get_by(id, current_user) do
+    case Projects.get_by(id, current_user, preload: :runners) do
       {:ok, project} ->
         case Projects.update(project, project_params) do
           {:ok, project} ->

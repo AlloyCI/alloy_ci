@@ -7,8 +7,10 @@ defmodule AlloyCi.RunnersTest do
 
   setup do
     build = insert(:full_build)
+    {user, project} = insert(:project) |> with_user_return_both()
+    runner = insert(:runner, project_id: project.id)
 
-    {:ok, %{build: build}}
+    {:ok, %{build: build, runner: runner, user: user}}
   end
 
   describe "all/1" do
@@ -16,7 +18,19 @@ defmodule AlloyCi.RunnersTest do
       insert(:runner)
       {runners, _} = Runners.all(%{page: 1})
 
-      assert Enum.count(runners) == 1
+      assert Enum.count(runners) == 2
+    end
+  end
+
+  describe "can_manage?/2" do
+    test "returns the runner if the user can access it", %{runner: runner, user: user} do
+      {:ok, result} = Runners.can_manage?(runner.id, user)
+
+      assert result.id == result.id
+    end
+
+    test "returns nil if the user can access it", %{runner: runner} do
+      assert {:error, nil} = Runners.can_manage?(runner.id, %{id: 1})
     end
   end
 
