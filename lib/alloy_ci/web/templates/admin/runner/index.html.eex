@@ -79,35 +79,8 @@
           <div class="card-block">
             <div class="row">
               <%= for runner <- @runners do %>
-                <div class="col-sm-6 col-lg-4">
-                  <div class="card">
-                    <div class="card-block project-card" data-url="<%= admin_runner_path(@conn, :show, runner) %>">
-                      <div class="btn-group pull-right">
-                        <%= link to: admin_runner_path(@conn, :delete, runner), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger p-a-0" do %>
-                          <%= icon("trash") %>
-                        <% end %>
-                      </div>
-                      <div class="h2 text-muted text-xs-right">
-                        <%= icon("cog") %>
-                      </div>
-                      <div class="h5 m-b-0">
-                        <div class="filter inline">
-                          <%= runner.description %>
-                        </div>
-                        <small class="text-muted font-weight-bold pull-right">
-                          <%= runner.version %>
-                        </small>
-                      </div>
-                      <small class="text-muted font-weight-bold">
-                        <b>Platform:</b> <%= runner.platform %>
-                      </small>
-                      <br>
-                      <small class="text-muted font-weight-bold">
-                        <b>Global?:</b> <%= runner.global %>
-                      </small>
-                    </div>
-                  </div>
-                </div>
+                <%= render AlloyCi.Web.SharedView, "runner.html", 
+                           runner: runner, delete_path: admin_runner_path(@conn, :delete, runner), show_path: admin_runner_path(@conn, :show, runner) %>
               <% end %>
             </div>
             <%= paginate @conn, @kerosene %>

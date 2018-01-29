@@ -31,7 +31,7 @@
             <strong>Runner Settings</strong>
           </div>
           <div class="card-block">
-            <%= render "edit_form.html", changeset: @changeset,
+            <%= render AlloyCi.Web.SharedView, "edit_runner_form.html", changeset: @changeset,
                                     action: admin_runner_path(@conn, :update, @runner) %>
           </div>
         </div>
