@@ -42,7 +42,7 @@ defmodule AlloyCi.Workers.ProcessPullRequestWorker do
       case Pipelines.create_pipeline(Ecto.build_assoc(project, :pipelines), pipeline_attrs) do
         {:ok, pipeline} ->
           Queuer.push(CreateBuildsWorker, pipeline.id)
-          Logger.info("Pipeline with ID: #{pipeline.id} created sucessfully.")
+          Logger.info("Pipeline with ID: #{pipeline.id} created successfully.")
 
         {:error, _} ->
           Logger.info("Unable to create pipeline.")

@@ -4,7 +4,7 @@ defmodule AlloyCi.Notifiers.Slack do
   import AlloyCi.Web.Router.Helpers
 
   def send_notification(notification) do
-    HTTPoison.post(config[:hook_url], build_payload(notification), [
+    HTTPoison.post(config()[:hook_url], build_payload(notification), [
       {"content-type", "application/json"}
     ])
   end
@@ -21,8 +21,8 @@ defmodule AlloyCi.Notifiers.Slack do
   defp build_payload(notification) do
     payload = %{
       text: notification_text(notification),
-      channel: config[:channel],
-      username: config[:service_name]
+      channel: config()[:channel],
+      username: config()[:service_name]
     }
 
     Poison.encode!(payload)

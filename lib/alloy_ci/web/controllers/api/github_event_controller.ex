@@ -20,7 +20,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
         _,
         _
       ) do
-    event = %{status: :bad_request, message: "Branch deletion is not handled"}
+    event = %{status: :bad_request, message: "Reference deletion is not handled"}
 
     render(conn, "event.json", event: event)
   end
