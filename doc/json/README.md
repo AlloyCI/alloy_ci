@@ -274,6 +274,8 @@ A job is defined by a list of parameters that define the job behavior.
 | services      | no       | Use docker services, covered in [Using Docker Images](../docker/README.md) | Array of: Strings or JSON Objects  |
 | stage         | no       | Defines a job stage (default: `test`) | String |
 | variables     | no       | Define job variables on a job level | JSON Object |
+| only          | no       | Defines a list of git refs for which job is created |
+| except        | no       | Defines a list of git refs for which job is not created |
 | tags          | no       | Defines a list of tags which are used to select Runner | Array |
 | allow_failure | no       | Allow job to fail. Failed job doesn't contribute to commit status | Boolean |
 | when          | no       | Define when to run job. Can be `on_success`, `on_failure`, `always` or `manual` | String |
@@ -301,6 +303,78 @@ This parameter must be an array, even if it only contains a single command.
 `stage` allows to group jobs into different stages. Jobs of the same `stage`
 are executed in `parallel`. For more info about the use of `stage` please check
 [stages](#stages).
+
+### only and except
+
+`only` and `except` are two parameters that set a job policy to limit when
+jobs are created:
+
+1. `only` defines the names of branches and tags for which the job will run.
+2. `except` defines the names of branches and tags for which the job will
+    **not** run.
+
+There are a few rules that apply to the usage of job policy:
+
+* `only` and `except` are inclusive. If both `only` and `except` are defined
+   in a job specification, the ref is filtered by `only` and `except` and needs
+   to pass both filters to be created.
+* `only` and `except` allow the use of regular expressions. Regex don't need to
+  be escaped using `/` at the beginning and end, e.g. you should write `issue-.*$`
+  instead of `/issue-.*$/`. 
+
+
+In addition, `only` and `except` allow the use of special keywords:
+
+| **Value** |  **Description**  |
+| --------- |  ---------------- |
+| `branches`  | When a branch is pushed.  |
+| `tags`      | When a tag is pushed.  |
+| `forks`     | For pipelines created when a pull request is created from a fork. |
+| `web`       | For pipelines created using **Run pipeline** button in AlloyCI's UI (**not implemented yet**). |
+
+In the example below, `job` will run only for refs that have `issue-` in them,
+whereas all other branches will be skipped:
+
+```json
+{
+  "job": {
+    "only": [
+      "issue-.*$"
+    ],
+    "except": [
+      "branches"
+    ]
+  }
+}
+```
+
+
+In this example, `job` will run only for refs that are tagged, or if the pipeline was created from
+a fork.
+
+```json
+{
+  "job": {
+    "only": [
+      "tags",
+      "forks"
+    ]
+  }
+}
+```
+
+In this example `job` will run for all branches, except the ones named `master`, or `develop`:
+
+```json
+{
+  "job": {
+    "except": [
+      "master",
+      "develop"
+    ]
+  }
+}
+```
 
 ### Job variables
 

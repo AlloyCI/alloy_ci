@@ -79,7 +79,13 @@ defmodule AlloyCi.Builds do
           when: options["when"] || "on_success"
         }
 
-        create_build(build_params)
+        creation_options = %{
+          except: options["except"],
+          ref: pipeline.ref,
+          only: options["only"]
+        }
+
+        create_build(build_params, creation_options)
       end)
 
       {:ok, nil}
@@ -152,6 +158,17 @@ defmodule AlloyCi.Builds do
     else
       {:error, nil}
     end
+  end
+
+  def ref_type(ref) do
+    ref_types = [{~r/heads/, "branches"}, {~r/tags/, "tags"}, {~r/:/, "forks"}]
+
+    {_, type} =
+      Enum.find(ref_types, {nil, ""}, fn {expr, _} ->
+        Regex.match?(expr, ref)
+      end)
+
+    type
   end
 
   def start_build(build, runner) do
@@ -240,7 +257,28 @@ defmodule AlloyCi.Builds do
     end
   end
 
-  defp create_build(params) do
+  defp create_build(params, %{only: nil, except: nil}), do: do_create_build(params)
+
+  defp create_build(params, %{except: nil} = options) do
+    if should_build(options[:only], options[:ref]) do
+      do_create_build(params)
+    end
+  end
+
+  defp create_build(params, %{only: nil} = options) do
+    if !should_build(options[:except], options[:ref]) do
+      do_create_build(params)
+    end
+  end
+
+  defp create_build(params, options) do
+    if should_build(options[:only], options[:ref]) &&
+         !should_build(options[:except], options[:ref]) do
+      do_create_build(params)
+    end
+  end
+
+  defp do_create_build(params) do
     %Build{}
     |> Build.changeset(params)
     |> Repo.insert!()
@@ -300,6 +338,7 @@ defmodule AlloyCi.Builds do
       %{key: "CI_RUNNER_TAGS", value: runner_tags(build.runner), public: true},
       %{key: "CI_SERVER_NAME", value: "AlloyCI", public: true},
       %{key: "CI_SERVER_VERSION", value: AlloyCi.Version.version(), public: true},
+      %{key: "EXTERNAL_SERVICE", value: "true", public: true},
       # We need to set this key, because the GitLab CI Runner is a bit stupid in
       # this regard. It fetches the SSL certificate of the coordinator and tries
       # to match it against the Git server. In GitLab's case they are one and the
@@ -314,6 +353,31 @@ defmodule AlloyCi.Builds do
     if runner.tags do
       runner.tags |> Enum.join(",")
     end
+  end
+
+  defp should_build(conditions, ref) do
+    Enum.reduce_while(conditions, false, fn condition, _acc ->
+      # Compile a regex, in case the condition is one
+      with {:ok, regex} <- Regex.compile(condition) do
+        cond do
+          # begin checking for matching condition & type, e.g. "branches", or "forks"
+          condition == ref_type(ref) ->
+            {:halt, true}
+
+          # if that fails, try to match with the created regex, will work for branch/tag
+          # names and regex, e.g. "master" or "issue-.*$"
+          Regex.match?(regex, ref) ->
+            {:halt, true}
+
+          # if that fails, there is no match, continue with the next condition
+          true ->
+            {:cont, false}
+        end
+      else
+        _ ->
+          {:cont, false}
+      end
+    end)
   end
 
   defp steps(build) do

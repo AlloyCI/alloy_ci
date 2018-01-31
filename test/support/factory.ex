@@ -28,7 +28,7 @@ defmodule AlloyCi.Factory do
   def clean_pipeline_factory do
     %Pipeline{
       installation_id: sequence(:installation_id, & &1),
-      ref: "master",
+      ref: "refs/heads/master",
       sha: "0000000000000000000000",
       before_sha: "0000000000000000000000",
       commit: %{"message" => "test", "username" => "supernova32"}
@@ -118,7 +118,7 @@ defmodule AlloyCi.Factory do
     %Pipeline{
       installation_id: sequence(:installation_id, & &1),
       project: project,
-      ref: "master",
+      ref: "refs/heads/master",
       sha: "00000000",
       before_sha: "00000000",
       commit: %{"message" => "test", "username" => "supernova32"},

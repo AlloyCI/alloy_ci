@@ -128,6 +128,80 @@ defmodule AlloyCi.BuildsTest do
 
       assert result == "Unable to parse JSON config file."
     end
+
+    test "it skips the build marked `except`", %{pipeline: pipeline} do
+      content = File.read!("test/fixtures/except_tag_config.json")
+
+      {:ok, result} = Builds.create_builds_from_config(content, pipeline)
+      assert result == nil
+
+      build = Repo.one(from(b in Build, where: b.name == ^"deploy", limit: 1))
+
+      assert build == nil
+    end
+
+    test "it creates the build marked `except`", %{project: project} do
+      pipeline = insert(:clean_pipeline, project: project, ref: "refs/tags/v1.0")
+      content = File.read!("test/fixtures/except_tag_config.json")
+
+      {:ok, result} = Builds.create_builds_from_config(content, pipeline)
+      assert result == nil
+
+      build = Repo.one(from(b in Build, where: b.name == ^"deploy", limit: 1))
+
+      assert build.commands == ["./deploy"]
+      assert build.stage == "deploy"
+    end
+
+    test "it creates the build marked `only`", %{project: project} do
+      pipeline = insert(:clean_pipeline, project: project, ref: "refs/tags/v1.0")
+      content = File.read!("test/fixtures/only_tag_config.json")
+
+      {:ok, result} = Builds.create_builds_from_config(content, pipeline)
+      assert result == nil
+
+      build = Repo.one(from(b in Build, where: b.name == ^"deploy", limit: 1))
+
+      assert build.commands == ["./deploy"]
+      assert build.stage == "deploy"
+    end
+
+    test "it skips the build marked `only`", %{project: project} do
+      pipeline = insert(:clean_pipeline, project: project, ref: "refs/heads/develop")
+      content = File.read!("test/fixtures/only_tag_config.json")
+
+      {:ok, result} = Builds.create_builds_from_config(content, pipeline)
+      assert result == nil
+
+      build = Repo.one(from(b in Build, where: b.name == ^"deploy", limit: 1))
+
+      assert build == nil
+    end
+
+    test "it creates the build marked `only` and `except`", %{project: project} do
+      pipeline = insert(:clean_pipeline, project: project, ref: "refs/heads/issue-25")
+      content = File.read!("test/fixtures/both_tags_config.json")
+
+      {:ok, result} = Builds.create_builds_from_config(content, pipeline)
+      assert result == nil
+
+      build = Repo.one(from(b in Build, where: b.name == ^"deploy", limit: 1))
+
+      assert build.commands == ["./deploy"]
+      assert build.stage == "deploy"
+    end
+
+    test "it skips the build marked `only` and `except`", %{project: project} do
+      pipeline = insert(:clean_pipeline, project: project, ref: "AlloyCI:master")
+      content = File.read!("test/fixtures/both_tags_config.json")
+
+      {:ok, result} = Builds.create_builds_from_config(content, pipeline)
+      assert result == nil
+
+      build = Repo.one(from(b in Build, where: b.name == ^"deploy", limit: 1))
+
+      assert build == nil
+    end
   end
 
   describe "delete_where/1" do

@@ -45,7 +45,7 @@
                           <span class="bullet">•</span>
                           <%= icon("github") %> <%= sha_link(pipeline, @project) %>
                           <span class="bullet">•</span>
-                          <%= icon("random") %> <%= clean_branch(pipeline.ref) %>
+                          <%= ref_icon(pipeline.ref) %> <%= clean_ref(pipeline.ref) %>
                           <span class="bullet">•</span>
                           <%= icon("hourglass") %> <%= duration(pipeline.duration) %>
                           <span class="bullet">•</span>

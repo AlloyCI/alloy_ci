@@ -2,7 +2,6 @@ defmodule AlloyCi.Web.ViewHelpers do
   @moduledoc """
   """
   use Phoenix.HTML
-  import AlloyCi.Web.Router.Helpers
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
@@ -22,8 +21,6 @@ defmodule AlloyCi.Web.ViewHelpers do
   def card_status("running"), do: "card-inverse card-primary"
   def card_status("pending"), do: "card-inverse card-info"
   def card_status(_), do: ""
-
-  def clean_branch(branch), do: branch |> String.replace("refs/heads/", "")
 
   def current_user(conn), do: Guardian.Plug.current_resource(conn)
 
@@ -49,32 +46,6 @@ defmodule AlloyCi.Web.ViewHelpers do
   end
 
   def logged_in?(conn), do: Guardian.Plug.authenticated?(conn)
-
-  def notification_text(%{notification_type: "pipeline_failed"} = notification) do
-    [
-      content_tag :p do
-        [
-          base_notification_text(notification),
-          " has failed. You can view the full trace log of the pipeline ",
-          link_to_pipeline(notification)
-        ]
-      end,
-      commit_message(notification)
-    ]
-  end
-
-  def notification_text(%{notification_type: "pipeline_succeeded"} = notification) do
-    [
-      content_tag :p do
-        [
-          base_notification_text(notification),
-          " has finished correctly. You can view the full trace log of the pipeline ",
-          link_to_pipeline(notification)
-        ]
-      end,
-      commit_message(notification)
-    ]
-  end
 
   def pretty_commit(msg) do
     msg |> String.split("\n") |> List.first()
@@ -137,36 +108,4 @@ defmodule AlloyCi.Web.ViewHelpers do
   def status_icon("running"), do: icon("circle-o-notch", "fa-spin")
   def status_icon("success"), do: icon("check")
   def status_icon(_), do: icon("ban")
-
-  ###################
-  # Private functions
-  ###################
-  defp base_notification_text(notification) do
-    [
-      "The pipeline with ID: #{notification.content["pipeline"]["id"]} for the branch ",
-      content_tag(:b, clean_branch(notification.content["pipeline"]["ref"]))
-    ]
-  end
-
-  defp link_to_pipeline(notification) do
-    link(
-      "here.",
-      to:
-        project_pipeline_url(
-          AlloyCi.Web.Endpoint,
-          :show,
-          notification.project_id,
-          notification.content["pipeline"]["id"]
-        )
-    )
-  end
-
-  defp commit_message(notification) do
-    content_tag :p do
-      [
-        content_tag(:b, "Commit message: "),
-        notification.content["pipeline"]["commit"]["message"]
-      ]
-    end
-  end
 end

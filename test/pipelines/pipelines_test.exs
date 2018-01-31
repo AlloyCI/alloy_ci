@@ -58,7 +58,7 @@ defmodule AlloyCi.PipelinesTest do
                )
 
       assert pipeline.before_sha == "00000000"
-      assert pipeline.ref == "master"
+      assert pipeline.ref == "refs/heads/master"
       assert pipeline.sha == "00000000"
       assert pipeline.status == "pending"
     end
