@@ -38,56 +38,54 @@
   <% end %>
 <% else %>
   <div class="container-fluid">
-    <div class="animated fadeIn">
-      <div class="row">
-        <div class="col-sm-12">
-          <div class="card">
-            <div class="card-header">
-              <strong>Your projects</strong>
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="card">
+          <div class="card-header">
+            <strong>Your projects</strong>
+          </div>
+          <div class="card-block">
+            <div data-controller="repos" class="input-group m-b-2">
+              <span class="input-group-addon"><%= icon("search") %></i></span>
+              <input data-action="keyup->repos#filter" data-target="repos.input" type="text" class="form-control" placeholder="Filter...">
             </div>
-            <div class="card-block">
-              <div class="input-group m-b-2">
-                <span class="input-group-addon"><%= icon("search") %></i></span>
-                <input type="text" id="repo-filter" class="form-control" placeholder="Filter...">
-              </div>
-              <div class="row">
-                <% statuses = Projects.last_statuses(@projects) %>
-                <%= for project <- @projects do %>
-                  <% status = statuses |> Map.get(project.id, "unknown") %>
-                  <div class="col-sm-6 col-lg-4 col-xl-3" id="card-<%= project.repo_id %>">
-                    <div class="card <%= card_status(status)%>">
-                      <div class="card-block project-card" data-url="<%= project_path(@conn, :show, project) %>">
-                        <div class="btn-group pull-right">
-                          <%= link to: project_path(@conn, :edit, project), class: "btn btn-warning p-a-0" do %>
-                            <%= icon("cogs") %>
-                          <% end %>
-                        </div>
-                        <div class="h2 text-muted text-xs-right">
-                          <%= icon("archive") %>
-                        </div>
-                        <div class="h5 m-b-0">
-                          <div class="filter inline" data-id="<%= project.repo_id %>">
-                            <%= project.name %>
-                          </div>
-                          <small><%= privacy_icon(project.private) %></small>
-                        </div>
-                        <small class="text-muted text-uppercase font-weight-bold m-b-2">
-                          <%= project.owner %>
-                        </small>
-                        <small class="text-muted text-uppercase font-weight-bold pull-right">
-                          Last status: <%= String.capitalize(status) %>
-                        </small>
+            <div class="row">
+              <% statuses = Projects.last_statuses(@projects) %>
+              <%= for project <- @projects do %>
+                <% status = statuses |> Map.get(project.id, "unknown") %>
+                <div class="col-sm-6 col-lg-4 col-xl-3" id="card-<%= project.repo_id %>">
+                  <div class="card <%= card_status(status)%>">
+                    <div class="card-block project-card" data-url="<%= project_path(@conn, :show, project) %>">
+                      <div class="btn-group pull-right">
+                        <%= link to: project_path(@conn, :edit, project), class: "btn btn-warning p-a-0" do %>
+                          <%= icon("cogs") %>
+                        <% end %>
                       </div>
+                      <div class="h2 text-muted text-xs-right">
+                        <%= icon("archive") %>
+                      </div>
+                      <div class="h5 m-b-0">
+                        <div class="filter inline" data-id="<%= project.repo_id %>">
+                          <%= project.name %>
+                        </div>
+                        <small><%= privacy_icon(project.private) %></small>
+                      </div>
+                      <small class="text-muted text-uppercase font-weight-bold m-b-2">
+                        <%= project.owner %>
+                      </small>
+                      <small class="text-muted text-uppercase font-weight-bold pull-right">
+                        Last status: <%= String.capitalize(status) %>
+                      </small>
                     </div>
                   </div>
-                <% end %>
-              </div>
-              <%= paginate @conn, @kerosene %>
-              <%= link to: project_path(@conn, :new), class: "btn btn-secondary" do %>
-                <%= icon("plus") %>
-                New project
+                </div>
               <% end %>
             </div>
+            <%= paginate @conn, @kerosene %>
+            <%= link to: project_path(@conn, :new), class: "btn btn-secondary" do %>
+              <%= icon("plus") %>
+              New project
+            <% end %>
           </div>
         </div>
       </div>

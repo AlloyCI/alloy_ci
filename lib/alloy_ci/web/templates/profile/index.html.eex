@@ -1,93 +1,91 @@
 <div class="container-fluid">
-  <div class="animated fadeIn">
-    <div class="row">
-      <div class="col-sm-12">
-        <div class="card">
-          <div class="card-header">
-            <strong>Profile settings</strong>
-          </div>
-          <div class="card-block">
-            <%= render "edit_form.html", changeset: @changeset,
-                                    action: profile_path(@conn, :update, @current_user) %>
-            <%= link to: profile_path(@conn, :delete, @current_user.id), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger" do %>
-              <%= icon("trash") %>
-              Delete account
-            <% end %>
-          </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-header">
+          <strong>Profile settings</strong>
         </div>
-        <div class="card">
-          <div class="card-header">
-            <strong>Authentication Providers</strong>
-          </div>
-          <div class="card-block">
-            <%= case @authentications do %>
-              <% [] -> %>
-                <p>No authentication found</p>
-              <% auths -> %>
-                <table class='table table-hover'>
-                  <thead>
-                    <th>Provider</th>
-                    <th>UID</th>
-                    <th>Expires</th>
-                    <th>Created</th>
-                    <th>Token</th>
-                    <th></th>
-                  </thead>
-
-                  <tbody>
-                    <%= for auth <- auths do %>
-                      <tr>
-                        <td><%= icon(auth.provider, "fa-2x") %></td>
-                        <td><%= auth.uid %></td>
-                        <td><%= auth.expires_at %></td>
-                        <td><%= auth.inserted_at %></td>
-                        <td><%= String.slice(auth.token, 0..20) %>…</td>
-                        <td>
-                          <%= link to: auth_delete_path(@conn, :delete, auth.id), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-sm btn-danger" do %>
-                            <%= icon("trash") %>
-                          <% end %>
-                        </td>
-                      </tr>
-                    <% end %>
-                  </tbody>
-                </table>
-            <% end %>
-          </div>
+        <div class="card-block">
+          <%= render "edit_form.html", changeset: @changeset,
+                                  action: profile_path(@conn, :update, @current_user) %>
+          <%= link to: profile_path(@conn, :delete, @current_user.id), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger" do %>
+            <%= icon("trash") %>
+            Delete account
+          <% end %>
         </div>
-        <div class="card">
-          <div class="card-header">
-            <strong>Tokens</strong>
-          </div>
-          <div class="card-block">
-            <table class='table table-hover'>
-              <thead>
-                <tr>
-                  <th>JTI</th>
-                  <th>AUD</th>
-                  <th>SUB</th>
-                  <th>EXP</th>
-                  <th>CLAIMS</th>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <strong>Authentication Providers</strong>
+        </div>
+        <div class="card-block">
+          <%= case @authentications do %>
+            <% [] -> %>
+              <p>No authentication found</p>
+            <% auths -> %>
+              <table class='table table-hover'>
+                <thead>
+                  <th>Provider</th>
+                  <th>UID</th>
+                  <th>Expires</th>
+                  <th>Created</th>
+                  <th>Token</th>
                   <th></th>
-                </tr>
-              </thead>
+                </thead>
 
-              <tbody>
-                <%= for token <- @tokens do %>
-                  <tr class='<%= if @current_jti == token.jti, do: "alert alert-warning", else: ""%>'>
-                    <td><%= token.jti %></td>
-                    <td><%= token.aud %></td>
-                    <td><%= token.sub %></td>
-                    <td><%= token.exp %></td>
-                    <td><pre><%= inspect(token.claims, pretty: true) %></pre></td>
-                    <td>
-                      <%= form_tag token_path(@conn, :delete, token.jti), method: :delete do %>
-                        <button class='btn btn-danger'>Revoke</button>
-                      <% end %>
-                  </tr>
-                <% end %>
-              </tbody>
-            </table>
-          </div>
+                <tbody>
+                  <%= for auth <- auths do %>
+                    <tr>
+                      <td><%= icon(auth.provider, "fa-2x") %></td>
+                      <td><%= auth.uid %></td>
+                      <td><%= auth.expires_at %></td>
+                      <td><%= auth.inserted_at %></td>
+                      <td><%= String.slice(auth.token, 0..20) %>…</td>
+                      <td>
+                        <%= link to: auth_delete_path(@conn, :delete, auth.id), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-sm btn-danger" do %>
+                          <%= icon("trash") %>
+                        <% end %>
+                      </td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+          <% end %>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <strong>Tokens</strong>
+        </div>
+        <div class="card-block">
+          <table class='table table-hover'>
+            <thead>
+              <tr>
+                <th>JTI</th>
+                <th>AUD</th>
+                <th>SUB</th>
+                <th>EXP</th>
+                <th>CLAIMS</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <%= for token <- @tokens do %>
+                <tr class='<%= if @current_jti == token.jti, do: "alert alert-warning", else: ""%>'>
+                  <td><%= token.jti %></td>
+                  <td><%= token.aud %></td>
+                  <td><%= token.sub %></td>
+                  <td><%= token.exp %></td>
+                  <td><pre><%= inspect(token.claims, pretty: true) %></pre></td>
+                  <td>
+                    <%= form_tag token_path(@conn, :delete, token.jti), method: :delete do %>
+                      <button class='btn btn-danger'>Revoke</button>
+                    <% end %>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

@@ -1,92 +1,90 @@
 <div class="container-fluid">
-  <div class="animated fadeIn">
-    <div class="row">
-      <div class="col-sm-12 col-xl-5">
-        <div class="card">
-          <div class="card-header">
-            <strong>Add new runner</strong>
-          </div>
-          <div class="card-block">
-            <h5>Runners allow you to execute and build your pipelines.</h5>
-            <hr>
-            <p>To add a global runner to AlloyCI, please follow these steps:</p>
-            <div class="m-b-2">
-              <b>Download and install the GitLab CI Runner for your operating system</b>
-              <hr>
-              Please follow the <a href="https://github.com/AlloyCI/alloy_ci/tree/master/doc/runners/install" target="_blank">documentation</a>
-              for instructions on how to install the GitLab CI Runner for your
-              operating system.
-            </div>
-            <div class="m-b-2">
-              <b>Register the runner</b>
-              <hr>
-              <p>
-                Once installed, run <code>gitlab-runner register</code> to start the
-                registration process
-              </p>
-              <p>
-                The registration wizard will ask you for information about the
-                coordinator. This is the AlloyCI server.
-                <ul>
-                  <li>As coordinator URL, enter <code><%= server_url() %></code></li>
-                  <li>As token, enter <code><%= global_token() %></code></li>
-                  <li>
-                    The description can be anything that will help you recognize
-                    this runner.
-                  </li>
-                  <li>
-                    If you would like this runner to process only certain builds,
-                    you can enter tags that will restrict the kind of builds this
-                    runner is able to pick up, e.g. <code>elixir</code>,
-                    <code>ios</code>, etc. You should separate the tags with a
-                    comma <code>,</code> and ONLY with a comma.
-                  </li>
-                  <li>
-                    If you add tags to the runner, the wizard will ask you if you
-                    would like to run untagged builds as well. The runner will prioritize
-                    builds that have a sub-set of its tags, but will also be able
-                    to pick up any builds.
-                  </li>
-                  <li>
-                    The wizard will also ask you if you want to lock the runner
-                    to a specific project. This setting doesn't apply for AlloyCI.
-                  </li>
-                  <li>
-                    Finally, the wizard will ask you to select the executor type.
-                    You can choose between
-                    <code>
-                      docker-ssh+machine, docker, shell, docker+machine,
-                      virtualbox, kubernetes, docker-ssh, parallels, ssh
-                    </code>
-                    <br>
-                    For more information about the different executors, please have
-                    a look at the documentation <a href="https://github.com/AlloyCI/alloy_ci/tree/master/doc/runners/executors" target="_blank">here.</a>
-                  </li>
-                </ul>
-              </p>
-            </div>
-            <hr/>
-            <h6>Project specific runners can be added from their settings page.</h6>
-          </div>
+  <div class="row">
+    <div class="col-sm-12 col-xl-5">
+      <div class="card">
+        <div class="card-header">
+          <strong>Add new runner</strong>
         </div>
-      </div>
-
-      <div class="col-sm-12 col-xl-7">
-        <div class="card">
-          <div class="card-header">
-            <strong>Registered Runners</strong>
+        <div class="card-block">
+          <h5>Runners allow you to execute and build your pipelines.</h5>
+          <hr>
+          <p>To add a global runner to AlloyCI, please follow these steps:</p>
+          <div class="m-b-2">
+            <b>Download and install the GitLab CI Runner for your operating system</b>
+            <hr>
+            Please follow the <a href="https://github.com/AlloyCI/alloy_ci/tree/master/doc/runners/install" target="_blank">documentation</a>
+            for instructions on how to install the GitLab CI Runner for your
+            operating system.
           </div>
-          <div class="card-block">
-            <div class="row">
-              <%= for runner <- @runners do %>
-                <%= render AlloyCi.Web.SharedView, "runner.html", 
-                           runner: runner, delete_path: admin_runner_path(@conn, :delete, runner), show_path: admin_runner_path(@conn, :show, runner) %>
-              <% end %>
-            </div>
-            <%= paginate @conn, @kerosene %>
+          <div class="m-b-2">
+            <b>Register the runner</b>
+            <hr>
+            <p>
+              Once installed, run <code>gitlab-runner register</code> to start the
+              registration process
+            </p>
+            <p>
+              The registration wizard will ask you for information about the
+              coordinator. This is the AlloyCI server.
+              <ul>
+                <li>As coordinator URL, enter <code><%= server_url() %></code></li>
+                <li>As token, enter <code><%= global_token() %></code></li>
+                <li>
+                  The description can be anything that will help you recognize
+                  this runner.
+                </li>
+                <li>
+                  If you would like this runner to process only certain builds,
+                  you can enter tags that will restrict the kind of builds this
+                  runner is able to pick up, e.g. <code>elixir</code>,
+                  <code>ios</code>, etc. You should separate the tags with a
+                  comma <code>,</code> and ONLY with a comma.
+                </li>
+                <li>
+                  If you add tags to the runner, the wizard will ask you if you
+                  would like to run untagged builds as well. The runner will prioritize
+                  builds that have a sub-set of its tags, but will also be able
+                  to pick up any builds.
+                </li>
+                <li>
+                  The wizard will also ask you if you want to lock the runner
+                  to a specific project. This setting doesn't apply for AlloyCI.
+                </li>
+                <li>
+                  Finally, the wizard will ask you to select the executor type.
+                  You can choose between
+                  <code>
+                    docker-ssh+machine, docker, shell, docker+machine,
+                    virtualbox, kubernetes, docker-ssh, parallels, ssh
+                  </code>
+                  <br>
+                  For more information about the different executors, please have
+                  a look at the documentation <a href="https://github.com/AlloyCI/alloy_ci/tree/master/doc/runners/executors" target="_blank">here.</a>
+                </li>
+              </ul>
+            </p>
           </div>
+          <hr/>
+          <h6>Project specific runners can be added from their settings page.</h6>
         </div>
       </div>
     </div>
-  </div>
+
+    <div class="col-sm-12 col-xl-7">
+      <div class="card">
+        <div class="card-header">
+          <strong>Registered Runners</strong>
+        </div>
+        <div class="card-block">
+          <div class="row">
+            <%= for runner <- @runners do %>
+              <%= render AlloyCi.Web.SharedView, "runner.html", 
+                          runner: runner, delete_path: admin_runner_path(@conn, :delete, runner), show_path: admin_runner_path(@conn, :show, runner) %>
+            <% end %>
+          </div>
+          <%= paginate @conn, @kerosene %>
+        </div>
+      </div>
+    </div>
+    </div>
 </div>

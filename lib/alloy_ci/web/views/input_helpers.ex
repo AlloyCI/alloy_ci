@@ -2,13 +2,14 @@ defmodule AlloyCi.Web.InputHelpers do
   @moduledoc """
   """
   alias Phoenix.HTML.Form
-  alias AlloyCi.Web.ViewHelpers
   use Phoenix.HTML
 
   def array_input(form, field) do
     values = Form.input_value(form, field) || []
 
-    content_tag :div, id: "tags-container", class: "form-group", data: [index: Enum.count(values)] do
+    content_tag :div,
+      class: "form-group",
+      data: [target: "tags.container", index: Enum.count(values)] do
       values
       |> Enum.with_index()
       |> Enum.map(fn {value, index} ->
@@ -34,8 +35,13 @@ defmodule AlloyCi.Web.InputHelpers do
         content_tag :button,
           type: "button",
           class: "btn btn-sm btn-info remove-tag",
-          data: [id: new_id] do
-          [value <> " ", ViewHelpers.icon("close")]
+          data: [id: new_id, action: "tags#removeTag"] do
+          [
+            value <> " ",
+            content_tag :i, class: "fa fa-close", data: [id: new_id] do
+              ""
+            end
+          ]
         end
       ]
     end

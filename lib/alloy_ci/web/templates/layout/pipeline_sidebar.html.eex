@@ -1,4 +1,4 @@
-<div class="sidebar">
+<div data-controller="builds" class="sidebar">
   <nav class="sidebar-nav">
     <ul class="nav">
       <li class="nav-item">
@@ -12,12 +12,12 @@
           <li class="nav-subtitle"><%= name %></li>
           <%= for build <- builds do %>
             <li class="nav-item">
-              <a class="nav-link build-get"
+              <a class="nav-link"
+                 data-action="builds#fetchData"
                  data-toggle="tooltip" data-placement="right"
                  title="Build status: <%= String.capitalize(build.status) %>"
-                 data-id="<%= build.id %>" data-project-id="<%= build.project_id %>"
-                 data-name="<%= build.name %>"
-                 href="#">
+                 data-build-url="<%= project_build_path(@conn, :show, build.project_id, build.id) %>"
+                 data-id="<%= build.id %>" data-name="<%= build.name %>" href="#">
                  <%= icon("terminal") %> <%= build.name %>
                  <span class="float-right"><%= status_icon(build.status) %></span>
              </a>

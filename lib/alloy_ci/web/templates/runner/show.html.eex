@@ -1,27 +1,25 @@
 <div class="container-fluid">
-  <div class="animated fadeIn">
-    <div class="row">
-      <div class="col-sm-6">
-        <div class="card">
-          <div class="card-header">
-            <strong>Runner Settings</strong>
-          </div>
-          <div class="card-block">
-            <%= render AlloyCi.Web.SharedView, "edit_runner_form.html", changeset: @changeset,
-                                    action: runner_path(@conn, :update, @runner) %>
-          </div>
+  <div class="row">
+    <div class="col-sm-12 col-xl-5">
+      <div class="card">
+        <div class="card-header">
+          <strong>Runner Settings</strong>
+        </div>
+        <div class="card-block">
+          <%= render AlloyCi.Web.SharedView, "edit_runner_form.html", changeset: @changeset,
+                                  action: runner_path(@conn, :update, @runner) %>
         </div>
       </div>
-      <div class="col-sm-6">
-        <div class="card">
-          <div class="card-header">
-            <strong><%= @runner.description %> |> Runner</strong>
-          </div>
-          <div class="card-block">
-            <canvas class="chart" data-set="<%= builds_chart(@runner) %>"
-                    data-title="Build statistics" data-axis="Number of builds"
-                    data-label="Week of" data-type="line"></canvas>
-          </div>
+    </div>
+    <div class="col-sm-12 col-xl-7">
+      <div data-controller="charts" class="card">
+        <div class="card-header">
+          <strong><%= @runner.description %> |> Runner</strong>
+        </div>
+        <div class="card-block">
+          <canvas class="chart" data-set="<%= builds_chart(@runner) %>"
+                  data-title="Build statistics" data-axis="Number of builds"
+                  data-label="Week of" data-type="line"></canvas>
         </div>
       </div>
     </div>
