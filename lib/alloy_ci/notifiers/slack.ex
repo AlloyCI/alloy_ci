@@ -2,6 +2,7 @@ defmodule AlloyCi.Notifiers.Slack do
   @moduledoc """
   """
   import AlloyCi.Web.Router.Helpers
+  import AlloyCi.Web.ProjectView, only: [clean_ref: 1]
 
   def send_notification(notification) do
     HTTPoison.post(config()[:hook_url], build_payload(notification), [
@@ -13,8 +14,8 @@ defmodule AlloyCi.Notifiers.Slack do
   # Private functions
   ###################
   defp base_notification_text(notification) do
-    "The pipeline with ID: #{notification.content["pipeline"]["id"]} for the branch *#{
-      notification.content["pipeline"]["ref"] |> String.replace("refs/heads/", "")
+    "The pipeline with ID: #{notification.content["pipeline"]["id"]} for *#{
+      clean_ref(notification.content["pipeline"]["ref"])
     }*"
   end
 
