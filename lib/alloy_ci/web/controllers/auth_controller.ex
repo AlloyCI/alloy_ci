@@ -12,12 +12,18 @@ defmodule AlloyCi.Web.AuthController do
   plug(:put_layout, "login_layout.html")
 
   def login(conn, _params, current_user, _claims) do
-    render(
-      conn,
-      "login.html",
-      current_user: current_user,
-      current_auths: Accounts.current_auths(current_user)
-    )
+    auths = Accounts.current_auths(current_user)
+
+    if Enum.count(auths) > 1 do
+      redirect(conn, to: project_path(conn, :index))
+    else
+      render(
+        conn,
+        "login.html",
+        current_user: current_user,
+        current_auths: auths
+      )
+    end
   end
 
   def callback(%{assigns: %{ueberauth_failure: fails}} = conn, _params, current_user, _claims) do
