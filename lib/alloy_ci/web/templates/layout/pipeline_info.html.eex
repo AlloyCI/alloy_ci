@@ -1,8 +1,8 @@
 <!-- Breadcrumb -->
 <ol class="breadcrumb">
   <li class="breadcrumb-item">
-    <%= icon("random") %>
-    <%= @pipeline.ref %>
+    <%= ref_icon(@pipeline.ref) %>
+    <%= clean_ref(@pipeline.ref) %>
   </li>
   <li class="breadcrumb-item">
     <%= icon("github") %>

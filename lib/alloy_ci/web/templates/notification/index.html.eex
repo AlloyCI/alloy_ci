@@ -1,46 +1,44 @@
 <div class="container-fluid">
-  <div class="animated fadeIn">
-    <div class="row">
-      <div class="col-sm-12">
-        <div class="card">
-          <div class="card-header">
-            <strong>Notifications</strong>
-          </div>
-          <div class="card-block">
-            <ul class="nav nav-tabs" role="tablist">
-              <li class="nav-item">
-                <a class="nav-link active" data-toggle="tab" href="#unread" role="tab"><%= icon("bell-o") %> Unread</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#acknowledged" role="tab"><%= icon("bookmark-o") %> Acknowledged</a>
-              </li>
-            </ul>
+   <div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-header">
+          <strong>Notifications</strong>
+        </div>
+        <div class="card-block">
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" data-toggle="tab" href="#unread" role="tab"><%= icon("bell-o") %> Unread</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="tab" href="#acknowledged" role="tab"><%= icon("bookmark-o") %> Acknowledged</a>
+            </li>
+          </ul>
 
-            <!-- Tab panes -->
-            <div class="tab-content">
-              <div class="tab-pane p-1 active" id="unread" role="tabpanel">
-                <%= if length(@unread) > 0 do %>
-                  <%= for notification <- @unread do %>
-                    <%= render "notification.html", notification: notification, conn: @conn %>
-                  <% end %>
-                <% else %>
-                  <div class="message">
-                    <div class="text-truncate centered font-weight-bold">No unread notifications</div>
-                  </div>
+          <!-- Tab panes -->
+          <div class="tab-content">
+            <div class="tab-pane p-1 active" id="unread" role="tabpanel">
+              <%= if length(@unread) > 0 do %>
+                <%= for notification <- @unread do %>
+                  <%= render "notification.html", notification: notification, conn: @conn %>
                 <% end %>
-              </div>
+              <% else %>
+                <div class="message">
+                  <div class="text-truncate centered font-weight-bold">No unread notifications</div>
+                </div>
+              <% end %>
+            </div>
 
-              <div class="tab-pane p-1" id="acknowledged" role="tabpanel">
-                <%= if length(@acknowledged) > 0 do %>
-                  <%= for notification <- @acknowledged do %>
-                    <%= render "notification.html", notification: notification, conn: @conn %>
-                  <% end %>
-                <% else %>
-                  <div class="message">
-                    <div class="text-truncate centered font-weight-bold">No acknowledged notifications</div>
-                  </div>
+            <div class="tab-pane p-1" id="acknowledged" role="tabpanel">
+              <%= if length(@acknowledged) > 0 do %>
+                <%= for notification <- @acknowledged do %>
+                  <%= render "notification.html", notification: notification, conn: @conn %>
                 <% end %>
-              </div>
+              <% else %>
+                <div class="message">
+                  <div class="text-truncate centered font-weight-bold">No acknowledged notifications</div>
+                </div>
+              <% end %>
             </div>
           </div>
         </div>
