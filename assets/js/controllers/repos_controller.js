@@ -11,7 +11,6 @@ export default class extends Controller {
       .receive("error", data => { console.log("Unable to join", data) })
 
     channel.on("repos_ready", data => {
-      console.log("Received data")
       $("#repos-container").html(data.html)
     })
   }
