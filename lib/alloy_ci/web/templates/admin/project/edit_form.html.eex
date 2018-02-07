@@ -5,52 +5,55 @@
     </div>
   <% end %>
 
-  <div class="form-group">
-    <div class="control-label m-b-1">
-      <h5><strong>Tags</strong></h5>
+  <div data-controller="tags">
+    <div class="form-group">
+      <div class="control-label m-b-1">
+        <h5><strong>Tags</strong></h5>
+      </div>
+      <div class="input-group">
+        <input data-action="keypress->tags#addTagOnEnter" data-target="tags.input" type="text" class="form-control">
+        <span class="input-group-btn">
+          <%= content_tag :button, type: "button", id: "add-tag", class: "btn btn-primary", 
+                          data: [action: "tags#addTag", target: "tags.prototype", prototype: tag_element(f, :tags, "replace_me", "gen_new_id") |> safe_to_string] do %>
+            Add
+          <% end %>
+        </span>
+      </div>
+      <span class="help-block">
+        If you add tags to a project, all the build jobs created for this project
+        that don't define their own tags in the <code>.alloy-ci.json</code> file
+        will, by default, receive these tags
+      </span>
+      <%= error_tag f, :tags %>
     </div>
-    <div class="input-group">
-      <input type="text" id="tag-input" class="form-control">
-      <span class="input-group-btn">
-        <%= content_tag :button, id: "add-tag", type: "button", class: "btn btn-primary", data: [prototype: tag_element(f, :tags, "replace_me", "gen_new_id") |> safe_to_string] do %>
-          Add
-        <% end %>
+
+    <div class="control-label m-b-1">
+      <h5><strong>Existing Tags</strong></h5>
+    </div>
+    <%= array_input f, :tags %>
+    <div class="m-b-2">
+      <hr>
+      <span class="help-block">
+        <strong>Hint:</strong>
+        You can click on the <%= icon("close") %> icon to delete a tag. Don't forget
+        to click <code>Submit</code> after editing for the changes to be saved.
       </span>
     </div>
-    <span class="help-block">
-      If you add tags to a project, all the build jobs created for this project
-      that don't define their own tags in the <code>.alloy-ci.json</code> file
-      will, by default, receive these tags
-    </span>
-    <%= error_tag f, :tags %>
-  </div>
 
-  <div class="control-label m-b-1">
-    <h5><strong>Existing Tags</strong></h5>
-  </div>
-  <%= array_input f, :tags %>
-  <div class="m-b-2">
-    <hr>
-    <span class="help-block">
-      <strong>Hint:</strong>
-      You can click on the <%= icon("close") %> icon to delete a tag. Don't forget
-      to click <code>Submit</code> after editing for the changes to be saved.
-    </span>
-  </div>
-
-  <div class="form-group">
-    <div class="control-label m-b-1">
-      <h5><strong>Private project?</strong></h5>
+    <div class="form-group">
+      <div class="control-label m-b-1">
+        <h5><strong>Private project?</strong></h5>
+      </div>
+      <label class="switch switch-lg switch-text switch-pill switch-primary-outline-alt">
+        <%= checkbox f, :private, class: "switch-input" %>
+        <span class="switch-label" data-on="✔" data-off="✖"></span>
+        <span class="switch-handle"></span>
+      </label>
+      <%= error_tag f, :private %>
     </div>
-    <label class="switch switch-lg switch-text switch-pill switch-primary-outline-alt">
-      <%= checkbox f, :private, class: "switch-input" %>
-      <span class="switch-label" data-on="✔" data-off="✖"></span>
-      <span class="switch-handle"></span>
-    </label>
-    <%= error_tag f, :private %>
-  </div>
 
-  <div class="form-group">
-    <%= submit "Submit", class: "btn btn-success" %>
+    <div class="form-group">
+      <%= submit "Submit", class: "btn btn-success" %>
+    </div>
   </div>
 <% end %>

@@ -34,7 +34,7 @@
         </div>
       </div>
     </div>
-    <div class="col-sm-12 col-xl-7">
+    <div data-controller="charts" class="col-sm-12 col-xl-7">
       <div class="card">
         <div class="card-header">
           <strong>Build stats</strong>
