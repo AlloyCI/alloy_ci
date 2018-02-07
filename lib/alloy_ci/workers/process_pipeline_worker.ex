@@ -48,7 +48,7 @@ defmodule AlloyCi.Workers.ProcessPipelineWorker do
       from(
         b in "builds",
         where: b.pipeline_id == ^pipeline_id and b.stage_idx < ^stage_idx,
-        order_by: [desc: b.id, desc: b.stage_idx],
+        order_by: [desc: b.updated_at, desc: b.stage_idx],
         limit: 1,
         select: b.status
       )

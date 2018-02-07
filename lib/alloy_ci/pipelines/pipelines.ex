@@ -152,12 +152,21 @@ defmodule AlloyCi.Pipelines do
 
     allowed_failures = Repo.one(query)
 
+    query =
+      from(
+        b in "builds",
+        where: b.pipeline_id == ^pipeline.id and b.status == "created" and b.when == "on_failure",
+        select: count(b.id)
+      )
+
+    on_failures = Repo.one(query)
+
     total_builds = Enum.count(pipeline.builds)
 
     if failed_builds > 0 || pipeline.status == "failed" do
       failed!(pipeline)
     else
-      if successful_builds + allowed_failures == total_builds do
+      if successful_builds + allowed_failures + on_failures == total_builds do
         @github_api.notify_success!(pipeline.project, pipeline)
         finished_at = Timex.now()
         duration = Timex.diff(finished_at, Timex.to_datetime(pipeline.started_at, :utc), :seconds)
@@ -189,7 +198,7 @@ defmodule AlloyCi.Pipelines do
         b in "builds",
         where:
           b.pipeline_id == ^pipeline_id and b.status in ~w(pending running success failed skipped),
-        order_by: [desc: b.id],
+        order_by: [desc: b.updated_at],
         limit: 1,
         select: %{status: b.status, allow_failure: b.allow_failure}
       )
