@@ -302,7 +302,7 @@ defmodule AlloyCi.Builds do
       image: map_service(build.options["image"]),
       services: services,
       steps: steps(build),
-      variables: predefined_vars(build) ++ variables
+      variables: predefined_vars(build) ++ variables ++ project_variables(build)
     }
   end
 
@@ -327,7 +327,7 @@ defmodule AlloyCi.Builds do
       %{key: "CI_JOB_NAME", value: build.name, public: true},
       %{key: "CI_JOB_STAGE", value: build.stage, public: true},
       %{key: "CI_JOB_TOKEN", value: build.token, public: false},
-      %{key: "CI_PIPELINE_ID", value: Integer.to_string(build.project_id), public: true},
+      %{key: "CI_PIPELINE_ID", value: Integer.to_string(build.pipeline_id), public: true},
       %{key: "CI_PROJECT_NAME", value: build.project.name, public: true},
       %{
         key: "CI_REPOSITORY_URL",
@@ -347,6 +347,12 @@ defmodule AlloyCi.Builds do
       # certificate chain to GitHub's chain, resulting in an SSL error every time.
       %{key: "GIT_SSL_NO_VERIFY", value: "true", public: true}
     ]
+  end
+
+  defp project_variables(build) do
+    Enum.map(build.project.secret_variables || [], fn {key, value} ->
+      %{key: key, value: value, public: false}
+    end)
   end
 
   defp runner_tags(runner) do

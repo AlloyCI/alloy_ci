@@ -8,6 +8,7 @@ defmodule AlloyCi.Project do
     field(:owner, :string)
     field(:private, :boolean, default: false)
     field(:repo_id, :integer)
+    field(:secret_variables, :map)
     field(:tags, {:array, :string})
     field(:token, :string)
 
@@ -20,7 +21,7 @@ defmodule AlloyCi.Project do
   end
 
   @required_fields ~w(name owner private repo_id token)a
-  @optional_fields ~w(tags)a
+  @optional_fields ~w(tags secret_variables)a
 
   @doc """
   Builds a changeset based on the `struct` and `params`.

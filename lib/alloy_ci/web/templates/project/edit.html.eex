@@ -10,38 +10,42 @@
         </div>
       </div>
     </div>
-      <div class="col-sm-12 col-xl-7">
-      <div data-controller="charts" class="card">
-        <div class="card-header">
-          <strong>Build statistics</strong>
-        </div>
-        <div class="card-block">
-          <canvas class="chart" data-set="<%= builds_chart(@project) %>"
-                  data-title="Project's Build statistics" data-axis="Number of processed builds"
-                  data-label="Week of" data-type="line"></canvas>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-12 col-xl-12">
-      <div class="card">
-        <div class="card-header">
-          <strong>Build status</strong>
-        </div>
-        <div class="card-block">
-          <p>
-            If you would like to add a build status badge to the README of your
-            project, you can use the following snippets. The badge will appear
-            like this:
-          </p>
-          <img alt="build status" src='<%= project_badge_path(@conn, :index, @project, "master") %>'></a>
-          <hr>
+    <div class="col-sm-12 col-xl-7">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="card">
+            <div class="card-header">
+              <strong>Build status</strong>
+            </div>
+            <div class="card-block">
+              <p>
+                If you would like to add a build status badge to the README of your
+                project, you can use the following snippets. The badge will appear
+                like this:
+              </p>
+              <img alt="build status" src='<%= project_badge_path(@conn, :index, @project, "master") %>'></a>
+              <hr>
 
-          <strong>Markdown</strong>
-          <pre class="code highlight"><code>![build status](<%= project_badge_url(@conn, :index, @project, "master") %>)</code></pre>
-          <hr>
+              <strong>Markdown</strong>
+              <pre class="code highlight"><code>![build status](<%= project_badge_url(@conn, :index, @project, "master") %>)</code></pre>
+              <hr>
 
-          <strong>HTML</strong>
-          <pre class="code highlight"><code>&lt;img alt="build status" src="<%= project_badge_url(@conn, :index, @project, "master") %>"/&gt;</code></pre>
+              <strong>HTML</strong>
+              <pre class="code highlight"><code>&lt;img alt="build status" src="<%= project_badge_url(@conn, :index, @project, "master") %>"/&gt;</code></pre>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <div data-controller="charts" class="card">
+            <div class="card-header">
+              <strong>Build statistics</strong>
+            </div>
+            <div class="card-block">
+              <canvas class="chart" data-set="<%= builds_chart(@project) %>"
+                      data-title="Project's Build statistics" data-axis="Number of processed builds"
+                      data-label="Week of" data-type="line"></canvas>
+            </div>
+          </div>
         </div>
       </div>
     </div>

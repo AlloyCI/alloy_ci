@@ -52,6 +52,13 @@
       <%= error_tag f, :private %>
     </div>
 
+    <div data-controller="projects" class="form-group">
+      <div class="control-label m-b-1">
+        <h5><strong>Secret Variables</strong></h5>
+      </div>
+      <%= textarea f, :secret_variables, class: "form-control", placeholder: "Save your secret variables in JSON format, e.g\n {\"AWS_SECRET\":\"super_long_secret\"}" %>
+    </div>
+
     <div class="form-group">
       <%= submit "Submit", class: "btn btn-success" %>
       <%= link to: project_path(@conn, :delete, @project), method: :delete, data: [confirm: "Are you sure?"], class: "inline btn btn-danger p-a-0" do %>

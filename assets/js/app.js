@@ -18,12 +18,14 @@ import { Application } from "stimulus"
 
 import BuildsController from "./controllers/builds_controller"
 import ChartsController from "./controllers/charts_controller"
+import ProjectsController from "./controllers/projects_controller"
 import ReposController from "./controllers/repos_controller"
 import TagsController from "./controllers/tags_controller"
 
 const application = Application.start()
 application.register("builds", BuildsController)
 application.register("charts", ChartsController)
+application.register("projects", ProjectsController)
 application.register("repos", ReposController)
 application.register("tags", TagsController)
 

@@ -258,6 +258,14 @@ defmodule AlloyCi.Projects do
 
   def update(project, params) do
     params =
+      with {:ok, secret_vars} <- Poison.decode(params["secret_variables"] || "") do
+        Map.merge(params, %{"secret_variables" => secret_vars})
+      else
+        _ ->
+          Map.merge(params, %{"secret_variables" => nil})
+      end
+
+    params =
       case params["tags"] do
         # if all tags are deleted on the frontend, params will not contain the
         # tags element, so we set it explicitly here

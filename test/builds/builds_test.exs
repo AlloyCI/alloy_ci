@@ -344,7 +344,8 @@ defmodule AlloyCi.BuildsTest do
 
   describe "start_build/2" do
     test "updates the build status and returns the correct data" do
-      build = insert(:full_build)
+      project = insert(:project, secret_variables: %{"test" => "success"})
+      build = insert(:full_build, project: project)
       runner = insert(:runner)
 
       expected_steps = [
@@ -364,6 +365,7 @@ defmodule AlloyCi.BuildsTest do
       assert result.status == "running"
       assert result.runner_id == runner.id
       assert %{key: "CI", public: true, value: "true"} in result.variables
+      assert %{key: "test", public: false, value: "success"} in result.variables
     end
 
     test "updates the extended build status and returns the correct data" do

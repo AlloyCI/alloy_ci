@@ -49,4 +49,20 @@ defmodule AlloyCi.ProjectsTest do
       assert project_id == project.id
     end
   end
+
+  describe "update/2" do
+    test "it updates the project's secret variables", %{project: project} do
+      params = %{"secret_variables" => "{\"test\":\"success\"}"}
+      {:ok, project} = Projects.update(project, params)
+
+      assert project.secret_variables == %{"test" => "success"}
+    end
+
+    test "it does not change the project's secret variables", %{project: project} do
+      params = %{"secret_variables" => "\"test\":\"success\""}
+      {:ok, project} = Projects.update(project, params)
+
+      assert project.secret_variables == nil
+    end
+  end
 end

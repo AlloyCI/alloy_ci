@@ -3,5 +3,7 @@ $icon-font-path: '/fonts/'; // use fonts from priv/static/fonts/
 @import 'bootstrap';
 @import 'font-awesome';
 @import 'core-ui/style';
-@import 'overrides';
 @import 'terminal';
+@import 'codemirror';
+@import 'dracula';
+@import 'overrides';
