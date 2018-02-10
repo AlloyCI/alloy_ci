@@ -21,6 +21,9 @@ defmodule AlloyCi.Workers.ProcessPipelineWorker do
     Pipelines.update_status(pipeline_id)
   end
 
+  ###################
+  # Private functions
+  ###################
   defp build_indexes(pipeline_id) do
     query =
       from(

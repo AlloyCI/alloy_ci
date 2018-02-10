@@ -5,9 +5,6 @@ defmodule AlloyCi.Web.ViewHelpers do
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
-  def active_on_current(%{request_path: path}, path), do: "active"
-  def active_on_current(_, _), do: ""
-
   def admin_logged_in?(conn), do: Guardian.Plug.authenticated?(conn, :admin)
   def admin_user(conn), do: Guardian.Plug.current_resource(conn, :admin)
 
@@ -87,13 +84,13 @@ defmodule AlloyCi.Web.ViewHelpers do
 
   def sha_link(pipeline) do
     content_tag :a, href: @github_api.sha_url(pipeline.project, pipeline) do
-      pipeline.sha |> String.slice(0..7)
+      pipeline.sha |> String.slice(0..6)
     end
   end
 
   def sha_link(pipeline, project) do
     content_tag :a, href: @github_api.sha_url(project, pipeline) do
-      pipeline.sha |> String.slice(0..7)
+      pipeline.sha |> String.slice(0..6)
     end
   end
 

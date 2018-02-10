@@ -119,8 +119,5 @@ $(document).on('click', '.card-actions a', function(e){
     } else {
       $('i',$(this)).removeClass($.panelIconClosed).addClass($.panelIconOpened);
     }
-
-  } else if ($(this).hasClass('btn-setting')) {
-    $('#myModal').modal('show');
   }
 });
