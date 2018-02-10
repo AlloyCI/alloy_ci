@@ -1,7 +1,7 @@
 {
   "image": "elixir:latest",
   "services": [
-    "postgres:latest"
+    "postgres:9.6.3"
   ],
   "cache": {
     "paths": [
@@ -25,21 +25,28 @@
   ],
   "mix": {
     "stage": "test",
-    "tags": ["elixir", "postgres"],
+    "tags": [
+      "elixir",
+      "postgres"
+    ],
     "script": [
       "mix test"
     ]
   },
   "credo": {
     "stage": "test",
-    "tags": ["elixir"],
+    "tags": [
+      "elixir"
+    ],
     "script": [
       "mix credo"
     ]
   },
   "formatter": {
     "stage": "test",
-    "tags": ["elixir"],
+    "tags": [
+      "elixir"
+    ],
     "script": [
       "mix format --check-formatted"
     ]
