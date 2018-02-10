@@ -61,15 +61,15 @@ defmodule AlloyCi.Pipelines do
     finished_at = Timex.now()
     duration = Timex.diff(finished_at, Timex.to_datetime(pipeline.started_at, :utc), :seconds)
 
-    with {:ok, pipeline} <-
-           update_pipeline(pipeline, %{
-             status: "failed",
-             duration: duration,
-             finished_at: finished_at
-           }) do
+    if pipeline.status != "failed" do
       Notifications.send(pipeline, pipeline.project, "pipeline_failed")
-      {:ok, pipeline}
     end
+
+    update_pipeline(pipeline, %{
+      status: "failed",
+      duration: duration,
+      finished_at: finished_at
+    })
   end
 
   def for_project(project_id) do
@@ -125,48 +125,14 @@ defmodule AlloyCi.Pipelines do
       |> get()
       |> Repo.preload([:builds, :project])
 
-    query =
-      from(
-        b in "builds",
-        where: b.pipeline_id == ^pipeline_id and b.status == "failed" and b.allow_failure == false,
-        select: count(b.id)
-      )
-
-    failed_builds = Repo.one(query)
-
-    query =
-      from(
-        b in "builds",
-        where: b.pipeline_id == ^pipeline.id and b.status == "success",
-        select: count(b.id)
-      )
-
-    successful_builds = Repo.one(query)
-
-    query =
-      from(
-        b in "builds",
-        where: b.pipeline_id == ^pipeline.id and b.status == "failed" and b.allow_failure == true,
-        select: count(b.id)
-      )
-
-    allowed_failures = Repo.one(query)
-
-    query =
-      from(
-        b in "builds",
-        where: b.pipeline_id == ^pipeline.id and b.status == "created" and b.when == "on_failure",
-        select: count(b.id)
-      )
-
-    on_failures = Repo.one(query)
-
+    build_stats = builds_by_status(pipeline_id)
     total_builds = Enum.count(pipeline.builds)
 
-    if failed_builds > 0 || pipeline.status == "failed" do
-      failed!(pipeline)
-    else
-      if successful_builds + allowed_failures + on_failures == total_builds do
+    cond do
+      build_stats[:failed] > 0 || pipeline.status == "failed" ->
+        failed!(pipeline)
+
+      build_stats[:success] + build_stats[:allowed] + build_stats[:on] == total_builds ->
         @github_api.notify_success!(pipeline.project, pipeline)
         finished_at = Timex.now()
         duration = Timex.diff(finished_at, Timex.to_datetime(pipeline.started_at, :utc), :seconds)
@@ -180,7 +146,9 @@ defmodule AlloyCi.Pipelines do
           Notifications.send(pipeline, pipeline.project, "pipeline_succeeded")
           {:ok, pipeline}
         end
-      end
+
+      true ->
+        nil
     end
   end
 
@@ -217,6 +185,51 @@ defmodule AlloyCi.Pipelines do
   ###################
   # Private functions
   ###################
+  defp builds_by_status(pipeline_id) do
+    query =
+      from(
+        b in "builds",
+        where: b.pipeline_id == ^pipeline_id and b.status == "failed" and b.allow_failure == false,
+        select: count(b.id)
+      )
+
+    failed_builds = Repo.one(query)
+
+    query =
+      from(
+        b in "builds",
+        where: b.pipeline_id == ^pipeline_id and b.status == "success",
+        select: count(b.id)
+      )
+
+    successful_builds = Repo.one(query)
+
+    query =
+      from(
+        b in "builds",
+        where: b.pipeline_id == ^pipeline_id and b.status == "failed" and b.allow_failure == true,
+        select: count(b.id)
+      )
+
+    allowed_failures = Repo.one(query)
+
+    query =
+      from(
+        b in "builds",
+        where: b.pipeline_id == ^pipeline_id and b.status == "created" and b.when == "on_failure",
+        select: count(b.id)
+      )
+
+    on_failures = Repo.one(query)
+
+    %{
+      failed: failed_builds,
+      success: successful_builds,
+      allowed: allowed_failures,
+      on: on_failures
+    }
+  end
+
   defp clone(pipeline) do
     params =
       pipeline
