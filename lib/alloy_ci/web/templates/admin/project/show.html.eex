@@ -56,17 +56,17 @@
           <hr>
           <p>To add a project specific runner to AlloyCI, please follow these steps:</p>
           <div class="m-b-2">
-            <b>Download and install the GitLab CI Runner for your operating system</b>
+            <b>Download and install the AlloyCI Runner for your operating system</b>
             <hr>
-            Please follow the <a href="https://github.com/AlloyCI/alloy_ci/tree/master/doc/runners/install" target="_blank">documentation</a>
-            for instructions on how to install the GitLab CI Runner for your
+            Please follow the <a href="https://github.com/AlloyCI/alloy-runner/tree/master/docs/install" target="_blank">documentation</a>
+            for instructions on how to install the AlloyCI Runner for your
             operating system.
           </div>
           <div class="m-b-2">
             <b>Register the runner</b>
             <hr>
             <p>
-              Once installed, run <code>gitlab-runner register</code> to start the
+              Once installed, run <code>alloy-runner register</code> to start the
               registration process
             </p>
             <p>
@@ -106,7 +106,7 @@
                   </code>
                   <br>
                   For more information about the different executors, please have
-                  a look at the documentation <a href="https://github.com/AlloyCI/alloy_ci/tree/master/doc/runners/executors" target="_blank">here.</a>
+                  a look at the documentation <a href="https://github.com/AlloyCI/alloy-runner/tree/master/docs/executors" target="_blank">here.</a>
                 </li>
               </ul>
             </p>

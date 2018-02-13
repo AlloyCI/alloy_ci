@@ -1,6 +1,6 @@
 # Using Docker images
 
-AlloyCI in conjunction with [GitLab Runner](../runners/README.md) can use
+AlloyCI in conjunction with [Alloy Runner](../runners/README.md) can use
 [Docker Engine](https://www.docker.com/) to test and build any application.
 
 Docker is an open-source project that allows you to use predefined images to
@@ -19,13 +19,13 @@ test them on a dedicated CI server.
 
 ## Register Docker Runner
 
-To use GitLab Runner with Docker you need to [register a new Runner][register]
+To use Alloy Runner with Docker you need to [register a new Runner][register]
 to use the `docker` executor.
 
 A one-line example can be seen below:
 
 ```bash
-sudo gitlab-runner register \
+sudo alloy-runner register \
   --url "https://alloy-ci.example.com/" \
   --registration-token "PROJECT_REGISTRATION_TOKEN" \
   --description "docker-ruby-2.1" \
