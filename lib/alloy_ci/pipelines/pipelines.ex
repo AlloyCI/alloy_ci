@@ -61,8 +61,10 @@ defmodule AlloyCi.Pipelines do
     finished_at = Timex.now()
     duration = Timex.diff(finished_at, Timex.to_datetime(pipeline.started_at, :utc), :seconds)
 
-    if pipeline.status != "failed" do
-      Notifications.send(pipeline, pipeline.project, "pipeline_failed")
+    unless pipeline.notified do
+      with {:ok, _} <- update_pipeline(pipeline, %{notified: true}) do
+        Notifications.send(pipeline, pipeline.project, "pipeline_failed")
+      end
     end
 
     update_pipeline(pipeline, %{
@@ -240,6 +242,7 @@ defmodule AlloyCi.Pipelines do
         :inserted_at,
         :updated_at,
         :builds,
+        :notified,
         :project,
         :status,
         :duration

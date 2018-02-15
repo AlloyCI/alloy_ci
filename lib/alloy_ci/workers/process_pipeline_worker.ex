@@ -58,7 +58,7 @@ defmodule AlloyCi.Workers.ProcessPipelineWorker do
 
     current_status = Repo.one(query) || "success"
 
-    if current_status in ~w(success failed canceled skipped) do
+    if current_status in ~w(success failed cancelled skipped) do
       pipeline_id
       |> Builds.for_pipeline_and_stage(stage_idx)
       |> Enum.each(fn build ->

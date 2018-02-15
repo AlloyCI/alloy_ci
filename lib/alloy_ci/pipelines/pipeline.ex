@@ -11,6 +11,7 @@ defmodule AlloyCi.Pipeline do
     field(:duration, :integer)
     field(:finished_at, :naive_datetime)
     field(:installation_id, :integer)
+    field(:notified, :boolean, default: false)
     field(:ref, :string)
     field(:sha, :string)
     field(:started_at, :naive_datetime)
@@ -23,7 +24,7 @@ defmodule AlloyCi.Pipeline do
   end
 
   @required_fields ~w(project_id ref sha before_sha commit installation_id)a
-  @optional_fields ~w(started_at finished_at duration status)a
+  @optional_fields ~w(started_at finished_at duration status notified)a
 
   def changeset(struct, params \\ %{}) do
     struct
