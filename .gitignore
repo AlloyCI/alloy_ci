@@ -26,6 +26,7 @@ erl_crash.dump
 /.env
 /.elixir_ls
 /.vscode
+/uploads
 alloy_ci.tar.gz
 docker-compose.yml
 nginx.conf
