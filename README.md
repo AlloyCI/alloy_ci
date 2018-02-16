@@ -50,7 +50,7 @@ branches, so you can always know their status, just like any other CI service.
   - [x] Can build and test from pull requests coming from a fork
   - [x] Can distinguish between tags and branches
   - [x] Can make use of `only` and `except` tags for jobs
-  - [ ] Can make use of secret variables stored on a per project basis
+  - [x] Can make use of secret variables stored on a per project basis
   - [ ] Can receive uploaded artifacts from runners
   - [ ] Can pass artifacts between build jobs
 - [ ] Deployment functionality

@@ -1,7 +1,7 @@
 # Configuration of your jobs with .alloy-ci.json
 
 This document describes the usage of `.alloy-ci.json`, the file that is used to
-tell GitLab Runner how to manage your project's jobs.
+tell AlloyCI Runner how to manage your project's jobs.
 
 If you want a quick introduction to AlloyCI, follow our
 [quick start guide](../quick_start/README.md).
@@ -11,6 +11,9 @@ If you want a quick introduction to AlloyCI, follow our
 AlloyCI uses a [JSON](https://en.wikipedia.org/wiki/JSON)
 file (`.alloy-ci.json`) for the project configuration. It is placed in the root
 of your repository and contains definitions of how your project should be built.
+
+If you have an existing `.gitlab-ci.yml` file, you can use the online [YAML to JSON](https://www.json2yaml.com/convert-yaml-to-json)
+converter to turn your file into an AlloyCI compatible JSON file.
 
 The JSON file defines a set of jobs with constraints stating when they should
 be run. The jobs are defined as top-level elements with a name and always have
@@ -159,8 +162,6 @@ the branch or tag name for which project is built.
 
 ### cache
 
-> Introduced in GitLab Runner v0.7.0.
-
 `cache` is used to specify a list of files and directories which should be
 cached between jobs. You can only use paths that are within the project
 workspace.
@@ -236,7 +237,7 @@ job will cache only `binaries/`:
 Note that since cache is shared between jobs cache content can be overwritten.
 
 The cache is provided on a best-effort basis, so don't expect that the cache
-will be always present. For implementation details, please check GitLab Runner.
+will be always present. For implementation details, please check AlloyCI Runner.
 
 ## Jobs
 
@@ -549,7 +550,7 @@ It's possible to overwrite the globally defined `before_script` and `after_scrip
 
 ## Git Submodule Strategy
 
-> Requires GitLab Runner v1.10+.
+> Requires AlloyCI Runner v1.10+.
 
 The `GIT_SUBMODULE_STRATEGY` variable is used to control if / how Git
 submodules are included when fetching the code before a build. Like
@@ -591,7 +592,7 @@ Note that for this feature to work correctly, the submodules must be configured
 
 ## Job stages attempts
 
-> Requires GitLab Runner v1.9+.
+> Requires AlloyCI Runner v1.9+.
 
 You can set the number for attempts the running job will try to execute each
 of the following stages:
