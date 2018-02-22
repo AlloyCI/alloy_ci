@@ -255,7 +255,20 @@ server to run.
 $ mix deps.get
 ```
 
-Once the dependencies have been installed, you are ready to build the release.
+Once the Elixir dependencies are installed, you need to compile the Javascript files.
+
+```shell
+$ cd assets/
+# Install all JS dependencies
+$ npm install
+# Compile the CSS and JS files
+$ ./node_modules/brunch/bin/brunch b -p
+# Generate digest file
+$ cd ../ && mix phx.digest
+```
+
+Once the dependencies have been installed, and the asset files compiled. you are ready to
+build the release.
 
 ```shell
 $ MIX_ENV=prod mix release --env=prod
