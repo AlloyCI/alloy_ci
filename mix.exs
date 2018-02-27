@@ -3,7 +3,7 @@ defmodule AlloyCi.Mixfile do
   """
   use Mix.Project
 
-  @version "0.3.0"
+  @version "0.4.0"
 
   def project do
     [
@@ -42,6 +42,7 @@ defmodule AlloyCi.Mixfile do
 
   def applications(_) do
     [
+      :arc_ecto,
       :bamboo,
       :bamboo_smtp,
       :comeonin,
@@ -81,6 +82,8 @@ defmodule AlloyCi.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:arc, "~> 0.8"},
+      {:arc_ecto, "~> 0.7.0"},
       {:bamboo, "~> 0.8"},
       {:bamboo_smtp, "~> 1.4"},
       {:comeonin, "~> 3.0"},
@@ -99,7 +102,7 @@ defmodule AlloyCi.Mixfile do
       {:postgrex, ">= 0.0.0"},
       {:secure_random, "~> 0.5"},
       {:tentacat, "~> 0.8"},
-      {:timex, "~> 3.1"},
+      {:timex, "~> 3.2"},
       {:ueberauth_github, "~> 0.5", github: "ueberauth/ueberauth_github"},
       {:ueberauth_identity, "~> 0.2.3"},
       {:que, "~> 0.4.1", github: "AlloyCI/que"},
@@ -122,6 +125,7 @@ defmodule AlloyCi.Mixfile do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
+      routes: ["phx.routes AlloyCi.Web.Router"],
       test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end

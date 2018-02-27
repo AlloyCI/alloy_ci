@@ -19,6 +19,8 @@ config :alloy_ci, AlloyCi.Web.Endpoint,
 # Print only warnings and errors during test
 config :logger, level: :warn
 
+config :arc, storage: Arc.Storage.Fake
+
 # Configures Notifiers
 config :alloy_ci, AlloyCi.Notifier,
   slack: "false",

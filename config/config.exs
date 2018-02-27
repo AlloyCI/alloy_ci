@@ -21,6 +21,8 @@ config :alloy_ci, AlloyCi.Web.Endpoint,
   render_errors: [view: AlloyCi.Web.ErrorView, accepts: ~w(html json)],
   pubsub: [name: AlloyCi.PubSub, adapter: Phoenix.PubSub.PG2]
 
+config :arc, storage: Arc.Storage.Local
+
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]

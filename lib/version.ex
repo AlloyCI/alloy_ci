@@ -4,7 +4,7 @@ defmodule AlloyCi.Version do
   To update the version, changes to this file and mix.exs are required.
   """
 
-  @version "0.3.0"
+  @version "0.4.0"
 
   def version do
     @version
