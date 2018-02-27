@@ -33,8 +33,8 @@ version of Runner required.
 | **CI_ENVIRONMENT_NAME**         | all    | The name of the environment for this job |
 | **CI_JOB_ID**                   | all    | The unique id of the current job that Alloy CI uses internally |
 | **CI_JOB_MANUAL**               | all    | The flag to indicate that job was manually started |
-| **CI_JOB_NAME**                 | 0.5    | The name of the job as defined in `.alloy-ci.yml` |
-| **CI_JOB_STAGE**                | 0.5    | The name of the stage as defined in `.alloy-ci.yml` |
+| **CI_JOB_NAME**                 | 0.5    | The name of the job as defined in `.alloy-ci.json` |
+| **CI_JOB_STAGE**                | 0.5    | The name of the stage as defined in `.alloy-ci.json` |
 | **CI_JOB_TOKEN**                | 1.2    | Token used for authenticating with the Alloy Container Registry |
 | **CI_REPOSITORY_URL**           | all    | The URL to clone the Git repository |
 | **CI_RUNNER_ID**                | 0.5    | The unique id of runner being used |
@@ -99,10 +99,7 @@ You are able to use other variables inside your variable definition (or escape t
 
 ## Secret variables
 
-**NOT YET IMPLEMENTED**
-
 >**Notes:**
-- This feature requires Runner 0.4.0 or higher.
 - Be aware that secret variables are not masked, and their values can be shown
   in the job logs if explicitly asked to do so.
 
@@ -128,11 +125,10 @@ Once you set them, they will be available for all subsequent jobs.
 
 ## Debug tracing
 
-> Introduced in Runner 1.7.
 >
 > **WARNING:** Enabling debug tracing can have severe security implications. The
   output **will** contain the content of all your secret variables and any other
-  secrets! The output **will** be uploaded to the Alloy server and made visible
+  secrets! The output **will** be uploaded to the AlloyCI server and made visible
   in job traces!
 
 By default, the Runner hides most of the details of what it is doing when
@@ -141,7 +137,7 @@ from being leaked into the trace unless your script writes them to the screen.
 
 If a job isn't working as expected, this can make the problem difficult to
 investigate; in these cases, you can enable debug tracing in `.alloy-ci.json`.
-Available on Runner v1.7+, this feature enables the shell's execution
+This feature enables the shell's execution
 trace, resulting in a verbose job trace listing all commands that were run,
 variables that were set, etc.
 

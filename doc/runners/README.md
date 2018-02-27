@@ -11,7 +11,7 @@ AlloyCI makes use of a fork of the AlloyCI CI Runner project, in order to take a
 of a mature, feature-rich executor that has a straight forward interface for
 communicating with the coordinator.
 
-The Alloy Runner is written in [Go][golang] and can be run as a single binary,
+The AlloyCI Runner is written in [Go][golang] and can be run as a single binary,
 no language specific requirements are needed.
 
 It is designed to run on the GNU/Linux, macOS, and Windows operating systems.

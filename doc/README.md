@@ -231,7 +231,7 @@ that will be deployed to production. Nonetheless it is still possible to deploy
 an Elixir application without using Docker, there are just extra precautions and
 steps you need to take.
 
-The guide assumes you have Elixir v1.5.1, and Erlang OTP v20 already installed and
+The guide assumes you have Elixir v1.6.1, and Erlang OTP v20 already installed and
 ready to run.
 
 >**Notice:** The following steps can be performed on your local machine or directly

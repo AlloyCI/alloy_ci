@@ -1,6 +1,6 @@
 # Alloy CI
 
-![build status](https://alloy-ci.com/projects/1/badge/master)
+[![build status](https://alloy-ci.com/projects/1/badge/master)](https://alloy-ci.com/projects/1)
 
 AlloyCI is a Continuous Integration, Deployment, and Delivery coordinator,
 written in Elixir, that takes advantage of the GitLab CI Runner, and its
@@ -44,20 +44,22 @@ branches, so you can always know their status, just like any other CI service.
 - [x] Extras
   - [x] Build statistics per project
   - [x] Build statistics per runner
-- [ ] Advanced CI functionality
+- [x] Advanced CI functionality
   - [x] Can run jobs on multiple environments (using the [`image` feature](doc/docker/README.md) of the Docker executor.)
   - [x] Can use a local build cache to speed up jobs
   - [x] Can build and test from pull requests coming from a fork
   - [x] Can distinguish between tags and branches
   - [x] Can make use of `only` and `except` tags for jobs
   - [x] Can make use of secret variables stored on a per project basis
-  - [ ] Can receive uploaded artifacts from runners
-  - [ ] Can pass artifacts between build jobs
+  - [x] Can receive uploaded artifacts from runners
+  - [x] Can pass artifacts between build jobs
+  - [ ] Presents the artifacts to the user in a nice way, and allows download
 - [ ] Deployment functionality
   - [ ] Can manually start deployments (manual actions)
   - [x] Can do auto deploys
+  - [ ] Can make use of different environments
   - [ ] Can start Review Apps
-- [x] [Auto Scaling Support](doc/runners/install/autoscaling.md) (supported directly by the runner)
+- [x] [Auto Scaling Support](https://github.com/AlloyCI/alloy-runner/tree/master/docs/install/autoscaling.md) (supported directly by the runner)
   - [x] Can create runners on demand
   - [x] Can destroy runners when not in use
 
@@ -72,9 +74,10 @@ Pull requests are always welcome!
 1. Clone the Repository
 1. Run `mix deps.get` to install all dependencies
 1. Run `cd assets && npm install` to install all Javascript dependencies
-1. Make sure all environment variables are present. See [here](doc/README.md#configuration) for more info
-1. Create and migrate database with `mix ecto.setup`
-1. Run tests with `mix test`
+1. Make sure all environment variables are present. See [here](doc/README.md#configuration) for more info. 
+   You can save them in a `.env` file, and source them before running any `mix` task
+1. Create and migrate the database with `mix ecto.setup`
+1. Run tests with `mix test` or start a development server with `mix phx.server`
 1. Code & send your PR when ready
 
 Before contributing, please read our [Code of Conduct](CODE_OF_CONDUCT.md) and
@@ -83,7 +86,3 @@ make sure you fully understand it. Violations will not be tolerated.
 ## Copyright
 
 Copyright (c) 2018 Patricio Cano. See [LICENSE](LICENSE) for details.
-
-### Documentation Copyright
-
-Documentation for the GitLab CI Runners and related is Copyright (c) 2011-2017 GitLab B.V.
