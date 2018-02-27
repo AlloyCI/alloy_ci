@@ -69,7 +69,7 @@ services:
       -----END RSA PRIVATE KEY-----"
 
   db:
-    image: postgres:9.6.3
+    image: postgres:9.6
     environment:
       POSTGRES_DB: "alloy_ci_prod"
       POSTGRES_USER: "alloy_ci"
