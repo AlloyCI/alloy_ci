@@ -112,14 +112,32 @@ defmodule AlloyCi.BuildsTest do
                  "RUNNER_REGISTRATION_TOKEN" => "lustlmc3gMl59smZ",
                  "SECRET_KEY_BASE" =>
                    "NULr4xlNDNzEwE77UHdId7cQU+vuaPJ+Q5x3l+7dppQngBsL5EkjEaMu0S9cCGbk"
-               }
+               },
+               "stages" => ["test", "compile", "deploy"]
              }
 
       assert build.project_id == pipeline.project_id
       assert build.when == "on_success"
       assert build.tags == ["elixir", "postgres"]
-      assert build.stage_idx == 1
+      assert build.stage_idx == 0
       assert build.stage == "test"
+    end
+
+    test "it can populate the artifacts section", %{pipeline: pipeline} do
+      content = File.read!("test/fixtures/full_features_config.json")
+      {:ok, result} = Builds.create_builds_from_config(content, pipeline)
+      assert result == nil
+
+      build = Repo.one(from(b in Build, where: b.name == "distillery"))
+
+      assert build.commands == ["mix docker.build --tag latest"]
+
+      assert build.project_id == pipeline.project_id
+      assert build.artifacts == %{"paths" => ["alloy_ci.tar.gz", "_build/prod/lib/alloy_ci"]}
+      assert build.when == "on_success"
+      assert build.tags == ["elixir", "postgres"]
+      assert build.stage_idx == 1
+      assert build.stage == "compile"
     end
 
     test "it returns error on broken data", %{pipeline: pipeline} do
@@ -216,14 +234,15 @@ defmodule AlloyCi.BuildsTest do
 
   describe "enqueue/1" do
     test "it enqueues created build" do
-      build = insert(:full_build, status: "created")
+      pipeline = insert(:pipeline)
+      build = insert(:build, status: "created", pipeline: pipeline, project: pipeline.project)
       {:ok, result} = Builds.enqueue(build)
 
       assert result.status == "pending"
     end
 
-    test "it does nothing for other builds" do
-      build = insert(:full_build, status: "running")
+    test "it does nothing for other builds", %{pipeline: pipeline} do
+      build = insert(:build, status: "running", pipeline: pipeline, project: pipeline.project)
       result = Builds.enqueue(build)
 
       assert result.status == "running"

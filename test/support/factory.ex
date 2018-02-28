@@ -3,8 +3,15 @@ defmodule AlloyCi.Factory do
   """
   use ExMachina.Ecto, repo: AlloyCi.Repo
 
-  alias AlloyCi.{Authentication, Build, GuardianToken, Installation, Pipeline}
+  alias AlloyCi.{Artifact, Authentication, Build, GuardianToken, Installation, Pipeline}
   alias AlloyCi.{Project, ProjectPermission, Runner, User}
+
+  def artifact_factory do
+    %Artifact{
+      build: build(:build),
+      expires_at: Timex.now() |> Timex.shift(days: 7)
+    }
+  end
 
   def authentication_factory do
     %Authentication{
@@ -17,7 +24,7 @@ defmodule AlloyCi.Factory do
 
   def build_factory do
     %Build{
-      name: "build-1",
+      name: sequence("build-name"),
       commands: ["echo hello", "iex -S"],
       options: %{"variables" => %{"GITHUB" => "yes"}},
       status: "pending",
@@ -45,6 +52,7 @@ defmodule AlloyCi.Factory do
     pipeline = insert(:pipeline)
 
     %Build{
+      artifacts: %{"paths" => ["alloy_ci.tar.gz", "_build/prod/lib/alloy_ci"]},
       name: "full-build-1",
       commands: ["mix test"],
       options: %{

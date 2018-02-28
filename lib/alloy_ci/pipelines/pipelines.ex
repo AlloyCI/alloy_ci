@@ -99,6 +99,23 @@ defmodule AlloyCi.Pipelines do
     |> Repo.preload(:project)
   end
 
+  def has_artifacts?(pipeline) do
+    query =
+      from(
+        b in "builds",
+        where: b.pipeline_id == ^pipeline.id and not is_nil(b.artifacts),
+        select: count(b.id)
+      )
+
+    case Repo.one(query) do
+      0 ->
+        false
+
+      _ ->
+        true
+    end
+  end
+
   def paginated(project_id, params) do
     Pipeline
     |> where(project_id: ^project_id)
@@ -134,7 +151,8 @@ defmodule AlloyCi.Pipelines do
       build_stats[:failed] > 0 || pipeline.status == "failed" ->
         failed!(pipeline)
 
-      build_stats[:success] + build_stats[:allowed] + build_stats[:on] == total_builds ->
+      build_stats[:successful] + build_stats[:allowed_failures] + build_stats[:on_failure] ==
+          total_builds ->
         @github_api.notify_success!(pipeline.project, pipeline)
         finished_at = Timex.now()
         duration = Timex.diff(finished_at, Timex.to_datetime(pipeline.started_at, :utc), :seconds)
@@ -226,9 +244,9 @@ defmodule AlloyCi.Pipelines do
 
     %{
       failed: failed_builds,
-      success: successful_builds,
-      allowed: allowed_failures,
-      on: on_failures
+      successful: successful_builds,
+      allowed_failures: allowed_failures,
+      on_failure: on_failures
     }
   end
 

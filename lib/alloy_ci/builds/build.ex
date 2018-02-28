@@ -7,7 +7,9 @@ defmodule AlloyCi.Build do
 
   schema "builds" do
     field(:allow_failure, :boolean, default: false)
+    field(:artifacts, :map)
     field(:commands, {:array, :string})
+    field(:deps, {:array, :string})
     field(:finished_at, :naive_datetime)
     field(:name, :string)
     field(:options, :map)
@@ -26,11 +28,13 @@ defmodule AlloyCi.Build do
     belongs_to(:project, AlloyCi.Project)
     belongs_to(:runner, AlloyCi.Runner)
 
+    has_one(:artifact, AlloyCi.Artifact)
+
     timestamps()
   end
 
   @required_fields ~w(commands name options pipeline_id project_id token)a
-  @optional_fields ~w(allow_failure finished_at queued_at runner_id stage
+  @optional_fields ~w(allow_failure artifacts deps finished_at queued_at runner_id stage
                       started_at status tags trace variables when stage_idx)a
 
   def changeset(struct, params \\ %{}) do

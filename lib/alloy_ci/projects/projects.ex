@@ -42,6 +42,8 @@ defmodule AlloyCi.Projects do
     end
   end
 
+  def can_manage?(nil, _), do: false
+
   def can_manage?(id, user) do
     permission = get_project_permission(id, user)
 
