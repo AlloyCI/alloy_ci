@@ -28,6 +28,7 @@ defmodule AlloyCi.Web.Endpoint do
 
   plug(
     Plug.Parsers,
+    length: 100_000_000,
     parsers: [:urlencoded, :multipart, :json],
     pass: ["*/*"],
     json_decoder: Poison
