@@ -5,6 +5,12 @@ services:
     command: foreground
     depends_on:
       - db
+    volumes:
+      # This will automatically create a volume on the host, and mount it at
+      # `/app/uploads`, which is where all artifacts will be stored. You can
+      # change the location of where the folder is created on the host with:
+      # - /opt/data:/app/uploads
+      - /app/uploads  
     ports:
       # The first entry is the exposed port, the second is where the exposed
       # port should bind to. Use the same second value here as PORT below
