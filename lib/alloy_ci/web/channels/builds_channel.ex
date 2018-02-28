@@ -31,6 +31,8 @@ defmodule AlloyCi.Web.BuildsChannel do
     Endpoint.broadcast("builds:#{build_id}", "replace_trace", %{trace: trace})
   end
 
+  def send_trace(_build_id, ""), do: nil
+
   def send_trace(build_id, trace) do
     Endpoint.broadcast("builds:#{build_id}", "append_trace", %{trace: trace})
   end

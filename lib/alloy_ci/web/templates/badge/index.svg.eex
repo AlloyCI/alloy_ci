@@ -1,34 +1,34 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="92" height="20">
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="20">
   <linearGradient id="b" x2="0" y2="100%">
     <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
     <stop offset="1" stop-opacity=".1"/>
   </linearGradient>
 
   <mask id="a">
-    <rect width="92" height="20" rx="3" fill="#fff"/>
+    <rect width="100" height="20" rx="3" fill="#fff"/>
   </mask>
 
   <g mask="url(#a)">
     <path fill="#555"
-          d="M0 0 h38 v20 H0 z"/>
+          d="M0 0 h43 v20 H0 z"/>
     <path fill="<%= @badge.color %>"
-          d="M38 0 h54 v20 H38 z"/>
+          d="M43 0 h57 v20 H43 z"/>
     <path fill="url(#b)"
-          d="M0 0 h92 v20 H0 z"/>
+          d="M0 0 h100 v20 H0 z"/>
   </g>
 
   <g fill="#fff" text-anchor="middle">
     <g font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
-      <text x="19" y="15" fill="#010101" fill-opacity=".3">
-        build
+      <text x="22" y="15" fill="#010101" fill-opacity=".3">
+        alloyci
       </text>
-      <text x="19" y="14">
-        build
+      <text x="22" y="14">
+        alloyci
       </text>
-      <text x="65" y="15" fill="#010101" fill-opacity=".3">
+      <text x="70" y="15" fill="#010101" fill-opacity=".3">
         <%= @badge.status %>
       </text>
-      <text x="65" y="14">
+      <text x="70" y="14">
         <%= @badge.status %>
       </text>
     </g>
