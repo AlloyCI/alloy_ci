@@ -6,8 +6,9 @@
         <p class="lead mt-3">
           AlloyCI is a Continuous Integration, Deployment, and Delivery
           coordinator, written in Elixir, that takes advantage of the GitLab
-          CI Runner, and its capabilities as executor, to prepare and run your
-          pipelines.
+          CI Runner (now available as a 
+          <a href="https://github.com/AlloyCI/alloy-runner">fork</a> with extra functionality), and 
+          its capabilities as executor, to prepare and run your pipelines.
         </p>
         <div class="divider"></div>
       </div>
@@ -19,8 +20,8 @@
         </div>
         <h4>JSON Config File</h4>
         <p>
-          Configure your pipeline with an easy to use, easy to understand
-          JSON file.
+          Configure your pipeline with an easy to use, easy to understand,
+          and very strict JSON file.
         </p>
       </div>
       <div class="col-md-3 col-feature">
@@ -29,17 +30,18 @@
         </div>
         <h4>Made for GitHub</h4>
         <p>
-          Developed as a GitHub App, it can be easily installed on your account
-          and your organizations.
+          Developed as a GitHub App, it integrates seamlessly with Github
+          and can be easily installed on your account and/or your organizations.
         </p>
       </div>
       <div class="col-md-3 col-feature">
         <div class="rounded-circle justify-center">
           <em class="fa fa-2x fa-gitlab"></em>
         </div>
-        <h4>GitLab Runner</h4>
+        <h4>GitLab CI based Runner</h4>
         <p>
-          Take advantage of this feature-rich, powerful, open-source runner to
+          The AlloyCI Runner is based on this feature-rich, powerful, 
+          open-source project. Take advantage of its features to
           execute your code on a variety of environments.
         </p>
       </div>
@@ -85,11 +87,12 @@
       </div>
       <div class="col-md-3 col-feature">
         <div class="rounded-circle justify-center">
-          <em class="fa fa-2x fa-globe"></em>
+          <em class="fa fa-2x fa-upload"></em>
         </div>
-        <h4>Multiple Build Envs</h4>
+        <h4>Artifacts generation</h4>
         <p>
-          Run your tests on different environments to guarantee compatibility.
+          Save everything your build jobs produce, share it with other jobs, and upload
+          it to the server for later use.
         </p>
       </div>
     </div>
@@ -134,6 +137,23 @@
           </a>
           to get started.
         </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-5 text-center">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8 text-center text-lg-left">
+        <h2 class="mt-4 mb-2">Looking for AlloyCI Runner?</h2>
+        <p class="lead mb-3">
+          The best way to install it is by using our package repository, which
+          is proudly hosted on packagecloud.
+        </p>
+      </div>
+      <div class="col-lg-4">
+        <a href="https://packagecloud.io/alloyci/alloy-runner"><img height="54" alt="Private NPM registry and Maven, RPM, DEB, PyPi and RubyGem Repository · packagecloud" src="https://packagecloud.io/assets/packagecloud-logo-dark-236e49d2e69b2ce80860e97bc2cf28a6d36be61f496d6f1bd39ffe74b3a5d83f.png" /></a>
       </div>
     </div>
   </div>
