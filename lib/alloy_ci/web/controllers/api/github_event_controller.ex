@@ -114,7 +114,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
          %{"content" => _} <-
            @github_api.alloy_ci_config(project, %{
              installation_id: params["installation"]["id"],
-             sha: params["after"]
+             sha: params["head_commit"]["id"]
            }) do
       pipeline_attrs = %{
         before_sha: params["before"],
@@ -125,7 +125,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
           message: params["head_commit"]["message"]
         },
         ref: params["ref"],
-        sha: params["after"],
+        sha: params["head_commit"]["id"],
         installation_id: params["installation"]["id"]
       }
 
