@@ -2,7 +2,7 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
   @moduledoc """
   """
   use AlloyCi.Web.ConnCase
-  alias AlloyCi.Builds
+  alias AlloyCi.{Artifact, Builds}
   import AlloyCi.Factory
 
   setup do
@@ -11,7 +11,7 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
     params = %{
       info: %{
         name: "runner",
-        version: "9",
+        version: "1.0",
         platform: "darwin",
         architecture: "amd64"
       }
@@ -25,7 +25,37 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
       runner: runner,
       params: params
     } do
-      insert(:full_build)
+      pipeline = insert(:pipeline)
+
+      dependent =
+        insert(
+          :build,
+          status: "success",
+          pipeline: pipeline,
+          project: pipeline.project,
+          artifacts: %{"paths" => ["alloy_ci.tar.gz"]},
+          stage_idx: 0
+        )
+
+      {:ok, _} =
+        insert(:artifact, build: dependent)
+        |> Artifact.changeset(%{
+          file: %Plug.Upload{path: ".alloy-ci.json", filename: ".alloy-ci.json"}
+        })
+        |> Repo.update()
+
+      insert(
+        :build,
+        status: "success",
+        pipeline: pipeline,
+        project: pipeline.project,
+        artifacts: %{"paths" => ["alloy_ci.zip"]},
+        stage_idx: 0
+      )
+
+      build =
+        insert(:full_build, pipeline: pipeline, project: pipeline.project, deps: [dependent.name])
+
       params = Map.put(params, :token, runner.token)
 
       expected_steps = [
@@ -45,6 +75,49 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
       assert conn.status == 201
       assert conn.resp_body =~ "variables"
       assert conn.assigns.steps == expected_steps
+
+      assert conn.assigns.dependencies == [
+               %{
+                 id: dependent.id,
+                 name: dependent.name,
+                 token: dependent.token,
+                 artifacts_file: %{filename: ".alloy-ci.json", size: 2500}
+               }
+             ]
+
+      assert conn.assigns.status == "running"
+      assert conn.assigns.runner_id == runner.id
+
+      build = Builds.get(build.id)
+
+      assert build.started_at != nil
+    end
+
+    test "fetches a build with specific dependencies, starts it and returns the correct data", %{
+      runner: runner,
+      params: params
+    } do
+      insert(:full_build, deps: [])
+      params = Map.put(params, :token, runner.token)
+
+      expected_steps = [
+        %{
+          allow_failure: false,
+          name: :script,
+          script: ["mix deps.get", "mix test"],
+          timeout: 3600,
+          when: "on_success"
+        }
+      ]
+
+      conn =
+        build_conn()
+        |> post("/api/v4/jobs/request", params)
+
+      assert conn.status == 201
+      assert conn.resp_body =~ "variables"
+      assert conn.assigns.steps == expected_steps
+      assert conn.assigns.dependencies == []
       assert conn.assigns.status == "running"
       assert conn.assigns.runner_id == runner.id
     end
@@ -53,7 +126,25 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
       runner: runner,
       params: params
     } do
-      insert(:extended_build)
+      build = insert(:extended_build)
+
+      dependent =
+        insert(
+          :build,
+          status: "success",
+          pipeline: build.pipeline,
+          project: build.project,
+          artifacts: %{"paths" => ["alloy_ci.tar.gz"]},
+          stage_idx: 0
+        )
+
+      {:ok, _} =
+        insert(:artifact, build: dependent)
+        |> Artifact.changeset(%{
+          file: %Plug.Upload{path: ".alloy-ci.json", filename: ".alloy-ci.json"}
+        })
+        |> Repo.update()
+
       params = Map.put(params, :token, runner.token)
 
       expected_services = [
@@ -72,6 +163,20 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
       assert conn.status == 201
       assert conn.resp_body =~ "variables"
       assert conn.assigns.services == expected_services
+
+      assert conn.assigns.dependencies == [
+               %{
+                 id: dependent.id,
+                 name: dependent.name,
+                 token: dependent.token,
+                 artifacts_file: %{filename: ".alloy-ci.json", size: 2500}
+               }
+             ]
+
+      assert conn.assigns.artifacts == %{
+               "paths" => ["alloy_ci.tar.gz", "_build/prod/lib/alloy_ci"]
+             }
+
       assert conn.assigns.status == "running"
       assert conn.assigns.image == %{"name" => "elixir:latest", "entrypoint" => ["/bin/bash"]}
       assert conn.assigns.runner_id == runner.id

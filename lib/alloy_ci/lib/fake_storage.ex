@@ -5,7 +5,7 @@ defmodule Arc.Storage.Fake do
   end
 
   def url(_definition, _version, {file, _scope}, _options \\ []) do
-    "test/fixtures/#{file}" |> URI.encode()
+    "/test/fixtures/#{file[:file_name]}" |> URI.encode()
   end
 
   def delete(_definition, _version, _file_and_scope) do

@@ -124,6 +124,9 @@ defmodule AlloyCi.Web.Router do
     scope "/jobs" do
       post("/request", BuildsEventController, :request, as: :verify)
       put("/:id", BuildsEventController, :update)
+      post("/:id/artifacts/authorize", BuildsArtifactController, :authorize)
+      post("/:id/artifacts", BuildsArtifactController, :create)
+      get("/:id/artifacts", BuildsArtifactController, :show)
       patch("/:id/trace", BuildsEventController, :trace)
       # add routes for artifacts here
     end
