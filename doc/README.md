@@ -220,6 +220,12 @@ please run the following command from your terminal:
 $ heroku run -a <app_name> "MIX_ENV=heroku mix ecto.migrate"
 ```
 
+### Limitations
+
+For the time being, you will not be able to use the artifact upload feature with Heroku,
+given that it does not provide permanent disk access. S3 support for artifact files is
+planned for the feature, certainly before 1.0 is released.
+
 ## Manual Installation
 
 The reason why we recommend Docker as the preferred installation method is because
