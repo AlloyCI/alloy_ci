@@ -2,7 +2,7 @@ defmodule AlloyCi.Builds do
   @moduledoc """
   The boundary for the Builds system.
   """
-  alias AlloyCi.{Build, Queuer, Pipelines, Projects, Repo, Workers}
+  alias AlloyCi.{Artifact, Build, Queuer, Pipelines, Projects, Repo, Workers}
   import Ecto.Query, warn: false
 
   @github_api Application.get_env(:alloy_ci, :github_api)
@@ -66,7 +66,9 @@ defmodule AlloyCi.Builds do
 
         build_params = %{
           allow_failure: options["allow_failure"] || false,
+          artifacts: options["artifacts"],
           commands: options["script"],
+          deps: options["dependencies"],
           name: name,
           options: local_options,
           stage: stage,
@@ -114,10 +116,20 @@ defmodule AlloyCi.Builds do
     end
   end
 
+  def for_pipeline_and_lower_stage(pipeline_id, stage_idx) do
+    Build
+    |> where(pipeline_id: ^pipeline_id)
+    |> where([b], b.stage_idx < ^stage_idx)
+    |> order_by(asc: :stage_idx, asc: :updated_at)
+    |> preload(:artifact)
+    |> Repo.all()
+  end
+
   def for_pipeline_and_stage(pipeline_id, stage_idx) do
     Build
     |> where(pipeline_id: ^pipeline_id)
     |> where(stage_idx: ^stage_idx)
+    |> order_by(asc: :inserted_at)
     |> Repo.all()
   end
 
@@ -160,6 +172,13 @@ defmodule AlloyCi.Builds do
     end
   end
 
+  def get_with_artifact(id, token) do
+    with {:ok, build} <- get_by(id, token) do
+      build = build |> Repo.preload(:artifact)
+      {:ok, build}
+    end
+  end
+
   def ref_type(ref) do
     ref_types = [{~r/heads/, "branches"}, {~r/tags/, "tags"}, {~r/:/, "forks"}]
 
@@ -169,6 +188,12 @@ defmodule AlloyCi.Builds do
       end)
 
     type
+  end
+
+  def retry(build) do
+    build
+    |> Build.changeset(%{runner_id: nil, status: "pending", trace: ""})
+    |> Repo.update()
   end
 
   def start_build(build, runner) do
@@ -188,7 +213,7 @@ defmodule AlloyCi.Builds do
             build =
               build
               |> transition_status("running")
-              |> Repo.preload([:pipeline, :project, :runner])
+              |> Repo.preload([:artifact, :pipeline, :project, :runner])
 
             Pipelines.run!(build.pipeline)
 
@@ -200,6 +225,30 @@ defmodule AlloyCi.Builds do
       end)
     else
       nil -> {:no_build, nil}
+    end
+  end
+
+  def store_artifact(build, file, expire_in) do
+    expires_at = Timex.now() |> Timex.shift(seconds: expire_in |> TimeConvert.to_seconds())
+    build = build |> Repo.preload(:artifact)
+
+    case build.artifact do
+      nil ->
+        Repo.transaction(fn ->
+          with {:ok, artifact} <-
+                 %Artifact{} |> Artifact.changeset(%{build_id: build.id, expires_at: expires_at})
+                 |> Repo.insert(),
+               {:ok, artifact} <- artifact |> Artifact.changeset(%{file: file}) |> Repo.update() do
+            {:ok, artifact}
+          else
+            {:error, changeset} ->
+              Repo.rollback(changeset)
+              {:error, changeset}
+          end
+        end)
+
+      artifact ->
+        artifact |> Artifact.changeset(%{file: file}) |> Repo.update()
     end
   end
 
@@ -228,6 +277,8 @@ defmodule AlloyCi.Builds do
   ###################
   # Private functions
   ###################
+  defp append!(_build, ""), do: {1, nil}
+
   defp append!(build, trace) do
     new_trace = "\n#{trace}\n"
 
@@ -254,6 +305,33 @@ defmodule AlloyCi.Builds do
           when: "always",
           allow_failure: true
         }
+    end
+  end
+
+  def build_dependencies(%{deps: [_ | _]} = build) do
+    build.deps
+    |> Enum.map(fn b ->
+      Build
+      |> where(
+        [b],
+        b.pipeline_id == ^build.pipeline_id and b.stage_idx < ^build.stage_idx and b.name == ^b
+      )
+      |> preload(:artifact)
+      |> Repo.one()
+      |> map_dependency()
+    end)
+    |> Enum.reject(&is_nil/1)
+  end
+
+  def build_dependencies(build) do
+    with true <- Pipelines.has_artifacts?(build.pipeline) do
+      build.pipeline_id
+      |> for_pipeline_and_lower_stage(build.stage_idx)
+      |> Enum.map(&map_dependency/1)
+      |> Enum.reject(&is_nil/1)
+    else
+      _ ->
+        []
     end
   end
 
@@ -284,6 +362,24 @@ defmodule AlloyCi.Builds do
     |> Repo.insert!()
   end
 
+  defp do_update_status(build, status) when status in ~w(success failed) do
+    build
+    |> Build.changeset(%{status: status, finished_at: Timex.now()})
+    |> Repo.update()
+  end
+
+  defp do_update_status(build, status) when status == "pending" do
+    build
+    |> Build.changeset(%{status: status, queued_at: Timex.now()})
+    |> Repo.update()
+  end
+
+  defp do_update_status(build, status) when status == "running" do
+    build
+    |> Build.changeset(%{status: status, started_at: Timex.now()})
+    |> Repo.update()
+  end
+
   defp do_update_status(build, status) do
     build
     |> Build.changeset(%{status: status})
@@ -300,6 +396,7 @@ defmodule AlloyCi.Builds do
 
     %{
       image: map_service(build.options["image"]),
+      dependencies: build_dependencies(build),
       services: services,
       steps: steps(build),
       variables: predefined_vars(build) ++ variables ++ project_variables(build)
@@ -307,6 +404,17 @@ defmodule AlloyCi.Builds do
   end
 
   defp generate_token, do: SecureRandom.urlsafe_base64(10)
+
+  defp map_dependency(%{artifacts: %{}} = build) do
+    %{
+      id: build.id,
+      name: build.name,
+      token: build.token,
+      artifacts_file: %{filename: build.artifact.file[:file_name], size: 2500}
+    }
+  end
+
+  defp map_dependency(_), do: nil
 
   defp map_service(%{} = service) do
     service
@@ -329,6 +437,12 @@ defmodule AlloyCi.Builds do
       %{key: "CI_JOB_TOKEN", value: build.token, public: false},
       %{key: "CI_PIPELINE_ID", value: Integer.to_string(build.pipeline_id), public: true},
       %{key: "CI_PROJECT_NAME", value: build.project.name, public: true},
+      %{key: "CI_PROJECT_NAMESPACE", value: build.project.owner, public: true},
+      %{
+        key: "CI_PROJECT_PATH",
+        value: "#{build.project.owner}/#{build.project.name}",
+        public: true
+      },
       %{
         key: "CI_REPOSITORY_URL",
         value: @github_api.clone_url(build.project, build.pipeline),
@@ -338,7 +452,6 @@ defmodule AlloyCi.Builds do
       %{key: "CI_RUNNER_TAGS", value: runner_tags(build.runner), public: true},
       %{key: "CI_SERVER_NAME", value: "AlloyCI", public: true},
       %{key: "CI_SERVER_VERSION", value: AlloyCi.Version.version(), public: true},
-      %{key: "EXTERNAL_SERVICE", value: "true", public: true},
       # We need to set this key, because the GitLab CI Runner is a bit stupid in
       # this regard. It fetches the SSL certificate of the coordinator and tries
       # to match it against the Git server. In GitLab's case they are one and the
@@ -373,6 +486,12 @@ defmodule AlloyCi.Builds do
           # if that fails, try to match with the created regex, will work for branch/tag
           # names and regex, e.g. "master" or "issue-.*$"
           Regex.match?(regex, ref) ->
+            {:halt, true}
+
+          # if that fails, try to match the regex again, this time against the proper
+          # reference name, e.g. for refs/tags/v1.0.0 it's v1.0.0. Useful for regex
+          # like "\\Av[0-9]+\\.[0-9]+\\.[0-9]+\\Z"
+          Regex.match?(regex, ref |> String.split("/") |> List.last()) ->
             {:halt, true}
 
           # if that fails, there is no match, continue with the next condition

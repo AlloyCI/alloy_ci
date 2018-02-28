@@ -1,13 +1,22 @@
 {
+  "stages": [
+    "test",
+    "compile",
+    "deploy"
+  ],
   "image": {
     "name": "elixir:latest",
-    "entrypoint": ["/bin/bash"]
+    "entrypoint": [
+      "/bin/bash"
+    ]
   },
   "services": [
     {
       "name": "postgres:latest",
       "alias": "postgres-1",
-      "command": ["/bin/sh"]
+      "command": [
+        "/bin/sh"
+      ]
     }
   ],
   "cache": {
@@ -34,9 +43,14 @@
   ],
   "mix": {
     "image": "elixir:1.5",
-    "services": ["postgres:9.6"],
+    "services": [
+      "postgres:9.6"
+    ],
     "stage": "test",
-    "tags": ["elixir", "postgres"],
+    "tags": [
+      "elixir",
+      "postgres"
+    ],
     "script": [
       "mix test"
     ]
@@ -47,9 +61,30 @@
       "redis:latest"
     ],
     "stage": "test",
-    "tags": ["elixir"],
+    "tags": [
+      "elixir"
+    ],
     "script": [
       "mix credo"
     ]
+  },
+  "distillery": {
+    "stage": "compile",
+    "tags": [
+      "elixir",
+      "postgres"
+    ],
+    "variables": {
+      "MIX_ENV": "prod"
+    },
+    "script": [
+      "mix docker.build --tag latest"
+    ],
+    "artifacts": {
+      "paths": [
+        "alloy_ci.tar.gz",
+        "_build/prod/lib/alloy_ci"
+      ]
+    }
   }
 }
