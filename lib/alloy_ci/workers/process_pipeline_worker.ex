@@ -47,24 +47,82 @@ defmodule AlloyCi.Workers.ProcessPipelineWorker do
   end
 
   defp process_stage(pipeline_id, stage_idx) do
+    status = last_stage_status(pipeline_id, stage_idx)
+
+    pipeline_id
+    |> Builds.for_pipeline_and_stage(stage_idx)
+    |> Enum.each(fn build ->
+      process_build(build, status)
+    end)
+  end
+
+  defp last_stage_status(pipeline_id, stage_idx) do
+    stats = stage_builds_stats(pipeline_id, stage_idx)
+
+    cond do
+      stats[:total] == 0 ->
+        "success"
+
+      stats[:total] == stats[:successful] + stats[:allowed_failures] ->
+        "success"
+
+      stats[:active] > 0 ->
+        "running"
+
+      true ->
+        "failed"
+    end
+  end
+
+  defp stage_builds_stats(pipeline_id, stage_idx) do
     query =
       from(
         b in "builds",
-        where: b.pipeline_id == ^pipeline_id and b.stage_idx < ^stage_idx,
-        order_by: [desc: b.updated_at, desc: b.stage_idx],
-        limit: 1,
-        select: b.status
+        where:
+          b.pipeline_id == ^pipeline_id and b.stage_idx == ^(stage_idx - 1) and
+            b.status == "success",
+        select: count(b.id)
       )
 
-    current_status = Repo.one(query) || "success"
+    successful_builds = Repo.one(query)
 
-    if current_status in ~w(success failed cancelled skipped) do
-      pipeline_id
-      |> Builds.for_pipeline_and_stage(stage_idx)
-      |> Enum.each(fn build ->
-        process_build(build, current_status)
-      end)
-    end
+    query =
+      from(
+        b in "builds",
+        where:
+          b.pipeline_id == ^pipeline_id and b.stage_idx == ^(stage_idx - 1) and
+            b.status == "failed" and b.allow_failure == true,
+        select: count(b.id)
+      )
+
+    allowed_failures = Repo.one(query)
+
+    query =
+      from(
+        b in "builds",
+        where:
+          b.pipeline_id == ^pipeline_id and b.stage_idx == ^(stage_idx - 1) and
+            b.status in ~w(pending running),
+        select: count(b.id)
+      )
+
+    active_builds = Repo.one(query)
+
+    query =
+      from(
+        b in "builds",
+        where: b.pipeline_id == ^pipeline_id and b.stage_idx == ^(stage_idx - 1),
+        select: count(b.id)
+      )
+
+    total_builds = Repo.one(query)
+
+    %{
+      total: total_builds,
+      successful: successful_builds,
+      allowed_failures: allowed_failures,
+      active: active_builds
+    }
   end
 
   defp process_build(build, status) do
