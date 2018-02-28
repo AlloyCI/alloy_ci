@@ -1,8 +1,12 @@
 defmodule AlloyCi.Web.ProjectView do
   use AlloyCi.Web, :view
-  alias AlloyCi.{Accounts, Projects}
+  alias AlloyCi.{Accounts, Projects, Runners}
   import Kerosene.HTML
   import AlloyCi.Builds, only: [ref_type: 1]
+
+  def app_url do
+    Application.get_env(:alloy_ci, :app_url)
+  end
 
   def builds_chart(project) do
     project
@@ -12,6 +16,10 @@ defmodule AlloyCi.Web.ProjectView do
 
   def clean_ref(ref) do
     ref |> String.replace(ref |> ref_type() |> cleanup_string(), "")
+  end
+
+  def global_runners do
+    Runners.global_runners()
   end
 
   def has_github_auth(user) do
@@ -27,8 +35,9 @@ defmodule AlloyCi.Web.ProjectView do
     |> render_icon()
   end
 
-  def app_url do
-    Application.get_env(:alloy_ci, :app_url)
+  def tags(tags) do
+    tags
+    |> Enum.map(&tag_element/1)
   end
 
   ###################
@@ -48,5 +57,17 @@ defmodule AlloyCi.Web.ProjectView do
 
   defp render_icon("forks") do
     {:safe, "<i class='fa fa-code-fork'></i>"}
+  end
+
+  defp tag_element(value) do
+    content_tag :div, class: "inline m-r-1" do
+      [
+        content_tag :button,
+          type: "button",
+          class: "btn btn-sm btn-info" do
+          [value <> " "]
+        end
+      ]
+    end
   end
 end

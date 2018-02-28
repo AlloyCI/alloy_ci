@@ -31,6 +31,11 @@ defmodule AlloyCi.Web.RunnerController do
       conn
       |> put_flash(:info, "Runner deleted successfully.")
       |> redirect(to: project_path(conn, :show, runner.project_id))
+    else
+      _ ->
+        conn
+        |> put_flash(:info, "Could not delete runner.")
+        |> redirect(to: project_path(conn, :index))
     end
   end
 end

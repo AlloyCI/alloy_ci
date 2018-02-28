@@ -2,6 +2,7 @@ defmodule AlloyCi.Runners do
   @moduledoc """
   """
   alias AlloyCi.{Builds, Project, Projects, Repo, Runner}
+  import Ecto.Query, warn: false
 
   def all(params), do: Runner |> Repo.paginate(params)
 
@@ -49,6 +50,13 @@ defmodule AlloyCi.Runners do
   def get(id), do: Runner |> Repo.get(id)
 
   def get_by(token: token), do: Runner |> Repo.get_by(token: token)
+
+  def global_runners do
+    Runner
+    |> where([r], is_nil(r.project_id) and r.global == true)
+    |> limit(10)
+    |> Repo.all()
+  end
 
   def global_token do
     Application.get_env(:alloy_ci, :runner_registration_token)
