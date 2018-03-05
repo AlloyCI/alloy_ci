@@ -1,5 +1,7 @@
 .git
 _build
+.elixir_ls
+.vscode
 cover
 deps
 doc

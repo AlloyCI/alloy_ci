@@ -280,9 +280,10 @@ build the release.
 $ MIX_ENV=prod mix release --env=prod
 ```
 
-This will create a compressed file on the root directory of where you cloned AlloyCI, so
-it would be `alloy_ci/alloy_ci.tar.gz`. This file contains the compiled code needed
-to run AlloyCI.
+This will build the release for the `prod` environment. The release files are located at
+the root of where you cloned the project, under `_build/prod/rel/alloy_ci`. In order to
+"deploy" the release to a remote server, you will need the compressed release file, which
+is further down the directory tree, under `releases/<version>/alloy_ci.tar.gz`.
 
 ---
 **Notice:**
@@ -335,6 +336,19 @@ following commands:
 
 Database migrations are run automatically when the application starts, so there is
 no need to run them manually.
+
+### Artifacts
+
+Build artifact files are uploaded to a directory called `uploads`. It will be created, if
+it doesn't exist, and it lives at the root of where the release files were decompressed, so
+the directory will look like this:
+
+```
+├── bin
+├── lib
+├── releases
+└── uploads
+```
 
 ## First Run
 
