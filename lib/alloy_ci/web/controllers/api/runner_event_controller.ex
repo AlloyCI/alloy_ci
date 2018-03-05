@@ -6,8 +6,7 @@ defmodule AlloyCi.Web.Api.RunnerEventController do
     case Runners.create(params) do
       nil ->
         conn
-        |> put_status(403)
-        |> json(%{message: "403 Forbidden"})
+        |> send_resp(:forbidden, "")
 
       runner ->
         conn
@@ -20,13 +19,11 @@ defmodule AlloyCi.Web.Api.RunnerEventController do
     case Runners.get_by(token: params["token"]) do
       nil ->
         conn
-        |> put_status(403)
-        |> json(%{message: "403 Forbidden"})
+        |> send_resp(:forbidden, "")
 
       _ ->
         conn
-        |> put_status(200)
-        |> json(%{message: "200 Credentials are valid"})
+        |> send_resp(:ok, "")
     end
   end
 
@@ -34,13 +31,11 @@ defmodule AlloyCi.Web.Api.RunnerEventController do
     case Runners.delete_by(token: token) do
       {:ok, _} ->
         conn
-        |> put_status(204)
-        |> json(%{message: "204 Runner was deleted"})
+        |> send_resp(:no_content, "")
 
       _ ->
         conn
-        |> put_status(403)
-        |> json(%{message: "403 Forbidden"})
+        |> send_resp(:forbidden, "")
     end
   end
 end

@@ -47,8 +47,7 @@ defmodule AlloyCi.Pipelines do
   end
 
   def duplicate(pipeline) do
-    with {:ok, _} <- update_pipeline(pipeline, %{sha: pipeline.sha |> String.slice(0..7)}),
-         {:ok, clone} <- clone(pipeline) do
+    with {:ok, clone} <- clone(pipeline) do
       Queuer.push(CreateBuildsWorker, clone.id)
       @github_api.notify_pending!(pipeline.project, pipeline)
       {:ok, clone}
@@ -206,41 +205,37 @@ defmodule AlloyCi.Pipelines do
   # Private functions
   ###################
   defp builds_by_status(pipeline_id) do
-    query =
+    failed_builds =
       from(
         b in "builds",
         where: b.pipeline_id == ^pipeline_id and b.status == "failed" and b.allow_failure == false,
         select: count(b.id)
       )
+      |> Repo.one()
 
-    failed_builds = Repo.one(query)
-
-    query =
+    successful_builds =
       from(
         b in "builds",
         where: b.pipeline_id == ^pipeline_id and b.status == "success",
         select: count(b.id)
       )
+      |> Repo.one()
 
-    successful_builds = Repo.one(query)
-
-    query =
+    allowed_failures =
       from(
         b in "builds",
         where: b.pipeline_id == ^pipeline_id and b.status == "failed" and b.allow_failure == true,
         select: count(b.id)
       )
+      |> Repo.one()
 
-    allowed_failures = Repo.one(query)
-
-    query =
+    on_failures =
       from(
         b in "builds",
         where: b.pipeline_id == ^pipeline_id and b.status == "created" and b.when == "on_failure",
         select: count(b.id)
       )
-
-    on_failures = Repo.one(query)
+      |> Repo.one()
 
     %{
       failed: failed_builds,

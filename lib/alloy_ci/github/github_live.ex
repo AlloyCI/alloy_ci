@@ -30,9 +30,9 @@ defmodule AlloyCi.Github.Live do
   end
 
   def clone_url(project, pipeline) do
-    token = installation_token(pipeline.installation_id)
+    %{"token" => token} = installation_token(pipeline.installation_id)
 
-    "https://x-access-token:#{token["token"]}@github.com/#{project.owner}/#{project.name}.git"
+    "https://x-access-token:#{token}@github.com/#{project.owner}/#{project.name}.git"
   end
 
   def commit(project, sha, installation_id) do
@@ -53,8 +53,7 @@ defmodule AlloyCi.Github.Live do
   end
 
   def list_installations do
-    client = app_client()
-    Tentacat.App.Installations.list_mine(client)
+    Tentacat.App.Installations.list_mine(app_client())
   end
 
   def notify_cancelled!(project, pipeline) do
@@ -129,8 +128,8 @@ defmodule AlloyCi.Github.Live do
   end
 
   defp installation_client(installation_id) do
-    token = installation_token(installation_id)
-    Tentacat.Client.new(%{access_token: token["token"]})
+    %{"token" => token} = installation_token(installation_id)
+    Tentacat.Client.new(%{access_token: token})
   end
 
   defp installation_token(installation_id) do

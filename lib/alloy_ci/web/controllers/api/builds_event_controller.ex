@@ -15,19 +15,16 @@ defmodule AlloyCi.Web.Api.BuildsEventController do
         {:no_build, _} ->
           conn
           |> put_req_header("x-gitlab-last-update", SecureRandom.hex())
-          |> put_status(204)
-          |> json(%{message: "204 No Content"})
+          |> send_resp(:no_content, "")
 
         {:error, _} ->
           conn
-          |> put_status(409)
-          |> json(%{message: "409 Conflict"})
+          |> send_resp(:conflict, "")
       end
     else
       nil ->
         conn
-        |> put_status(401)
-        |> json(%{message: "401 Unauthorized"})
+        |> send_resp(:unauthorized, "")
     end
   end
 
@@ -47,8 +44,7 @@ defmodule AlloyCi.Web.Api.BuildsEventController do
     else
       {:error, _} ->
         conn
-        |> put_status(403)
-        |> json(%{message: "403 Forbidden"})
+        |> send_resp(:forbidden, "")
     end
   end
 
@@ -56,8 +52,7 @@ defmodule AlloyCi.Web.Api.BuildsEventController do
     case Builds.get_by(id, token) do
       {:error, _} ->
         conn
-        |> put_status(403)
-        |> json(%{message: "403 Forbidden"})
+        |> send_resp(:forbidden, "")
 
       {:ok, build} ->
         case params["state"] do
@@ -76,8 +71,7 @@ defmodule AlloyCi.Web.Api.BuildsEventController do
         end
 
         conn
-        |> put_status(200)
-        |> json(%{message: "200 OK"})
+        |> send_resp(:ok, "")
     end
   end
 end

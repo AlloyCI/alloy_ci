@@ -1,5 +1,5 @@
 defmodule AlloyCi.Web.Api.BuildsEventView do
-  use AlloyCi.Web, :view
+  import AlloyCi.Web.ApiHelpers
   @github_api Application.get_env(:alloy_ci, :github_api)
 
   def render("build.json", build) do
@@ -45,18 +45,5 @@ defmodule AlloyCi.Web.Api.BuildsEventView do
       end)
 
     %{errors: errors}
-  end
-
-  ###################
-  # Private functions
-  ###################
-  defp render_detail({message, values}) do
-    Enum.reduce(values, message, fn {k, v}, acc ->
-      String.replace(acc, "%{#{k}}", to_string(v))
-    end)
-  end
-
-  defp render_detail(message) do
-    message
   end
 end

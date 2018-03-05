@@ -69,18 +69,17 @@ defmodule AlloyCi.Web.ProjectController do
   end
 
   def edit(conn, %{"id" => id}, current_user, _claims) do
-    case Projects.get_by(id, current_user, preload: :runners) do
-      {:ok, project} ->
-        changeset = Project.changeset(project)
+    with {:ok, project} <- Projects.get_by(id, current_user, preload: :runners) do
+      changeset = Project.changeset(project)
 
-        render(
-          conn,
-          "edit.html",
-          project: project,
-          changeset: changeset,
-          current_user: current_user
-        )
-
+      render(
+        conn,
+        "edit.html",
+        project: project,
+        changeset: changeset,
+        current_user: current_user
+      )
+    else
       {:error, nil} ->
         conn
         |> put_flash(:info, "Project not found")
@@ -89,24 +88,23 @@ defmodule AlloyCi.Web.ProjectController do
   end
 
   def update(conn, %{"id" => id, "project" => project_params}, current_user, _claims) do
-    case Projects.get_by(id, current_user, preload: :runners) do
-      {:ok, project} ->
-        case Projects.update(project, project_params) do
-          {:ok, project} ->
-            conn
-            |> put_flash(:info, "Project updated successfully.")
-            |> redirect(to: project_path(conn, :edit, project))
+    with {:ok, project} <- Projects.get_by(id, current_user, preload: :runners) do
+      case Projects.update(project, project_params) do
+        {:ok, project} ->
+          conn
+          |> put_flash(:info, "Project updated successfully.")
+          |> redirect(to: project_path(conn, :edit, project))
 
-          {:error, changeset} ->
-            render(
-              conn,
-              "edit.html",
-              project: project,
-              changeset: changeset,
-              current_user: current_user
-            )
-        end
-
+        {:error, changeset} ->
+          render(
+            conn,
+            "edit.html",
+            project: project,
+            changeset: changeset,
+            current_user: current_user
+          )
+      end
+    else
       {:error, nil} ->
         conn
         |> put_flash(:info, "Project not found")
@@ -115,12 +113,11 @@ defmodule AlloyCi.Web.ProjectController do
   end
 
   def delete(conn, %{"id" => id}, current_user, _claims) do
-    case Projects.delete_by(id, current_user) do
-      {:ok, _} ->
-        conn
-        |> put_flash(:info, "Project deleted successfully.")
-        |> redirect(to: project_path(conn, :index))
-
+    with {:ok, _} <- Projects.delete_by(id, current_user) do
+      conn
+      |> put_flash(:info, "Project deleted successfully.")
+      |> redirect(to: project_path(conn, :index))
+    else
       {:error, nil} ->
         conn
         |> put_flash(:info, "Project not found")

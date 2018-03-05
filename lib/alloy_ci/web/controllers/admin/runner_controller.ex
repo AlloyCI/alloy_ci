@@ -3,8 +3,6 @@ defmodule AlloyCi.Web.Admin.RunnerController do
 
   alias AlloyCi.{Runner, Runners}
 
-  # Make sure that we have a valid token in the :admin area of the session
-  # We've aliased Guardian.Plug.EnsureAuthenticated in our AlloyCi.Web.admin_controller macro
   plug(EnsureAuthenticated, handler: AlloyCi.Web.Admin.UserController, key: :admin)
 
   def index(conn, params, current_user, _claims) do

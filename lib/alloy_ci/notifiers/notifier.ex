@@ -1,6 +1,5 @@
 defmodule AlloyCi.Notifier do
-  @moduledoc """
-  """
+  @moduledoc false
   alias AlloyCi.{Notifiers, Notifications}
   require Logger
 

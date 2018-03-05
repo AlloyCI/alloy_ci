@@ -25,24 +25,24 @@ defmodule AlloyCi.Workers.ProcessPipelineWorker do
   # Private functions
   ###################
   defp build_indexes(pipeline_id) do
-    query =
-      from(
-        b in "builds",
-        where: b.pipeline_id == ^pipeline_id,
-        order_by: :stage_idx,
-        distinct: :stage_idx,
-        select: b.stage_idx
-      )
-
-    Repo.all(query)
+    from(
+      b in "builds",
+      where: b.pipeline_id == ^pipeline_id,
+      order_by: :stage_idx,
+      distinct: :stage_idx,
+      select: b.stage_idx
+    )
+    |> Repo.all()
   end
 
-  defp is_status_valid?(build_when, status) do
-    case build_when do
-      "on_success" -> status in ~w(success skipped)
-      "on_failure" -> status == "failed"
-      "always" -> true
-      "manual" -> status == "success"
+  defp log(value) do
+    Logger.info(value)
+  end
+
+  defp process_build(build, status) do
+    if valid_status?(build.when, status) do
+      log("Enqueueing build #{build.id}")
+      Builds.enqueue(build)
     end
   end
 
@@ -75,7 +75,7 @@ defmodule AlloyCi.Workers.ProcessPipelineWorker do
   end
 
   defp stage_builds_stats(pipeline_id, stage_idx) do
-    query =
+    successful_builds =
       from(
         b in "builds",
         where:
@@ -83,10 +83,9 @@ defmodule AlloyCi.Workers.ProcessPipelineWorker do
             b.status == "success",
         select: count(b.id)
       )
+      |> Repo.one()
 
-    successful_builds = Repo.one(query)
-
-    query =
+    allowed_failures =
       from(
         b in "builds",
         where:
@@ -94,10 +93,9 @@ defmodule AlloyCi.Workers.ProcessPipelineWorker do
             b.status == "failed" and b.allow_failure == true,
         select: count(b.id)
       )
+      |> Repo.one()
 
-    allowed_failures = Repo.one(query)
-
-    query =
+    active_builds =
       from(
         b in "builds",
         where:
@@ -105,17 +103,15 @@ defmodule AlloyCi.Workers.ProcessPipelineWorker do
             b.status in ~w(pending running),
         select: count(b.id)
       )
+      |> Repo.one()
 
-    active_builds = Repo.one(query)
-
-    query =
+    total_builds =
       from(
         b in "builds",
         where: b.pipeline_id == ^pipeline_id and b.stage_idx == ^(stage_idx - 1),
         select: count(b.id)
       )
-
-    total_builds = Repo.one(query)
+      |> Repo.one()
 
     %{
       total: total_builds,
@@ -125,14 +121,12 @@ defmodule AlloyCi.Workers.ProcessPipelineWorker do
     }
   end
 
-  defp process_build(build, status) do
-    if is_status_valid?(build.when, status) do
-      log("Enqueueing build #{build.id}")
-      Builds.enqueue(build)
+  defp valid_status?(build_when, status) do
+    case build_when do
+      "on_success" -> status in ~w(success skipped)
+      "on_failure" -> status == "failed"
+      "always" -> true
+      "manual" -> status == "success"
     end
-  end
-
-  defp log(value) do
-    Logger.info(value)
   end
 end

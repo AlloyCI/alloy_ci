@@ -53,7 +53,6 @@ defmodule AlloyCi.Web.Api.BuildsArtifactControllerTest do
         |> post("/api/v4/jobs/#{build.id}/artifacts", %{file: "", expire_in: ""})
 
       assert conn.status == 403
-      assert conn.resp_body =~ "Forbidden"
     end
 
     test "returns 404 when build does not declare artifacts" do
@@ -65,7 +64,6 @@ defmodule AlloyCi.Web.Api.BuildsArtifactControllerTest do
         |> post("/api/v4/jobs/#{build.id}/artifacts", %{file: "", expire_in: ""})
 
       assert conn.status == 404
-      assert conn.resp_body =~ "Not Found"
     end
   end
 
@@ -101,7 +99,6 @@ defmodule AlloyCi.Web.Api.BuildsArtifactControllerTest do
         |> get("/api/v4/jobs/#{build.id}/artifacts")
 
       assert conn.status == 403
-      assert conn.resp_body =~ "Forbidden"
     end
 
     test "returns 404 when build does not declare artifacts" do
@@ -113,7 +110,6 @@ defmodule AlloyCi.Web.Api.BuildsArtifactControllerTest do
         |> get("/api/v4/jobs/#{build.id}/artifacts")
 
       assert conn.status == 404
-      assert conn.resp_body =~ "Not Found"
     end
   end
 end

@@ -6,13 +6,11 @@ defmodule AlloyCi.Web.Api.BuildsArtifactController do
     case Runners.get_by(token: params["token"]) do
       nil ->
         conn
-        |> put_status(403)
-        |> json(%{message: "403 Forbidden"})
+        |> send_resp(:forbidden, "")
 
       _ ->
         conn
-        |> put_status(200)
-        |> json(%{message: "200 Credentials are valid"})
+        |> send_resp(:ok, "")
     end
   end
 
@@ -22,18 +20,15 @@ defmodule AlloyCi.Web.Api.BuildsArtifactController do
     with {:ok, %{artifacts: %{}} = build} <- Builds.get_by(id, token),
          {:ok, _} <- Builds.store_artifact(build, file, expiry) do
       conn
-      |> put_status(201)
-      |> json(%{message: "201 OK"})
+      |> send_resp(:created, "")
     else
       {:error, nil} ->
         conn
-        |> put_status(403)
-        |> json(%{error: "403 Forbidden"})
+        |> send_resp(:forbidden, "")
 
       {:ok, _} ->
         conn
-        |> put_status(404)
-        |> json(%{error: "404 Not Found"})
+        |> send_resp(:not_found, "")
     end
   end
 
@@ -53,13 +48,11 @@ defmodule AlloyCi.Web.Api.BuildsArtifactController do
     else
       {:error, nil} ->
         conn
-        |> put_status(403)
-        |> json(%{error: "403 Forbidden"})
+        |> send_resp(:forbidden, "")
 
       {:ok, _} ->
         conn
-        |> put_status(404)
-        |> json(%{error: "404 Not Found"})
+        |> send_resp(:not_found, "")
     end
   end
 end

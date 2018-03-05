@@ -15,9 +15,9 @@ defmodule AlloyCi.Github.Test do
   end
 
   def clone_url(project, pipeline) do
-    token = installation_token(pipeline.installation_id)
+    %{"token" => token} = installation_token(pipeline.installation_id)
 
-    "https://x-access-token:#{token["token"]}@github.com/#{project.owner}/#{project.name}.git"
+    "https://x-access-token:#{token}@github.com/#{project.owner}/#{project.name}.git"
   end
 
   def commit(_, sha, _) do

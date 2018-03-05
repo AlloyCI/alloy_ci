@@ -14,7 +14,7 @@ defmodule AlloyCi.Application do
 
   def children(env) when env != "test" do
     import Supervisor.Spec, warn: false
-    children() ++ [worker(GuardianDb.ExpiredSweeper, [])]
+    children()
   end
 
   def children do
@@ -24,7 +24,8 @@ defmodule AlloyCi.Application do
       # Start the Ecto repository
       supervisor(AlloyCi.Repo, []),
       # Start the endpoint when the application starts
-      supervisor(AlloyCi.Web.Endpoint, [])
+      supervisor(AlloyCi.Web.Endpoint, []),
+      worker(GuardianDb.ExpiredSweeper, [])
       # Start your own worker by calling: AlloyCi.Worker.start_link(arg1, arg2, arg3)
       # worker(AlloyCi.Worker, [arg1, arg2, arg3]),
     ]

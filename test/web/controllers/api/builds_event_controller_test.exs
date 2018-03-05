@@ -21,7 +21,7 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
   end
 
   describe "request/4" do
-    test "fetches a build, starts it and returns the correct data", %{
+    test "fetches a build with named dependencies, starts it and returns the correct data", %{
       runner: runner,
       params: params
     } do
@@ -188,7 +188,6 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
         |> post("/api/v4/jobs/request", %{token: runner.token, info: %{}})
 
       assert conn.status == 204
-      assert conn.resp_body =~ "No Content"
     end
 
     test "returns 401 when wrong token" do
@@ -197,7 +196,6 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
         |> post("/api/v4/jobs/request", %{token: "token-1"})
 
       assert conn.status == 401
-      assert conn.resp_body =~ "Unauthorized"
     end
   end
 
@@ -213,7 +211,6 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
       {:ok, build} = Builds.get_by(build.id, build.token)
 
       assert conn.status == 200
-      assert conn.resp_body =~ "OK"
       assert build.status == "success"
     end
 
@@ -225,7 +222,6 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
         |> put("/api/v4/jobs/#{build.id}", %{token: "token-1"})
 
       assert conn.status == 403
-      assert conn.resp_body =~ "Forbidden"
     end
   end
 
@@ -265,7 +261,6 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
         |> patch("/api/v4/jobs/#{build.id}/trace", raw_params)
 
       assert conn.status == 403
-      assert conn.resp_body =~ "Forbidden"
     end
   end
 end

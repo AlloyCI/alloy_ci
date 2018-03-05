@@ -2,7 +2,6 @@ defmodule AlloyCi.Notification do
   @moduledoc """
   """
   use AlloyCi.Web, :schema
-  alias AlloyCi.Notification
 
   schema "notifications" do
     field(:acknowledged, :boolean, default: false)
@@ -18,7 +17,7 @@ defmodule AlloyCi.Notification do
   @required_filed ~w(acknowledged content notification_type project_id user_id)a
 
   @doc false
-  def changeset(%Notification{} = notification, attrs) do
+  def changeset(notification, attrs \\ %{}) do
     notification
     |> cast(attrs, @required_filed)
     |> validate_required(@required_filed)

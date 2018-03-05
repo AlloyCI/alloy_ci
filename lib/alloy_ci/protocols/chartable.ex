@@ -32,19 +32,16 @@ defimpl Chartable, for: AlloyCi.Project do
   import Ecto.Query
 
   def builds_chart(project) do
-    query =
-      from(
-        b in "builds",
-        where:
-          b.project_id == ^project.id and b.status in ~w(failed success) and
-            b.updated_at > ^Chart.interval(),
-        group_by: [b.status, fragment("date_trunc('week', ?)", b.updated_at)],
-        select: {fragment("date_trunc('week', ?)", b.updated_at), b.status, count("*")}
-      )
-
-    builds = Repo.all(query)
-
-    Chart.line_chart(builds)
+    from(
+      b in "builds",
+      where:
+        b.project_id == ^project.id and b.status in ~w(failed success) and
+          b.updated_at > ^Chart.interval(),
+      group_by: [b.status, fragment("date_trunc('week', ?)", b.updated_at)],
+      select: {fragment("date_trunc('week', ?)", b.updated_at), b.status, count("*")}
+    )
+    |> Repo.all()
+    |> Chart.line_chart()
   end
 
   def projects_chart(_), do: nil
@@ -55,35 +52,29 @@ defimpl Chartable, for: AlloyCi.Runner do
   import Ecto.Query
 
   def builds_chart(runner) do
-    query =
-      from(
-        b in "builds",
-        where:
-          b.runner_id == ^runner.id and b.status in ~w(failed success) and
-            b.updated_at > ^Chart.interval(),
-        group_by: [b.status, fragment("date_trunc('week', ?)", b.updated_at)],
-        select: {fragment("date_trunc('week', ?)", b.updated_at), b.status, count("*")}
-      )
-
-    builds = Repo.all(query)
-
-    Chart.line_chart(builds)
+    from(
+      b in "builds",
+      where:
+        b.runner_id == ^runner.id and b.status in ~w(failed success) and
+          b.updated_at > ^Chart.interval(),
+      group_by: [b.status, fragment("date_trunc('week', ?)", b.updated_at)],
+      select: {fragment("date_trunc('week', ?)", b.updated_at), b.status, count("*")}
+    )
+    |> Repo.all()
+    |> Chart.line_chart()
   end
 
   def projects_chart(runner) do
-    query =
-      from(
-        b in "builds",
-        where:
-          b.runner_id == ^runner.id and b.status in ~w(failed success) and
-            b.updated_at > ^Chart.interval(),
-        group_by: [b.project_id],
-        select: {b.project_id, count("*")}
-      )
-
-    builds = Repo.all(query)
-
-    Chart.doughnut_chart(builds)
+    from(
+      b in "builds",
+      where:
+        b.runner_id == ^runner.id and b.status in ~w(failed success) and
+          b.updated_at > ^Chart.interval(),
+      group_by: [b.project_id],
+      select: {b.project_id, count("*")}
+    )
+    |> Repo.all()
+    |> Chart.doughnut_chart()
   end
 end
 

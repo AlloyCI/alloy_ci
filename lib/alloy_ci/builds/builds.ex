@@ -174,8 +174,7 @@ defmodule AlloyCi.Builds do
 
   def get_with_artifact(id, token) do
     with {:ok, build} <- get_by(id, token) do
-      build = build |> Repo.preload(:artifact)
-      {:ok, build}
+      {:ok, build |> Repo.preload(:artifact)}
     end
   end
 
@@ -308,22 +307,13 @@ defmodule AlloyCi.Builds do
     end
   end
 
-  def build_dependencies(%{deps: [_ | _]} = build) do
+  defp build_dependencies(%{deps: [_ | _]} = build) do
     build.deps
-    |> Enum.map(fn b ->
-      Build
-      |> where(
-        [b],
-        b.pipeline_id == ^build.pipeline_id and b.stage_idx < ^build.stage_idx and b.name == ^b
-      )
-      |> preload(:artifact)
-      |> Repo.one()
-      |> map_dependency()
-    end)
+    |> Enum.map(&named_dependencies(&1, build))
     |> Enum.reject(&is_nil/1)
   end
 
-  def build_dependencies(build) do
+  defp build_dependencies(build) do
     with true <- Pipelines.has_artifacts?(build.pipeline) do
       build.pipeline_id
       |> for_pipeline_and_lower_stage(build.stage_idx)
@@ -424,6 +414,17 @@ defmodule AlloyCi.Builds do
     %{name: service}
   end
 
+  defp named_dependencies(name, build) do
+    Build
+    |> where(
+      [b],
+      b.pipeline_id == ^build.pipeline_id and b.stage_idx < ^build.stage_idx and b.name == ^name
+    )
+    |> preload(:artifact)
+    |> Repo.one()
+    |> map_dependency()
+  end
+
   defp predefined_vars(build) do
     [
       %{key: "ALLOY_CI", value: "true", public: true},
@@ -476,7 +477,6 @@ defmodule AlloyCi.Builds do
 
   defp should_build(conditions, ref) do
     Enum.reduce_while(conditions, false, fn condition, _acc ->
-      # Compile a regex, in case the condition is one
       with {:ok, regex} <- Regex.compile(condition) do
         cond do
           # begin checking for matching condition & type, e.g. "branches", or "forks"
@@ -516,7 +516,7 @@ defmodule AlloyCi.Builds do
       },
       after_script(build)
     ]
-    |> Enum.reject(&(&1 == nil))
+    |> Enum.reject(&is_nil/1)
   end
 
   defp update_status(build, status) do

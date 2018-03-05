@@ -105,7 +105,7 @@ defmodule AlloyCi.Projects do
     end
   end
 
-  def delete_by(id: id) do
+  def delete_by(id) do
     with :ok <- Pipelines.delete_where(project_id: id),
          :ok <- purge_permissions(id) do
       Project |> Repo.get(id) |> Repo.delete()
@@ -253,7 +253,7 @@ defmodule AlloyCi.Projects do
 
   def touch(id) do
     Project
-    |> Repo.get_by(id: id)
+    |> Repo.get(id)
     |> Project.changeset()
     |> Repo.update(force: true)
   end

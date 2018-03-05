@@ -22,6 +22,7 @@ defmodule TimeConvert do
       iex> TimeConvert.to_compound(6358794)
       "10 wk, 3 d, 14 hr, 19 min, 54 sec"
   """
+  @spec to_compound(sec :: String.t()) :: integer
   def to_compound(sec) do
     {_, [s, m, h, d, w]} =
       Enum.reduce(@divisor, {sec, []}, fn divisor, {n, acc} ->
@@ -51,6 +52,7 @@ defmodule TimeConvert do
       iex> TimeConvert.to_seconds("7d")
       604800
   """
+  @spec to_seconds(cron_string :: integer) :: String.t()
   def to_seconds(cron_string) do
     cron_string
     |> cleanup()

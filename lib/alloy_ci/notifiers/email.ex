@@ -1,6 +1,5 @@
 defmodule AlloyCi.Notifiers.Email do
-  @moduledoc """
-  """
+  @moduledoc false
   use Bamboo.Mailer, otp_app: :alloy_ci
   alias AlloyCi.Emails
 
@@ -18,8 +17,7 @@ defmodule AlloyCi.Notifiers.Email do
 end
 
 defmodule AlloyCi.Emails do
-  @moduledoc """
-  """
+  @moduledoc false
   use Bamboo.Phoenix, view: AlloyCi.Web.EmailView
   import Bamboo.Email
   alias AlloyCi.Notifiers.Email

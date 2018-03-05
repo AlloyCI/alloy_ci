@@ -1,6 +1,5 @@
 defmodule AlloyCi.Notifiers.Slack do
-  @moduledoc """
-  """
+  @moduledoc false
   import AlloyCi.Web.Router.Helpers
   import AlloyCi.Web.ProjectView, only: [clean_ref: 1]
 

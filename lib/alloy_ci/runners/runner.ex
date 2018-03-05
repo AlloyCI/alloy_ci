@@ -1,6 +1,5 @@
 defmodule AlloyCi.Runner do
-  @moduledoc """
-  """
+  @moduledoc false
   use AlloyCi.Web, :schema
 
   schema "runners" do

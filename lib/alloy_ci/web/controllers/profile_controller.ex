@@ -23,12 +23,11 @@ defmodule AlloyCi.Web.ProfileController do
   end
 
   def update(conn, %{"user" => user_params}, current_user, {:ok, %{"jti" => jti}}) do
-    case Accounts.update_profile(current_user, user_params) do
-      {:ok, _} ->
-        conn
-        |> put_flash(:info, "Profile updated successfully.")
-        |> redirect(to: profile_path(conn, :index))
-
+    with {:ok, _} <- Accounts.update_profile(current_user, user_params) do
+      conn
+      |> put_flash(:info, "Profile updated successfully.")
+      |> redirect(to: profile_path(conn, :index))
+    else
       {:error, changeset} ->
         render(
           conn,
@@ -43,12 +42,11 @@ defmodule AlloyCi.Web.ProfileController do
   end
 
   def delete(conn, %{"id" => id}, _, _) do
-    case Accounts.delete_user(id) do
-      {:ok, _} ->
-        conn
-        |> put_flash(:info, "Account deleted successfully.")
-        |> redirect(to: profile_path(conn, :index))
-
+    with {:ok, _} <- Accounts.delete_user(id) do
+      conn
+      |> put_flash(:info, "Account deleted successfully.")
+      |> redirect(to: profile_path(conn, :index))
+    else
       {:error, _} ->
         conn
         |> put_flash(:error, "There was an error deleting your account")
@@ -57,12 +55,11 @@ defmodule AlloyCi.Web.ProfileController do
   end
 
   def delete(conn, %{"auth_id" => auth_id}, current_user, _) do
-    case Accounts.delete_auth(auth_id, current_user) do
-      {1, nil} ->
-        conn
-        |> put_flash(:info, "Authentication method deleted successfully.")
-        |> redirect(to: profile_path(conn, :index))
-
+    with {1, nil} <- Accounts.delete_auth(auth_id, current_user) do
+      conn
+      |> put_flash(:info, "Authentication method deleted successfully.")
+      |> redirect(to: profile_path(conn, :index))
+    else
       {_, _} ->
         conn
         |> put_flash(

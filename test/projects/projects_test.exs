@@ -34,7 +34,7 @@ defmodule AlloyCi.ProjectsTest do
     end
 
     test "delete_by/1 deletes the project", %{project: project} do
-      assert {:ok, _} = Projects.delete_by(id: project.id)
+      assert {:ok, _} = Projects.delete_by(project.id)
       project = Projects.get(project.id)
 
       assert project == nil

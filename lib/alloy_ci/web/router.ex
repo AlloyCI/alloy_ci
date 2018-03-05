@@ -128,7 +128,6 @@ defmodule AlloyCi.Web.Router do
       post("/:id/artifacts", BuildsArtifactController, :create)
       get("/:id/artifacts", BuildsArtifactController, :show)
       patch("/:id/trace", BuildsEventController, :trace)
-      # add routes for artifacts here
     end
   end
 

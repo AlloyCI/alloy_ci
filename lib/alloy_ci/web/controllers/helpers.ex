@@ -1,6 +1,5 @@
 defmodule AlloyCi.Web.Controller.Helpers do
-  @moduledoc """
-  """
+  @moduledoc false
   import Plug.Conn
 
   def redirect_back(conn, alternative \\ "/") do

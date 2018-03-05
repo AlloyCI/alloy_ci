@@ -27,24 +27,20 @@ defmodule AlloyCi.ProjectPermission do
   end
 
   def existing_ids do
-    query =
-      from(
-        p in "project_permissions",
-        distinct: true,
-        select: {p.repo_id, p.project_id}
-      )
-
-    query |> Repo.all()
+    from(
+      p in "project_permissions",
+      distinct: true,
+      select: {p.repo_id, p.project_id}
+    )
+    |> Repo.all()
   end
 
   def repo_ids do
-    query =
-      from(
-        p in "project_permissions",
-        distinct: true,
-        select: p.repo_id
-      )
-
-    query |> Repo.all()
+    from(
+      p in "project_permissions",
+      distinct: true,
+      select: p.repo_id
+    )
+    |> Repo.all()
   end
 end

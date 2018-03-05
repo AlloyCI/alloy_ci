@@ -34,20 +34,16 @@ defmodule AlloyCi.Notifications do
     |> where(user_id: ^user.id, acknowledged: ^acknowledged)
     |> order_by(desc: :inserted_at)
     |> limit(20)
+    |> preload(:project)
     |> Repo.all()
-    |> Repo.preload(:project)
   end
 
-  def get(id) do
-    Notification
-    |> Repo.get(id)
-  end
+  def get(id), do: Notification |> Repo.get(id)
 
   def get(id, user) do
     Notification
-    |> where(id: ^id, user_id: ^user.id)
-    |> limit(1)
-    |> Repo.one()
+    |> where(user_id: ^user.id)
+    |> Repo.get(id)
   end
 
   def get_with_project_and_user(id) do
