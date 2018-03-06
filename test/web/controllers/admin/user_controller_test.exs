@@ -22,8 +22,10 @@ defmodule AlloyCi.Web.UserControllerTest do
     end
 
     test "with no admin logged in as an admin", %{user1: user1, user2: user2} do
-      conn = guardian_login(user1, :token, key: :admin)
-      conn = get(conn, admin_user_path(conn, :index))
+      conn =
+        guardian_login(user1, %{typ: "access"}, key: :admin)
+        |> get(admin_user_path(build_conn(), :index))
+
       assert html_response(conn, 200)
       assert conn.resp_body =~ user1.email
       assert conn.resp_body =~ user2.email

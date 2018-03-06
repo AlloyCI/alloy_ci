@@ -19,7 +19,7 @@ defmodule AlloyCi.Web.ConnCase do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
 
-      alias AlloyCi.Repo
+      alias AlloyCi.{Guardian, Repo}
       import Ecto
       import Ecto.{Changeset, Query}
 
@@ -32,7 +32,7 @@ defmodule AlloyCi.Web.ConnCase do
       # We need to use the bypass_through to fire the plugs in the router
       # and get the session fetched.
       def guardian_login(%AlloyCi.User{} = user),
-        do: guardian_login(build_conn(), user, :token, [])
+        do: guardian_login(build_conn(), user, %{typ: "token"}, [])
 
       def guardian_login(%AlloyCi.User{} = user, token),
         do: guardian_login(build_conn(), user, token, [])
@@ -40,7 +40,8 @@ defmodule AlloyCi.Web.ConnCase do
       def guardian_login(%AlloyCi.User{} = user, token, opts),
         do: guardian_login(build_conn(), user, token, opts)
 
-      def guardian_login(%Plug.Conn{} = conn, user), do: guardian_login(conn, user, :token, [])
+      def guardian_login(%Plug.Conn{} = conn, user),
+        do: guardian_login(conn, user, %{typ: "token"}, [])
 
       def guardian_login(%Plug.Conn{} = conn, user, token),
         do: guardian_login(conn, user, token, [])

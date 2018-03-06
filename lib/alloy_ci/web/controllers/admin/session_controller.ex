@@ -57,7 +57,7 @@ defmodule AlloyCi.Web.Admin.SessionController do
 
   def logout(conn, _params, _current_user, _claims) do
     conn
-    |> Guardian.Plug.sign_out(:admin)
+    |> Guardian.Plug.sign_out(key: :admin)
     |> put_flash(:info, "admin signed out")
     |> redirect(to: "/")
   end
@@ -66,14 +66,14 @@ defmodule AlloyCi.Web.Admin.SessionController do
     user = Accounts.get_user!(user_id)
 
     conn
-    |> Guardian.Plug.sign_out(:default)
+    |> Guardian.Plug.sign_out(key: :default)
     |> Guardian.Plug.sign_in(user, %{typ: "access"})
     |> redirect(to: "/")
   end
 
   def stop_impersonating(conn, _params, _current_user, _claims) do
     conn
-    |> Guardian.Plug.sign_out(:default)
+    |> Guardian.Plug.sign_out(key: :default)
     |> redirect(to: admin_user_path(conn, :index))
   end
 end

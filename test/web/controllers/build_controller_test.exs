@@ -18,7 +18,7 @@ defmodule AlloyCi.Web.BuildControllerTest do
   test "it responds with the chosen build trace", %{project: project, build: build, user: user} do
     conn =
       user
-      |> guardian_login(:access)
+      |> guardian_login(%{typ: "access"})
       |> get("/projects/#{project.id}/builds/#{build.id}")
 
     assert json_response(conn, 200) == %{"trace" => build.trace}
@@ -28,7 +28,7 @@ defmodule AlloyCi.Web.BuildControllerTest do
     conn =
       :user
       |> insert()
-      |> guardian_login(:access)
+      |> guardian_login(%{typ: "access"})
       |> get("/projects/#{project.id}/builds/#{build.id}")
 
     assert json_response(conn, 404) == %{"trace" => "Error: Build not found"}
@@ -40,7 +40,7 @@ defmodule AlloyCi.Web.BuildControllerTest do
     conn =
       :user
       |> insert()
-      |> guardian_login(:access)
+      |> guardian_login(%{typ: "access"})
       |> get("/projects/#{project.id}/builds/#{build.id}")
 
     assert json_response(conn, 200) == %{"trace" => build.trace}

@@ -54,8 +54,9 @@ defmodule AlloyCi.Web.Router do
     # We pipe this through the impersonation_browser_auth to know if we're impersonating
     # We don't just pipe it through admin_browser_auth because that also loads the resource
     pipe_through([:browser, :browser_auth, :impersonation_browser_auth])
-
     get("/", PublicController, :index)
+    get("/register", PublicController, :register, as: :register)
+
     delete("/logout", AuthController, :logout)
 
     resources("/notifications", NotificationController, only: [:index, :delete, :update])
@@ -69,7 +70,6 @@ defmodule AlloyCi.Web.Router do
       resources("/badge/:ref", BadgeController, only: [:index])
     end
 
-    get("/register", PublicController, :register, as: :register)
     resources("/runners", RunnerController, only: [:show, :delete, :update])
 
     resources("/tokens", TokenController, only: [:delete])

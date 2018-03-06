@@ -17,7 +17,7 @@ defmodule AlloyCi.Web.RunnerControllerTest do
   test "shows chosen resource", %{user: user, runner: runner} do
     conn =
       user
-      |> guardian_login(:access)
+      |> guardian_login(%{typ: "access"})
       |> get(runner_path(build_conn(), :show, runner))
 
     assert html_response(conn, 200) =~ "Runner Settings"
@@ -26,7 +26,7 @@ defmodule AlloyCi.Web.RunnerControllerTest do
   test "updates chosen resource and redirects when data is valid", %{user: user, runner: runner} do
     conn =
       user
-      |> guardian_login(:access)
+      |> guardian_login(%{typ: "access"})
       |> put(runner_path(build_conn(), :update, runner), runner: @valid_attrs)
 
     assert redirected_to(conn) == runner_path(conn, :show, runner)
@@ -35,7 +35,7 @@ defmodule AlloyCi.Web.RunnerControllerTest do
   test "deletes chosen resource", %{user: user, runner: runner} do
     conn =
       user
-      |> guardian_login(:access)
+      |> guardian_login(%{typ: "access"})
       |> delete(runner_path(build_conn(), :delete, runner))
 
     assert redirected_to(conn) == project_path(conn, :show, runner.project_id)

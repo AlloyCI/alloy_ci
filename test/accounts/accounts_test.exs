@@ -26,7 +26,7 @@ defmodule AlloyCi.AccountsTest do
       credentials: %Credentials{
         token: @token,
         refresh_token: "refresh-token",
-        expires_at: Timex.now() + 1000
+        expires_at: Timex.now() |> Timex.shift(milliseconds: 100) |> Timex.to_unix()
       }
     }
 
@@ -59,7 +59,7 @@ defmodule AlloyCi.AccountsTest do
       uid: @uid,
       token: @token,
       refresh_token: @refresh_token,
-      expires_at: Timex.now() + 500
+      expires_at: Timex.now() |> Timex.shift(milliseconds: 500) |> Timex.to_unix()
     }
 
     {:ok, _} =
@@ -108,7 +108,7 @@ defmodule AlloyCi.AccountsTest do
     assert authentication_count() == before_authentications + 1
   end
 
-  test "it updates the existing authentication when expired", %{auth: auth} do
+  test "it invalidates the existing authentication when expired", %{auth: auth} do
     {:ok, user} =
       %User{}
       |> User.changeset(%{email: @email, name: @name})
@@ -119,10 +119,10 @@ defmodule AlloyCi.AccountsTest do
       uid: @uid,
       token: @token,
       refresh_token: @refresh_token,
-      expires_at: Timex.now() - 500
+      expires_at: Timex.now() |> Timex.shift(milliseconds: -5000) |> Timex.to_unix()
     }
 
-    {:ok, authentication} =
+    {:ok, _} =
       user
       |> Ecto.build_assoc(:authentications)
       |> Authentication.changeset(params)
@@ -135,8 +135,6 @@ defmodule AlloyCi.AccountsTest do
     assert user_from_auth.id == user.id
     assert before_users == user_count()
     assert authentication_count() == before_authentications
-    auth2 = Repo.one(Ecto.assoc(user, :authentications))
-    assert auth2.id == authentication.id
   end
 
   test "it returns an error if the user is not the current user", %{auth: auth} do
@@ -155,7 +153,7 @@ defmodule AlloyCi.AccountsTest do
       uid: @uid,
       token: @token,
       refresh_token: @refresh_token,
-      expires_at: Timex.now() + 500
+      expires_at: Timex.now() |> Timex.shift(milliseconds: 500) |> Timex.to_unix()
     }
 
     {:ok, _} =

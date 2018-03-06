@@ -9,6 +9,10 @@ defmodule AlloyCi.Web.PublicController do
   end
 
   def register(conn, _params, current_user, _claims) do
-    render(conn, "register.html", current_user: current_user)
+    if current_user do
+      redirect(conn, to: project_path(conn, :index))
+    else
+      render(conn, "register.html", current_user: current_user)
+    end
   end
 end

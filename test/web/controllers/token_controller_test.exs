@@ -18,26 +18,11 @@ defmodule AlloyCi.Web.TokenControllerTest do
     assert Repo.get(GuardianToken, token.jti).jti == token.jti
   end
 
-  test "DELETE /tokens/:jti without revoke permission should fail", %{user: user} do
-    token = insert(:guardian_token)
-
-    conn =
-      user
-      |> guardian_login(:access)
-      |> delete(token_path(build_conn(), :delete, token.jti))
-
-    assert html_response(conn, 302)
-
-    new_token = Repo.get(GuardianToken, token.jti)
-    refute new_token == nil
-    assert new_token.jti == token.jti
-  end
-
-  test "DELETE /tokens/:jti without revoke permission should be cool", %{user: user} do
+  test "DELETE /tokens/:jti should delete token", %{user: user} do
     token = insert(:guardian_token)
 
     user
-    |> guardian_login(:access, perms: %{default: [:revoke_token]})
+    |> guardian_login(%{typ: "access"}, perms: %{default: [:revoke_token]})
     |> delete(token_path(build_conn(), :delete, token.jti))
 
     new_token = Repo.get(GuardianToken, token.jti)

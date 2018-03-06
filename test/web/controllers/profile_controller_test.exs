@@ -20,7 +20,7 @@ defmodule AlloyCi.Web.ProfileControllerTest do
   test "GET /profile with permission", %{user: user} do
     conn =
       user
-      |> guardian_login(:access, perms: %{default: [:read_token]})
+      |> guardian_login(%{typ: "access"}, perms: %{default: [:read_token]})
       |> get("/profile")
 
     assert html_response(conn, 200)
@@ -29,7 +29,7 @@ defmodule AlloyCi.Web.ProfileControllerTest do
   test "UPDATE /profile", %{user: user} do
     conn =
       user
-      |> guardian_login(:access, perms: %{default: [:read_token]})
+      |> guardian_login(%{typ: "access"}, perms: %{default: [:read_token]})
       |> put("/profile/1", %{"user" => %{"name" => "new name"}})
 
     assert html_response(conn, 302)
@@ -38,7 +38,7 @@ defmodule AlloyCi.Web.ProfileControllerTest do
   test "DELETE /profile for user", %{user: user} do
     conn =
       user
-      |> guardian_login(:access, perms: %{default: [:read_token]})
+      |> guardian_login(%{typ: "access"}, perms: %{default: [:read_token]})
       |> delete("/profile/#{user.id}")
 
     assert html_response(conn, 302)
@@ -49,7 +49,7 @@ defmodule AlloyCi.Web.ProfileControllerTest do
 
     conn =
       user
-      |> guardian_login(:access, perms: %{default: [:read_token]})
+      |> guardian_login(%{typ: "access"}, perms: %{default: [:read_token]})
       |> delete("/profile/#{auth.id}/delete")
 
     assert html_response(conn, 302)

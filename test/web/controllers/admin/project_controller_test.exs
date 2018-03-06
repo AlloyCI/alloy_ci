@@ -12,7 +12,7 @@ defmodule AlloyCi.Web.Admin.ProjectControllerTest do
   test "lists all entries on index", %{user: user} do
     conn =
       user
-      |> guardian_login(:token, key: :admin)
+      |> guardian_login(%{typ: "access"}, key: :admin)
       |> get("/admin/projects")
 
     assert html_response(conn, 200) =~ "Projects"
@@ -23,7 +23,7 @@ defmodule AlloyCi.Web.Admin.ProjectControllerTest do
 
     conn =
       user
-      |> guardian_login(:token, key: :admin)
+      |> guardian_login(%{typ: "access"}, key: :admin)
       |> get(admin_project_path(build_conn(), :show, project))
 
     assert html_response(conn, 200) =~ project.name
@@ -34,7 +34,7 @@ defmodule AlloyCi.Web.Admin.ProjectControllerTest do
 
     conn =
       user
-      |> guardian_login(:token, key: :admin)
+      |> guardian_login(%{typ: "access"}, key: :admin)
       |> delete(admin_project_path(build_conn(), :delete, project))
 
     assert redirected_to(conn) == admin_project_path(conn, :index)

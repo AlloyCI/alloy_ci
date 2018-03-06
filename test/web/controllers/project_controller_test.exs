@@ -25,7 +25,7 @@ defmodule AlloyCi.Web.ProjectControllerTest do
   test "lists all entries on index", %{user: user} do
     conn =
       user
-      |> guardian_login(:access)
+      |> guardian_login(%{typ: "access"})
       |> get("/projects")
 
     assert html_response(conn, 200) =~ "Your projects"
@@ -34,7 +34,7 @@ defmodule AlloyCi.Web.ProjectControllerTest do
   test "creates resource and redirects when data is valid", %{user: user} do
     conn =
       user
-      |> guardian_login(:access)
+      |> guardian_login(%{typ: "access"})
       |> post(project_path(build_conn(), :create), project: @valid_attrs)
 
     project = Project |> last |> Repo.one()
@@ -50,7 +50,7 @@ defmodule AlloyCi.Web.ProjectControllerTest do
   test "does not create resource and renders errors when data is invalid", %{user: user} do
     conn =
       user
-      |> guardian_login(:access)
+      |> guardian_login(%{typ: "access"})
       |> post(project_path(build_conn(), :create), project: @invalid_attrs)
 
     assert redirected_to(conn) == project_path(conn, :index)
@@ -61,7 +61,7 @@ defmodule AlloyCi.Web.ProjectControllerTest do
 
     conn =
       user
-      |> guardian_login(:access)
+      |> guardian_login(%{typ: "access"})
       |> get(project_path(build_conn(), :show, project))
 
     assert html_response(conn, 200) =~ project.name
@@ -72,7 +72,7 @@ defmodule AlloyCi.Web.ProjectControllerTest do
 
     conn =
       user
-      |> guardian_login(:access)
+      |> guardian_login(%{typ: "access"})
       |> get(project_path(build_conn(), :edit, project))
 
     assert html_response(conn, 200) =~ "Project Settings"
@@ -83,7 +83,7 @@ defmodule AlloyCi.Web.ProjectControllerTest do
 
     conn =
       user
-      |> guardian_login(:access)
+      |> guardian_login(%{typ: "access"})
       |> put(project_path(build_conn(), :update, project), project: @valid_attrs)
 
     assert redirected_to(conn) == project_path(conn, :edit, project)
@@ -95,7 +95,7 @@ defmodule AlloyCi.Web.ProjectControllerTest do
 
     conn =
       user
-      |> guardian_login(:access)
+      |> guardian_login(%{typ: "access"})
       |> put(project_path(build_conn(), :update, project), project: @invalid_attrs)
 
     assert html_response(conn, 200) =~ "Project Settings"
@@ -106,7 +106,7 @@ defmodule AlloyCi.Web.ProjectControllerTest do
 
     conn =
       user
-      |> guardian_login(:access)
+      |> guardian_login(%{typ: "access"})
       |> delete(project_path(build_conn(), :delete, project))
 
     assert redirected_to(conn) == project_path(conn, :index)

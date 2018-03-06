@@ -17,7 +17,7 @@ defmodule AlloyCi.Web.PipelineControllerTest do
   test "it duplicates the current pipeline", %{project: project, pipeline: pipeline, user: user} do
     conn =
       user
-      |> guardian_login(:access)
+      |> guardian_login(%{typ: "access"})
       |> post("/projects/#{project.id}/pipelines/", %{id: pipeline.id})
 
     assert conn.status == 302
@@ -26,7 +26,7 @@ defmodule AlloyCi.Web.PipelineControllerTest do
   test "it cancels the pipeline", %{project: project, pipeline: pipeline, user: user} do
     conn =
       user
-      |> guardian_login(:access)
+      |> guardian_login(%{typ: "access"})
       |> delete("/projects/#{project.id}/pipelines/#{pipeline.id}")
 
     assert conn.status == 302
@@ -37,7 +37,7 @@ defmodule AlloyCi.Web.PipelineControllerTest do
   test "it shows chosen pipeline", %{project: project, pipeline: pipeline, user: user} do
     conn =
       user
-      |> guardian_login(:access)
+      |> guardian_login(%{typ: "access"})
       |> get("/projects/#{project.id}/pipelines/#{pipeline.id}")
 
     assert html_response(conn, 200) =~ "#{pipeline.commit["message"]}"
@@ -47,7 +47,7 @@ defmodule AlloyCi.Web.PipelineControllerTest do
     conn =
       :user
       |> insert()
-      |> guardian_login(:access)
+      |> guardian_login(%{typ: "access"})
       |> get("/projects/#{project.id}/pipelines/#{pipeline.id}")
 
     assert html_response(conn, 302) =~ "redirected"
@@ -59,7 +59,7 @@ defmodule AlloyCi.Web.PipelineControllerTest do
     conn =
       :user
       |> insert()
-      |> guardian_login(:access)
+      |> guardian_login(%{typ: "access"})
       |> get("/projects/#{project.id}/pipelines/#{pipeline.id}")
 
     assert html_response(conn, 200) =~ "#{pipeline.commit["message"]}"
