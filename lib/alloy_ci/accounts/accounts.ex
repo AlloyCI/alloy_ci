@@ -80,7 +80,7 @@ defmodule AlloyCi.Accounts do
         {:error, reason}
 
       authentication ->
-        if authentication.expires_at && authentication.expires_at < Guardian.Utils.timestamp() do
+        if authentication.expires_at && authentication.expires_at < Timex.now() do
           replace_authentication(authentication, auth, current_user)
         else
           user_from_authentication(authentication, current_user)

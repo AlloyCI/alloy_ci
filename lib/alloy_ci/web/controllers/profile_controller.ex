@@ -5,12 +5,7 @@ defmodule AlloyCi.Web.ProfileController do
 
   plug(EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access")
 
-  plug(
-    EnsurePermissions,
-    [handler: AlloyCi.Web.AuthController, default: ~w(read_token)] when action in [:index]
-  )
-
-  def index(conn, _, current_user, {:ok, %{"jti" => jti}}) do
+  def index(conn, _, current_user, %{"jti" => jti}) do
     render(
       conn,
       "index.html",
@@ -22,7 +17,7 @@ defmodule AlloyCi.Web.ProfileController do
     )
   end
 
-  def update(conn, %{"user" => user_params}, current_user, {:ok, %{"jti" => jti}}) do
+  def update(conn, %{"user" => user_params}, current_user, %{"jti" => jti}) do
     with {:ok, _} <- Accounts.update_profile(current_user, user_params) do
       conn
       |> put_flash(:info, "Profile updated successfully.")

@@ -2,6 +2,7 @@ defmodule AlloyCi.Web.ViewHelpers do
   @moduledoc """
   """
   use Phoenix.HTML
+  alias AlloyCi.Guardian
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 

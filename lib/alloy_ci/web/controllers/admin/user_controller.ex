@@ -20,9 +20,16 @@ defmodule AlloyCi.Web.Admin.UserController do
     |> redirect(to: admin_user_path(conn, :index))
   end
 
-  def unauthenticated(conn, _params) do
+  # Authentication handler functions
+  def auth_error(conn, {:unauthorized, _}, _opts) do
     conn
-    |> put_flash(:error, "Admin authentication required")
+    |> put_flash(:error, "Unauthorized")
+    |> redirect(to: admin_login_path(conn, :new))
+  end
+
+  def auth_error(conn, {_, _}, _opts) do
+    conn
+    |> put_flash(:error, "Admin Authentication required")
     |> redirect(to: admin_login_path(conn, :new))
   end
 end

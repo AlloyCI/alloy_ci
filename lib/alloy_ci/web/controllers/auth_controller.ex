@@ -6,7 +6,7 @@ defmodule AlloyCi.Web.AuthController do
   """
   use AlloyCi.Web, :controller
 
-  alias AlloyCi.Accounts
+  alias AlloyCi.{Accounts, Guardian}
 
   plug(Ueberauth)
   plug(:put_layout, "login_layout.html")
@@ -41,7 +41,7 @@ defmodule AlloyCi.Web.AuthController do
       {:ok, user} ->
         conn
         |> put_flash(:info, "Signed in as #{user.name}")
-        |> Guardian.Plug.sign_in(user, :access, perms: %{default: Guardian.Permissions.max()})
+        |> Guardian.Plug.sign_in(user, %{typ: "access"})
         |> redirect(to: project_path(conn, :index))
 
       {:error, reason} ->
@@ -69,15 +69,15 @@ defmodule AlloyCi.Web.AuthController do
   end
 
   # Authentication handler functions
-  def unauthenticated(conn, _params) do
+  def auth_error(conn, {:unauthorized, _}, _opts) do
     conn
-    |> put_flash(:error, "Authentication required")
+    |> put_flash(:error, "Unauthorized")
     |> redirect(to: auth_path(conn, :login, :login))
   end
 
-  def unauthorized(conn, _params) do
+  def auth_error(conn, {_, _}, _opts) do
     conn
-    |> put_flash(:error, "Unauthorized")
-    |> redirect(external: redirect_back(conn))
+    |> put_flash(:error, "Authentication required")
+    |> redirect(to: auth_path(conn, :login, :login))
   end
 end

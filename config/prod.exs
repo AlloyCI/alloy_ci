@@ -65,7 +65,9 @@ config :ueberauth, Ueberauth.Strategy.Github.OAuth,
   client_secret: "${GITHUB_CLIENT_SECRET}"
 
 # Configures Guardian
-config :guardian, Guardian, secret_key: "${SECRET_KEY_BASE}"
+config :alloy_ci, AlloyCi.Guardian,
+  issuer: "AlloyCi.Prod",
+  secret_key: "${SECRET_KEY_BASE}"
 
 # Configures Notifiers
 config :alloy_ci, AlloyCi.Notifier,

@@ -26,7 +26,7 @@ defmodule AlloyCi.AccountsTest do
       credentials: %Credentials{
         token: @token,
         refresh_token: "refresh-token",
-        expires_at: Guardian.Utils.timestamp() + 1000
+        expires_at: Timex.now() + 1000
       }
     }
 
@@ -59,7 +59,7 @@ defmodule AlloyCi.AccountsTest do
       uid: @uid,
       token: @token,
       refresh_token: @refresh_token,
-      expires_at: Guardian.Utils.timestamp() + 500
+      expires_at: Timex.now() + 500
     }
 
     {:ok, _} =
@@ -119,7 +119,7 @@ defmodule AlloyCi.AccountsTest do
       uid: @uid,
       token: @token,
       refresh_token: @refresh_token,
-      expires_at: Guardian.Utils.timestamp() - 500
+      expires_at: Timex.now() - 500
     }
 
     {:ok, authentication} =
@@ -155,7 +155,7 @@ defmodule AlloyCi.AccountsTest do
       uid: @uid,
       token: @token,
       refresh_token: @refresh_token,
-      expires_at: Guardian.Utils.timestamp() + 500
+      expires_at: Timex.now() + 500
     }
 
     {:ok, _} =

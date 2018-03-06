@@ -13,8 +13,7 @@ defmodule AlloyCi.Web.Router do
   # Then it will attempt to load the resource found in the JWT.
   # If it doesn't find a JWT in the default location it doesn't do anything
   pipeline :browser_auth do
-    plug(Guardian.Plug.VerifySession)
-    plug(Guardian.Plug.LoadResource)
+    plug(AlloyCi.Guardian.Pipeline)
   end
 
   # This pipeline is created for use within the admin namespace.
@@ -25,8 +24,7 @@ defmodule AlloyCi.Web.Router do
   # This does not conflict with the browser_auth pipeline.
   # If it doesn't find a JWT in the location it doesn't do anything
   pipeline :admin_browser_auth do
-    plug(Guardian.Plug.VerifySession, key: :admin)
-    plug(Guardian.Plug.LoadResource, key: :admin)
+    plug(AlloyCi.Guardian.AdminPipeline)
   end
 
   # We need this pipeline to load the token when we're impersonating.
@@ -80,7 +78,7 @@ defmodule AlloyCi.Web.Router do
   # This scope is the main authentication area for Ueberauth
   scope "/auth", AlloyCi.Web do
     # Use the default browser stack
-    pipe_through([:browser, :browser_auth])
+    pipe_through([:browser])
 
     get("/:provider", AuthController, :login)
     get("/:provider/callback", AuthController, :callback)
@@ -91,11 +89,16 @@ defmodule AlloyCi.Web.Router do
   # Normal users can only go to the login page
   scope "/admin", AlloyCi.Web.Admin, as: :admin do
     # Use the default browser stack
-    pipe_through([:browser, :admin_browser_auth])
+    pipe_through([:browser])
 
     get("/login", SessionController, :new, as: :login)
     get("/login/:provider", SessionController, :new)
     post("/auth/:provider/callback", SessionController, :callback)
+  end
+
+  scope "/admin", AlloyCi.Web.Admin, as: :admin do
+    pipe_through([:browser, :admin_browser_auth])
+
     get("/logout", SessionController, :logout)
     delete("/logout", SessionController, :logout, as: :logout)
     post("/impersonate/:user_id", SessionController, :impersonate, as: :impersonation)

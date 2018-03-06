@@ -5,19 +5,14 @@ defmodule AlloyCi.Web.TokenController do
 
   plug(EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access")
 
-  plug(
-    EnsurePermissions,
-    [handler: AlloyCi.Web.AuthController, default: ~w(revoke_token)] when action in [:delete]
-  )
-
-  def delete(conn, %{"id" => jti}, current_user, _claims) do
+  def delete(conn, %{"id" => jti}, current_user, claims) do
     case Repo.get(GuardianToken, jti) do
       nil ->
         could_not_delete(conn)
 
       token ->
         with {:ok, _} <- Repo.delete(token) do
-          {:ok, sub} = AlloyCi.GuardianSerializer.for_token(current_user)
+          {:ok, sub} = AlloyCi.Guardian.subject_for_token(current_user, claims)
 
           if sub == token.sub do
             conn

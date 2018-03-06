@@ -6,7 +6,7 @@ defmodule AlloyCi.GuardianToken do
   use Ecto.Schema
   import Ecto.Query
 
-  alias AlloyCi.{GuardianSerializer, Repo}
+  alias AlloyCi.{Guardian, Repo}
 
   @primary_key {:jti, :string, []}
   @derive {Phoenix.Param, key: :jti}
@@ -23,7 +23,7 @@ defmodule AlloyCi.GuardianToken do
   end
 
   def for_user(user) do
-    case GuardianSerializer.for_token(user) do
+    case Guardian.subject_for_token(user, nil) do
       {:ok, aud} ->
         Repo.all(from(t in AlloyCi.GuardianToken, where: t.sub == ^aud))
 

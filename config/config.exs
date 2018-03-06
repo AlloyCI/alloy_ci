@@ -37,23 +37,13 @@ config :ueberauth, Ueberauth.Strategy.Github.OAuth,
   client_id: System.get_env("GITHUB_CLIENT_ID"),
   client_secret: System.get_env("GITHUB_CLIENT_SECRET")
 
-config :guardian, Guardian,
+config :alloy_ci, AlloyCi.Guardian,
   issuer: "AlloyCi.#{Mix.env()}",
   ttl: {30, :days},
   verify_issuer: true,
-  serializer: AlloyCi.GuardianSerializer,
-  secret_key: System.get_env("SECRET_KEY_BASE"),
-  hooks: GuardianDb,
-  permissions: %{
-    default: [
-      :read_profile,
-      :write_profile,
-      :read_token,
-      :revoke_token
-    ]
-  }
+  secret_key: System.get_env("SECRET_KEY_BASE")
 
-config :guardian_db, GuardianDb,
+config :guardian, Guardian.DB,
   repo: AlloyCi.Repo,
   # 60 minutes
   sweep_interval: 60

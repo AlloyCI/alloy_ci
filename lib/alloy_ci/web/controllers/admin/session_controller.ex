@@ -7,7 +7,7 @@ defmodule AlloyCi.Web.Admin.SessionController do
   """
   use AlloyCi.Web, :admin_controller
 
-  alias AlloyCi.Accounts
+  alias AlloyCi.{Accounts, Guardian}
 
   # We still want to use Ueberauth for checking the passwords etc
   # we have everything we need to check email / passwords and OAuth already
@@ -40,12 +40,7 @@ defmodule AlloyCi.Web.Admin.SessionController do
         if user.is_admin do
           conn
           |> put_flash(:info, "Signed in as #{user.name}")
-          |> Guardian.Plug.sign_in(
-            user,
-            :access,
-            key: :admin,
-            perms: %{default: Guardian.Permissions.max()}
-          )
+          |> Guardian.Plug.sign_in(user, %{typ: "access"}, key: :admin)
           |> redirect(to: admin_user_path(conn, :index))
         else
           conn
@@ -72,7 +67,7 @@ defmodule AlloyCi.Web.Admin.SessionController do
 
     conn
     |> Guardian.Plug.sign_out(:default)
-    |> Guardian.Plug.sign_in(user, :access, perms: %{default: Guardian.Permissions.max()})
+    |> Guardian.Plug.sign_in(user, %{typ: "access"})
     |> redirect(to: "/")
   end
 

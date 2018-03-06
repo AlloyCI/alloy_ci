@@ -27,7 +27,7 @@ defmodule AlloyCi.Web do
   def controller do
     quote do
       use Phoenix.Controller, namespace: AlloyCi.Web
-      use Guardian.Phoenix.Controller
+      use AlloyCi.Guardian.Controller, key: :default
 
       alias Guardian.Plug.{EnsureAuthenticated, EnsurePermissions}
 
@@ -38,7 +38,7 @@ defmodule AlloyCi.Web do
   def admin_controller do
     quote do
       use Phoenix.Controller, namespace: AlloyCi.Web.Admin
-      use Guardian.Phoenix.Controller, key: :admin
+      use AlloyCi.Guardian.Controller, key: :admin
 
       alias Guardian.Plug.{EnsureAuthenticated, EnsurePermissions}
 

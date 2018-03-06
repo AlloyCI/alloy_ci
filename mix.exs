@@ -90,7 +90,7 @@ defmodule AlloyCi.Mixfile do
       {:cowboy, "~> 1.1"},
       {:gettext, "~> 0.15"},
       {:gravatar, "~> 0.1.0"},
-      {:guardian_db, "~> 0.8"},
+      {:guardian_db, "~> 1.1"},
       {:httpoison, "~> 1.0", override: true},
       {:joken, "~> 1.5"},
       {:kerosene, "~> 0.7"},
