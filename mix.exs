@@ -45,6 +45,7 @@ defmodule AlloyCi.Mixfile do
       :arc_ecto,
       :bamboo,
       :bamboo_smtp,
+      :bcrypt_elixir,
       :comeonin,
       :cowboy,
       :elixir_make,
