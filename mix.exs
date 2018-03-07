@@ -64,6 +64,7 @@ defmodule AlloyCi.Mixfile do
       :phoenix_pubsub,
       :postgrex,
       :secure_random,
+      :sentry,
       :timex,
       :tentacat,
       :ueberauth,
@@ -102,6 +103,7 @@ defmodule AlloyCi.Mixfile do
       {:phoenix_pubsub, "~> 1.0"},
       {:postgrex, ">= 0.0.0"},
       {:secure_random, "~> 0.5"},
+      {:sentry, "~> 6.1"},
       {:tentacat, "~> 0.8"},
       {:timex, "~> 3.2"},
       {:ueberauth_github, "~> 0.7"},
@@ -127,7 +129,8 @@ defmodule AlloyCi.Mixfile do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       routes: ["phx.routes AlloyCi.Web.Router"],
-      test: ["ecto.create --quiet", "ecto.migrate", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate", "test"],
+      sentry_recompile: ["deps.compile sentry --force", "compile"]
     ]
   end
 end

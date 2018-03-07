@@ -16,6 +16,8 @@ services:
       # port should bind to. Use the same second value here as PORT below
       - "4000:80"
     environment:
+      # Set this to your Sentry DSN if you want to have Sentry enabled
+      SENTRY_DSN: "https://public:secret@app.getsentry.com/1"
       DATABASE_URL: "ecto://alloy_ci:<password>@db/alloy_ci_prod"
       PORT: 80 # Use 443 for SSL, even if you are proxying SSL via another web server
       HOST: "<hostname>"

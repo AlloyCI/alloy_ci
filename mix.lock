@@ -54,6 +54,7 @@
   "que": {:git, "https://github.com/AlloyCI/que.git", "593dc65c3405c0f5381a091ce2703c3401618485", []},
   "ranch": {:hex, :ranch, "1.3.2", "e4965a144dc9fbe70e5c077c65e73c57165416a901bd02ea899cfd95aa890986", [:rebar3], []},
   "secure_random": {:hex, :secure_random, "0.5.1", "c5532b37c89d175c328f5196a0c2a5680b15ebce3e654da37129a9fe40ebf51b", [:mix], []},
+  "sentry": {:hex, :sentry, "6.1.0", "ee3d5cdc2294b6235159e03562c6a089807142164dcffdb769af08b42285eb37", [:mix], [{:hackney, "~> 1.8 or 1.6.5", [hex: :hackney, optional: false]}, {:plug, "~> 1.0", [hex: :plug, optional: true]}, {:poison, "~> 1.5 or ~> 2.0 or ~> 3.0", [hex: :poison, optional: false]}, {:uuid, "~> 1.0", [hex: :uuid, optional: false]}]},
   "ssl_verify_fun": {:hex, :ssl_verify_fun, "1.1.1", "28a4d65b7f59893bc2c7de786dec1e1555bd742d336043fe644ae956c3497fbe", [:make, :rebar], []},
   "tentacat": {:hex, :tentacat, "0.8.0", "51be8d448588263fd06b8fb17d672d4c05f000bdc77d6f9e3b775e3edbcee18b", [:mix], [{:exjsx, "~> 4.0", [hex: :exjsx, optional: false]}, {:httpoison, "~> 0.8", [hex: :httpoison, optional: false]}]},
   "timex": {:hex, :timex, "3.2.1", "639975eac45c4c08c2dbf7fc53033c313ff1f94fad9282af03619a3826493612", [:mix], [{:combine, "~> 0.10", [hex: :combine, optional: false]}, {:gettext, "~> 0.10", [hex: :gettext, optional: false]}, {:tzdata, "~> 0.1.8 or ~> 0.5", [hex: :tzdata, optional: false]}]},

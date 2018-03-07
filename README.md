@@ -35,7 +35,7 @@ branches, so you can always know their status, just like any other CI service.
 ## Features
 
 - [x] Basic CI functionality:
-  - [x] Can parse a basic [`.alloy-ci.json`](doc/json/README.md) file correctly, and create build jobs accordingly
+  - [x] Uses the [`.alloy-ci.json`](doc/json/README.md) to define pipelines, jobs, and stages
   - [x] Can send the required build information to the runner for processing when requested
   - [x] Can receive status updates from runner
   - [x] Can report back to GitHub with the statuses
@@ -52,7 +52,8 @@ branches, so you can always know their status, just like any other CI service.
   - [x] Can make use of `only` and `except` tags for jobs
   - [x] Can make use of secret variables stored on a per project basis
   - [x] Can receive uploaded artifacts from runners
-  - [x] Can pass artifacts between build jobs
+  - [x] Can pass artifacts between build jobs as dependencies
+  - [x] Can manually specify dependent jobs via the `.alloy-ci.json` file
   - [ ] Presents the artifacts to the user in a nice way, and allows download
 - [ ] Deployment functionality
   - [ ] Can manually start deployments (manual actions)

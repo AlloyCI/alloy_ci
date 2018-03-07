@@ -137,6 +137,7 @@ The required variables are as follows:
 | GITHUB_SECRET_TOKEN        | Integration token used to verify GitHub payloads |
 | ENABLE_SLACK_NOTIFICATIONS | Please set it to "true" or "false" |
 | ENABLE_EMAIL_NOTIFICATIONS | Please set it to "true" or "false" |
+| SENTRY_DSN                 | Set this to your Sentry DSN if you want to use it for error catching |
 
 Configuration variables, depending on which notification method is enabled:
 
