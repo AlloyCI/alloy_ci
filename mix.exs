@@ -3,7 +3,7 @@ defmodule AlloyCi.Mixfile do
   """
   use Mix.Project
 
-  @version "0.4.0"
+  @version "0.5.0"
 
   def project do
     [
