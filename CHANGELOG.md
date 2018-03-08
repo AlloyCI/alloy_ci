@@ -1,3 +1,24 @@
+<a name="v0.4.0"></a>
+### v0.4.0 (2018-03-08)
+
+#### Features
+
+* Show available global runners on the project's settings page
+* Initial support for build artifacts:
+  - Jobs can create artifacts and upload them to the server (only local storage supported for now)
+  - Jobs can download artifacts from previous builds, if they depend on them
+* Support for dependent builds:
+  - Builds with artifacts from previous stages will be automatically added as dependencies for jobs of the subsequent stage
+  - Builds can explicitly declare their own dependencies via the `.alloy-ci.json` file
+* Added the option to use Sentry for error catching in production
+* Updated Guardian to 1.0  
+
+#### Bug Fixes
+
+* Redirect to main projects if user is logged in and visits the register page
+* Skip updating the build trace, if the runner calls the endpoint with an empty string
+* Updated JS dependencies
+
 <a name="v0.3.0"></a>
 ### v0.3.0 (2018-02-16)
 
