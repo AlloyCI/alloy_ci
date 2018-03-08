@@ -7,7 +7,9 @@
       <div class="row">
         <div class="col-sm-12">
           <div class="input-group">
-            <span class="input-group-addon"><%= icon("search") %></i></span>
+            <div class="input-group-prepend">
+                <span class="input-group-text"><%= icon("search") %></i></span>
+              </div>
             <input data-action="keyup->repos#filter" data-target="repos.input" type="text" class="form-control" placeholder="Filter...">
           </div>
         </div>

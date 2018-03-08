@@ -21,11 +21,11 @@ exports.config = {
     },
     stylesheets: {
       joinTo: {
-        "css/app.css": path => !path.includes('kit'),
-        "css/kit.css": path => path.includes('kit')
+        "css/app.css": [path => path.includes('core-ui'), 'css/app.scss'],
+        "css/kit.css": 'css/kit.scss'
       },
       order: {
-        after: ["css/app.css"] // concat app.css last
+        after: ["css/app.scss", "css/kit.scss"] // concat app.css last
       }
     },
     templates: {
@@ -67,7 +67,8 @@ exports.config = {
           "node_modules/bootstrap/scss",
           "node_modules/font-awesome/css",
           "node_modules/codemirror/lib",
-          "node_modules/codemirror/theme"
+          "node_modules/codemirror/theme",
+          "node_modules/spectre.css/src"
         ], // tell sass-brunch where to look for files to @import
         precision: 8 // minimum precision required by bootstrap-sass
       }

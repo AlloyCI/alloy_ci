@@ -7,6 +7,18 @@ form.link {
   margin: 0 5px;
 }
 
+.breadcrumb {
+  margin-bottom: 0;
+}
+
+.nav-subtitle {
+  font-size: 11px;
+  font-weight: 6000;
+  padding: .75rem 1rem;
+  color: #eceeef;
+  text-transform: uppercase;
+}
+
 .alert:empty {
   display: none;
 }

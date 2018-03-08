@@ -14,8 +14,6 @@
             <li class="nav-item">
               <a class="nav-link"
                  data-action="builds#fetchData"
-                 data-toggle="tooltip" data-placement="right"
-                 title="Build status: <%= String.capitalize(build.status) %>"
                  data-build-url="<%= project_build_path(@conn, :show, build.project_id, build.id) %>"
                  data-id="<%= build.id %>" data-name="<%= build.name %>" href="#">
                  <%= icon("terminal") %> <%= build.name %>

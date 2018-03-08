@@ -7,7 +7,9 @@
         </div>
         <div class="card-block">
           <div class="input-group m-b-2">
-            <span class="input-group-addon"><%= icon("search") %></i></span>
+            <div class="input-group-prepend">
+              <span class="input-group-text"><%= icon("search") %></i></span>
+            </div>
             <input type="text" id="repo-filter" class="form-control" placeholder="Filter...">
           </div>
           <div class="row">

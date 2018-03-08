@@ -1,14 +1,7 @@
-/**
- * CoreUI - Open Source Bootstrap Admin Template
- * @version v1.0.0-alpha.4
- * @link http://coreui.io
- * Copyright (c) 2017 creativeLabs Łukasz Holeczek
- * @license MIT
- */
- 
 /*****
 * CONFIGURATION
 */
+
 //Main navigation
 $.navigation = $('nav > ul.nav');
 
@@ -76,21 +69,28 @@ $(document).ready(function($){
   }
 
   /* ---------- Main Menu Open/Close, Min/Full ---------- */
-  $('.navbar-toggler').click(function(){
-    if ($(this).hasClass('sidebar-toggler')) {
-      $('body').toggleClass('sidebar-hidden');
-      resizeBroadcast();
-    }
+  $('.sidebar-toggler').click(function(){
+    $('body').toggleClass('sidebar-hidden');
+    resizeBroadcast();
+  });
 
-    if ($(this).hasClass('aside-menu-toggler')) {
-      $('body').toggleClass('aside-menu-hidden');
-      resizeBroadcast();
-    }
+  $('.sidebar-minimizer').click(function(){
+    $('body').toggleClass('sidebar-minimized');
+    resizeBroadcast();
+  });
 
-    if ($(this).hasClass('mobile-sidebar-toggler')) {
-      $('body').toggleClass('sidebar-mobile-show');
-      resizeBroadcast();
-    }
+  $('.brand-minimizer').click(function(){
+    $('body').toggleClass('brand-minimized');
+  });
+
+  $('.aside-menu-toggler').click(function(){
+    $('body').toggleClass('aside-menu-hidden');
+    resizeBroadcast();
+  });
+
+  $('.mobile-sidebar-toggler').click(function(){
+    $('body').toggleClass('sidebar-mobile-show');
+    resizeBroadcast();
   });
 
   $('.sidebar-close').click(function(){
@@ -107,14 +107,14 @@ $(document).ready(function($){
 * CARDS ACTIONS
 */
 
-$(document).on('click', '.card-actions a', function(e){
+$('.card-actions').on('click', 'a, button', function(e){
   e.preventDefault();
 
   if ($(this).hasClass('btn-close')) {
     $(this).parent().parent().parent().fadeOut();
   } else if ($(this).hasClass('btn-minimize')) {
-    var $target = $(this).parent().parent().next('.card-block');
-    if (!$(this).hasClass('collapsed')) {
+    // var $target = $(this).parent().parent().next('.card-body').collapse({toggle: true});
+    if ($(this).hasClass('collapsed')) {
       $('i',$(this)).removeClass($.panelIconOpened).addClass($.panelIconClosed);
     } else {
       $('i',$(this)).removeClass($.panelIconClosed).addClass($.panelIconOpened);

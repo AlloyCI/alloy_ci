@@ -17,16 +17,16 @@
     <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
     <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
     <!-- Navigation -->
-    <nav class="navbar navbar-toggleable-sm navbar-custom navbar-light">
+    <nav class="navbar navbar-expand-lg navbar-custom navbar-light">
       <div class="container">
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarToggler-5" aria-controls="navbarToggler-5" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
         <a class="navbar-brand" href="#">
           <img src="/images/logo.png" class="img-avatar" width="25%" alt="logo">
           AlloyCI
         </a>
-        <div class="collapse navbar-collapse justify-content-end" id="navbarToggler-5">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarToggler-5" aria-controls="navbarToggler-5" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse pull-xs-right justify-content-end" id="navbarToggler-5">
           <ul class="navbar-nav mt-2 mt-md-0">
             <li class="nav-item">
               <a class="nav-link" href="https://github.com/AlloyCI/alloy_ci/tree/master/doc">Documentation</a>

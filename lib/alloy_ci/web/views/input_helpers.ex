@@ -34,7 +34,7 @@ defmodule AlloyCi.Web.InputHelpers do
         Form.hidden_input(form, field, input_opts),
         content_tag :button,
           type: "button",
-          class: "btn btn-sm btn-info remove-tag",
+          class: "btn btn-sm btn-info remove-tag text-white",
           data: [id: new_id, action: "tags#removeTag"] do
           [
             value <> " ",

@@ -52,8 +52,8 @@
   </div>
 
   <footer class="app-footer">
-    <a href="https://alloy-ci.com">AlloyCI</a> © <%= Timex.now.year %> Insomniware, LLC.
-    <span class="float-right">Design by <a href="http://coreui.io">CoreUI</a></span>
+    <span><a href="https://alloy-ci.com">AlloyCI</a> © <%= Timex.now.year %> Insomniware, LLC.</span>
+    <span class="ml-auto">Design by <a href="http://coreui.io">CoreUI</a></span>
   </footer>
 
   <script>window.userToken = "<%= Accounts.get_valid_auth_token(@current_user) %>";</script>

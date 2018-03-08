@@ -14,10 +14,10 @@ defmodule AlloyCi.Web.ViewHelpers do
   def callout("running"), do: "callout-warning"
   def callout(_), do: "callout-general"
 
-  def card_status("success"), do: "card-inverse card-success"
-  def card_status("failed"), do: "card-inverse card-danger"
-  def card_status("running"), do: "card-inverse card-primary"
-  def card_status("pending"), do: "card-inverse card-info"
+  def card_status("success"), do: "text-white bg-success"
+  def card_status("failed"), do: "text-white bg-danger"
+  def card_status("running"), do: "text-white bg-primary"
+  def card_status("pending"), do: "text-white bg-info"
   def card_status(_), do: ""
 
   def current_user(conn), do: Guardian.Plug.current_resource(conn)

@@ -64,7 +64,7 @@ defmodule AlloyCi.Web.ProjectView do
       [
         content_tag :button,
           type: "button",
-          class: "btn btn-sm btn-info" do
+          class: "btn btn-sm btn-info text-white" do
           [value <> " "]
         end
       ]

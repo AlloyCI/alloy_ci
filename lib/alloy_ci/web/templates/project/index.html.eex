@@ -46,7 +46,9 @@
           </div>
           <div class="card-block">
             <div data-controller="repos" class="input-group m-b-2">
-              <span class="input-group-addon"><%= icon("search") %></i></span>
+              <div class="input-group-prepend">
+                <span class="input-group-text"><%= icon("search") %></i></span>
+              </div>
               <input data-action="keyup->repos#filter" data-target="repos.input" type="text" class="form-control" placeholder="Filter...">
             </div>
             <div class="row">
@@ -57,7 +59,7 @@
                   <div class="card <%= card_status(status)%>">
                     <div class="card-block project-card" data-url="<%= project_path(@conn, :show, project) %>">
                       <div class="btn-group pull-right">
-                        <%= link to: project_path(@conn, :edit, project), class: "btn btn-warning p-a-0" do %>
+                        <%= link to: project_path(@conn, :edit, project), class: "btn btn-warning text-white p-a-0" do %>
                           <%= icon("cogs") %>
                         <% end %>
                       </div>
@@ -82,7 +84,7 @@
               <% end %>
             </div>
             <%= paginate @conn, @kerosene %>
-            <%= link to: project_path(@conn, :new), class: "btn btn-secondary" do %>
+            <%= link to: project_path(@conn, :new), class: "btn btn-secondary text-white" do %>
               <%= icon("plus") %>
               New project
             <% end %>

@@ -62,7 +62,7 @@
                 <% end %>
               </div>
               <%= paginate @conn, @kerosene %>
-              <%= link to: project_path(@conn, :edit, @project), class: "btn btn-warning btn-sm" do %>
+              <%= link to: project_path(@conn, :edit, @project), class: "btn btn-warning btn-sm text-white" do %>
                 <%= icon("cogs") %>
                 Settings
               <% end %>
