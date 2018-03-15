@@ -1,11 +1,15 @@
-<div class="container-fluid">
+<div class="page-head">
+  <h2 class="page-head-title">
+    Notifications
+  </h2>
+</div>
+
+<div class="main-content container-fluid">
    <div class="row">
     <div class="col-sm-12">
-      <div class="card">
-        <div class="card-header">
-          <strong>Notifications</strong>
-        </div>
-        <div class="card-block">
+      <div class="card card-border-color card-border-color-dark">
+        <div class="card-header"></div>
+        <div class="card-body">
           <ul class="nav nav-tabs" role="tablist">
             <li class="nav-item">
               <a class="nav-link active" data-toggle="tab" href="#unread" role="tab"><%= icon("bell-o") %> Unread</a>

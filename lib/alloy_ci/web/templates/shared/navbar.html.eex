@@ -1,65 +1,55 @@
-<header class="app-header navbar">
-  <% count = notification_count(@current_user) %>
-  <button class="navbar-toggler mobile-sidebar-toggler d-lg-none" type="button">☰</button>
-  <a class="navbar-brand" href="#"></a>
-  <ul class="nav navbar-nav hidden-md-down">
-    <li class="nav-item">
-        <a class="nav-link navbar-toggler sidebar-toggler d-md-down-none" href="#">☰</a>
-    </li>
-
-    <li class="nav-item px-1">
-      <%= link "My Projects", to: project_path(@conn, :index), class: "nav-link" %>
-    </li>
-
-    <%= if @current_user.is_admin do %>
-      <li class="nav-item px-1">
-        <%= link "Admin", to: admin_user_path(@conn, :index), class: "nav-link" %>
-      </li>
-      <!-- <li class="nav-item px-1">
-        <a class="nav-link" href="#">Settings</a>
-      </li> -->
-    <% end %>
-  </ul>
-
-  <ul class="nav navbar-nav ml-auto">
-    <li class="nav-item dropdown margin-right-imp">
-      <a class="nav-link dropdown-toggle nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-        <img src="<%= Accounts.gravatar_url(@current_user) %>" class="img-avatar" alt="<%= @current_user.email %>">
-        <span class="hidden-md-down"><%= @current_user.name %></span>
-      </a>
-      <div class="dropdown-menu dropdown-menu-right">
-        <div class="dropdown-header text-center">
-          <strong>Account</strong>
-        </div>
-
-        <%= link to: notification_path(@conn, :index), class: "dropdown-item" do %>
-          <%= icon("bell-o fa-lg") %>
-          Notifications<span class="badge badge-info"><%= count %></span>
-        <% end %>
-        <%= link to: profile_path(@conn, :index), class: "dropdown-item" do %>
-          <i class="fa fa-user"></i> Profile</a>
-        <% end %>
-        <div class="divider"></div>
-        <%= link to: auth_path(@conn, :logout), method: :delete, class: "dropdown-item" do %>
-          <i class="fa fa-lock"></i> Logout</a>
-        <% end %>
-
-        <!-- <%= if @current_user.is_admin do %>
-          <div class="dropdown-header text-center">
-            <strong>Settings</strong>
-          </div>
-          <a class="dropdown-item" href="#"><i class="fa fa-wrench"></i> Settings</a>
-        <% end %> -->
+<nav class="navbar navbar-expand fixed-top aci-top-header">
+  <div class="container-fluid">
+    <% count = notification_count(@current_user) %>
+    <div class="aci-navbar-header">
+      <div class="page-title float-left">
+        AlloyCI
       </div>
-    </li>
+      <a href="#" class="aci-toggle-left-sidebar"><span class="text-white h3"><%= icon("bars") %></span></a>
+    </div>
 
-    <li class="nav-item hidden-md-down">
-      <%= link to: notification_path(@conn, :index), class: "nav-link" do %>
-        <%= icon("bell-o fa-lg") %>
-        <%= if count > 0 do %>
-          <span class="badge badge-pill badge-danger"><%= count %></span>
-        <% end %>
-      <% end %>
-    </li>
-  </ul>
-</header>
+    <div class="aci-right-navbar">
+      <ul class="nav navbar-nav float-right aci-user-nav">
+        <li class="nav-item dropdown margin-right-imp">
+          <a class="nav-link dropdown-toggle nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            <img src="<%= Accounts.gravatar_url(@current_user) %>" class="img-avatar" alt="<%= @current_user.email %>">
+          </a>
+          <div role="menu" class="dropdown-menu">     
+            <div class="user-info">
+              <div class="user-name"><%= @current_user.name %></div>
+            </div>
+            <%= link to: notification_path(@conn, :index), class: "dropdown-item" do %>
+              <%= icon("bell fa-lg") %>
+              Notifications
+            <% end %>
+            <%= link to: profile_path(@conn, :index), class: "dropdown-item" do %>
+              <%= icon("user fa-lg") %>
+              Profile
+            <% end %>
+            <div class="divider"></div>
+            <%= link to: auth_path(@conn, :logout), method: :delete, class: "dropdown-item" do %>
+              <%= icon("sign-out fa-lg") %>
+              Logout
+            <% end %>
+            <!-- <%= if @current_user.is_admin do %>
+              <div class="dropdown-header text-center">
+                <strong>Settings</strong>
+              </div>
+              <a class="dropdown-item" href="#"><i class="fa fa-wrench"></i> Settings</a>
+            <% end %> -->
+          </div>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav float-right aci-icons-nav">
+        <li class="nav-item hidden-md-down">
+          <%= link to: notification_path(@conn, :index), class: "nav-link" do %>
+            <%= icon("bell-o fa-lg") %>
+            <%= if count > 0 do %>
+              <span class="badge badge-pill badge-danger"><%= count %></span>
+            <% end %>
+          <% end %>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

@@ -1,11 +1,17 @@
-<div class="container-fluid">
+<div class="page-head">
+  <h2 class="page-head-title">
+    Profile
+  </h2>
+</div>
+
+<div class="main-content container-fluid">
   <div class="row">
     <div class="col-sm-12">
-      <div class="card">
+      <div class="card card-border-color card-border-color-dark">
         <div class="card-header">
-          <strong>Profile settings</strong>
+          Settings
         </div>
-        <div class="card-block">
+        <div class="card-body">
           <%= render "edit_form.html", changeset: @changeset,
                                   action: profile_path(@conn, :update, @current_user) %>
           <%= link to: profile_path(@conn, :delete, @current_user.id), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger" do %>
@@ -14,11 +20,11 @@
           <% end %>
         </div>
       </div>
-      <div class="card">
+      <div class="card card-border-color card-border-color-dark">
         <div class="card-header">
-          <strong>Authentication Providers</strong>
+          Authentication Providers
         </div>
-        <div class="card-block">
+        <div class="card-body">
           <%= case @authentications do %>
             <% [] -> %>
               <p>No authentication found</p>
@@ -53,11 +59,11 @@
           <% end %>
         </div>
       </div>
-      <div class="card">
+      <div class="card card-border-color card-border-color-dark">
         <div class="card-header">
-          <strong>Tokens</strong>
+          Tokens
         </div>
-        <div class="card-block">
+        <div class="card-body">
           <table class='table table-hover'>
             <thead>
               <tr>
@@ -72,7 +78,7 @@
 
             <tbody>
               <%= for token <- @tokens do %>
-                <tr class='<%= if @current_jti == token.jti, do: "alert alert-warning", else: ""%>'>
+                <tr class='<%= if @current_jti == token.jti, do: "online", else: ""%>'>
                   <td><%= token.jti %></td>
                   <td><%= token.aud %></td>
                   <td><%= token.sub %></td>

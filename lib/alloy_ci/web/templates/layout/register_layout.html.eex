@@ -13,31 +13,36 @@
   <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
 </head>
 
-<body class="">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-5 m-x-auto pull-xs-none vamiddle">
-        <%= render @view_module, @view_template, assigns %>
+<body class="aci-splash-screen">
+  <div class="aci-wrapper aci-login aci-signup">
+    <div class="aci-content">
+      <%= render_flash(@conn, :info) %>
+      <%= render_flash(@conn, :error) %>
+      <%= render_flash(@conn, :success) %>
+      
+     <div class="main-content container-fluid">
+      <div class="splash-container">
+        <div class="card card-border-color card-border-color-primary">
+          <div class="card-header">
+            <h2 class="page-title">AlloyCI<h2>
+            <span class="splash-description">
+              Please enter your user information to
+              <%= if @current_user do %>
+                connect your account
+              <% else %>
+                register
+              <% end %>
+            </span>
+          </div>
+          <div class="card-body">
+            <%= render @view_module, @view_template, assigns %>
+          </div>
+        </div>
       </div>
     </div>
+    </div>
   </div>
+
   <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
-  <script>
-    function verticalAlignMiddle()
-    {
-      var bodyHeight = $(window).height();
-      var formHeight = $('.vamiddle').height();
-      var marginTop = (bodyHeight / 2) - (formHeight / 2);
-      if (marginTop > 0)
-      {
-        $('.vamiddle').css('margin-top', marginTop);
-      }
-    }
-    $(document).ready(function()
-    {
-      verticalAlignMiddle();
-    });
-    $(window).bind('resize', verticalAlignMiddle);
-  </script>
 </body>
 </html>

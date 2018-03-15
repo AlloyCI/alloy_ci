@@ -1,11 +1,17 @@
-<div class="container-fluid">
+<div class="page-head">
+  <h2 class="page-head-title">
+    <%= @project.owner %>/<%= @project.name %>
+  </h2>
+</div>
+
+<div class="main-content container-fluid">
    <div class="row">
     <div class="col-sm-12 col-xl-5">
-      <div class="card">
+      <div class="card card-border-color card-border-color-dark">
         <div class="card-header">
-          <strong><%= @project.name %> |> Project Settings</strong>
+          Project Settings
         </div>
-        <div class="card-block">
+        <div class="card-body">
           <%= render "edit_form.html", changeset: @changeset, action: project_path(@conn, :update, @project), project: @project, conn: @conn %>                    
         </div>
       </div>
@@ -13,11 +19,11 @@
     <div class="col-sm-12 col-xl-7">
       <div class="row">
         <div class="col-sm-12">
-          <div class="card">
+          <div class="card card-border-color card-border-color-dark">
             <div class="card-header">
-              <strong>Build status</strong>
+              Build Status
             </div>
-            <div class="card-block">
+            <div class="card-body">
               <p>
                 If you would like to add a build status badge to the README of your
                 project, you can use the following snippets. The badge will appear
@@ -36,11 +42,11 @@
           </div>
         </div>
         <div class="col-sm-12">
-          <div data-controller="charts" class="card">
+          <div data-controller="charts" class="card card-border-color card-border-color-dark">
             <div class="card-header">
-              <strong>Build statistics</strong>
+              Build Statistics
             </div>
-            <div class="card-block">
+            <div class="card-body">
               <canvas class="chart" data-set="<%= builds_chart(@project) %>"
                       data-title="Project's Build statistics" data-axis="Number of processed builds"
                       data-label="Week of" data-type="line"></canvas>
@@ -50,11 +56,11 @@
       </div>
     </div>
     <div class="col-sm-12 col-xl-5">
-      <div class="card">
+      <div class="card card-border-color card-border-color-dark">
         <div class="card-header">
-          <strong>Project specific runners</strong>
+          Project Specific Runners
         </div>
-        <div class="card-block">
+        <div class="card-body">
           <h5>Runners allow you to execute and build your pipelines.</h5>
           <hr>
           <p>To add a project specific runner to AlloyCI, please follow these steps:</p>
@@ -121,11 +127,11 @@
     <div class="col-sm-12 col-xl-7">
       <div class="row">
         <div class="col-sm-12">
-          <div class="card">
+          <div class="card card-border-color card-border-color-dark">
             <div class="card-header">
-              <strong>Runners registered for this project</strong>
+              Runners Registered for this Project
             </div>
-            <div class="card-block">
+            <div class="card-body">
               <%= case @project.runners do %>
                 <% [] -> %>
                   <div class="centered">
@@ -135,9 +141,9 @@
                           <%= icon("gears", "fa-3x") %>
                         </h4>
                         <br>
-                        <h5>
+                        <h4>
                           There are no registred runners for this project. Add one now!
-                        </h5>
+                        </h4>
                       </div>
                     </div>
                   </div>
@@ -153,11 +159,11 @@
           </div>
         </div>
         <div class="col-sm-12">
-          <div class="card">
+          <div class="card card-border-color card-border-color-dark">
             <div class="card-header">
-              <strong>Available global runners</strong>
+              Available Global Runners
             </div>
-            <div class="card-block">
+            <div class="card-body">
               <%= case global_runners() do %>
                 <% [] -> %>
                   <div class="centered">

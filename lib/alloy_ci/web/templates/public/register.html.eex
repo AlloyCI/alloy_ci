@@ -1,33 +1,43 @@
-<div class="card">
-  <div class="card-block p-a-2">
-    <h1>Register</h1>
-    <p class="text-muted">Create your account</p>
-    <%= form_tag auth_path(@conn, :callback, "identity"), [method: "POST", novalidate: true] do %>
-      <div class="input-group m-b-1">
-        <span class="input-group-addon">@</span>
-        <input type="email" name="email" required class="form-control" placeholder="Email"/>
-      </div>
-      <div class="input-group m-b-1">
-        <span class="input-group-addon"><%= icon("user") %></span>
-        <input type="text" class="form-control" name="name" placeholder="Name">
-      </div>
-      <div class="input-group m-b-1">
-        <span class="input-group-addon"><%= icon("lock") %></span>
-        <input type="password" name="password" class="form-control" placeholder="Password">
-      </div>
-      <div class="input-group m-b-2">
-        <span class="input-group-addon"><%= icon("lock") %></span>
-        <input type="password" name="password_confirmation" class="form-control" placeholder="Repeat password">
-      </div>
-      <input type="submit" class="btn btn-block btn-success">
-    <% end %>
+<%= form_tag auth_path(@conn, :callback, "identity"), [method: "POST", novalidate: true] do %>
+  <span class="splash-title pb-4">Create your account</span>
+  <div class="input-group m-b-1">
+    <span class="input-group-prepend">
+      <span class="input-group-text"><%= icon("envelope") %></span>
+    </span>
+    <input type="email" name="email" required class="form-control" placeholder="Email"/>
   </div>
-  <div class="card-footer p-a-2">
-    <div class="row">
-      <div class="col-12">
-        <p class="text-muted">Create with</p>
-        <%= link "GitHub", to: auth_path(@conn, :login, "github"), class: "btn btn-block btn-github" %>
-      </div>
-    </div>
+  <div class="input-group m-b-1">
+    <span class="input-group-prepend">
+      <span class="input-group-text"><%= icon("user") %></span>
+    </span>
+    <input type="text" class="form-control" name="name" placeholder="Name">
+  </div>
+  <div class="input-group m-b-1">
+    <span class="input-group-prepend">
+      <span class="input-group-text"><%= icon("lock") %></span>
+    </span>
+    <input type="password" name="password" class="form-control" placeholder="Password">
+  </div>
+  <div class="input-group m-b-2">
+    <span class="input-group-prepend">
+      <span class="input-group-text"><%= icon("lock") %></span>
+    </span>
+    <input type="password" name="password_confirmation" class="form-control" placeholder="Repeat password">
+  </div>
+  <div class="form-group pt-2">
+    <%= submit "Sign Up", class: "btn btn-block btn-primary btn-xl" %>
+  </div>
+<% end %>
+
+<div class="title">
+  <span class="splash-title pb-3">Or</span>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <%= link to: auth_path(@conn, :login, "github"), class: "btn btn-block btn-secondary btn-xl" do %>
+      <%= icon("github") %>
+      GitHub
+    <% end %>
   </div>
 </div>

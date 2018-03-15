@@ -39,7 +39,7 @@ defmodule AlloyCi.Web.Admin.SessionController do
       {:ok, user} ->
         if user.is_admin do
           conn
-          |> put_flash(:info, "Signed in as #{user.name}")
+          |> put_flash(:success, "Signed in as #{user.name}")
           |> Guardian.Plug.sign_in(user, %{typ: "access"}, key: :admin)
           |> redirect(to: admin_user_path(conn, :index))
         else

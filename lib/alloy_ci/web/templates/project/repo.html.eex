@@ -1,25 +1,25 @@
 <div class="col-sm-12 col-md-6 col-xl-4" id="card-<%= @repo["id"] %>">
-  <div class="card">
-    <div class="card-block">
-      <div class="pull-right">
+  <div class="card card-border-color card-border-color-dark">
+    <div class="card-body">
+      <div class="h3 pull-right">
         <%= fork_icon(@repo["fork"]) %>
       </div>
       <div class="h2 text-muted text-xs-right">
         <%= repo_icon(@repo["owner"]["type"]) %>
       </div>
-      <div class="h5 m-b-0">
+      <div class="h3 m-b-0">
         <div class="filter inline" data-id="<%= @repo["id"] %>">
           <%= @repo["name"] %>
         </div>
         <small><%= privacy_icon(@repo["private"]) %></small>
       </div>
 
-      <small class="text-muted text-uppercase font-weight-bold m-b-2"><%= @repo["owner"]["login"] %></small>
+      <span class="text-muted text-uppercase font-weight-bold m-b-2"><%= @repo["owner"]["login"] %></span>
       <hr/>
       <div class="btn-group">
         <%= case Projects.repo_and_project(@repo["id"], @existing_ids) do %>
           <% {:ok, {_, project_id}} -> %>
-            <%= link to: project_path(AlloyCi.Web.Endpoint, :show, project_id), class: "btn btn-outline-primary" do %>
+            <%= link to: project_path(AlloyCi.Web.Endpoint, :show, project_id), class: "btn btn-secondary" do %>
               <%= icon("cube") %>
               View on AlloyCI
             <% end %>
@@ -29,7 +29,7 @@
               Add to AlloyCI
             <% end %>
         <% end %>
-        <%= link to: @repo["html_url"], class: "btn btn-info btn-block text-white", target: "_blank" do %>
+        <%= link to: @repo["html_url"], class: "btn btn-secondary btn-block", target: "_blank" do %>
           <%= icon("github") %>
           View on GitHub
         <% end %>

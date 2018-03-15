@@ -23,6 +23,8 @@ config :alloy_ci, AlloyCi.Web.Endpoint,
 
 config :arc, storage: Arc.Storage.Local
 
+config :kerosene, theme: :bootstrap4
+
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]

@@ -21,7 +21,7 @@ exports.config = {
     },
     stylesheets: {
       joinTo: {
-        "css/app.css": [path => path.includes('core-ui'), 'css/app.scss'],
+        "css/app.css": ['css/app.scss'],
         "css/kit.css": 'css/kit.scss'
       },
       order: {

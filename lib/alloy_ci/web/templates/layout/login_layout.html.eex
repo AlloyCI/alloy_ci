@@ -13,39 +13,33 @@
   <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
 </head>
 
-<body class="app flex-row align-items-center">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-        <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
-      </div>
-    </div>
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card-group mb-0">
-          <div class="card p-2">
-            <div class="card-block">
+<body class="aci-splash-screen">
+  <div class="aci-wrapper aci-login">
+    <div class="aci-content">
+      <%= render_flash(@conn, :info) %>
+      <%= render_flash(@conn, :error) %>
+      <%= render_flash(@conn, :success) %>
+      
+     <div class="main-content container-fluid">
+      <div class="splash-container">
+        <div class="card card-border-color card-border-color-primary">
+          <div class="card-header">
+            <h2 class="page-title">AlloyCI<h2>
+            <span class="splash-description">
+              Please enter your user information to
               <%= if @current_user do %>
-                <h3>Connect your account</h3>
+                connect your account
               <% else %>
-                <h1>Login</h1>
-                <p class="text-muted">Sign In to your account</p>
+                login
               <% end %>
-              <%= render @view_module, @view_template, assigns %>
-            </div>
+            </span>
           </div>
-          <div class="card card-inverse card-primary py-3 hidden-md-down" style="width:44%">
-            <div class="card-block text-center">
-              <div>
-                <h2>Sign up</h2>
-                <p>Create your account today to start using AlloyCI</p>
-                <%= link "Register Now!", to: register_path(@conn, :register), class: "btn btn-primary mt-1" %>
-              </div>
-            </div>
+          <div class="card-body">
+            <%= render @view_module, @view_template, assigns %>
           </div>
         </div>
       </div>
+    </div>
     </div>
   </div>
 

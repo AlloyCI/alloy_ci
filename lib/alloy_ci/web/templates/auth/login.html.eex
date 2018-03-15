@@ -1,21 +1,34 @@
 <%= if not Enum.member?(@current_auths, "identity") do %>
   <%= form_tag auth_path(@conn, :callback, "identity"), method: "post", class: "login" do %>
     <div class="input-group mb-1">
-      <span class="input-group-addon"><%= icon("user") %></span>
+      <span class="input-group-prepend">
+        <span class="input-group-text"><%= icon("user") %></span>
+      </span>
       <input class='form-control' type='email' name='email' placeholder="Email" value='<%= @conn.params["email"] %>' required/>
     </div>
 
     <div class="input-group mb-2">
-      <span class="input-group-addon"><%= icon('lock') %></span>
+      <span class="input-group-prepend">
+        <span class="input-group-text"><%= icon("lock") %></span>
+      </span>
       <input type="password" class="form-control" placeholder="Password" name='password' required/>
     </div>
 
-    <div class="row">
-      <div class="col-6">
-        <%= submit "Login", class: "btn btn-primary px-2" %>
+    <div class="form-group row login-tools">
+      <div class="col-6 login-remember">
+        <label class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input"><span class="custom-control-label">Remember Me</span>
+        </label>
       </div>
-      <div class="col-6 text-right">
-        <button type="button" class="btn btn-link px-0">Forgot password?</button>
+      <div class="col-6 login-forgot-password"><a href="#">Forgot Password?</a></div>
+    </div>
+
+    <div class="form-group row login-submit">
+      <div class="col-6">
+        <%= link "Register", to: register_path(@conn, :register), class: "btn btn-secondary btn-xl" %>
+      </div>
+      <div class="col-6">
+        <%= submit "Login", class: "btn btn-primary btn-xl" %>
       </div>
     </div>
   <% end %>
@@ -23,11 +36,14 @@
 
 <div class="row padding-top">
   <div class="col-12">
-    <p class="text-muted">Sign in with</p>
+    <p>Sign in with</p>
   </div>
   <div class="col-12">
     <%= if not Enum.member?(@current_auths, "github") do %>
-      <%= link "GitHub", to: auth_path(@conn, :login, "github"), class: "btn btn-block btn-github" %>
+      <%= link to: auth_path(@conn, :login, "github"), class: "btn btn-block btn-secondary btn-xl" do %>
+        <%= icon("github") %>
+        GitHub
+      <% end %>
     <% end %>
   </div>
 </div>

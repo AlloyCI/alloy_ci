@@ -14,11 +14,11 @@ defmodule AlloyCi.Web.ViewHelpers do
   def callout("running"), do: "callout-warning"
   def callout(_), do: "callout-general"
 
-  def card_status("success"), do: "text-white bg-success"
-  def card_status("failed"), do: "text-white bg-danger"
-  def card_status("running"), do: "text-white bg-primary"
-  def card_status("pending"), do: "text-white bg-info"
-  def card_status(_), do: ""
+  def card_status("success"), do: "card-full-success"
+  def card_status("failed"), do: "card-full-danger"
+  def card_status("running"), do: "card-full-primary"
+  def card_status("pending"), do: "card-full-dark"
+  def card_status(_), do: "card-full"
 
   def current_user(conn), do: Guardian.Plug.current_resource(conn)
 
@@ -33,6 +33,14 @@ defmodule AlloyCi.Web.ViewHelpers do
     end
   end
 
+  def global?(global) do
+    if global do
+      "✔"
+    else
+      "✖"
+    end
+  end
+
   def icon(name) do
     {:safe, "<i class='fa fa-#{name}'></i>"}
   end
@@ -44,6 +52,12 @@ defmodule AlloyCi.Web.ViewHelpers do
   end
 
   def logged_in?(conn), do: Guardian.Plug.authenticated?(conn)
+
+  def panel_status("success"), do: "success"
+  def panel_status("failed"), do: "danger"
+  def panel_status("running"), do: "warning"
+  def panel_status("pending"), do: "primary"
+  def panel_status(_), do: "default"
 
   def pretty_commit(msg) do
     msg |> String.split("\n") |> List.first()
@@ -67,12 +81,21 @@ defmodule AlloyCi.Web.ViewHelpers do
     flash = Phoenix.Controller.get_flash(conn, type)
 
     if flash do
-      [
-        content_tag :button, class: "close", data: [dismiss: "alert"] do
-          content_tag(:span, "✖")
-        end,
-        flash
-      ]
+      content_tag :div,
+        class: "alert alert-#{status_class(type)} alert-dismissable",
+        role: "alert" do
+        [
+          content_tag :button, class: "close", data: [dismiss: "alert"] do
+            content_tag(:span, "✖")
+          end,
+          content_tag :div, class: "icon" do
+            icon("info-circle")
+          end,
+          content_tag :div, class: "message m-l-1" do
+            flash
+          end
+        ]
+      end
     end
   end
 
@@ -106,4 +129,8 @@ defmodule AlloyCi.Web.ViewHelpers do
   def status_icon("running"), do: icon("circle-o-notch", "fa-spin")
   def status_icon("success"), do: icon("check")
   def status_icon(_), do: icon("ban")
+
+  defp status_class(:info), do: "primary"
+  defp status_class(:error), do: "danger"
+  defp status_class(:success), do: "success"
 end

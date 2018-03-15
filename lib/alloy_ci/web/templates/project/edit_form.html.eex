@@ -12,7 +12,7 @@
       </div>
       <div class="input-group">
         <input data-action="keypress->tags#addTagOnEnter" data-target="tags.input" type="text" class="form-control">
-        <span class="input-group-btn">
+        <span class="input-group-append">
           <%= content_tag :button, type: "button", id: "add-tag", class: "btn btn-primary", 
                           data: [action: "tags#addTag", target: "tags.prototype", prototype: tag_element(f, :tags, "replace_me", "gen_new_id") |> safe_to_string] do %>
             Add
@@ -44,11 +44,12 @@
       <div class="control-label m-b-1">
         <h5><strong>Private project?</strong></h5>
       </div>
-      <label class="switch switch-lg switch-text switch-pill switch-primary-outline-alt">
+      <div class="switch-button switch-button-yesno">
         <%= checkbox f, :private, class: "switch-input" %>
-        <span class="switch-label" data-on="✔" data-off="✖"></span>
-        <span class="switch-handle"></span>
-      </label>
+        <span>
+          <label for="project_private"></label>
+        </span>
+      </div>
       <%= error_tag f, :private %>
     </div>
 

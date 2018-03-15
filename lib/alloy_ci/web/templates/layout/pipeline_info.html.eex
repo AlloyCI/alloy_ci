@@ -1,26 +1,33 @@
-<!-- Breadcrumb -->
-<ol class="breadcrumb">
-  <li class="breadcrumb-item">
-    <%= ref_icon(@pipeline.ref) %>
-    <%= clean_ref(@pipeline.ref) %>
-  </li>
-  <li class="breadcrumb-item">
-    <%= icon("github") %>
-    <%= sha_link(@pipeline) %>
-  </li>
-  <li class="breadcrumb-item">
-    <%= icon("book") %>
-    <%= pretty_commit(@pipeline.commit["message"]) %>
-  </li>
-  <li class="breadcrumb-item">
-    <%= icon("tasks") %>
-    <%= String.capitalize(@pipeline.status) %>
-    <%= status_icon(@pipeline.status) %>
-  </li>
-  <%= if @pipeline.commit["pr_commit_message"] do %>
-    <li class="breadcrumb-item">
-      <%= icon("code-fork") %>
-      <%= @pipeline.commit["pr_commit_message"] %>
-    </li>
-  <% end %>
-</ol>
+<div class="page-head">
+  <h2 class="page-head-title">
+    <%= @pipeline.project.owner %>/<%= @pipeline.project.name %>
+  </h2>
+  <nav aria-label="breadcrumb" role="navigation">
+    <!-- Breadcrumb -->
+    <ol class="breadcrumb page-head-nav">
+      <li class="breadcrumb-item">
+        <%= ref_icon(@pipeline.ref) %>
+        <%= clean_ref(@pipeline.ref) %>
+      </li>
+      <li class="breadcrumb-item">
+        <%= icon("github") %>
+        <%= sha_link(@pipeline) %>
+      </li>
+      <li class="breadcrumb-item">
+        <%= icon("book") %>
+        <%= pretty_commit(@pipeline.commit["message"]) %>
+      </li>
+      <%= if @pipeline.commit["pr_commit_message"] do %>
+        <li class="breadcrumb-item">
+          <%= icon("code-fork") %>
+          <%= @pipeline.commit["pr_commit_message"] %>
+        </li>
+      <% end %>
+      <li class="breadcrumb-item">
+        <%= icon("tasks") %>
+        <%= String.capitalize(@pipeline.status) %>
+        <%= status_icon(@pipeline.status) %>
+      </li>
+    </ol>
+  </nav>
+</div>

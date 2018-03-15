@@ -35,6 +35,10 @@ defmodule AlloyCi.Web.ProjectView do
     |> render_icon()
   end
 
+  def tags(nil) do
+    "No tags defined"
+  end
+
   def tags(tags) do
     tags
     |> Enum.map(&tag_element/1)
@@ -64,7 +68,7 @@ defmodule AlloyCi.Web.ProjectView do
       [
         content_tag :button,
           type: "button",
-          class: "btn btn-sm btn-info text-white" do
+          class: "btn btn-sm btn-info text-white m-t-1" do
           [value <> " "]
         end
       ]

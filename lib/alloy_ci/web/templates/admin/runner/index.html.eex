@@ -1,11 +1,17 @@
-<div class="container-fluid">
+<div class="page-head">
+  <h2 class="page-head-title">
+    Runners
+  </h2>
+</div>
+
+<div class="main-content container-fluid">
   <div class="row">
     <div class="col-sm-12 col-xl-5">
-      <div class="card">
+      <div class="card card-border-color card-border-color-dark">
         <div class="card-header">
-          <strong>Add new runner</strong>
+          Add new runner
         </div>
-        <div class="card-block">
+        <div class="card-body">
           <h5>Runners allow you to execute and build your pipelines.</h5>
           <hr>
           <p>To add a global runner to AlloyCI, please follow these steps:</p>
@@ -71,11 +77,11 @@
     </div>
 
     <div class="col-sm-12 col-xl-7">
-      <div class="card">
+      <div class="card card-border-color card-border-color-dark">
         <div class="card-header">
-          <strong>Registered Runners</strong>
+          Registered Runners
         </div>
-        <div class="card-block">
+        <div class="card-body">
           <div class="row">
             <%= for runner <- @runners do %>
               <%= render AlloyCi.Web.SharedView, "runner.html", 

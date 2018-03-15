@@ -40,7 +40,7 @@ defmodule AlloyCi.Web.AuthController do
     case Accounts.get_or_create_user(auth, current_user) do
       {:ok, user} ->
         conn
-        |> put_flash(:info, "Signed in as #{user.name}")
+        |> put_flash(:success, "Signed in as #{user.name}")
         |> Guardian.Plug.sign_in(user, %{typ: "access"})
         |> redirect(to: project_path(conn, :index))
 

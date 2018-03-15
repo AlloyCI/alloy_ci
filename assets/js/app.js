@@ -33,10 +33,44 @@ application.register("tags", TagsController)
 //
 // Local files can be imported directly using relative
 // paths "./socket" or full ones "web/static/js/socket".
-import "./core-ui"
 
 $('[data-toggle="tooltip"]').tooltip();
 
 $(".project-card").click(function(){
   window.location.href = $(this).data("url")
+})
+
+// Add class .active to current link
+$('.sidebar-elements').find('a').each(function(){
+  var cUrl = String(window.location).split('?')[0];
+
+  if (cUrl.substr(cUrl.length - 1) == '#') {
+    cUrl = cUrl.slice(0,-1);
+  }
+
+  if (cUrl.includes($($(this))[0].href)) {
+    $(this).addClass('active');
+
+    $(this).parents('ul').add(this).each(function(){
+      $(this).parent().addClass('active');
+    });
+  }
+});
+
+var 
+  collapsibleSidebarClass = "aci-collapsible-sidebar",
+  collapsibleSidebarCollapsedClass = "aci-collapsible-sidebar-collapsed",
+  sidebar = $(".aci-left-sidebar"),
+  mainWrapper = $(".aci-wrapper");
+
+$(".aci-toggle-left-sidebar").on("click", function() {
+  if(mainWrapper.hasClass(collapsibleSidebarCollapsedClass)) {
+    mainWrapper.removeClass(collapsibleSidebarCollapsedClass)
+    $("li.open", sidebar).removeClass("open")
+    $("li.active", sidebar).parents(".parent").addClass("active open")
+  } else {
+    mainWrapper.addClass(collapsibleSidebarCollapsedClass)
+    $("li.active", sidebar).parents(".parent").removeClass("open")
+    $("li.open", sidebar).removeClass("open")
+  }
 })

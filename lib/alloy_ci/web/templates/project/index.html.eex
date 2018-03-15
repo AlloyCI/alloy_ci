@@ -1,50 +1,60 @@
+<div class="page-head">
+  <h2 class="page-head-title">
+    Your projects
+  </h2>
+</div>
+
 <%= if Enum.empty?(@projects) do %>
   <%= if has_github_auth(@current_user) do %>
-    <div class="super-center empty-state">
-      <div class="row">
-        <div class="col-6 offset-4 allign-center">
-          <h3>
-            <%= icon("space-shuttle", "fa-4x") %>
-          </h3>
-          <br>
-          <h2>
-            You haven't added any projects yet!
-          </h2>
+    <div class="main-content container-fluid">
+      <div class="super-center empty-state">
+        <div class="row">
+          <div class="col-6 offset-4 allign-center">
+            <h3>
+              <%= icon("space-shuttle", "fa-4x") %>
+            </h3>
+            <br>
+            <h2>
+              You haven't added any projects yet!
+            </h2>
+          </div>
         </div>
       </div>
     </div>
   <% else %>
-    <div class="col-md-6 offset-md-3 col-sm-10 offset-sm-1">
-      <div class="card card-inverse card-warning">
-        <div class="card-block">
-          <div class="h1 text-muted text-sm-right m-b-2">
-            <%= icon("exclamation-triangle") %>
-          </div>
-          <div class="h5 m-b-0">
-            <p>
-              You need to add your GitHub account in order to be able to use
-              AlloyCI.
-            </p>
-            <p>
-              <%= link to: auth_path(@conn, :login, "github"), class: "btn btn-secondary" do %>
-                <%= icon("github") %>
-                Link GitHub account
-              <% end %>
-            </p>
+    <div class="main-content container-fluid">
+      <div class="row">
+        <div class="col-md-6 offset-md-3 col-sm-10 offset-sm-1">
+          <div class="card card-border-color card-border-color-danger">
+            <div class="card-body">
+              <div class="h1 text-sm-right m-b-2">
+                <%= icon("exclamation-triangle") %>
+              </div>
+              <div class="h4 m-b-0">
+                <p>
+                  You need to add your GitHub account in order to be able to use
+                  AlloyCI.
+                </p>
+                <p>
+                  <%= link to: auth_path(@conn, :login, "github"), class: "btn btn-secondary" do %>
+                    <%= icon("github") %>
+                    Link GitHub account
+                  <% end %>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   <% end %>
 <% else %>
-  <div class="container-fluid">
+  <div class="main-content container-fluid">
     <div class="row">
       <div class="col-sm-12">
-        <div class="card">
-          <div class="card-header">
-            <strong>Your projects</strong>
-          </div>
-          <div class="card-block">
+        <div class="card card-border-color card-border-color-dark">
+          <div class="card-header"></div>
+          <div class="card-body">
             <div data-controller="repos" class="input-group m-b-2">
               <div class="input-group-prepend">
                 <span class="input-group-text"><%= icon("search") %></i></span>
@@ -57,34 +67,34 @@
                 <% status = statuses |> Map.get(project.id, "unknown") %>
                 <div class="col-sm-6 col-lg-4 col-xl-3" id="card-<%= project.repo_id %>">
                   <div class="card <%= card_status(status)%>">
-                    <div class="card-block project-card" data-url="<%= project_path(@conn, :show, project) %>">
+                    <div class="card-body project-card" data-url="<%= project_path(@conn, :show, project) %>">
                       <div class="btn-group pull-right">
                         <%= link to: project_path(@conn, :edit, project), class: "btn btn-warning text-white p-a-0" do %>
                           <%= icon("cogs") %>
                         <% end %>
                       </div>
-                      <div class="h2 text-muted text-xs-right">
+                      <div class="h2 text-xs-right">
                         <%= icon("archive") %>
                       </div>
-                      <div class="h5 m-b-0">
+                      <div class="h4 m-b-0">
                         <div class="filter inline" data-id="<%= project.repo_id %>">
                           <%= project.name %>
                         </div>
                         <small><%= privacy_icon(project.private) %></small>
                       </div>
-                      <small class="text-muted text-uppercase font-weight-bold m-b-2">
+                      <span class="text-uppercase m-b-2">
                         <%= project.owner %>
-                      </small>
-                      <small class="text-muted text-uppercase font-weight-bold pull-right">
+                      </span>
+                      <span class="text-uppercase pull-right">
                         Last status: <%= String.capitalize(status) %>
-                      </small>
+                      </span>
                     </div>
                   </div>
                 </div>
               <% end %>
             </div>
-            <%= paginate @conn, @kerosene %>
-            <%= link to: project_path(@conn, :new), class: "btn btn-secondary text-white" do %>
+            <%= paginate @conn, @kerosene, class: "pagination-rounded", next_label: "»", previous_label: "«" %>
+            <%= link to: project_path(@conn, :new), class: "btn btn-secondary" do %>
               <%= icon("plus") %>
               New project
             <% end %>

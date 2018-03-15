@@ -5,7 +5,7 @@ export default class extends Controller {
   static targets = [ "input" ]
 
   connect() {
-    let channel = socket.channel(`repos:${window.userID}`, {})
+    let channel = socket.channel(`repos:${this.data.get("user")}`, {})
     channel.join()
       .receive("ok", data => { console.log("Joined successfully", data) })
       .receive("error", data => { console.log("Unable to join", data) })

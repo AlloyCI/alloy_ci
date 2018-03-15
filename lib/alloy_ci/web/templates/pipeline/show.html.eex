@@ -1,8 +1,78 @@
-<div class="terminal-container">
-  <div class="terminal">
-    <div id="output">
-      <div class="centered">
-        <h3>Choose a build to show its output</h3>
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card card-border-color card-border-color-<%= panel_status(@pipeline.status)%>">
+      <div class="card-header">
+        Pipeline #<%= @pipeline.id %>
+        <%= if can_manage?(@pipeline, @current_user) do %>
+           <div class="tools dropdown">
+            <%= case @pipeline.status do %>
+              <% s when s in ~w(pending running) -> %>
+                <span data-toggle="tooltip" 
+                      data-placement="bottom"
+                      title="Cancel pipeline">
+                  <%= link to: project_pipeline_path(@conn, :delete, @pipeline.project_id, @pipeline), method: :delete, class: "action-link" do %>
+                    <%= icon("ban") %>
+                  <% end %>
+                </span>
+              <% s when s in ~w(failed cancelled) -> %>
+                <span data-toggle="tooltip" 
+                      data-placement="bottom"
+                      title="Restart pipeline 😫">
+                  <%= link to: project_pipeline_path(@conn, :create, @pipeline.project_id, %{id: @pipeline.id}), method: :post, class: "action-link" do %>
+                    <%= icon("refresh") %>
+                  <% end %>
+                </span>
+              <% _ -> %>
+                <span data-toggle="tooltip" 
+                        data-placement="bottom"
+                        title="All good here 🧐">
+                  <a class="action-link">
+                    <%= icon("heart") %>
+                  </a>
+                </span>
+            <% end %>
+          </div>
+        <% end %>
+        <span class="card-subtitle">Stages</span>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <%= for stage <- @builds do %>
+            <%= for {name, builds} <- stage do %>
+              <div class="col-md-4 col-sm-12">
+                <div class="card">
+                  <div class="card-header card-header-divider"><%= name %></div>
+                  <div class="card-body">
+                    <ul class="user-timeline">
+                      <%= for build <- builds do %>
+                        <span class="user-timeline <%= timeline_status(build.status) %>">
+                        <li class="latest">
+                          <div class="user-timeline-date">
+                            <%= icon("clock-o") %>
+                            <%= build_duration(build) %>
+                          </div>
+                          <div class="user-timeline-title">
+                            <%= icon("terminal") %> 
+                            <%= link build.name, to: project_build_path(@conn, :show, build.project_id, build.id) %>
+                          </div>
+                          <div class="user-timeline-description">
+                            <span data-toggle="tooltip" 
+                                  data-placement="bottom"
+                                  title="Status: <%= String.capitalize(build.status) %>">
+                              <%= build_status_icon(build.status) %>
+                            </span>
+                            <%= build_actions(@conn, build) %>
+                          </div>
+                        </li>
+                        </span>
+                      <% end %>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
       </div>
     </div>
   </div>

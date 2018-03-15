@@ -1,33 +1,34 @@
-<div data-controller="repos" class="content">
-  <div class="card">
-    <div class="card-header">
-      <strong>Add your repos to AlloyCI</strong>
-    </div>
-    <div class="card-block">
-      <div class="row">
-        <div class="col-sm-12">
-          <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text"><%= icon("search") %></i></span>
-              </div>
-            <input data-action="keyup->repos#filter" data-target="repos.input" type="text" class="form-control" placeholder="Filter...">
+<div class="page-head">
+  <h2 class="page-head-title">
+    Add your repos to AlloyCI
+  </h2>
+</div>
+
+<div class="main-content container-fluid">
+  <div data-controller="repos" data-repos-user="<%= @current_user.id %>">
+    <div class="card card-border-color card-border-color-dark">
+      <div class="card-header"></div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                  <span class="input-group-text"><%= icon("search") %></i></span>
+                </div>
+              <input data-action="keyup->repos#filter" data-target="repos.input" type="text" class="form-control" placeholder="Filter...">
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div id="repos-container">
-    <div class="super-center">
+    <div id="repos-container">
       <div class="row">
-        <div class="col-6 offset-4">
-          <h4>
-            <%= icon("spinner", "fa-spin") %>
-            Fetching your repositories...
-          </h4>
+        <div class="h3 col-6 offset-4-5">
+          <%= icon("spinner", "fa-spin") %>
+          Fetching your repositories...
         </div>
       </div>
     </div>
   </div>
-  <script>window.userID = "<%= @current_user.id %>"</script>
 </div>

@@ -9,30 +9,37 @@
   <meta name="keyword" content="Continuous Integration,CI,CD,GitHub,GitLab">
   <link rel="shortcut icon" href="/favicon.ico">
 
-  <title>Alloy CI Admin | Log in</title>
+  <title>AlloyCI Admin | Log in</title>
   <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
 </head>
 
-<body class="app flex-row align-items-center">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-        <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
-      </div>
-    </div>
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card-group mb-0">
-          <div class="card p-2">
-            <div class="card-block">
-              <h1>Admin Login</h1>
-              <p class="text-muted">Sign In to your account</p>
-              <%= render @view_module, @view_template, assigns %>
-            </div>
+<body class="aci-splash-screen">
+  <div class="aci-wrapper aci-login">
+    <div class="aci-content">
+      <%= render_flash(@conn, :info) %>
+      <%= render_flash(@conn, :error) %>
+      <%= render_flash(@conn, :success) %>
+      
+     <div class="main-content container-fluid">
+      <div class="splash-container">
+        <div class="card card-border-color card-border-color-primary">
+          <div class="card-header">
+            <h2 class="page-title">AlloyCI - Admin<h2>
+            <span class="splash-description">
+              Please enter your user information to
+              <%= if @current_user do %>
+                connect your account
+              <% else %>
+                login
+              <% end %>
+            </span>
+          </div>
+          <div class="card-body">
+            <%= render @view_module, @view_template, assigns %>
           </div>
         </div>
       </div>
+    </div>
     </div>
   </div>
 

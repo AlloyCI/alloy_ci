@@ -2,16 +2,13 @@
   cursor: text;
   counter-reset: input;
   padding: 0;
-  background: lavenderblush;
   -moz-font-smoothing: antialiased;
   -webkit-font-smoothing: antialiased;
-  font-smoothing: antialiased;
   background: #002728;
   height: 100%;
 }
 
 .terminal {
-  float: left;
   margin: 10px;
   padding: 10px 0;
   font-family: Menlo, Courier New;
@@ -23,6 +20,7 @@
 .terminal > .terminal--input {
   counter-increment: input;
 }
+
 .terminal > .terminal--input:before {
   content: "[" counter(input) "] $ ";
 }

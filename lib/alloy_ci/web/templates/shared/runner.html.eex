@@ -1,6 +1,6 @@
 <div class="col-sm-6 col-lg-4">
-  <div class="card">
-    <div class="card-block project-card" data-url="<%= @show_path %>">
+  <div class="card card-border-color card-border-color-warning">
+    <div class="card-body project-card" data-url="<%= @show_path %>">
       <div class="btn-group pull-right">
         <%= link to: @delete_path, method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger p-a-0" do %>
           <%= icon("trash") %>
@@ -9,21 +9,21 @@
       <div class="h2 text-muted text-xs-right">
         <%= icon("cog") %>
       </div>
-      <div class="h5 m-b-0">
-        <div class="filter inline">
+      <div class="m-b-0">
+        <div class="h5 filter inline">
           <%= @runner.description %>
         </div>
         <small class="text-muted font-weight-bold pull-right">
           <%= @runner.version %>
         </small>
       </div>
-      <small class="text-muted font-weight-bold">
+      <span class="text-muted">
         <b>Platform:</b> <%= @runner.platform %>
-      </small>
+      </span>
       <br>
-      <small class="text-muted font-weight-bold">
-        <b>Global?:</b> <%= @runner.global %>
-      </small>
+      <span class="text-muted">
+        <b>Global?:</b> <%= global?(@runner.global) %>
+      </span>
     </div>
   </div>
 </div>

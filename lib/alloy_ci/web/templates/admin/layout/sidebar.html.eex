@@ -1,31 +1,55 @@
-<div class="sidebar">
-  <nav class="sidebar-nav">
-    <ul class="nav">
-      <li class="nav-title">
-        Manage
-      </li>
-      <li class="nav-item">
-        <%= link to: admin_project_path(@conn, :index), class: "nav-link" do %>
-          <%= icon("cubes") %>
-          Projects
-        <% end %>
-      </li>
+<div class="aci-left-sidebar">
+  <div class="left-sidebar-wrapper">
+    <div class="left-sidebar-spacer">
+      <div class="left-sidebar-scroll">
+        <div class="left-sidebar-content">
+          <ul class="sidebar-elements">
+            <li class="divider">
+              Home
+            </li>
+            <li>
+              <%= link to: project_path(@conn, :index), class: "nav-link" do %>
+                <%= icon("home") %>
+                My projects
+              <% end %>  
+            </li>
+            <%= if @current_user.is_admin do %>
+              <li>
+                <%= link to: admin_user_path(@conn, :index), class: "nav-link" do %>
+                  <%= icon("cogs") %>
+                  Admin
+                <% end %>  
+              </li>
+              <!-- <li class="nav-item px-1">
+                <a class="nav-link" href="#">Settings</a>
+              </li> -->
+            <% end %>
+            <li class="divider">
+              Manage
+            </li>
+            <li>
+              <%= link to: admin_project_path(@conn, :index), class: "nav-link" do %>
+                <%= icon("cubes") %>
+                Projects
+              <% end %>
+            </li>
 
-      <li class="nav-item">
-        <%= link to: admin_user_path(@conn, :index), class: "nav-link" do %>
-          <%= icon("users") %>
-          Users
-        <% end %>
-      </li>
+            <li>
+              <%= link to: admin_user_path(@conn, :index), class: "nav-link" do %>
+                <%= icon("users") %>
+                Users
+              <% end %>
+            </li>
 
-      <li class="nav-item">
-        <%= link to: admin_runner_path(@conn, :index), class: "nav-link" do %>
-          <%= icon("cogs") %>
-          Runners
-        <% end %>
-      </li>
-      
-      <li class="divider"></li>
-    </ul>
-  </nav>
+            <li>
+              <%= link to: admin_runner_path(@conn, :index), class: "nav-link" do %>
+                <%= icon("cogs") %>
+                Runners
+              <% end %>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

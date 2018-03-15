@@ -1,7 +1,8 @@
 // This file is for your main application css.
 $icon-font-path: '/fonts/'; // use fonts from priv/static/fonts/
 @import 'font-awesome';
-@import 'core-ui/style';
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto:300,400,500,700');
+@import 'aci-style';
 @import 'terminal';
 @import 'codemirror';
 @import 'dracula';

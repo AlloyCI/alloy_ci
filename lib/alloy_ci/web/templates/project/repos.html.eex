@@ -1,12 +1,12 @@
 <div class="row">
   <%= unless @is_installed do %>
     <div class="col-sm-12">
-      <div class="card card-inverse card-danger text-xs-center">
+      <div class="card card-border-color card-border-color-danger text-xs-center">
         <div class="card-header">
           <%= icon("exclamation-triangle") %>
           AlloyCI not installed!
         </div>
-        <div class="card-block">
+        <div class="card-body">
           <blockquote class="card-blockquote">
             <p>
               AlloyCI has not been installed in your account/organization yet.

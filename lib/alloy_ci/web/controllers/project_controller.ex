@@ -28,7 +28,7 @@ defmodule AlloyCi.Web.ProjectController do
         conn
         |> put_flash(:error, [
           "This project's organization is not configured to use AlloyCI. Please go to the ",
-          link("GitHub integration", to: app_url()),
+          link("GitHub Integration", to: app_url(), target: "_blank", class: "flash-link"),
           " page to configure AlloyCI for this organization."
         ])
         |> redirect(to: project_path(conn, :index))
@@ -37,8 +37,13 @@ defmodule AlloyCi.Web.ProjectController do
         conn
         |> put_flash(:error, [
           "The selected project doesn't have an .alloy-ci.json config file. Please see the ",
-          link("docs", to: "https://github.com/AlloyCI/alloy_ci/tree/master/doc"),
-          " for info on how to add one."
+          link(
+            "documentation",
+            to: "https://github.com/AlloyCI/alloy_ci/tree/master/doc",
+            target: "_blank",
+            class: "flash-link"
+          ),
+          " for information on how to add one."
         ])
         |> redirect(to: project_path(conn, :index))
 
