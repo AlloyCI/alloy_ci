@@ -93,7 +93,7 @@
                 </div>
               <% end %>
             </div>
-            <%= paginate @conn, @kerosene, class: "pagination-rounded", next_label: "»", previous_label: "«" %>
+            <%= paginate @conn, @kerosene, next_label: "»", previous_label: "«" %>
             <%= link to: project_path(@conn, :new), class: "btn btn-secondary" do %>
               <%= icon("plus") %>
               New project

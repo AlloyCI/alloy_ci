@@ -73,6 +73,10 @@
             <% end %>
           <% end %>
         </div>
+        <%= link to: project_path(@conn, :show, @pipeline.project), class: "btn btn-secondary btn-xl" do %>
+          <%= icon("undo") %>
+          Back
+        <% end %>
       </div>
     </div>
   </div>

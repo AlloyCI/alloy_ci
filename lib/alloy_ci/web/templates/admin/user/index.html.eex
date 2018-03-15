@@ -40,7 +40,7 @@
               <% end %>
             </tbody>
           </table>
-          <%= paginate @conn, @kerosene %>
+          <%= paginate @conn, @kerosene, next_label: "»", previous_label: "«" %>
         </div>
       </div>
     </div>

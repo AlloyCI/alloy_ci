@@ -9,11 +9,11 @@
     <div class="col-sm-8">
       <div class="card card-border-color card-border-color-dark">
         <div class="card-header">
-          Runner
+          Build Statistics
         </div>
         <div class="card-body">
           <canvas class="chart" data-set="<%= builds_chart(@runner) %>"
-                  data-title="Build statistics" data-axis="Number of builds"
+                  data-title="" data-axis="Number of builds"
                   data-label="Week of" data-type="line"></canvas>
         </div>
       </div>

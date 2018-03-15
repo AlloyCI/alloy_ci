@@ -57,6 +57,10 @@ $('.sidebar-elements').find('a').each(function(){
   }
 });
 
+if($(".page-aside")) {
+  $(".alert").addClass("aci-aside")
+}
+
 var 
   collapsibleSidebarClass = "aci-collapsible-sidebar",
   collapsibleSidebarCollapsedClass = "aci-collapsible-sidebar-collapsed",

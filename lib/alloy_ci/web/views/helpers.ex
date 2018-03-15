@@ -33,14 +33,6 @@ defmodule AlloyCi.Web.ViewHelpers do
     end
   end
 
-  def global?(global) do
-    if global do
-      "✔"
-    else
-      "✖"
-    end
-  end
-
   def icon(name) do
     {:safe, "<i class='fa fa-#{name}'></i>"}
   end

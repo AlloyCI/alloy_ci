@@ -71,12 +71,15 @@
                   </div>
                 <% end %>
               </div>
-              <%= paginate @conn, @kerosene, class: "pagination-rounded", next_label: "»", previous_label: "«" %>
-              <%= link to: project_path(@conn, :edit, @project), class: "btn btn-warning btn-sm text-white" do %>
+              <%= paginate @conn, @kerosene, next_label: "»", previous_label: "«" %>
+              <%= link to: project_path(@conn, :edit, @project), class: "btn btn-warning" do %>
                 <%= icon("cogs") %>
                 Settings
               <% end %>
-              <%= link "Back", to: project_path(@conn, :index), class: "btn btn-outline-info btn-sm" %>
+              <%= link to: project_path(@conn, :index), class: "btn btn-secondary" do %>
+                <%= icon("undo") %>
+                Back
+              <% end %>
             </div>
           </div>
         </div>

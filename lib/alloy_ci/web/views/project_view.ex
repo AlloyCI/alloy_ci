@@ -3,6 +3,7 @@ defmodule AlloyCi.Web.ProjectView do
   alias AlloyCi.{Accounts, Projects, Runners}
   import Kerosene.HTML
   import AlloyCi.Builds, only: [ref_type: 1]
+  import AlloyCi.Web.SharedView, only: [platform_icon: 1]
 
   def app_url do
     Application.get_env(:alloy_ci, :app_url)

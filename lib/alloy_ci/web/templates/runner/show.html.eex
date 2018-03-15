@@ -1,9 +1,15 @@
+<div class="page-head">
+  <h2 class="page-head-title">
+    <%= @runner.description %>
+  </h2>
+</div>
+
 <div class="main-content container-fluid">
   <div class="row">
     <div class="col-sm-12 col-xl-5">
       <div class="card card-border-color card-border-color-dark">
         <div class="card-header">
-          <strong>Runner Settings</strong>
+          Runner Settings
         </div>
         <div class="card-body">
           <%= render AlloyCi.Web.SharedView, "edit_runner_form.html", changeset: @changeset,
@@ -14,11 +20,11 @@
     <div class="col-sm-12 col-xl-7">
       <div data-controller="charts" class="card card-border-color card-border-color-dark">
         <div class="card-header">
-          <strong><%= @runner.description %> |> Runner</strong>
+          Build Statistics
         </div>
         <div class="card-body">
           <canvas class="chart" data-set="<%= builds_chart(@runner) %>"
-                  data-title="Build statistics" data-axis="Number of builds"
+                  data-title="" data-axis="Number of builds"
                   data-label="Week of" data-type="line"></canvas>
         </div>
       </div>

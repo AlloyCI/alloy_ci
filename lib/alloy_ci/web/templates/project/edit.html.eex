@@ -193,7 +193,7 @@
                         <%= for runner <- runners do %>
                           <tr>
                             <td><%= runner.description %></td>
-                            <td><%= runner.platform %></td>
+                            <td class="h2"><%= platform_icon(runner.platform) %></td>
                             <td><%= runner.tags |> tags() %></td>
                           </tr>
                         <% end %>
