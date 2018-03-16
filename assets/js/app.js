@@ -57,7 +57,7 @@ $('.sidebar-elements').find('a').each(function(){
   }
 });
 
-if($(".page-aside")) {
+if($("#aside").hasClass("page-aside")) {
   $(".alert").addClass("aci-aside")
 }
 
