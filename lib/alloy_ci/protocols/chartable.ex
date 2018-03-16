@@ -14,13 +14,13 @@ defprotocol Chartable do
   def builds_chart(subject)
 
   @doc """
-  Prepares an array of tuples, which is then turned into a map containing the data needed 
+  Prepares an array of tuples, which is then turned into a map containing the data needed
   to draw a chart detailing how many builds have run for a specific project and runner.
 
   The tuple is created by grouping the builds by their project and returning the `project_id`
   and count.
 
-  Example intermediate result: 
+  Example intermediate result:
 
       [{4, 15}]
   """
@@ -100,7 +100,8 @@ defmodule Chart do
       end)
 
     %{
-      labels: result |> Map.keys() |> Enum.map(fn project_id -> Projects.get(project_id).name end),
+      labels:
+        result |> Map.keys() |> Enum.map(fn project_id -> Projects.get(project_id).name end),
       datasets: [
         %{
           data: result |> Map.values(),
@@ -141,7 +142,8 @@ defmodule Chart do
           borderColor: "rgb(2,117,216)",
           backgroundColor: "rgb(2,117,216)",
           data:
-            result |> Map.values()
+            result
+            |> Map.values()
             |> Enum.map(fn x -> Enum.reduce(x, 0, fn {_, v}, acc -> v + acc end) end),
           fill: false
         },

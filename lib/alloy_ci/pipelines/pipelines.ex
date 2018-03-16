@@ -208,7 +208,8 @@ defmodule AlloyCi.Pipelines do
     failed_builds =
       from(
         b in "builds",
-        where: b.pipeline_id == ^pipeline_id and b.status == "failed" and b.allow_failure == false,
+        where:
+          b.pipeline_id == ^pipeline_id and b.status == "failed" and b.allow_failure == false,
         select: count(b.id)
       )
       |> Repo.one()
