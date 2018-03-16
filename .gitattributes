@@ -1,2 +1,3 @@
-assets/css/core-ui/* linguist-vendored
+assets/css/_aci-style.* linguist-vendored
+assets/css/_terminal.* linguist-vendored
 assets/css/kit.* linguist-vendored
