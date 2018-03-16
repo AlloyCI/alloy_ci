@@ -3,7 +3,10 @@
     <div class="nano-content">
       <div class="content">
         <h2><%= @build.name %></h2>
-        <h4>Build #<%= @build.id %> <%= status_icon(@build.status) %></h4>
+        <h4>
+          Build #<%= @build.id %> <%= status_icon(@build.status) %>
+          <%= build_actions(@conn, @build) %>
+        </h4>
         
         <hr>
         <p><span class="text-muted">Duration: </span><%= icon("clock-o") %> <%= build_duration(@build) %></p>

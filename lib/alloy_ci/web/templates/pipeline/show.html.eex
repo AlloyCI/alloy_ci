@@ -61,7 +61,7 @@
                                   title="Status: <%= String.capitalize(build.status) %>">
                               <%= build_status_icon(build.status) %>
                             </span>
-                            <%= build_actions(@conn, build) %>
+                            <%= build_actions(@conn, build, "fa-lg") %>
                           </div>
                         </li>
                         </span>
