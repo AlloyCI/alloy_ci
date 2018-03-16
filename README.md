@@ -54,7 +54,7 @@ branches, so you can always know their status, just like any other CI service.
   - [x] Can receive uploaded artifacts from runners
   - [x] Can pass artifacts between build jobs as dependencies
   - [x] Can manually specify dependent jobs via the `.alloy-ci.json` file
-  - [ ] Presents the artifacts to the user in a nice way, and allows download
+  - [x] Presents the artifacts to the user in a nice way, and allows download
 - [ ] Deployment functionality
   - [ ] Can manually start deployments (manual actions)
   - [x] Can do auto deploys

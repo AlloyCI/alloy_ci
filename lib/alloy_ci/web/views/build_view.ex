@@ -50,6 +50,9 @@ defmodule AlloyCi.Web.BuildView do
     |> TimeConvert.to_compound()
   end
 
+  def build_loading_icon("running"), do: icon("spinner", "fa-spin fa-2x")
+  def build_loading_icon(_), do: ""
+
   def build_status_icon("created"), do: icon("calendar", "fa-lg")
   def build_status_icon("failed"), do: icon("close", "fa-lg")
   def build_status_icon("pending"), do: icon("circle-o-notch", "fa-lg")

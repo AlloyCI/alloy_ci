@@ -73,7 +73,10 @@
           <div class="card-header"></div>
           <div class="card-body">
             <div class="terminal-container">
-              <div class="terminal" id="output"></div>
+              <div class="terminal">
+                <div id="output"></div>
+                <%= build_loading_icon(@build.status) %>
+              </div>
             </div>
           </div>
         </div>
