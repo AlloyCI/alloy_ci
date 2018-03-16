@@ -37,6 +37,9 @@ services:
       FROM_ADDRESS: ci@example.org
       REPLY_TO_ADDRESS: no-reply@example.org
       #------
+      # Interval, in hours, for how often the system should check for expired artifacts
+      ARTIFACT_SWEEP_INTERVAL: 24
+      #------
       RUNNER_REGISTRATION_TOKEN: "lustlmc3gMl59smZ"
       SERVER_URL: "https://<hostname>"
       GITHUB_CLIENT_ID: "<GitHub OAuth Client ID>"

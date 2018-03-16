@@ -21,7 +21,7 @@ defmodule AlloyCi.Web.Api.BuildsArtifactControllerTest do
   end
 
   describe "create/4" do
-    test "it creates a new artifact" do
+    test "it creates a new artifact with explicit expiry" do
       build = insert(:extended_build, status: "running")
 
       params = %{
@@ -29,7 +29,7 @@ defmodule AlloyCi.Web.Api.BuildsArtifactControllerTest do
           path: "test/fixtures/broken_config.json",
           filename: "broken_config.json"
         },
-        expire_in: "7d"
+        expire_in: "10d"
       }
 
       conn =
@@ -41,6 +41,59 @@ defmodule AlloyCi.Web.Api.BuildsArtifactControllerTest do
 
       assert conn.status == 201
       assert build.artifact != nil
+
+      assert Timex.compare(
+               build.artifact.expires_at,
+               Timex.now() |> Timex.shift(seconds: "7d" |> TimeConvert.to_seconds())
+             ) == 1
+
+      assert build.artifact.file[:file_name] == "broken_config.json"
+    end
+
+    test "it creates a new artifact with empty expiry" do
+      build = insert(:extended_build, status: "running")
+
+      params = %{
+        file: %Plug.Upload{
+          path: "test/fixtures/broken_config.json",
+          filename: "broken_config.json"
+        },
+        expire_in: ""
+      }
+
+      conn =
+        build_conn()
+        |> put_req_header("job-token", build.token)
+        |> post("/api/v4/jobs/#{build.id}/artifacts", params)
+
+      {:ok, build} = Builds.get_with_artifact(build.id, build.token)
+
+      assert conn.status == 201
+      assert build.artifact != nil
+      assert build.artifact.expires_at != nil
+      assert build.artifact.file[:file_name] == "broken_config.json"
+    end
+
+    test "it creates a new artifact without expiry in params" do
+      build = insert(:extended_build, status: "running")
+
+      params = %{
+        file: %Plug.Upload{
+          path: "test/fixtures/broken_config.json",
+          filename: "broken_config.json"
+        }
+      }
+
+      conn =
+        build_conn()
+        |> put_req_header("job-token", build.token)
+        |> post("/api/v4/jobs/#{build.id}/artifacts", params)
+
+      {:ok, build} = Builds.get_with_artifact(build.id, build.token)
+
+      assert conn.status == 201
+      assert build.artifact != nil
+      assert build.artifact.expires_at != nil
       assert build.artifact.file[:file_name] == "broken_config.json"
     end
 

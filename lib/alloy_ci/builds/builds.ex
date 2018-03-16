@@ -241,30 +241,10 @@ defmodule AlloyCi.Builds do
     end
   end
 
-  def store_artifact(build, file, expire_in) do
-    expires_at = Timex.now() |> Timex.shift(seconds: expire_in |> TimeConvert.to_seconds())
-    build = build |> Repo.preload(:artifact)
+  def store_artifact(build, file, expire_in) when is_nil(expire_in) or expire_in == "",
+    do: do_store_artifact(build, file, "7d")
 
-    case build.artifact do
-      nil ->
-        Repo.transaction(fn ->
-          with {:ok, artifact} <-
-                 %Artifact{}
-                 |> Artifact.changeset(%{build_id: build.id, expires_at: expires_at})
-                 |> Repo.insert(),
-               {:ok, artifact} <- artifact |> Artifact.changeset(%{file: file}) |> Repo.update() do
-            {:ok, artifact}
-          else
-            {:error, changeset} ->
-              Repo.rollback(changeset)
-              {:error, changeset}
-          end
-        end)
-
-      artifact ->
-        artifact |> Artifact.changeset(%{file: file}) |> Repo.update()
-    end
-  end
+  def store_artifact(build, file, expire_in), do: do_store_artifact(build, file, expire_in)
 
   def to_process do
     Build
@@ -365,6 +345,31 @@ defmodule AlloyCi.Builds do
     %Build{}
     |> Build.changeset(params)
     |> Repo.insert!()
+  end
+
+  defp do_store_artifact(build, file, expire_in) do
+    expires_at = Timex.now() |> Timex.shift(seconds: expire_in |> TimeConvert.to_seconds())
+    build = build |> Repo.preload(:artifact)
+
+    case build.artifact do
+      nil ->
+        Repo.transaction(fn ->
+          with {:ok, artifact} <-
+                 %Artifact{}
+                 |> Artifact.changeset(%{build_id: build.id, expires_at: expires_at})
+                 |> Repo.insert(),
+               {:ok, artifact} <- artifact |> Artifact.changeset(%{file: file}) |> Repo.update() do
+            {:ok, artifact}
+          else
+            {:error, changeset} ->
+              Repo.rollback(changeset)
+              {:error, changeset}
+          end
+        end)
+
+      artifact ->
+        artifact |> Artifact.changeset(%{file: file}) |> Repo.update()
+    end
   end
 
   defp do_update_status(build, status) when status in ~w(success failed) do

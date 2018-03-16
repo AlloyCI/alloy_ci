@@ -107,6 +107,9 @@ config :alloy_ci, AlloyCi.Notifiers.Slack,
   hook_url: "${SLACK_HOOK_URL}",
   icon_emoji: "${SLACK_ICON}"
 
+# Configures Artifacts
+config :alloy_ci, AlloyCi.ArtifactSweeper, sweep_interval: "${ARTIFACT_SWEEP_INTERVAL}"
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key

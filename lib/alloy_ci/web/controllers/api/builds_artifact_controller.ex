@@ -14,11 +14,11 @@ defmodule AlloyCi.Web.Api.BuildsArtifactController do
     end
   end
 
-  def create(conn, %{"id" => id, "file" => file, "expire_in" => expiry}, _, _) do
+  def create(conn, %{"id" => id, "file" => file} = params, _, _) do
     [token] = get_req_header(conn, "job-token")
 
     with {:ok, %{artifacts: %{}} = build} <- Builds.get_by(id, token),
-         {:ok, _} <- Builds.store_artifact(build, file, expiry) do
+         {:ok, _} <- Builds.store_artifact(build, file, params["expire_in"]) do
       conn
       |> send_resp(:created, "")
     else
