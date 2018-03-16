@@ -34,7 +34,14 @@ defmodule AlloyCi.Builds do
           b in Build,
           where: b.pipeline_id == ^pipeline.id and b.stage_idx == ^stage_idx,
           order_by: [asc: :id],
-          select: %{id: b.id, name: b.name, project_id: b.project_id, status: b.status}
+          select: %{
+            id: b.id,
+            finished_at: b.finished_at,
+            name: b.name,
+            project_id: b.project_id,
+            started_at: b.started_at,
+            status: b.status
+          }
         )
 
       %{stage => Repo.all(query)}
@@ -158,6 +165,7 @@ defmodule AlloyCi.Builds do
     with true <- Projects.can_access?(project_id, user) do
       Build
       |> where(project_id: ^project_id)
+      |> preload([:artifact, :project, :pipeline])
       |> Repo.get(id)
     end
   end
@@ -176,6 +184,12 @@ defmodule AlloyCi.Builds do
     with {:ok, build} <- get_by(id, token) do
       {:ok, build |> Repo.preload(:artifact)}
     end
+  end
+
+  def keep_artifact(build) do
+    build.artifact
+    |> Artifact.changeset(%{expires_at: nil})
+    |> Repo.update()
   end
 
   def ref_type(ref) do
@@ -235,7 +249,8 @@ defmodule AlloyCi.Builds do
       nil ->
         Repo.transaction(fn ->
           with {:ok, artifact} <-
-                 %Artifact{} |> Artifact.changeset(%{build_id: build.id, expires_at: expires_at})
+                 %Artifact{}
+                 |> Artifact.changeset(%{build_id: build.id, expires_at: expires_at})
                  |> Repo.insert(),
                {:ok, artifact} <- artifact |> Artifact.changeset(%{file: file}) |> Repo.update() do
             {:ok, artifact}

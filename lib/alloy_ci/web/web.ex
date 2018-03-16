@@ -66,8 +66,8 @@ defmodule AlloyCi.Web do
   def router do
     quote do
       use Phoenix.Router
-      use Plug.ErrorHandler
-      use Sentry.Plug
+      # use Plug.ErrorHandler
+      # use Sentry.Plug
     end
   end
 

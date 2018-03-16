@@ -1,0 +1,80 @@
+<aside id="aside" class="page-aside">
+  <div class="aci-scroller nano">
+    <div class="nano-content">
+      <div class="content">
+        <h2><%= @build.name %></h2>
+        <h4>Build #<%= @build.id %> <%= status_icon(@build.status) %></h4>
+        
+        <hr>
+        <p><span class="text-muted">Duration: </span><%= icon("clock-o") %> <%= build_duration(@build) %></p>
+        <p><span class="text-muted">Triggered: </span><%= from_now(@build.inserted_at) %></p>
+        <p><span class="text-muted">Runner: </span><%= runner(@build.runner_id) %></p>
+        <span class="text-muted">Tags: </span><%= tags(@build.tags) %>
+        
+        <hr>
+        <h3>Pipeline</h3>
+        <h4><%= link "##{@pipeline.id}", to: project_pipeline_path(@conn, :show, @pipeline.project_id, @pipeline) %> for <code><%= clean_ref(@pipeline.ref) %></code></h4>
+
+        <hr>
+        <h3>Build artifacts</h3>
+        <%= artifact_for(@conn, @build) %>
+      </div>
+    </div>
+</aside>
+
+<div class="aci-aside">
+  <div class="page-head">
+    <h2 class="page-head-title">
+      <%= @build.project.owner %>/<%= @build.project.name %>
+    </h2>
+    <nav aria-label="breadcrumb" role="navigation">
+      <!-- Breadcrumb -->
+      <ol class="breadcrumb page-head-nav">
+        <li class="breadcrumb-item">
+          <%= ref_icon(@pipeline.ref) %>
+          <%= clean_ref(@pipeline.ref) %>
+        </li>
+        <li class="breadcrumb-item">
+          <%= icon("github") %>
+          <%= sha_link(%{project: @build.project, sha: @pipeline.sha}) %>
+        </li>
+        <li class="breadcrumb-item">
+          <%= icon("book") %>
+          <%= pretty_commit(@pipeline.commit["message"]) %>
+        </li>
+        <%= if @pipeline.commit["pr_commit_message"] do %>
+          <li class="breadcrumb-item">
+            <%= icon("code-fork") %>
+            <%= @pipeline.commit["pr_commit_message"] %>
+          </li>
+        <% end %>
+        <li class="breadcrumb-item">
+          <%= icon("rocket") %>
+          Build #<%= @build.id %>
+        </li>
+        <li class="breadcrumb-item">
+          <%= icon("tasks") %>
+          <%= String.capitalize(@build.status) %>
+          <%= status_icon(@build.status) %>
+        </li>
+      </ol>
+    </nav>
+  </div>
+
+  <div class="main-content container-fluid">
+    <div class="row">
+      <div class="col-xl-12 col-sm-12">
+        <div class="card card-border-color card-border-color-<%= panel_status(@build.status)%>" 
+            data-controller="builds" data-builds-id="<%= @build.id %>" data-builds-trace="<%= @build.trace %>" 
+            data-builds-name="<%= @build.name %>">
+          <div class="card-header"></div>
+          <div class="card-body">
+            <div class="terminal-container">
+              <div class="terminal" id="output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>  
+  </div>
+</div>

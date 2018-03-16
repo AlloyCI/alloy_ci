@@ -66,7 +66,12 @@ defmodule AlloyCi.Web.Router do
 
     resources "/projects", ProjectController do
       resources("/pipelines", PipelineController, only: [:create, :delete, :show])
-      resources("/builds", BuildController, only: [:show])
+
+      resources("/builds", BuildController, only: [:show, :create]) do
+        get("/artifact", BuildController, :artifact, as: :artifact)
+        get("/artifact/keep", BuildController, :keep_artifact, as: :keep_artifact)
+      end
+
       resources("/badge/:ref", BadgeController, only: [:index])
     end
 

@@ -34,7 +34,9 @@ defmodule AlloyCi.BuildsTest do
                      id: build.id,
                      name: build.name,
                      project_id: build.project_id,
-                     status: build.status
+                     status: build.status,
+                     finished_at: nil,
+                     started_at: nil
                    }
                  ]
                }
