@@ -99,6 +99,87 @@
   </div>
 </section>
 
+<section class="content-1 m-t-5">
+  <div class="row justify-center">
+    <div class="col-md-6 text-center">
+      <img class="mb-4 img-fluid" src="/images/screenshots/projects.png">
+    </div>
+    <div class="col-md-5 text-center text-md-left">
+      <h2 class="mb-4 mt-4">See the status of your projects</h2>
+      <p class="mb-4">
+        The main projects screen allow you to see how the latest pipeline of each project went, without having
+        to visit each one of them. If you have a lot of projects, you can easily filter them by their name.
+      </p>
+      <p><a class="btn btn-outline-secondary" href="#download" role="button">Find out more	</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="content-2">
+  <div class="row justify-center">
+    <div class="col-md-5 text-center text-md-left pl-5">
+      <h2 class="mb-4 mt-4">Follow each pipeline individually</h2>
+      <p class="mb-4">
+        The pipeline list will show you the relevant details at a glance. See which commit it relates to, its status, duration,
+        and which user pushed the commits.
+      </p>
+      <p><a class="btn btn-outline-secondary" href="#download" role="button">Find out more	</a></p>
+    </div>
+    <div class="col-md-6 text-center">
+      <img class="mb-4 img-fluid" src="/images/screenshots/pipelines.png">
+    </div>
+  </div>
+</section>
+
+<section class="content-1">
+  <div class="row justify-center">
+    <div class="col-md-6 text-center">
+      <img class="mb-4 img-fluid" src="/images/screenshots/builds.png">
+    </div>
+    <div class="col-md-5 text-center text-md-left">
+      <h2 class="mb-4 mt-4">Stages & Build Jobs, all neatly organized</h2>
+      <p class="mb-4">
+        See all the jobs that comprise a pipeline, and know immediately how each of them is doing.
+      </p>
+      <p><a class="btn btn-outline-secondary" href="#download" role="button">Find out more	</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="content-2">
+  <div class="row justify-center">
+    <div class="col-md-5 text-center text-md-left pl-5">
+      <h2 class="mb-4 mt-4">Follow a particular build job and see its output</h2>
+      <p class="mb-4">
+        While a job is running, you can follow its output in real time. Once it's done, you can get a detailed
+        description of what happened, and download any artifacts that the job might have produced.
+      </p>
+      <p><a class="btn btn-outline-secondary" href="#download" role="button">Find out more	</a></p>
+    </div>
+    <div class="col-md-6 text-center">
+      <img class="mb-4 img-fluid" src="/images/screenshots/build.png">
+    </div>
+  </div>
+</section>
+
+<section class="content-1">
+  <div class="row justify-center">
+    <div class="col-md-6 text-center">
+      <img class="mb-4 img-fluid" src="/images/screenshots/project.png">
+    </div>
+    <div class="col-md-5 text-center text-md-left">
+      <h2 class="mb-4 mt-4">Control your projects</h2>
+      <p class="mb-4">
+        Configure your project with tags, to limit the runners that can pick up builds for it, define
+        secret variables that should not be located within the repository, and register project specific
+        runners.
+      </p>
+      <p class="mb-4">Also, see how the builds for your project have been performing in the past with a concise graph.</p>
+      <p><a class="btn btn-outline-secondary" href="#download" role="button">Find out more	</a></p>
+    </div>
+  </div>
+</section>
+
 <section class="cta-5 text-center">
   <div class="container">
     <div class="row align-items-center">
