@@ -42,7 +42,7 @@
               <%= if length(@acknowledged) > 0 do %>
                 <div class="message">
                   <div>
-                    <%= link "Delete All", to: notification_path(@conn, :delete_all), class: "btn btn-danger", method: :delete %>
+                    <%= link "Delete All", to: notification_path(@conn, :delete_all), class: "btn btn-danger", method: :post %>
                   </div>
                 </div>
                 <%= for notification <- @acknowledged do %>

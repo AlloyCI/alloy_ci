@@ -68,7 +68,7 @@
                 <div class="col-sm-6 col-lg-4 col-xl-3" id="card-<%= project.repo_id %>">
                   <div class="card <%= card_status(status)%>">
                     <div class="card-body project-card" data-url="<%= project_path(@conn, :show, project) %>">
-                      <div class="btn-group pull-right">
+                      <div class="btn-group pull-right p-t-12">
                         <%= link to: project_path(@conn, :edit, project), class: "btn btn-warning text-white p-a-0" do %>
                           <%= icon("cogs") %>
                         <% end %>

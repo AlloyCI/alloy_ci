@@ -1,7 +1,7 @@
 <div class="message">
   <div>
     <small class="text-muted">&nbsp;</small>
-    <small class="text-muted float-right mt-q"><%= pretty_date(@notification.inserted_at) %></small>
+    <span class="text-muted float-right mt-q"><%= pretty_date(@notification.inserted_at) %></span>
   </div>
   <div class="text-truncate font-weight-bold">
     <%= link @notification.project.name, to: project_path(@conn, :show, @notification.project) %>
@@ -9,9 +9,15 @@
   <div>
     <%= notification_text(@notification) %>
     <%= if @notification.acknowledged do %>
-      <%= link "Delete", to: notification_path(@conn, :delete, @notification), class: "btn btn-danger btn-sm", method: :delete %>
+      <%= link to: notification_path(@conn, :delete, @notification), class: "btn btn-secondary btn-sm", method: :delete do %>
+        <%= icon("trash") %>
+        Delete
+      <% end %>
     <% else %>
-      <%= link "Acknowledge", to: notification_path(@conn, :update, @notification), class: "btn btn-secondary btn-sm", method: :put %>
+      <%= link to: notification_path(@conn, :update, @notification), class: "btn btn-secondary btn-sm", method: :put do %>
+        <%= icon("bookmark-o") %>
+        Acknowledge
+      <% end %>
     <% end %>
   </div>
 </div>

@@ -12,10 +12,21 @@ defmodule AlloyCi.Notifications do
     end
   end
 
+  def acknowledge_all(user) do
+    query =
+      from(
+        n in Notification,
+        where: n.user_id == ^user.id and n.acknowledged == false,
+        update: [set: [acknowledged: true]]
+      )
+
+    Repo.update_all(query, [])
+  end
+
   def count_for_user(user) do
     query =
       from(
-        n in "notifications",
+        n in Notification,
         where: n.user_id == ^user.id and n.acknowledged == false,
         select: count(n.id)
       )
@@ -26,6 +37,12 @@ defmodule AlloyCi.Notifications do
   def delete(id, user) do
     Notification
     |> where(id: ^id, user_id: ^user.id)
+    |> Repo.delete_all()
+  end
+
+  def delete_all(user) do
+    Notification
+    |> where(user_id: ^user.id, acknowledged: ^true)
     |> Repo.delete_all()
   end
 

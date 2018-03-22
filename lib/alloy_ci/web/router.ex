@@ -60,6 +60,8 @@ defmodule AlloyCi.Web.Router do
     delete("/logout", AuthController, :logout)
 
     resources("/notifications", NotificationController, only: [:index, :delete, :update])
+    post("/notifications/acknowledge_all", NotificationController, :acknowledge_all)
+    post("/notifications/delete_all", NotificationController, :delete_all)
 
     resources("/profile", ProfileController, only: [:index, :update, :delete])
     delete("/profile/:auth_id/delete", ProfileController, :delete, as: :auth_delete)

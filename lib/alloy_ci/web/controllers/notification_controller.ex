@@ -3,16 +3,32 @@ defmodule AlloyCi.Web.NotificationController do
   alias AlloyCi.Notifications
   plug(EnsureAuthenticated, handler: AlloyCi.Web.AuthController, typ: "access")
 
+  def acknowledge_all(conn, _, current_user, _) do
+    with {_, nil} <- Notifications.acknowledge_all(current_user) do
+      conn
+      |> put_flash(:success, "Notifications were acknowledged")
+      |> redirect(to: notification_path(conn, :index))
+    end
+  end
+
   def delete(conn, %{"id" => id}, current_user, _) do
     with {1, _} <- Notifications.delete(id, current_user) do
       conn
-      |> put_flash(:info, "Notification was deleted")
+      |> put_flash(:success, "Notification was deleted")
       |> redirect(to: notification_path(conn, :index))
     else
       _ ->
         conn
         |> put_flash(:error, "Notification not found")
         |> redirect(to: notification_path(conn, :index))
+    end
+  end
+
+  def delete_all(conn, _, current_user, _) do
+    with {_, nil} <- Notifications.delete_all(current_user) do
+      conn
+      |> put_flash(:success, "Notifications were deleted")
+      |> redirect(to: notification_path(conn, :index))
     end
   end
 
