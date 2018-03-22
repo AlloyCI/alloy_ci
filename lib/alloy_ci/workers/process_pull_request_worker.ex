@@ -2,8 +2,7 @@ defmodule AlloyCi.Workers.ProcessPullRequestWorker do
   @moduledoc """
   When a pull request is created, and it is coming from a fork, this worker
   processes the information from the PR and the forked repo to create a special
-  pipeline to test the code from the fork. Requires a custom version of the Runner
-  until https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/765 is merged. 
+  pipeline to test the code from the fork. Requires AlloyCI Runner.
   """
   alias AlloyCi.{Pipelines, Projects, Workers.CreateBuildsWorker, Queuer}
   require Logger
