@@ -1,6 +1,7 @@
 version: "3"
 services:
   web:
+    restart: always
     image: "alloyci/alloy_ci:<version>"
     command: foreground
     depends_on:
