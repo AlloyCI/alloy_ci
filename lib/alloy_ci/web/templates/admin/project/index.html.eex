@@ -23,7 +23,7 @@
                 <% status = statuses |> Map.get(project.id, "unknown") %>
                 <div class="card <%= card_status(status)%>">
                   <div class="card-body project-card" data-url="<%= admin_project_path(@conn, :show, project) %>">
-                    <div class="btn-group pull-right">
+                    <div class="btn-group pull-right p-t-12">
                       <%= link to: admin_project_path(@conn, :delete, project), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger p-a-0" do %>
                         <%= icon("trash") %>
                       <% end %>

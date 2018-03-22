@@ -23,6 +23,11 @@
           <div class="tab-content">
             <div class="tab-pane p-1 active" id="unread" role="tabpanel">
               <%= if length(@unread) > 0 do %>
+                <div class="message">
+                  <div>
+                    <%= link "Acknowledge All", to: notification_path(@conn, :acknowledge_all), class: "btn btn-primary", method: :post %>
+                  </div>
+                </div>
                 <%= for notification <- @unread do %>
                   <%= render "notification.html", notification: notification, conn: @conn %>
                 <% end %>
@@ -35,6 +40,11 @@
 
             <div class="tab-pane p-1" id="acknowledged" role="tabpanel">
               <%= if length(@acknowledged) > 0 do %>
+                <div class="message">
+                  <div>
+                    <%= link "Delete All", to: notification_path(@conn, :delete_all), class: "btn btn-danger", method: :delete %>
+                  </div>
+                </div>
                 <%= for notification <- @acknowledged do %>
                   <%= render "notification.html", notification: notification, conn: @conn %>
                 <% end %>

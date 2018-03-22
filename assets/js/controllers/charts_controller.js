@@ -21,7 +21,7 @@ export default class extends Controller {
               display: true,
               ticks: {
                 min: 0,
-                stepSize: 1
+                stepSize: 2
               }, 
               scaleLabel: {
                 display: true,
