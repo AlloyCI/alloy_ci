@@ -25,7 +25,7 @@
         </div>
         <div class="col-sm-6">
           <span class="text-muted h2">
-            <span class="pull-right"><%= global(@runner.global) %></span>
+            <span class="pull-right"><%= global(@runner) %></span>
           </span>
         </div>
       </div>

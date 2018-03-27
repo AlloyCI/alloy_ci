@@ -1,9 +1,9 @@
 defmodule AlloyCi.Web.ProjectView do
   use AlloyCi.Web, :view
-  alias AlloyCi.{Accounts, Projects, Runners}
+  alias AlloyCi.{Accounts, Projects}
   import Kerosene.HTML
   import AlloyCi.Builds, only: [ref_type: 1]
-  import AlloyCi.Web.SharedView, only: [platform_icon: 1]
+  import AlloyCi.Web.RunnerView, only: [platform_icon: 1, global_runners: 0]
 
   def app_url do
     Application.get_env(:alloy_ci, :app_url)
@@ -17,10 +17,6 @@ defmodule AlloyCi.Web.ProjectView do
 
   def clean_ref(ref) do
     ref |> String.replace(ref |> ref_type() |> cleanup_string(), "")
-  end
-
-  def global_runners do
-    Runners.global_runners()
   end
 
   def has_github_auth(user) do
