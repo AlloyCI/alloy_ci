@@ -77,6 +77,7 @@ defmodule AlloyCi.Web.BuildView do
         link(
           "Keep artifacts forever",
           to: project_build_keep_artifact_path(conn, :keep_artifact, build.project_id, build),
+          method: :post,
           class: "btn btn-secondary m-t-1"
         )
       end

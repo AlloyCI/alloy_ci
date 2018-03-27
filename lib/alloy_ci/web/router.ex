@@ -71,7 +71,7 @@ defmodule AlloyCi.Web.Router do
 
       resources("/builds", BuildController, only: [:show, :create]) do
         get("/artifact", BuildController, :artifact, as: :artifact)
-        get("/artifact/keep", BuildController, :keep_artifact, as: :keep_artifact)
+        post("/artifact/keep", BuildController, :keep_artifact, as: :keep_artifact)
       end
 
       resources("/badge/:ref", BadgeController, only: [:index])
