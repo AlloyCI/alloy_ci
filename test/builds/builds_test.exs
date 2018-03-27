@@ -446,7 +446,7 @@ defmodule AlloyCi.BuildsTest do
     # end
   end
 
-  describe "to_process" do
+  describe "to_process/0" do
     test "it returns the oldest available build to process", %{
       pipeline: pipeline,
       project: project

@@ -52,7 +52,7 @@ defmodule AlloyCi.Builds do
     query =
       from(
         b in Build,
-        where: b.pipeline_id == ^pipeline.id,
+        where: b.pipeline_id == ^pipeline.id and b.status in ~w(created pending running),
         update: [set: [status: "cancelled"]]
       )
 
@@ -204,9 +204,29 @@ defmodule AlloyCi.Builds do
   end
 
   def retry(build) do
-    build
-    |> Build.changeset(%{runner_id: nil, status: "pending", trace: ""})
-    |> Repo.update()
+    with {:ok, _} <- build |> do_update(%{name: build.name <> " (restarted)"}) do
+      params =
+        build
+        |> Map.drop([
+          :__meta__,
+          :__struct__,
+          :id,
+          :inserted_at,
+          :updated_at,
+          :finished_at,
+          :queued_at,
+          :started_at,
+          :runner_id,
+          :status,
+          :trace,
+          :token
+        ])
+        |> Map.merge(%{token: generate_token()})
+
+      %Build{}
+      |> Build.changeset(params)
+      |> Repo.insert()
+    end
   end
 
   def start_build(build, runner) do
@@ -264,8 +284,7 @@ defmodule AlloyCi.Builds do
 
   def update_trace(build, trace) do
     build
-    |> Build.changeset(%{trace: trace})
-    |> Repo.update()
+    |> do_update(%{trace: trace})
   end
 
   ###################
@@ -372,28 +391,30 @@ defmodule AlloyCi.Builds do
     end
   end
 
+  defp do_update(build, params) do
+    build
+    |> Build.changeset(params)
+    |> Repo.update()
+  end
+
   defp do_update_status(build, status) when status in ~w(success failed) do
     build
-    |> Build.changeset(%{status: status, finished_at: Timex.now()})
-    |> Repo.update()
+    |> do_update(%{status: status, finished_at: Timex.now()})
   end
 
   defp do_update_status(build, status) when status == "pending" do
     build
-    |> Build.changeset(%{status: status, queued_at: Timex.now()})
-    |> Repo.update()
+    |> do_update(%{status: status, queued_at: Timex.now()})
   end
 
   defp do_update_status(build, status) when status == "running" do
     build
-    |> Build.changeset(%{status: status, started_at: Timex.now()})
-    |> Repo.update()
+    |> do_update(%{status: status, started_at: Timex.now()})
   end
 
   defp do_update_status(build, status) do
     build
-    |> Build.changeset(%{status: status})
-    |> Repo.update()
+    |> do_update(%{status: status})
   end
 
   defp extra_fields(build) do

@@ -2,7 +2,7 @@ defmodule AlloyCi.Web.BuildControllerTest do
   @moduledoc """
   """
   use AlloyCi.Web.ConnCase
-  alias AlloyCi.{Artifact, Repo}
+  alias AlloyCi.{Artifact, Build, Builds, Repo}
   import AlloyCi.Factory
 
   setup do
@@ -15,7 +15,27 @@ defmodule AlloyCi.Web.BuildControllerTest do
     {:ok, %{project: project, build: build, user: user}}
   end
 
-  describe "#show/4" do
+  describe "create/4" do
+    test "it restarts the chosen build", %{project: project, build: build, user: user} do
+      conn =
+        user
+        |> guardian_login(%{typ: "access"})
+        |> post("/projects/#{project.id}/builds?id=#{build.id}")
+
+      assert redirected_to(conn) ==
+               project_pipeline_path(conn, :show, project.id, build.pipeline_id)
+
+      b = Builds.get(build.id)
+      assert b.name =~ "(restarted)"
+
+      restarted = Repo.one(from(b in Build, order_by: [desc: b.id], limit: 1))
+      assert restarted.status == "created"
+      assert restarted.trace == ""
+      assert restarted.name == build.name
+    end
+  end
+
+  describe "show/4" do
     test "it responds with the chosen build", %{project: project, build: build, user: user} do
       conn =
         user
@@ -36,7 +56,7 @@ defmodule AlloyCi.Web.BuildControllerTest do
     end
   end
 
-  describe "#artifact/4" do
+  describe "artifact/4" do
     test "it responds with the artifact file for download", %{project: project, user: user} do
       build = insert(:extended_build, status: "success", project: project)
 
@@ -70,7 +90,7 @@ defmodule AlloyCi.Web.BuildControllerTest do
     end
   end
 
-  describe "#keep_artifact/4" do
+  describe "keep_artifact/4" do
     test "it updates the artifact expiry date", %{project: project, user: user} do
       build = insert(:extended_build, status: "success", project: project)
 
@@ -88,7 +108,7 @@ defmodule AlloyCi.Web.BuildControllerTest do
       conn =
         user
         |> guardian_login(%{typ: "access"})
-        |> get("/projects/#{project.id}/builds/#{build.id}/artifact/keep")
+        |> post("/projects/#{project.id}/builds/#{build.id}/artifact/keep")
 
       assert html_response(conn, 302) =~ "redirected"
       assert Repo.get!(Artifact, artifact.id).expires_at == nil
@@ -99,7 +119,7 @@ defmodule AlloyCi.Web.BuildControllerTest do
         :user
         |> insert()
         |> guardian_login(%{typ: "access"})
-        |> get("/projects/#{project.id}/builds/#{build.id}/artifact/keep")
+        |> post("/projects/#{project.id}/builds/#{build.id}/artifact/keep")
 
       assert html_response(conn, 302) =~ "redirected"
     end
