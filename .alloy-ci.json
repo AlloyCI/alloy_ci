@@ -33,21 +33,13 @@
       "mix test"
     ]
   },
-  "credo": {
+  "credo + formatter": {
     "stage": "test",
     "tags": [
       "elixir"
     ],
     "script": [
-      "mix credo"
-    ]
-  },
-  "formatter": {
-    "stage": "test",
-    "tags": [
-      "elixir"
-    ],
-    "script": [
+      "mix credo",
       "mix format --check-formatted"
     ]
   }
