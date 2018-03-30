@@ -1,3 +1,25 @@
+<a name="v0.5.0"></a>
+### v0.5.0 (2018-03-30)
+
+#### Features
+
+* Added support for GitHub Enterprise
+  - AlloyCI can now be used with a GitHub Enterprise installation. See the [documentation](doc/github_enterprise.md) for more info on how to set it up.
+* Ditched core-ui in favor of a cleaner, more functional design that is more appealing to the eye
+* Expired artifacts are now pruned once a day (interval can be configured)
+* Artifacts can be kept forever, by clicking a button in the build page
+* Build artifacts can now be downloaded from the build page
+  - For this, the build page was completely reworked
+  - It is now its own page with valuable information about the build, along the build trace and artifacts that may have been created
+* Individual builds can now be restarted independently (build will be copied, and old data will be kept)
+
+#### Bug Fixes
+
+* When cancelling a pipeline, all builds were marked as cancelled, now only builds that are either
+  `created`, `running`, or `pending` are updated.
+* After the upgrade to Guardian 1.0 it became impossible to add another authentication method to an
+  existing user. This has been fixed.  
+
 <a name="v0.4.0"></a>
 ### v0.4.0 (2018-03-08)
 
