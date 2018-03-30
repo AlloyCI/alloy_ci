@@ -43,6 +43,11 @@ services:
       #------
       RUNNER_REGISTRATION_TOKEN: "lustlmc3gMl59smZ"
       SERVER_URL: "https://<hostname>"
+      #------
+      # GiHub Enterprise Config (delete these lines if not using GitHub Enterprise)
+      GITHUB_ENTERPRISE: true
+      GITHUB_ENDPOINT: "https://github.example.com"
+      #------
       GITHUB_CLIENT_ID: "<GitHub OAuth Client ID>"
       GITHUB_CLIENT_SECRET: "<GitHub OAuth Client Secret>"
       GITHUB_SECRET_TOKEN: "<GitHub Secret Token>"

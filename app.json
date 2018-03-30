@@ -4,7 +4,14 @@
   "repository": "https://github.com/AlloyCI/alloy_ci",
   "website": "https://alloy-ci.com/",
   "logo": "https://alloy-ci.com/images/logo.png",
-  "keywords": ["github", "continuous-delivery", "continuous-integration", "continuous-testing", "elixir", "phoenix"],
+  "keywords": [
+    "github",
+    "continuous-delivery",
+    "continuous-integration",
+    "continuous-testing",
+    "elixir",
+    "phoenix"
+  ],
   "success_url": "/",
   "env": {
     "MIX_ENV": {
@@ -26,6 +33,16 @@
     "SECRET_KEY_BASE": {
       "description": "A secret key for verifying the integrity of cookies",
       "generator": "mix phx.gen.secret"
+    },
+    "GITHUB_ENTERPRISE": {
+      "description": "If using GitHub Enterprise, set to true, otherwise leave blank",
+      "value": "",
+      "required": "false"
+    },
+    "GITHUB_ENDPOINT": {
+      "description": "If using GitHub Enterprise, set it to its URL, otherwise leave blank",
+      "value": "",
+      "required": "false"
     },
     "GITHUB_CLIENT_ID": {
       "description": "GitHub OAuth client ID",

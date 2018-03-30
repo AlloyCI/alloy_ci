@@ -26,13 +26,13 @@ defmodule AlloyCi.Github.Live do
 
     signed_jwt = payload |> token() |> sign(rs256(key)) |> get_compact()
 
-    Tentacat.Client.new(%{jwt: signed_jwt})
+    Tentacat.Client.new(%{jwt: signed_jwt}, endpoint())
   end
 
   def clone_url(project, pipeline) do
     %{"token" => token} = installation_token(pipeline.installation_id)
 
-    "https://x-access-token:#{token}@github.com/#{project.owner}/#{project.name}.git"
+    "https://x-access-token:#{token}@#{clone_domain()}/#{project.owner}/#{project.name}.git"
   end
 
   def commit(project, sha, installation_id) do
@@ -41,7 +41,7 @@ defmodule AlloyCi.Github.Live do
   end
 
   def fetch_repos(token) do
-    client = Tentacat.Client.new(%{access_token: token})
+    client = Tentacat.Client.new(%{access_token: token}, endpoint())
     Tentacat.Repositories.list_mine(client, sort: "pushed")
   end
 
@@ -115,12 +115,26 @@ defmodule AlloyCi.Github.Live do
   end
 
   def sha_url(project, pipeline) do
-    "https://github.com/#{project.owner}/#{project.name}/commit/#{pipeline.sha}"
+    "#{github_url()}/#{project.owner}/#{project.name}/commit/#{pipeline.sha}"
   end
 
   ###################
   # Private functions
   ###################
+  defp clone_domain do
+    String.replace(github_url(), "https://", "")
+  end
+
+  defp endpoint do
+    (Application.get_env(:alloy_ci, AlloyCi.Github) || [])
+    |> Keyword.get(:endpoint_api, "https://api.github.com/")
+  end
+
+  defp github_url do
+    (Application.get_env(:alloy_ci, AlloyCi.Github) || [])
+    |> Keyword.get(:endpoint, "https://github.com")
+  end
+
   defp filter_installations(github_uid) do
     Enum.reject(list_installations(), fn installation ->
       installation["target_id"] != String.to_integer(github_uid)
@@ -129,7 +143,7 @@ defmodule AlloyCi.Github.Live do
 
   defp installation_client(installation_id) do
     %{"token" => token} = installation_token(installation_id)
-    Tentacat.Client.new(%{access_token: token})
+    Tentacat.Client.new(%{access_token: token}, endpoint())
   end
 
   defp installation_token(installation_id) do

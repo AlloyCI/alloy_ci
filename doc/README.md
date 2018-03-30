@@ -24,37 +24,47 @@ take in order for AlloyCI to be able to function properly.
 
 #### GitHub Apps (formerly known as integrations)
 
+> **Note:** As of v0.5.0 AlloyCI also supports GitHub Enterprise v2.13 and above. Head over
+> to the [GitHub Enterprise configuration docs](github_enterprise.md) for how to set it up, and then return
+> to the [requirements](#requirements) section of this document.
+
 In order to use your own instance of AlloyCI with GitHub.com, you will need to
 register a new GitHub App. Go to https://github.com/settings/apps/new to get
 started.
 
 Fill in the form with your data, and the following for the specified fields:
 
-- `User authorization callback URL:` => https://example.com/auth/github/callback
-- `Webhook URL:` => https://example.com/api/github/handle_event
+- `User authorization callback URL:` => https://alloy-ci.example.com/auth/github/callback
+- `Webhook URL:` => https://alloy-ci.example.com/api/github/handle_event
 - `Webhook secret (optional):` => A random string of characters
 
 Under permissions, make sure that the following permissions are enabled and with
 the correct settings:
 
+
 **Commit Statuses:**
 
 - Read & Write
-- Webhook events:
-  - [x] Status
 
 **Repository Contents:**
 
 - Read & Write
-- Webhook events:
-  - [x] Create
-  - [x] Push
-  - [x] Delete
+
+**Subscribe to events**
+
+Select the following checkboxes:
+
+- [x] Status
+- [x] Create
+- [x] Push
+- [x] Delete
+
+---
 
 Finally, select where the integration can be installed.
 
 Once created, you will have almost everything you need to setup the environment
-variables for AlloyCI. GitHub will redirect you to your newly created integration.
+variables for AlloyCI. GitHub will redirect you to your newly created app.
 
 On this page, GitHub will ask you to generate a private key for your installation.
 Do so, and save the generated file. The contents of this file will be used for the
@@ -84,7 +94,7 @@ will need to also create a separate OAuth app. To do so, go to
 https://github.com/settings/applications/new
 
 Fill in the form with your information, and as `Authorization callback URL`
-use `https://example.com/auth/github/callback`.
+use `https://alloy-ci.example.com/auth/github/callback`.
 
 Once the app is created, you will be redirected to a page containing the client ID
 and secret needed for the `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` variables.
@@ -130,11 +140,13 @@ The required variables are as follows:
 | SERVER_URL                 | Full URL via which AlloyCI will be accessible    |
 | SECRET_KEY_BASE            | 65 chars long random string used to sign cookies |
 | GITHUB_CLIENT_ID           | OAuth Client ID of your GitHub App               |
+| GITHUB_ENTERPRISE          | If the GitHub endpoint in use is an Enterprise installation, set to true, otherwise leave empty |
+| GITHUB_ENDPOINT            | The GitHub endpoint URL, e.g https://github.example.com (only needed for GitHub Enterprise) |
 | GITHUB_CLIENT_SECRET       | OAuth Client Secret of your GitHub App           |
 | GITHUB_APP_ID              | The ID of the App created before        |
 | GITHUB_APP_URL             | The URL where users can add the App to their accounts |
 | GITHUB_PRIVATE_KEY         | The full private key used to sign GitHub's auth token |
-| GITHUB_SECRET_TOKEN        | Integration token used to verify GitHub payloads |
+| GITHUB_SECRET_TOKEN        | Secret token used to verify GitHub payloads |
 | ENABLE_SLACK_NOTIFICATIONS | Please set it to "true" or "false" |
 | ENABLE_EMAIL_NOTIFICATIONS | Please set it to "true" or "false" |
 | ARTIFACT_SWEEP_INTERVAL    | Interval, in hours, for how often the system should check for expired artifacts |
