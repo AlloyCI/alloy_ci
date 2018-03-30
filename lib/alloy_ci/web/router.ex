@@ -85,7 +85,7 @@ defmodule AlloyCi.Web.Router do
   # This scope is the main authentication area for Ueberauth
   scope "/auth", AlloyCi.Web do
     # Use the default browser stack
-    pipe_through([:browser])
+    pipe_through([:browser, :browser_auth])
 
     get("/:provider", AuthController, :login)
     get("/:provider/callback", AuthController, :callback)
