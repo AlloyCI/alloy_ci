@@ -6,9 +6,9 @@ defmodule AlloyCi.ArtifactSweeper do
   alias AlloyCi.Artifacts
   require Logger
 
-  def start_link(opts \\ []) do
+  def start_link(interval, opts \\ []) do
     defaults = %{
-      interval: get_interval()
+      interval: parse_interval(interval)
     }
 
     state = Enum.into(opts, defaults)
@@ -49,10 +49,8 @@ defmodule AlloyCi.ArtifactSweeper do
 
   def handle_info(_, state), do: {:noreply, state}
 
-  defp get_interval do
-    :alloy_ci
-    |> Application.get_env(__MODULE__)
-    |> Keyword.get(:sweep_interval, 24)
+  defp parse_interval(interval) do
+    (interval || 24)
     |> hours_to_minutes()
     |> minute_to_ms()
   end

@@ -72,8 +72,6 @@ config :alloy_ci, AlloyCi.Notifiers.Slack,
   hook_url: System.get_env("SLACK_HOOK_URL"),
   icon_emoji: System.get_env("SLACK_ICON")
 
-config :alloy_ci, AlloyCi.ArtifactSweeper, sweep_interval: 24
-
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"

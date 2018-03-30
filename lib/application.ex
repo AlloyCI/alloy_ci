@@ -27,7 +27,7 @@ defmodule AlloyCi.Application do
       # Start the endpoint when the application starts
       supervisor(AlloyCi.Web.Endpoint, []),
       worker(Guardian.DB.Token.SweeperServer, []),
-      worker(AlloyCi.ArtifactSweeper, [])
+      worker(AlloyCi.ArtifactSweeper, [System.get_env("ARTIFACT_SWEEP_INTERVAL")])
       # Start your own worker by calling: AlloyCi.Worker.start_link(arg1, arg2, arg3)
       # worker(AlloyCi.Worker, [arg1, arg2, arg3]),
     ]
