@@ -204,7 +204,8 @@ defmodule AlloyCi.Builds do
   end
 
   def retry(build) do
-    with {:ok, _} <- build |> do_update(%{name: build.name <> " (restarted)"}) do
+    with {:ok, _} <-
+           build |> do_update(%{allow_failure: true, name: build.name <> " (restarted)"}) do
       params =
         build
         |> Map.drop([
