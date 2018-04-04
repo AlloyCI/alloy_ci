@@ -29,7 +29,7 @@ defmodule AlloyCi.Web.BuildControllerTest do
       assert b.name =~ "(restarted)"
 
       restarted = Repo.one(from(b in Build, order_by: [desc: b.id], limit: 1))
-      assert restarted.status == "created"
+      assert restarted.status == "pending"
       assert restarted.trace == ""
       assert restarted.name == build.name
     end
