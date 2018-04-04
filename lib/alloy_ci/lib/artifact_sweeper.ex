@@ -85,7 +85,7 @@ defmodule AlloyCi.ArtifactSweeper do
   defp sweep(pid, state) do
     Logger.log(:info, "Deleting expired artifacts...")
     Artifacts.delete_expired()
-    schedule_work(pid, state)
     Logger.log(:info, "Done.")
+    schedule_work(pid, state)
   end
 end

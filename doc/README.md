@@ -140,7 +140,7 @@ The required variables are as follows:
 | SERVER_URL                 | Full URL via which AlloyCI will be accessible    |
 | SECRET_KEY_BASE            | 65 chars long random string used to sign cookies |
 | GITHUB_CLIENT_ID           | OAuth Client ID of your GitHub App               |
-| GITHUB_ENTERPRISE          | If the GitHub endpoint in use is an Enterprise installation, set to true, otherwise leave empty |
+| GITHUB_ENTERPRISE          | If the GitHub endpoint in use is an Enterprise installation, set to true, **otherwise don't add this** |
 | GITHUB_ENDPOINT            | The GitHub endpoint URL, e.g https://github.example.com (only needed for GitHub Enterprise) |
 | GITHUB_CLIENT_SECRET       | OAuth Client Secret of your GitHub App           |
 | GITHUB_APP_ID              | The ID of the App created before        |
@@ -150,9 +150,13 @@ The required variables are as follows:
 | ENABLE_SLACK_NOTIFICATIONS | Please set it to "true" or "false" |
 | ENABLE_EMAIL_NOTIFICATIONS | Please set it to "true" or "false" |
 | ARTIFACT_SWEEP_INTERVAL    | Interval, in hours, for how often the system should check for expired artifacts |
+| S3_STORAGE_ENABLED         | If you want to use an S3 compatible storage service for the build artifacts, set to true, **otherwise don't add this** |
 | SENTRY_DSN                 | Set this to your Sentry DSN if you want to use it for error catching |
 
-Configuration variables, depending on which notification method is enabled:
+### Notifiers Configuration
+
+Add the following variables as well, depending on which notification mechanism you 
+enabled before.
 
 **Slack:**
 
@@ -174,6 +178,22 @@ Configuration variables, depending on which notification method is enabled:
 | ALLOWED_TLS_VERSIONS | e.g. "tlsv1.1,tlsv1.2"                          |
 | FROM_ADDRESS         | Email address that will appear as sender        |
 | REPLY_TO_ADDRESS     | Where the user will reply                       |
+
+### S3 Storage Configuration
+
+Add the following variables if you are using an S3 service. Almost all S3
+compatible providers are supported.
+
+| Name                 | Description                                     |
+|----------------------|-------------------------------------------------|
+| S3_REGION            | If **using AWS**, set the region to use here    |
+| S3_BUCKET_NAME       | Name of the S3 bucket to use                    |
+| S3_ACCESS_KEY_ID     | Your S3 Access Key ID                           |
+| S3_SECRET_ACCESS_KEY | Your S3 Secret Access Key                       |
+| S3_HOST              | If using **a service other than AWS**, set the host here, **otherwise don't add this** |
+| S3_PORT              | If using **a service other than AWS**, set the connection port here |
+| S3_HTTP_SCHEME       | If using **a service other than AWS**, set to `http://` or `https://` |
+
 
 
 ## Docker Installation

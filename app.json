@@ -68,6 +68,21 @@
       "description": "The URL of your GitHub App, so users can install it",
       "value": ""
     },
+    "S3_STORAGE_ENABLED": {
+      "description": "Use AWS S3 to store build artifacts. See documentation to use a service other than AWS",
+      "value": "true",
+      "required": "true"
+    },
+    "S3_ACCESS_KEY_ID": {
+      "description": "Your AWS S3 Access Key ID",
+      "value": "",
+      "required": "true"
+    },
+    "S3_SECRET_ACCESS_KEY": {
+      "description": "Your AWS S3 Secret Access Key",
+      "value": "",
+      "required": "true"
+    },
     "ENABLE_SLACK_NOTIFICATIONS": {
       "description": "Enable Slack Notifications. All Slack related variables are required if this is set to 'true'",
       "value": "false"

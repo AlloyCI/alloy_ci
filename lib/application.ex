@@ -1,4 +1,4 @@
-defmodule AlloyCi.Application do
+defmodule AlloyCi.App do
   @moduledoc """
   """
   use Application
@@ -34,7 +34,45 @@ defmodule AlloyCi.Application do
   end
 
   defp setup_config do
+    arc_storage_config()
     github_oauth_config()
+  end
+
+  defp arc_storage_config do
+    if System.get_env("S3_STORAGE_ENABLED") do
+      Application.put_env(:arc, :storage, Arc.Storage.S3)
+      Application.put_env(:arc, :bucket, System.get_env("S3_BUCKET_NAME") || "uploads")
+
+      ex_aws_config()
+    end
+  end
+
+  defp ex_aws_config do
+    base = %{
+      access_key_id: System.get_env("S3_ACCESS_KEY_ID"),
+      secret_access_key: System.get_env("S3_SECRET_ACCESS_KEY")
+    }
+
+    if System.get_env("S3_HOST") do
+      config =
+        Map.merge(
+          %{
+            scheme: System.get_env("S3_HTTP_SCHEME"),
+            host: %{"custom" => System.get_env("S3_HOST")},
+            port: System.get_env("S3_PORT"),
+            region: "custom"
+          },
+          base
+        )
+
+      Application.put_env(:ex_aws, :s3, config)
+    else
+      Application.put_env(
+        :ex_aws,
+        :s3,
+        Map.merge(%{region: System.get_env("S3_REGION") || "us-east-1"}, base)
+      )
+    end
   end
 
   defp github_oauth_config do

@@ -222,7 +222,7 @@ defmodule AlloyCi.Builds do
           :trace,
           :token
         ])
-        |> Map.merge(%{token: generate_token()})
+        |> Map.merge(%{token: generate_token(), status: "pending"})
 
       %Build{}
       |> Build.changeset(params)

@@ -13,14 +13,18 @@ defmodule AlloyCi.Web.BuildController do
       build ->
         file = Artifacts.url({build.artifact.file, build.artifact}, signed: true)
 
-        conn
-        |> put_resp_content_type("application/octet-stream", "utf-8")
-        |> put_resp_header("content-transfer-encoding", "binary")
-        |> put_resp_header(
-          "content-disposition",
-          "attachment; filename=#{build.artifact.file[:file_name]}"
-        )
-        |> send_file(200, "./#{file}")
+        if System.get_env("S3_STORAGE_ENABLED") do
+          conn |> redirect(external: file)
+        else
+          conn
+          |> put_resp_content_type("application/octet-stream", "utf-8")
+          |> put_resp_header("content-transfer-encoding", "binary")
+          |> put_resp_header(
+            "content-disposition",
+            "attachment; filename=#{build.artifact.file[:file_name]}"
+          )
+          |> send_file(200, "./#{file}")
+        end
     end
   end
 

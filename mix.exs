@@ -31,7 +31,7 @@ defmodule AlloyCi.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {AlloyCi.Application, []},
+      mod: {AlloyCi.App, []},
       applications: applications(Mix.env())
     ]
   end
@@ -50,6 +50,8 @@ defmodule AlloyCi.Mixfile do
       :cowboy,
       :elixir_make,
       :ex_utils,
+      :ex_aws,
+      :ex_aws_s3,
       :gettext,
       :gravatar,
       :guardian,
@@ -65,6 +67,7 @@ defmodule AlloyCi.Mixfile do
       :postgrex,
       :secure_random,
       :sentry,
+      :sweet_xml,
       :timex,
       :tentacat,
       :ueberauth,
@@ -90,6 +93,8 @@ defmodule AlloyCi.Mixfile do
       {:bcrypt_elixir, "~> 1.0"},
       {:comeonin, "~> 4.1"},
       {:cowboy, "~> 1.1"},
+      {:ex_aws, "~> 2.0", override: true},
+      {:ex_aws_s3, "~> 2.0"},
       {:gettext, "~> 0.15"},
       {:gravatar, "~> 0.1.0"},
       {:guardian_db, "~> 1.1"},
@@ -104,6 +109,7 @@ defmodule AlloyCi.Mixfile do
       {:postgrex, ">= 0.0.0"},
       {:secure_random, "~> 0.5"},
       {:sentry, "~> 6.1"},
+      {:sweet_xml, "~> 0.6"},
       {:tentacat, "~> 0.8"},
       {:timex, "~> 3.2"},
       {:ueberauth_github, "~> 0.7"},
