@@ -173,9 +173,9 @@
                           <%= icon("gears", "fa-3x") %>
                         </h4>
                         <br>
-                        <h5>
-                          There are no registred runners for this project. Add one now!
-                        </h5>
+                        <h4>
+                          There are no available global runners. Ask your administrator to add one.
+                        </h4>
                       </div>
                     </div>
                   </div>
