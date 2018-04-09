@@ -69,11 +69,6 @@ config :ueberauth, Ueberauth,
     identity: {Ueberauth.Strategy.Identity, [callback_methods: ["POST"]]}
   ]
 
-# Configures Uberauth GitHub
-config :ueberauth, Ueberauth.Strategy.Github.OAuth,
-  client_id: "${GITHUB_CLIENT_ID}",
-  client_secret: "${GITHUB_CLIENT_SECRET}"
-
 # Configures Guardian
 config :alloy_ci, AlloyCi.Guardian,
   issuer: "AlloyCi.Prod",

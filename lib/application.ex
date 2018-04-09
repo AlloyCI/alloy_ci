@@ -76,14 +76,17 @@ defmodule AlloyCi.App do
   end
 
   defp github_oauth_config do
-    defaults = Application.fetch_env!(:ueberauth, Ueberauth.Strategy.Github.OAuth)
+    base = [
+      client_id: System.get_env("GITHUB_CLIENT_ID"),
+      client_secret: System.get_env("GITHUB_CLIENT_SECRET")
+    ]
 
     if System.get_env("GITHUB_ENTERPRISE") do
       Application.put_env(
         :ueberauth,
         Ueberauth.Strategy.Github.OAuth,
         Keyword.merge(
-          defaults,
+          base,
           authorize_url: System.get_env("GITHUB_ENDPOINT") <> "/login/oauth/authorize",
           token_url: System.get_env("GITHUB_ENDPOINT") <> "/login/oauth/access_token",
           site: System.get_env("GITHUB_ENDPOINT") <> "/api/v3"
@@ -96,6 +99,8 @@ defmodule AlloyCi.App do
         endpoint_api: System.get_env("GITHUB_ENDPOINT") <> "/api/v3",
         endpoint: System.get_env("GITHUB_ENDPOINT")
       )
+    else
+      Application.put_env(:ueberauth, Ueberauth.Strategy.Github.OAuth, base)
     end
   end
 end
