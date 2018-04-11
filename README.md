@@ -1,6 +1,7 @@
 # Alloy CI
 
 [![build status](https://alloy-ci.com/projects/1/badge/master)](https://alloy-ci.com/projects/1)
+[![Docker](https://img.shields.io/docker/pulls/alloyci/alloy_ci.svg)](https://hub.docker.com/r/alloyci/alloy_ci/)
 
 AlloyCI is a Continuous Integration, Deployment, and Delivery coordinator,
 written in Elixir, that takes advantage of the GitLab CI Runner, and its
