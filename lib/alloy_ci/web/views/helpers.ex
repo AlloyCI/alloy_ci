@@ -6,9 +6,6 @@ defmodule AlloyCi.Web.ViewHelpers do
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
-  def admin_logged_in?(conn), do: Guardian.Plug.authenticated?(conn, :admin)
-  def admin_user(conn), do: Guardian.Plug.current_resource(conn, :admin)
-
   def callout("success"), do: "callout-success"
   def callout("failed"), do: "callout-danger"
   def callout("running"), do: "callout-warning"
