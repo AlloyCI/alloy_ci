@@ -27,8 +27,8 @@ defmodule AlloyCi.Web.Api.BuildsEventView do
       steps: build.steps,
       image: build.image,
       services: build.services,
-      artifacts: [build.artifacts] || [],
-      cache: [build.options["cache"]] || [],
+      artifacts: [build.artifacts],
+      cache: [build.options["cache"]],
       dependencies: build.dependencies
       # credentials: []
     }
