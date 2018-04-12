@@ -3,7 +3,8 @@ defmodule AlloyCi.Authentication do
   An Authentication struct represents a set of credentials with which a
   User can gain access to the system.
   """
-  use AlloyCi.Web, :schema
+  use Ecto.Schema
+  import Ecto.Changeset
 
   schema "authentications" do
     field(:provider, :string)

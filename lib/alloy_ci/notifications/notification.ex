@@ -1,7 +1,7 @@
 defmodule AlloyCi.Notification do
-  @moduledoc """
-  """
-  use AlloyCi.Web, :schema
+  @moduledoc false
+  use Ecto.Schema
+  import Ecto.Changeset
 
   schema "notifications" do
     field(:acknowledged, :boolean, default: false)

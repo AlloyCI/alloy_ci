@@ -3,7 +3,8 @@ defmodule AlloyCi.Artifact do
   A Build represents a single job unit for a Pipeline. Each job defined in
   the `.alloy-ci.json` file will be stored as a Build.
   """
-  use AlloyCi.Web, :schema
+  use Ecto.Schema
+  import Ecto.Changeset
   use Arc.Ecto.Schema
 
   schema "artifacts" do

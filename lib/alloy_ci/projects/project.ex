@@ -1,7 +1,7 @@
 defmodule AlloyCi.Project do
-  @moduledoc """
-  """
-  use AlloyCi.Web, :schema
+  @moduledoc false
+  use Ecto.Schema
+  import Ecto.Changeset
 
   schema "projects" do
     field(:name, :string)

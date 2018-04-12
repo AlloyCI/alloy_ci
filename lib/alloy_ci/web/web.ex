@@ -16,14 +16,6 @@ defmodule AlloyCi.Web do
   below.
   """
 
-  def schema do
-    quote do
-      use Ecto.Schema
-
-      import Ecto.Changeset
-    end
-  end
-
   def controller do
     quote do
       use Phoenix.Controller, namespace: AlloyCi.Web

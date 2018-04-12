@@ -1,6 +1,7 @@
 defmodule AlloyCi.Runner do
   @moduledoc false
-  use AlloyCi.Web, :schema
+  use Ecto.Schema
+  import Ecto.Changeset
 
   schema "runners" do
     field(:active, :boolean, default: true)

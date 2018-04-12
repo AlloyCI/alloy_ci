@@ -3,7 +3,8 @@ defmodule AlloyCi.Pipeline do
   A Pipeline represents the entire set of jobs, and all the information they
   contain. It maps directly to a single repository push.
   """
-  use AlloyCi.Web, :schema
+  use Ecto.Schema
+  import Ecto.Changeset
 
   schema "pipelines" do
     field(:before_sha, :string)

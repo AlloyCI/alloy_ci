@@ -1,7 +1,7 @@
 defmodule AlloyCi.User do
-  @moduledoc """
-  """
-  use AlloyCi.Web, :schema
+  @moduledoc false
+  use Ecto.Schema
+  import Ecto.Changeset
 
   alias AlloyCi.Repo
 
@@ -23,7 +23,6 @@ defmodule AlloyCi.User do
 
   @doc """
   Creates a changeset based on the `struct` and `params`.
-
   If no params are provided, an invalid changeset is returned
   with no validation performed.
   """

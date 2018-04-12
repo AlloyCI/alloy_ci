@@ -2,7 +2,8 @@ defmodule AlloyCi.ProjectPermission do
   @moduledoc """
   Mapping to give Users access to multiple Projects, without duplicating entries
   """
-  use AlloyCi.Web, :schema
+  use Ecto.Schema
+  import Ecto.Changeset
   alias AlloyCi.Repo
   import Ecto.Query
 

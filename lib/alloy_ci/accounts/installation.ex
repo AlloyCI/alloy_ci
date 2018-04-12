@@ -1,7 +1,7 @@
 defmodule AlloyCi.Installation do
-  @moduledoc """
-  """
-  use AlloyCi.Web, :schema
+  @moduledoc false
+  use Ecto.Schema
+  import Ecto.Changeset
 
   schema "installations" do
     field(:login, :string, null: false)
