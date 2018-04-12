@@ -93,6 +93,6 @@ defmodule AlloyCi.Github.Test do
   end
 
   defp notify!(_project, _pipeline, _params) do
-    {201, :ok}
+    {201, :ok, :ok}
   end
 end

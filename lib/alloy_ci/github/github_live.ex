@@ -10,8 +10,10 @@ defmodule AlloyCi.Github.Live do
   import Joken
 
   def alloy_ci_config(project, pipeline) do
-    client = installation_client(pipeline.installation_id)
-    Tentacat.Contents.find_in(project.owner, project.name, ".alloy-ci.json", pipeline.sha, client)
+    pipeline.installation_id
+    |> installation_client()
+    |> Tentacat.Contents.find_in(project.owner, project.name, ".alloy-ci.json", pipeline.sha)
+    |> access_body()
   end
 
   def app_client do
@@ -36,13 +38,16 @@ defmodule AlloyCi.Github.Live do
   end
 
   def commit(project, sha, installation_id) do
-    client = installation_client(installation_id)
-    Tentacat.Commits.find(sha, project.owner, project.name, client)
+    installation_id
+    |> installation_client()
+    |> Tentacat.Commits.find(sha, project.owner, project.name)
+    |> access_body()
   end
 
   def fetch_repos(token) do
-    client = Tentacat.Client.new(%{access_token: token}, endpoint())
-    Tentacat.Repositories.list_mine(client, sort: "pushed")
+    %{access_token: token}
+    |> Tentacat.Client.new(endpoint())
+    |> Tentacat.Repositories.list_mine(sort: "pushed")
   end
 
   def installation_id_for(github_uid) do
@@ -53,7 +58,9 @@ defmodule AlloyCi.Github.Live do
   end
 
   def list_installations do
-    Tentacat.App.Installations.list_mine(app_client())
+    app_client()
+    |> Tentacat.App.Installations.list_mine()
+    |> access_body()
   end
 
   def notify_cancelled!(project, pipeline) do
@@ -93,8 +100,10 @@ defmodule AlloyCi.Github.Live do
   end
 
   def pull_request(project, pr_number, installation_id) do
-    client = installation_client(installation_id)
-    Tentacat.Pulls.find(project.owner, project.name, pr_number, client)
+    installation_id
+    |> installation_client()
+    |> Tentacat.Pulls.find(project.owner, project.name, pr_number)
+    |> access_body()
   end
 
   def repos_for(user) do
@@ -121,6 +130,9 @@ defmodule AlloyCi.Github.Live do
   ###################
   # Private functions
   ###################
+  @spec access_body(any) :: any
+  defp access_body(response), do: elem(response, 1)
+
   defp clone_domain do
     String.replace(github_url(), "https://", "")
   end
@@ -147,9 +159,9 @@ defmodule AlloyCi.Github.Live do
   end
 
   defp installation_token(installation_id) do
-    client = app_client()
-    {_, response} = Tentacat.App.Installations.token(installation_id, client)
-    response
+    app_client()
+    |> Tentacat.App.Installations.token(installation_id)
+    |> access_body()
   end
 
   defp notify!(project, pipeline, params) do
@@ -159,14 +171,14 @@ defmodule AlloyCi.Github.Live do
     }
 
     params = Map.merge(params, base)
-    client = installation_client(pipeline.installation_id)
 
-    Tentacat.Repositories.Statuses.create(
+    pipeline.installation_id
+    |> installation_client()
+    |> Tentacat.Repositories.Statuses.create(
       project.owner,
       project.name,
       pipeline.sha,
-      params,
-      client
+      params
     )
   end
 
