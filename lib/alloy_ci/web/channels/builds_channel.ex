@@ -1,6 +1,5 @@
 defmodule AlloyCi.Web.BuildsChannel do
-  @moduledoc """
-  """
+  @moduledoc false
   alias AlloyCi.{Builds, Projects, Web.Endpoint}
   use AlloyCi.Web, :channel
 

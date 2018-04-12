@@ -1,6 +1,5 @@
 defmodule AlloyCi.Workers.FetchReposWorker do
-  @moduledoc """
-  """
+  @moduledoc false
   use Que.Worker
   alias AlloyCi.{Accounts, Project, ProjectPermission, Web.ProjectView, Web.ReposChannel}
 

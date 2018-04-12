@@ -1,6 +1,5 @@
 defmodule AlloyCi.Workers.CreateBuildsWorker do
-  @moduledoc """
-  """
+  @moduledoc false
   alias AlloyCi.{Builds, Pipelines, Workers.ProcessPipelineWorker}
   require Logger
   use Que.Worker

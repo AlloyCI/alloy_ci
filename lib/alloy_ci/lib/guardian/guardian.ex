@@ -1,5 +1,6 @@
 defmodule AlloyCi.Guardian do
   @moduledoc """
+  The entry point for the Guardian OTP app
   """
   use Guardian, otp_app: :alloy_ci
 

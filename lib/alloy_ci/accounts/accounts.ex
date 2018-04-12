@@ -1,5 +1,6 @@
 defmodule AlloyCi.Accounts do
   @moduledoc """
+  The boundary for the Accounts system.
   """
   alias AlloyCi.{Authentication, Installation, ProjectPermission, Queuer, User, Repo}
   alias AlloyCi.Workers.CreatePermissionsWorker

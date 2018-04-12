@@ -1,6 +1,5 @@
 defmodule AlloyCi.Web.InputHelpers do
-  @moduledoc """
-  """
+  @moduledoc false
   alias Phoenix.HTML.Form
   use Phoenix.HTML
 

@@ -1,6 +1,5 @@
 defmodule AlloyCi.Web.ReposChannel do
-  @moduledoc """
-  """
+  @moduledoc false
   use AlloyCi.Web, :channel
   alias AlloyCi.Web.Endpoint
 

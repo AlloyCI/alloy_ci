@@ -1,5 +1,6 @@
 defmodule AlloyCi.Notifications do
   @moduledoc """
+  The boundary for the Notifications system.
   """
   import Ecto.Query, warn: false
   alias AlloyCi.{Notification, Notifier, Repo, User}

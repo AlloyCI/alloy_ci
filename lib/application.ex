@@ -1,5 +1,6 @@
 defmodule AlloyCi.App do
   @moduledoc """
+  Main entry point for the AlloyCI OTP application
   """
   use Application
 

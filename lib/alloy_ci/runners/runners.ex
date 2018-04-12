@@ -1,5 +1,6 @@
 defmodule AlloyCi.Runners do
   @moduledoc """
+  The boundary for the Runners system.
   """
   alias AlloyCi.{Builds, Project, Projects, Repo, Runner}
   import Ecto.Query, warn: false

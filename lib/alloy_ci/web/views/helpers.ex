@@ -1,5 +1,6 @@
 defmodule AlloyCi.Web.ViewHelpers do
   @moduledoc """
+  Collection of helper functions used across most of the views/templates
   """
   use Phoenix.HTML
   alias AlloyCi.Guardian

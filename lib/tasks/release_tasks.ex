@@ -1,6 +1,6 @@
 defmodule AlloyCi.ReleaseTasks do
-  @moduledoc """
-  """
+  @moduledoc false
+
   @start_apps [
     :crypto,
     :ssl,
