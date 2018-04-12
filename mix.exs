@@ -98,19 +98,19 @@ defmodule AlloyCi.Mixfile do
       {:gettext, "~> 0.15"},
       {:gravatar, "~> 0.1.0"},
       {:guardian_db, "~> 1.1"},
-      {:httpoison, "~> 1.0", override: true},
+      {:httpoison, "~> 1.1", override: true},
       {:joken, "~> 1.5"},
       {:kerosene, "~> 0.7"},
       {:mix_docker, "~> 0.5", runtime: false},
       {:phoenix, "~> 1.3", override: true},
       {:phoenix_ecto, "~> 3.3"},
-      {:phoenix_html, "~> 2.10"},
+      {:phoenix_html, "~> 2.11"},
       {:phoenix_pubsub, "~> 1.0"},
       {:postgrex, ">= 0.0.0"},
       {:secure_random, "~> 0.5"},
       {:sentry, "~> 6.1"},
       {:sweet_xml, "~> 0.6"},
-      {:tentacat, "~> 0.8"},
+      {:tentacat, "~> 0.9", github: "AlloyCI/tentacat"},
       {:timex, "~> 3.2"},
       {:ueberauth_github, "~> 0.7"},
       {:ueberauth_identity, "~> 0.2.3"},
@@ -118,8 +118,8 @@ defmodule AlloyCi.Mixfile do
 
       # Test and Dev dependencies
       {:excoveralls, "~> 0.8", only: :test},
-      {:ex_machina, "~> 2.1", only: [:dev, :test]},
-      {:credo, "~> 0.8", only: [:dev, :test]},
+      {:ex_machina, "~> 2.2", only: [:dev, :test]},
+      {:credo, "~> 0.9", only: [:dev, :test]},
       {:phoenix_live_reload, "~> 1.1", only: :dev}
     ]
   end
