@@ -2,7 +2,7 @@ defmodule AlloyCi.Runners do
   @moduledoc """
   The boundary for the Runners system.
   """
-  alias AlloyCi.{Builds, Project, Projects, Repo, Runner}
+  alias AlloyCi.{Builds, Projects, Repo, Runner}
   import Ecto.Query, warn: false
 
   def all(params), do: Runner |> Repo.paginate(params)
@@ -22,7 +22,7 @@ defmodule AlloyCi.Runners do
       new_runner = Enum.into(%{global: true}, runner_params(params, runner_info))
       save(new_runner)
     else
-      with %Project{} = project <- Projects.get_by(token: token) do
+      with {:ok, project} <- Projects.get_by(token: token) do
         new_runner =
           %{global: false, project_id: project.id}
           |> Enum.into(runner_params(params, runner_info))
@@ -50,7 +50,15 @@ defmodule AlloyCi.Runners do
 
   def get(id), do: Runner |> Repo.get(id)
 
-  def get_by(token: token), do: Runner |> Repo.get_by(token: token)
+  def get_by(token: token) do
+    case Runner |> Repo.get_by(token: token) do
+      nil ->
+        {:error, nil}
+
+      runner ->
+        {:ok, runner}
+    end
+  end
 
   def global_runners do
     Runner

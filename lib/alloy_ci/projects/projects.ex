@@ -146,13 +146,23 @@ defmodule AlloyCi.Projects do
   end
 
   def get_by(repo_id: id) do
-    Project
-    |> Repo.get_by(repo_id: id)
+    case Project |> Repo.get_by(repo_id: id) do
+      nil ->
+        {:error, nil}
+
+      project ->
+        {:ok, project}
+    end
   end
 
   def get_by(token: token) do
-    Project
-    |> Repo.get_by(token: token)
+    case Project |> Repo.get_by(token: token) do
+      nil ->
+        {:error, nil}
+
+      project ->
+        {:ok, project}
+    end
   end
 
   def last_status(project, ref) do

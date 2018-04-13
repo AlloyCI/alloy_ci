@@ -110,7 +110,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
   # Private functions
   ###################
   defp handle_event(conn, params) do
-    with %AlloyCi.Project{} = project <- Projects.get_by(repo_id: params["repository"]["id"]),
+    with {:ok, project} <- Projects.get_by(repo_id: params["repository"]["id"]),
          %{"content" => _} <-
            @github_api.alloy_ci_config(project, %{
              installation_id: params["installation"]["id"],
@@ -144,7 +144,7 @@ defmodule AlloyCi.Web.Api.GithubEventController do
           render(conn, "error.json", changeset: changeset)
       end
     else
-      nil ->
+      {:error, nil} ->
         render(conn, "event.json", event: %{status: :not_found, message: "Project not found."})
 
       _ ->

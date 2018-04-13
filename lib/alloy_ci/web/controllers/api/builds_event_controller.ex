@@ -1,9 +1,9 @@
 defmodule AlloyCi.Web.Api.BuildsEventController do
   use AlloyCi.Web, :controller
-  alias AlloyCi.{Builds, Runner, Runners, Web.BuildsChannel}
+  alias AlloyCi.{Builds, Runners, Web.BuildsChannel}
 
   def request(conn, params, _, _) do
-    with %Runner{} = runner <- Runners.get_by(token: params["token"]) do
+    with {:ok, runner} <- Runners.get_by(token: params["token"]) do
       Runners.update_info(runner, params["info"])
 
       case Runners.register_job(runner) do
@@ -22,7 +22,7 @@ defmodule AlloyCi.Web.Api.BuildsEventController do
           |> send_resp(:conflict, "")
       end
     else
-      nil ->
+      {:error, _} ->
         conn
         |> send_resp(:unauthorized, "")
     end

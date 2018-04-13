@@ -4,11 +4,11 @@ defmodule AlloyCi.Web.Api.BuildsArtifactController do
 
   def authorize(conn, params, _, _) do
     case Runners.get_by(token: params["token"]) do
-      nil ->
+      {:error, _} ->
         conn
         |> send_resp(:forbidden, "")
 
-      _ ->
+      {:ok, _} ->
         conn
         |> send_resp(:ok, "")
     end

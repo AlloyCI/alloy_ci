@@ -16,7 +16,7 @@ defmodule AlloyCi.Workers.ProcessPullRequestWorker do
           "number" => pull_id
         } = params
       ) do
-    with %AlloyCi.Project{} = project <- Projects.get_by(repo_id: base["repo"]["id"]),
+    with {:ok, project} <- Projects.get_by(repo_id: base["repo"]["id"]),
          pull_request <- @github_api.pull_request(project, pull_id, params["installation"]["id"]),
          %{"commit" => %{"message" => message}} <-
            @github_api.commit(project, pull_request["head"]["sha"], params["installation"]["id"]),
@@ -47,7 +47,7 @@ defmodule AlloyCi.Workers.ProcessPullRequestWorker do
           Logger.info("Unable to create pipeline.")
       end
     else
-      nil ->
+      {:error, nil} ->
         Logger.info("Project not found when attempting to create pipeline for fork.")
 
       _ ->
