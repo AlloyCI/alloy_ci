@@ -13,8 +13,12 @@ defmodule AlloyCi.CreateBuildsWorkerTest do
     CreateBuildsWorker.perform(pipeline.id)
     build = Repo.one(from(b in Build, order_by: [desc: b.id], limit: 1))
 
-    assert build.name == "mix"
-    assert build.commands == ["mix test"]
+    assert build.name == "mix + coveralls"
+
+    assert build.commands == [
+             "mix coveralls.post --branch \"$CI_COMMIT_REF_NAME\" --name \"$CI_SERVER_NAME\" --sha \"$CI_COMMIT_SHA\" --committer \"$CI_COMMIT_PUSHER\" --message \"$CI_COMMIT_MESSAGE\""
+           ]
+
     assert build.project_id == pipeline.project_id
     assert build.when == "on_success"
     assert build.tags == ["elixir", "postgres"]
