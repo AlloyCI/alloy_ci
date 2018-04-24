@@ -2,7 +2,7 @@
 
 [![build status](https://alloy-ci.com/projects/1/badge/master)](https://alloy-ci.com/projects/1)
 [![Docker](https://img.shields.io/docker/pulls/alloyci/alloy_ci.svg)](https://hub.docker.com/r/alloyci/alloy_ci/)
-[![Coverage Status](https://coveralls.io/repos/github/AlloyCI/alloy_ci/badge.svg?branch=master)](https://coveralls.io/github/AlloyCI/alloy_ci?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/AlloyCI/alloy_ci/badge.svg?branch=refs%2Fheads%2Fmaster)](https://coveralls.io/github/AlloyCI/alloy_ci?branch=refs%2Fheads%2Fmaster)
 
 AlloyCI is a Continuous Integration, Deployment, and Delivery coordinator,
 written in Elixir, that takes advantage of the GitLab CI Runner, and its
