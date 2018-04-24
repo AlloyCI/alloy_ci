@@ -59,6 +59,10 @@ defmodule AlloyCi.Builds do
     Repo.update_all(query, [])
   end
 
+  def clean_ref(ref) do
+    ref |> String.replace(ref |> ref_type() |> cleanup_string(), "")
+  end
+
   def create_builds_from_config(content, pipeline) do
     with {:ok, config} <- Poison.decode(content) do
       Projects.touch(pipeline.project_id)
@@ -340,6 +344,10 @@ defmodule AlloyCi.Builds do
     end
   end
 
+  defp cleanup_string("branches"), do: "refs/heads/"
+  defp cleanup_string("tags"), do: "refs/tags/"
+  defp cleanup_string(_), do: "refs/"
+
   defp create_build(params, %{only: nil, except: nil}), do: do_create_build(params)
 
   defp create_build(params, %{except: nil} = options) do
@@ -474,7 +482,7 @@ defmodule AlloyCi.Builds do
       %{key: "CI_COMMIT_MESSAGE", value: build.pipeline.commit["message"], public: true},
       %{key: "CI_COMMIT_PUSHER", value: build.pipeline.commit["pusher_email"], public: true},
       %{key: "CI_COMMIT_REF_NAME", value: build.pipeline.ref, public: true},
-      %{key: "CI_COMMIT_REF_SLUG", value: build.pipeline.ref, public: true},
+      %{key: "CI_COMMIT_REF_SLUG", value: clean_ref(build.pipeline.ref), public: true},
       %{key: "CI_COMMIT_SHA", value: build.pipeline.sha, public: true},
       %{key: "CI_JOB_ID", value: Integer.to_string(build.id), public: true},
       %{key: "CI_JOB_NAME", value: build.name, public: true},

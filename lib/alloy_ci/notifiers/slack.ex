@@ -1,7 +1,7 @@
 defmodule AlloyCi.Notifiers.Slack do
   @moduledoc false
   import AlloyCi.Web.Router.Helpers
-  import AlloyCi.Web.ProjectView, only: [clean_ref: 1]
+  import AlloyCi.Builds, only: [clean_ref: 1]
 
   def send_notification(notification) do
     HTTPoison.post(config()[:hook_url], build_payload(notification), [

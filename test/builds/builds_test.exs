@@ -56,7 +56,7 @@ defmodule AlloyCi.BuildsTest do
       assert build.name == "mix + coveralls"
 
       assert build.commands == [
-               "mix coveralls.post --branch \"$CI_COMMIT_REF_NAME\" --name \"$CI_SERVER_NAME\" --sha \"$CI_COMMIT_SHA\" --committer \"$CI_COMMIT_PUSHER\" --message \"$CI_COMMIT_MESSAGE\""
+               "mix coveralls.post --branch \"$CI_COMMIT_REF_SLUG\" --name \"$CI_SERVER_NAME\" --sha \"$CI_COMMIT_SHA\" --committer \"$CI_COMMIT_PUSHER\" --message \"$CI_COMMIT_MESSAGE\""
              ]
 
       assert build.project_id == pipeline.project_id

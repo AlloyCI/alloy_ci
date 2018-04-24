@@ -1,7 +1,7 @@
 defmodule AlloyCi.Web.NotificationView do
   use AlloyCi.Web, :view
   import AlloyCi.Web.Router.Helpers
-  import AlloyCi.Web.ProjectView, only: [clean_ref: 1]
+  import AlloyCi.Builds, only: [clean_ref: 1]
   use Phoenix.HTML
 
   def notification_text(%{notification_type: "pipeline_failed"} = notification) do
