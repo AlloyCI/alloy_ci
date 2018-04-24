@@ -2,21 +2,23 @@
 
 [![build status](https://alloy-ci.com/projects/1/badge/master)](https://alloy-ci.com/projects/1)
 [![Docker](https://img.shields.io/docker/pulls/alloyci/alloy_ci.svg)](https://hub.docker.com/r/alloyci/alloy_ci/)
+[![Coverage Status](https://coveralls.io/repos/github/AlloyCI/alloy_ci/badge.svg?branch=master)](https://coveralls.io/github/AlloyCI/alloy_ci?branch=master)
 
 AlloyCI is a Continuous Integration, Deployment, and Delivery coordinator,
 written in Elixir, that takes advantage of the GitLab CI Runner, and its
-capabilities as executor.
+capabilities as executor. It also provides its own runner, the [Alloy Runner](https://github.com/AlloyCI/alloy-runner),
+which is a fork of the GitLab CI Runner, with extra capabilities.
 
 It aims to bridge the gap between GitLab's CI runner and GitHub. GitLab's
 CI runner is tightly coupled with GitLab, so it is not possible to use one of
 these runners from a GitHub codebase.
 
-With AlloyCI you will be able to register a GitLab CI runner to the platform,
+With AlloyCI you will be able to register one of the Runner projects to the platform,
 connect it to one of your GitHub repositories, and have it run your CI and
 CD pipelines.
 
-AlloyCI will report the status of your pipelines to your pull requests and
-branches, so you can always know their status, just like any other CI service.
+AlloyCI will report the status of your pipelines to your pull requests, branches,
+and commits, so you can always know their status, just like any other CI service.
 
 ## Goals
 
@@ -24,7 +26,7 @@ branches, so you can always know their status, just like any other CI service.
 - To provide an alternative to other open source CI services
 - To leverage the great open source project that is the GitLab CI runner
 - To provide GitHub users with the same top class CI/CD that GitLab has, without
-  having to switch to GitLab, or paying insane amounts for inferior services
+  having to switch to, or use GitLab, or paying insane amounts for inferior services
 
 ### Stretch Goals
 
@@ -45,6 +47,7 @@ branches, so you can always know their status, just like any other CI service.
 - [x] Extras
   - [x] Build statistics per project
   - [x] Build statistics per runner
+  - [x] Support for GitHub Enterprise
 - [x] Advanced CI functionality
   - [x] Can run jobs on multiple environments (using the [`image` feature](doc/docker/README.md) of the Docker executor.)
   - [x] Can use a local build cache to speed up jobs

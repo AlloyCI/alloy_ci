@@ -29,6 +29,8 @@ version of Runner required.
 | **CI**                          | 0.4    | Mark that job is executed in CI environment |
 | **CI_COMMIT_REF_NAME**          | all    | The branch or tag name for which project is built |
 | **CI_COMMIT_SHA**               | all    | The commit revision for which project is built |
+| **CI_COMMIT_MESSAGE**           | all    | The message of the HEAD commit |
+| **CI_COMMIT_PUSHER**            | all    | Email of the user that pushed the commits |
 | **CI_DEBUG_TRACE**              | 1.7    | Whether [debug tracing](#debug-tracing) is enabled |
 | **CI_ENVIRONMENT_NAME**         | all    | The name of the environment for this job |
 | **CI_JOB_ID**                   | all    | The unique id of the current job that Alloy CI uses internally |

@@ -471,6 +471,8 @@ defmodule AlloyCi.Builds do
     [
       %{key: "ALLOY_CI", value: "true", public: true},
       %{key: "CI", value: "true", public: true},
+      %{key: "CI_COMMIT_MESSAGE", value: build.pipeline.commit["message"], public: true},
+      %{key: "CI_COMMIT_PUSHER", value: build.pipeline.commit["pusher_email"], public: true},
       %{key: "CI_COMMIT_REF_NAME", value: build.pipeline.ref, public: true},
       %{key: "CI_COMMIT_REF_SLUG", value: build.pipeline.ref, public: true},
       %{key: "CI_COMMIT_SHA", value: build.pipeline.sha, public: true},

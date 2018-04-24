@@ -23,14 +23,14 @@
     "mix deps.get",
     "mix ecto.setup"
   ],
-  "mix": {
+  "mix + coveralls": {
     "stage": "test",
     "tags": [
       "elixir",
       "postgres"
     ],
     "script": [
-      "mix test"
+      "mix coveralls.post --branch $CI_COMMIT_REF_NAME --name $CI_SERVER_NAME --sha $CI_COMMIT_SHA --committer $CI_COMMIT_PUSHER --message $CI_COMMIT_MESSAGE"
     ]
   },
   "credo + formatter": {
