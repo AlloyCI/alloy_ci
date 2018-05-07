@@ -1,3 +1,24 @@
+<a name="v0.6.0"></a>
+### v0.6.0 (2018-05-07)
+
+#### Features
+
+* Added support for S3 compatible object storage to store build artifacts. See the [documentation](doc/README.md#configuration)
+  for instructions on how to set it up. Most S3 compatible services, like AWS S3, Digital Ocean Spaces, Minio, etc. should work.
+* Improved runner ENV variables for better Coveralls support
+
+#### Bug Fixes
+
+* Fixed small bug on the `ArtifactSweeper` GenServer. The server state was not being returned, which caused
+  intermittent errors on subsequent runs (one would work, the next one would error out, the next one would work, etc.)
+* Properly populate the `$CI_COMMIT_REF_SLUG` environment variable with the shorthand for the branch/tag name
+
+#### Chores
+
+* Updated dependencies
+* Cleaned up data structures code
+  - Replaced use of `use AlloyCi.Web :schema` with proper `Ecto` imports  
+
 <a name="v0.5.0"></a>
 ### v0.5.0 (2018-03-30)
 
