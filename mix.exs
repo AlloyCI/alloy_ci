@@ -110,7 +110,7 @@ defmodule AlloyCi.Mixfile do
       {:secure_random, "~> 0.5"},
       {:sentry, "~> 6.1"},
       {:sweet_xml, "~> 0.6"},
-      {:tentacat, "~> 0.9", github: "AlloyCI/tentacat"},
+      {:tentacat, "~> 1.0"},
       {:timex, "~> 3.2"},
       {:ueberauth_github, "~> 0.7"},
       {:ueberauth_identity, "~> 0.2.3"},
