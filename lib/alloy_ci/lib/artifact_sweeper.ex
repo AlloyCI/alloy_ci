@@ -64,12 +64,6 @@ defmodule AlloyCi.ArtifactSweeper do
   defp hours_to_minutes(value) when value < 1, do: 60
   defp hours_to_minutes(value), do: round(value * 60)
 
-  defp minute_to_ms(value) when is_binary(value) do
-    value
-    |> String.to_integer()
-    |> minute_to_ms()
-  end
-
   defp minute_to_ms(value) when value < 1, do: 1000
   defp minute_to_ms(value), do: round(value * 60 * 1000)
 
