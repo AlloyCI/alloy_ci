@@ -77,6 +77,7 @@ defmodule AlloyCi.Web.AuthController do
 
   def auth_error(conn, {_, _}, _opts) do
     conn
+    |> clear_session()
     |> put_flash(:error, "Authentication required")
     |> redirect(to: auth_path(conn, :login, :login))
   end

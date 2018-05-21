@@ -29,6 +29,7 @@ defmodule AlloyCi.Web.Admin.UserController do
 
   def auth_error(conn, {_, _}, _opts) do
     conn
+    |> clear_session()
     |> put_flash(:error, "Admin Authentication required")
     |> redirect(to: admin_login_path(conn, :new))
   end
