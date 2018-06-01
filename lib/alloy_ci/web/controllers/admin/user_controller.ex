@@ -21,16 +21,16 @@ defmodule AlloyCi.Web.Admin.UserController do
   end
 
   # Authentication handler functions
-  def auth_error(conn, {:unauthorized, _}, _opts) do
+  def auth_error(conn, {:invalid_token, _}, _opts) do
     conn
-    |> put_flash(:error, "Unauthorized")
+    |> clear_session()
+    |> put_flash(:error, "Admin Authentication required")
     |> redirect(to: admin_login_path(conn, :new))
   end
 
   def auth_error(conn, {_, _}, _opts) do
     conn
-    |> clear_session()
-    |> put_flash(:error, "Admin Authentication required")
+    |> put_flash(:error, "Unauthorized")
     |> redirect(to: admin_login_path(conn, :new))
   end
 end

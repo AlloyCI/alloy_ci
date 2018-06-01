@@ -69,16 +69,16 @@ defmodule AlloyCi.Web.AuthController do
   end
 
   # Authentication handler functions
-  def auth_error(conn, {:unauthorized, _}, _opts) do
+  def auth_error(conn, {:invalid_token, _}, _opts) do
     conn
-    |> put_flash(:error, "Unauthorized")
+    |> clear_session()
+    |> put_flash(:error, "Authentication required")
     |> redirect(to: auth_path(conn, :login, :login))
   end
 
   def auth_error(conn, {_, _}, _opts) do
     conn
-    |> clear_session()
-    |> put_flash(:error, "Authentication required")
+    |> put_flash(:error, "Unauthorized")
     |> redirect(to: auth_path(conn, :login, :login))
   end
 end
