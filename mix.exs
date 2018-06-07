@@ -101,7 +101,7 @@ defmodule AlloyCi.Mixfile do
       {:guardian_db, "~> 1.1"},
       {:httpoison, "~> 1.1", override: true},
       {:joken, "~> 1.5"},
-      {:kerosene, "~> 0.8"},
+      {:kerosene, "== 0.7.0"},
       {:mix_docker, "~> 0.5", runtime: false},
       {:phoenix, "~> 1.3", override: true},
       {:phoenix_ecto, "~> 3.3"},
