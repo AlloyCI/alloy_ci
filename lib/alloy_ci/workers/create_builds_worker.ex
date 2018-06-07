@@ -25,7 +25,7 @@ defmodule AlloyCi.Workers.CreateBuildsWorker do
       end
     else
       _ ->
-        Logger.info(".alloy-ci.json file not found")
+        Logger.info(".alloy-ci.yml file not found")
     end
   end
 end

@@ -36,7 +36,7 @@ defmodule AlloyCi.Web.ProjectController do
       {:missing_config, _} ->
         conn
         |> put_flash(:error, [
-          "The selected project doesn't have an .alloy-ci.json config file. Please see the ",
+          "The selected project doesn't have an .alloy-ci.yml config file. Please see the ",
           link(
             "documentation",
             to: "https://github.com/AlloyCI/alloy_ci/tree/master/doc",

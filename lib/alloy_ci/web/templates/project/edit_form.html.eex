@@ -21,7 +21,7 @@
       </div>
       <span class="help-block">
         If you add tags to a project, all the build jobs created for this project
-        that don't define their own tags in the <code>.alloy-ci.json</code> file
+        that don't define their own tags in the <code>.alloy-ci.yml</code> file
         will, by default, receive these tags
       </span>
       <%= error_tag f, :tags %>

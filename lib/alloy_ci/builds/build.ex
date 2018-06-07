@@ -1,7 +1,7 @@
 defmodule AlloyCi.Build do
   @moduledoc """
   A Build represents a single job unit for a Pipeline. Each job defined in
-  the `.alloy-ci.json` file will be stored as a Build.
+  the `.alloy-ci.yml` file will be stored as a Build.
   """
   use Ecto.Schema
   import Ecto.Changeset

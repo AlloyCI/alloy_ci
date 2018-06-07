@@ -31,6 +31,6 @@
     ],
     "created_at": 1502148379,
     "updated_at": 1502148379,
-    "single_file_name": ".alloy-ci.json"
+    "single_file_name": ".alloy-ci.yml"
   }
 }

@@ -70,7 +70,7 @@
   - Jobs can download artifacts from previous builds, if they depend on them
 * Support for dependent builds:
   - Builds with artifacts from previous stages will be automatically added as dependencies for jobs of the subsequent stage
-  - Builds can explicitly declare their own dependencies via the `.alloy-ci.json` file
+  - Builds can explicitly declare their own dependencies via the `.alloy-ci.yml` file
 * Added the option to use Sentry for error catching in production
 * Updated Guardian to 1.0  
 
