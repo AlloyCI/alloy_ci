@@ -1,35 +1,28 @@
-# Configuration of your jobs with .alloy-ci.json
+# Configuration of your jobs with .alloy-ci.yml
 
-This document describes the usage of `.alloy-ci.json`, the file that is used to
+This document describes the usage of `.alloy-ci.yml`, the file that is used to
 tell AlloyCI Runner how to manage your project's jobs.
 
-If you want a quick introduction to AlloyCI, follow our
-[quick start guide](../quick_start/README.md).
+## .alloy-ci.yml
 
-## .alloy-ci.json
-
-AlloyCI uses a [JSON](https://en.wikipedia.org/wiki/JSON)
-file (`.alloy-ci.json`) for the project configuration. It is placed in the root
+AlloyCI uses a [YAML](https://en.wikipedia.org/wiki/YAML)
+file (`.alloy-ci.yml`) for the project configuration. It is placed in the root
 of your repository and contains definitions of how your project should be built.
 
-If you have an existing `.gitlab-ci.yml` file, you can use the online [YAML to JSON](https://www.json2json.com/convert-json-to-json)
-converter to turn your file into an AlloyCI compatible JSON file. Just make sure to
-convert all Integer typed values to a String, or they might cause an error in the
-runner.
+If you have an existing `.gitlab-ci.yml` file, all you need to do is rename it to
+`.alloy-ci.yml`.
 
-The JSON file defines a set of jobs with constraints stating when they should
+The YAML file defines a set of jobs with constraints stating when they should
 be run. The jobs are defined as top-level elements with a name and always have
 to contain at least the `script` clause:
 
-```json
-{
-  "job1": {
-    "script": ["execute-script-for-job1"]    
-  },
-  "job2": {
-    "script": ["execute-script-for-job2"]    
-  }
-}
+```yaml
+job1:
+  script:
+  - execute-script-for-job1
+job2:
+  script:
+  - execute-script-for-job2
 ```
 
 The above example is the simplest possible CI configuration with two separate
@@ -42,32 +35,27 @@ Jobs are picked up by [Runners](../runners/README.md) and executed within the
 environment of the Runner. What is important, is that each job is run
 independently from each other.
 
-The JSON syntax allows for using more complex job specifications than in the
+The YAML syntax allows for using more complex job specifications than in the
 above example:
 
-```json
-{
-  "image": "elixir:latest",
-  "services": [
-    "postgres"
-  ],
-  "before_script": [
-    "mix deps.get"
-  ],
-  "after_script": [
-    "rm secrets"
-  ],
-  "stages": [
-    "build",
-    "test",
-    "deploy"
-  ],
-  "job1": {
-    "stage": "build",
-    "script": ["execute-script-for-job1"],
-    "tags": ["docker"]   
-  }
-}
+```yaml
+image: elixir:latest
+services:
+- postgres
+before_script:
+- mix deps.get
+after_script:
+- rm secrets
+stages:
+- build
+- test
+- deploy
+job1:
+  stage: build
+  script:
+  - execute-script-for-job1
+  tags:
+  - docker
 ```
 
 There are a few reserved `keywords` that **cannot** be used as job names:
@@ -120,14 +108,11 @@ The ordering of elements in `stages` defines the ordering of jobs' execution:
 
 Let's consider the following example, which defines 3 stages:
 
-```json
-{
-  "stages": [
-    "build",
-    "test",
-    "deploy"
-  ]
-}
+```yaml
+stages:
+- build
+- test
+- deploy
 ```
 
 1. First, all jobs of `build` are executed in parallel.
@@ -139,22 +124,19 @@ Let's consider the following example, which defines 3 stages:
 
 There are also two edge cases worth mentioning:
 
-1. If no `stages` are defined in `.alloy-ci.json`, then the `build`,
+1. If no `stages` are defined in `.alloy-ci.yml`, then the `build`,
    `test` and `deploy` are allowed to be used as job's stage by default.
 2. If a job doesn't specify a `stage`, the job is assigned the `test` stage.
 
 ### variables
 
-AlloyCI allows you to add variables to `.alloy-ci.json` that are set in the
+AlloyCI allows you to add variables to `.alloy-ci.yml` that are set in the
 job environment. The variables are stored in the Git repository and are meant
 to store non-sensitive project configuration, for example:
 
-```json
-{
-  "variables": {
-    "DATABASE_URL": "postgres://postgres@postgres/my_database"
-  }
-}
+```yaml
+variables:
+  DATABASE_URL: postgres://postgres@postgres/my_database
 ```
 
 >**Note:**
@@ -162,14 +144,14 @@ Only strings are legal for both for variable's name and value.
 Floats or Integers are not legal and cannot be used.
 
 These variables can be later used in all executed commands and scripts.
-The JSON-defined variables are also set to all created service containers,
+The YAML-defined variables are also set to all created service containers,
 thus allowing to fine tune them. Variables can be also defined on a
 [job level](#job-variables).
 
 Except for the user defined variables, there are also the ones set up by the
 Runner itself. One example would be `CI_COMMIT_REF_NAME` which has the value of
 the branch or tag name for which project is built. Apart from the variables
-you can set in `.alloy-ci.json`, there are also the so called secret variables
+you can set in `.alloy-ci.yml`, there are also the so called secret variables
 which can be set in AlloyCI's UI.
 
 [Learn more about variables.][variables]
@@ -185,67 +167,54 @@ globally and all jobs will use that definition.
 
 Cache all files in `binaries` and `.config`:
 
-```json
-{
-  "rspec": {
-    "script": ["test"],
-    "cache": {
-      "paths": [
-        "binaries/",
-        ".config"
-      ]
-    }
-  }
-}
+```yaml
+rspec:
+  script:
+  - test
+  cache:
+    paths:
+    - binaries/
+    - ".config"
 ```
 
 Cache all Git untracked files:
 
-```json
-{
-  "rspec": {
-    "script": ["test"],
-    "cache": {
-      "untracked": "true"
-    }
-  }
-}
+```yaml
+rspec:
+  script:
+  - test
+  cache:
+    untracked: true
+
 ```
 
 Cache all Git untracked files and files in `binaries`:
 
-```json
-{
-  "rspec": {
-    "script": ["test"],
-    "cache": {
-      "untracked": "true",
-      "paths": [
-        "binaries/"
-      ]
-    }
-  }
-}
+```yaml
+rspec:
+  script:
+  - test
+  cache:
+    untracked: true
+    paths:
+    - binaries/
+
 ```
 
 Locally defined cache overrides globally defined options. The following `rspec`
 job will cache only `binaries/`:
 
-```json
-{
-  "cache": {
-    "paths": ["my/files"]
-  },
+```yaml
+cache:
+  paths:
+  - my/files
+rspec:
+  script:
+  - test
+  cache:
+    paths:
+    - binaries/
 
-  "rspec": {
-    "script": ["test"],
-    "cache": {
-      "paths": [
-        "binaries/"
-      ]
-    }
-  }
-}
 ```
 
 Note that since cache is shared between jobs cache content can be overwritten.
@@ -255,48 +224,41 @@ will be always present. For implementation details, please check AlloyCI Runner.
 
 ## Jobs
 
-`.alloy-ci.json` allows you to specify an unlimited number of jobs. Each job
+`.alloy-ci.yml` allows you to specify an unlimited number of jobs. Each job
 must have a unique name, which is not one of the keywords mentioned above.
 A job is defined by a list of parameters that define the job behavior.
 
-```json
-{
-  "job_name": {
-    "script": [
-      "rake spec",
-      "coverage"
-    ],
-    "stage": "test",
-    "only": [
-      "master"
-    ],
-    "except": [
-      "develop"
-    ],
-    "tags": [
-      "ruby",
-      "postgres"
-    ],
-    "allow_failure": true
-  }
-}
+```yaml
+job_name:
+  script:
+  - rake spec
+  - coverage
+  stage: test
+  only:
+  - master
+  except:
+  - develop
+  tags:
+  - ruby
+  - postgres
+  allow_failure: true
 ```
 
 | Keyword       | Required | Description | Type |
 |---------------|----------|-------------|------|
 | script        | yes      | Defines a shell script which is executed by Runner | String |
-| image         | no       | Use docker image, covered in [Using Docker Images](../docker/README.md) | String or JSON Object |
-| services      | no       | Use docker services, covered in [Using Docker Images](../docker/README.md) | Array of: Strings or JSON Objects  |
+| image         | no       | Use docker image, covered in [Using Docker Images](../docker/README.md) | String or YAML Object |
+| services      | no       | Use docker services, covered in [Using Docker Images](../docker/README.md) | Array of: Strings or YAML Objects  |
 | stage         | no       | Defines a job stage (default: `test`) | String |
-| variables     | no       | Define job variables on a job level | JSON Object |
+| variables     | no       | Define job variables on a job level | YAML Object |
 | only          | no       | Defines a list of git refs for which job is created | Array of Strings |
 | except        | no       | Defines a list of git refs for which job is not created | Array of Strings |
 | tags          | no       | Defines a list of tags which are used to select Runner | Array of Strings |
 | allow_failure | no       | Allow job to fail. Failed job doesn't contribute to commit status | Boolean |
 | when          | no       | Define when to run job. Can be `on_success`, `on_failure`, `always` or `manual` | String |
 | dependencies  | no       | Define other jobs that a job depends on so that you can pass artifacts between them | Array of Strings |
-| artifacts     | no       | Define list of [job artifacts](../../user/project/pipelines/job_artifacts.md) | JSON Object |
-| cache         | no       | Define list of files that should be cached between subsequent runs | JSON Object |
+| artifacts     | no       | Define list of [job artifacts](../../user/project/pipelines/job_artifacts.md) | YAML Object |
+| cache         | no       | Define list of files that should be cached between subsequent runs | YAML Object |
 | before_script | no       | Override a set of commands that are executed before job | Array of Strings |
 | after_script  | no       | Override a set of commands that are executed after job | Array of Strings |
 
@@ -304,25 +266,19 @@ A job is defined by a list of parameters that define the job behavior.
 
 `script` is a shell script which is executed by the Runner. For example:
 
-```json
-{
-  "job": {
-    "script": ["bundle exec rspec"]
-  }
-}  
+```yaml
+job:
+  script:
+  - bundle exec rspec
 ```
 
-This parameter can also contain several commands using an array:
+This parameter can also contain several commands using a list:
 
-```json
-{
-  "job": {
-    "script": [
-      "bundle exec rspec",
-      "uname -a"
-    ]
-  }
-}  
+```yaml
+job:
+  script:
+  - bundle exec rspec
+  - uname -a
 ```
 
 ### stage
@@ -361,44 +317,36 @@ In addition, `only` and `except` allow the use of special keywords:
 In the example below, `job` will run only for refs that have `issue-` in them,
 whereas all other branches will be skipped:
 
-```json
-{
-  "job": {
-    "only": [
-      "issue-.*$"
-    ],
-    "except": [
-      "branches"
-    ]
-  }
-}
+```yaml
+---
+job:
+  only:
+  - issue-.*$
+  except:
+  - branches
+
 ```
 
 In this example, `job` will run only for refs that are tagged, or if the pipeline was created from
 a fork.
 
-```json
-{
-  "job": {
-    "only": [
-      "tags",
-      "forks"
-    ]
-  }
-}
+```yaml
+---
+job:
+  only:
+  - tags
+  - forks
+
 ```
 
 In this example `job` will run for all branches, except the ones named `master`, or `develop`:
 
-```json
-{
-  "job": {
-    "except": [
-      "master",
-      "develop"
-    ]
-  }
-}
+```yaml
+---
+job:
+  except:
+  - master
+  - develop
 ```
 
 ### Job variables
@@ -407,16 +355,14 @@ It is possible to define job variables using a `variables` keyword on a job
 level. It works basically the same way as its [global-level equivalent](#variables),
 but allows you to define job-specific variables.
 
-When the `variables` keyword is used on a job level, it overrides the global JSON
+When the `variables` keyword is used on a job level, it overrides the global YAML
 job variables and predefined ones. To turn off global defined variables
 in your job, define an empty array:
 
-```json
-{
-  "job_name": {
-    "variables": {}
-  }
-}
+```yaml
+---
+job_name:
+  variables: []
 ```
 
 Job variables priority is defined in the [variables documentation][variables].
@@ -432,15 +378,13 @@ example `ruby`, `postgres`, `development`.
 `tags` allow you to run jobs with Runners that have the specified tags
 assigned to them:
 
-```json
-{
-  "job": {
-    "tags": [
-      "ruby",
-      "postgres"
-    ]
-  }
-}
+```yaml
+---
+job:
+  tags:
+  - ruby
+  - postgres
+
 ```
 
 The specification above, will make sure that `job` is built by a Runner that
@@ -465,28 +409,22 @@ In the example below, `job1` and `job2` will run in parallel, but if `job1`
 fails, it will not stop the next stage from running, since it's marked with
 `"allow_failure": true`:
 
-```json
-{
-  "job1": {
-    "stage": "test",
-    "script": [
-      "execute_script_that_will_fail"
-    ],
-    "allow_failure": true
-  },
-  "job2": {
-    "stage": "test",
-    "script": [
-      "execute_script_that_will_succeed"
-    ]
-  },
-  "job3": {
-    "stage": "deploy",
-    "script": [
-      "deploy_to_staging"
-    ]
-  }
-}
+```yaml
+---
+job1:
+  stage: test
+  script:
+  - execute_script_that_will_fail
+  allow_failure: true
+job2:
+  stage: test
+  script:
+  - execute_script_that_will_succeed
+job3:
+  stage: deploy
+  script:
+  - deploy_to_staging
+
 ```
 
 ### when
@@ -504,42 +442,36 @@ failure.
 
 For example:
 
-```json
-{
-  "stages": [
-    "build",
-    "cleanup_build",
-    "test",
-    "deploy",
-    "cleanup"
-  ],
-  "build_job": {
-    "stage": "build",
-    "script": [
-      "make build"
-    ]
-  },
-  "cleanup_build_job": {
-    "stage": "cleanup_build",
-    "script": [
-      "cleanup build when failed"
-    ],
-    "when": "on_failure"
-  },
-  "test_job": {
-    "stage": "test",
-    "script": [
-      "make test"
-    ]
-  },
-  "cleanup_job": {
-    "stage": "cleanup",
-    "script": [
-      "cleanup after jobs"
-    ],
-    "when": "always"
-  }
-}
+```yaml
+---
+stages:
+- build
+- cleanup_build
+- test
+- deploy
+- cleanup
+
+build_job:
+  stage: build
+  script:
+  - make build
+
+cleanup_build_job:
+  stage: cleanup_build
+  script:
+  - cleanup build when failed
+  when: on_failure
+
+test_job:
+  stage: test
+  script:
+  - make test
+
+cleanup_job:
+  stage: cleanup
+  script:
+  - cleanup after jobs
+  when: always
 ```
 
 The above script will:
@@ -562,50 +494,42 @@ Below are some examples.
 
 Send all files in `binaries` and `.config`:
 
-```json
-{
-  "artifacts": {
-    "paths": [
-      "binaries/",
-      ".config"
-    ]
-  }
-}
+```yaml
+---
+artifacts:
+  paths:
+  - binaries/
+  - ".config"
 ```
 
 Send all Git untracked files:
 
-```json
-{
-  "artifacts": {
-    "untracked": "true"
-  }
-}
+```yaml
+---
+artifacts:
+  untracked: true
 ```
 
 Send all Git untracked files and files in `binaries`:
 
-```json
-{
-  "artifacts": {
-    "untracked": "true",
-    "paths": [
-      "binaries/"
-    ]
-  }
-}
+```yaml
+---
+artifacts:
+  untracked: 'true'
+  paths:
+  - binaries/
+
 ```
 
 To disable artifact passing, define the job with empty [dependencies](#dependencies):
 
-```json
-{
-  "job": {
-    "stage": "build",
-    "script": "make build",
-    "dependencies": []
-  }
-}
+```yaml
+---
+job:
+  stage: build
+  script: make build
+  dependencies: []
+
 ```
 
 You may want to create artifacts only for tagged releases to avoid filling the
@@ -613,30 +537,21 @@ build server storage with temporary build artifacts.
 
 Create artifacts only for tags (`default-job` will not create artifacts):
 
-```json
-{
-  "default-job": {
-    "script": [
-      "mvn test -U"
-    ],
-    "except": [
-      "tags"
-    ]
-  },
-  "release-job": {
-    "script": [
-      "mvn package -U"
-    ],
-    "artifacts": {
-      "paths": [
-        "target/*.war"
-      ]
-    },
-    "only": [
-      "tags"
-    ]
-  }
-}
+```yaml
+---
+default-job:
+  script:
+  - mvn test -U
+  except:
+  - tags
+release-job:
+  script:
+  - mvn package -U
+  artifacts:
+    paths:
+    - target/*.war
+  only:
+  - tags
 ```
 
 The artifacts will be sent to AlloyCI after the job finishes successfully and will
@@ -658,55 +573,47 @@ The default name is `artifacts`, which becomes `artifacts.zip` when downloaded.
 
 To create an archive with a name of the current job:
 
-```json
-{
-  "job": {
-    "artifacts": {
-      "name": "$CI_JOB_NAME"
-    }
-  }
-}
+```yaml
+---
+job:
+  artifacts:
+    name: "$CI_JOB_NAME"
+
 ```
 
 To create an archive with a name of the current branch or tag including only
 the files that are untracked by Git:
 
-```json
-{
-  "job": {
-    "artifacts": {
-      "name": "$CI_COMMIT_REF_NAME",
-      "untracked": true
-    }
-  }
-}
+```yaml
+---
+job:
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME"
+    untracked: true
+
 ```
 
 To create an archive with a name of the current job and the current branch or
 tag including only the files that are untracked by Git:
 
-```json
-{
-  "job": {
-    "artifacts": {
-      "name": "${CI_JOB_NAME}_${CI_COMMIT_REF_NAME}",
-      "untracked": true
-    }
-  }
-}
+```yaml
+---
+job:
+  artifacts:
+    name: "${CI_JOB_NAME}_${CI_COMMIT_REF_NAME}"
+    untracked: true
+
 ```
 
 To create an archive with a name of the current [stage](#stages) and branch name:
 
-```json
-{
-  "job": {
-    "artifacts": {
-      "name": "${CI_JOB_STAGE}_${CI_COMMIT_REF_NAME}",
-      "untracked": true
-    }
-  }
-}
+```yaml
+---
+job:
+  artifacts:
+    name: "${CI_JOB_STAGE}_${CI_COMMIT_REF_NAME}"
+    untracked: true
+
 ```
 
 ---
@@ -714,29 +621,24 @@ To create an archive with a name of the current [stage](#stages) and branch name
 If you use **Windows Batch** to run your shell scripts you need to replace
 `$` with `%`:
 
-```json
-{
-  "job": {
-    "artifacts": {
-      "name": "%CI_JOB_STAGE%_%CI_COMMIT_REF_NAME%",
-      "untracked": true
-    }
-  }
-}
+```yaml
+---
+job:
+  artifacts:
+    name: "%CI_JOB_STAGE%_%CI_COMMIT_REF_NAME%"
+    untracked: true
+
 ```
 
 If you use **Windows PowerShell** to run your shell scripts you need to replace
 `$` with `$env:`:
 
-```json
-{
-  "job": {
-    "artifacts": {
-      "name": "$env:CI_JOB_STAGE_$env:CI_COMMIT_REF_NAME",
-      "untracked": true
-    }
-  }
-}
+```yaml
+job:
+  artifacts:
+    name: "$env:CI_JOB_STAGE_$env:CI_COMMIT_REF_NAME"
+    untracked: true
+
 ```
 
 
@@ -757,14 +659,10 @@ failure.
 
 To upload artifacts only when job fails.
 
-```json
-{
-  "job": {
-    "artifacts": {
-      "when": "on_failure"
-    }
-  }
-}
+```yaml
+job:
+  artifacts:
+    when: on_failure
 ```
 
 #### artifacts:expire_in
@@ -798,7 +696,7 @@ and abbreviations of time units.
 
 To expire artifacts 1 week after being uploaded:
 
-```json
+```yaml
 job:
   artifacts:
     expire_in: 1 week
@@ -829,45 +727,36 @@ for `test:linux` and artifacts from `build:linux`.
 The job `deploy` will download artifacts from all previous jobs because of
 the [stage](#stages) precedence:
 
-```json
-{
-  "build:osx": {
-    "stage": "build",
-    "script": "make build:osx",
-    "artifacts": {
-      "paths": [
-        "binaries/"
-      ]
-    }
-  },
-  "build:linux": {
-    "stage": "build",
-    "script": "make build:linux",
-    "artifacts": {
-      "paths": [
-        "binaries/"
-      ]
-    }
-  },
-  "test:osx": {
-    "stage": "test",
-    "script": "make test:osx",
-    "dependencies": [
-      "build:osx"
-    ]
-  },
-  "test:linux": {
-    "stage": "test",
-    "script": "make test:linux",
-    "dependencies": [
-      "build:linux"
-    ]
-  },
-  "deploy": {
-    "stage": "deploy",
-    "script": "make deploy"
-  }
-}
+```yaml
+build:osx:
+  stage: build
+  script: make build:osx
+  artifacts:
+    paths:
+    - binaries/
+
+build:linux:
+  stage: build
+  script: make build:linux
+  artifacts:
+    paths:
+    - binaries/
+
+test:osx:
+  stage: test
+  script: make test:osx
+  dependencies:
+  - build:osx
+
+test:linux:
+  stage: test
+  script: make test:linux
+  dependencies:
+  - build:linux
+
+deploy:
+  stage: deploy
+  script: make deploy
 ```
 
 #### When a dependent job will fail
@@ -879,23 +768,17 @@ If the artifacts of the job that is set as a dependency have been
 
 It's possible to overwrite the globally defined `before_script` and `after_script`:
 
-```json
-{
-  "before_script": [
-    "global before script"
-  ],
-  "job": {
-    "before_script": [
-      "execute this instead of global before script"
-    ],
-    "script": [
-      "my command"
-    ],
-    "after_script": [
-      "execute this after my script"
-    ]
-  }
-}
+```yaml
+before_script:
+- global before script
+job:
+  before_script:
+  - execute this instead of global before script
+  script:
+  - my command
+  after_script:
+  - execute this after my script
+
 ```
 
 ## Git Strategy
@@ -912,24 +795,18 @@ There are three possible values: `clone`, `fetch`, and `none`.
 `clone` is the slowest option. It clones the repository from scratch for every
 job, ensuring that the project workspace is always pristine.
 
-```json
-{
-  "variables": {
-    "GIT_STRATEGY": "clone"
-  }
-}
+```yaml
+variables:
+  GIT_STRATEGY: clone
 ```
 
 `fetch` is faster as it re-uses the project workspace (falling back to `clone`
 if it doesn't exist). `git clean` is used to undo any changes made by the last
 job, and `git fetch` is used to retrieve commits made since the last job ran.
 
-```json
-{
-  "variables": {
-    "GIT_STRATEGY": "fetch"
-  }
-}
+```yaml
+variables:
+  GIT_STRATEGY: fetch
 ```
 
 `none` also re-uses the project workspace, but skips all Git operations
@@ -938,11 +815,9 @@ for jobs that operate exclusively on artifacts (e.g., `deploy`). Git repository
 data may be present, but it is certain to be out of date, so you should only
 rely on files brought into the project workspace from cache or artifacts.
 
-```json
-{
-  "variables": {
-    "GIT_STRATEGY": "none"
-  }
+```yaml
+variables:
+  GIT_STRATEGY: none
 }
 ```
 
@@ -969,17 +844,13 @@ Having this setting set to `true` will mean that for both `clone` and `fetch`
 strategies the Runner will checkout the working copy to a revision related
 to the CI pipeline:
 
-```json
-{
-  "variables": {
-    "GIT_STRATEGY": "clone",
-    "GIT_CHECKOUT": "false"
-  },
-  "script": [
-    "git checkout master",
-    "git merge $CI_COMMIT_REF_NAME"
-  ]
-}
+```yaml
+variables:
+  GIT_STRATEGY: clone
+  GIT_CHECKOUT: 'false'
+script:
+- git checkout master
+- git merge $CI_COMMIT_REF_NAME
 ```
 
 ## Git Submodule Strategy
@@ -1013,7 +884,7 @@ There are three possible values: `none`, `normal`, and `recursive`:
 Note that for this feature to work correctly, the submodules must be configured
 (in `.gitmodules`) with the HTTP(S) URL of a publicly-accessible repository.
 
-```json
+```yaml
 {
   "variables": {
     "GIT_SUBMODULE_STRATEGY": "recursive"
@@ -1037,7 +908,7 @@ The default is one single attempt.
 
 Example:
 
-```json
+```yaml
 {
   "variables": {
     "GET_SOURCES_ATTEMPTS": "3"
@@ -1073,14 +944,14 @@ set since only part of the Git history is present.
 
 To fetch or clone only the last 3 commits:
 
-```json
+```yaml
 {
   "variables": {
     "GIT_DEPTH": "3"
   }
 }
 ```
-## Validate the .alloy-ci.json file (**NOT IMPLEMENTED YET**)
+## Validate the .alloy-ci.yml file (**NOT IMPLEMENTED YET**)
 
 Each instance of AlloyCI has an embedded debug tool called Lint.
 You can find the link under `/lint` of your AlloyCI instance.

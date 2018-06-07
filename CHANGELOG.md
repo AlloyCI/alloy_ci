@@ -1,3 +1,21 @@
+<a name="v0.7.0"></a>
+### v0.7.0 (2018-05-07)
+
+#### Features
+
+
+#### Bug Fixes
+
+* Fixed redirect loop that would happen when an authentication token expires.
+
+#### Deprecations
+
+* **MAJOR DEPRECATION** JSON config files for build/pipeline configuration are no longer supported. Use YAML files instead.
+  The main reason behind this decision is that YAML is much more flexible than JSON. It allows us to use aliases in oder to avoid
+  duplication, to add comments to make the config file more understandable, and it is the de facto standard configuration file
+  for almost all CI systems in the market.
+ 
+
 <a name="v0.6.0"></a>
 ### v0.6.0 (2018-05-07)
 

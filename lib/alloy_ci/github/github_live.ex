@@ -12,7 +12,7 @@ defmodule AlloyCi.Github.Live do
   def alloy_ci_config(project, pipeline) do
     pipeline.installation_id
     |> installation_client()
-    |> Tentacat.Contents.find_in(project.owner, project.name, ".alloy-ci.json", pipeline.sha)
+    |> Tentacat.Contents.find_in(project.owner, project.name, ".alloy-ci.yml", pipeline.sha)
     |> access_body()
   end
 

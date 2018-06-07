@@ -18,10 +18,9 @@
         <div class="rounded-circle justify-center">
           <em class="fa fa-2x fa-code"></em>
         </div>
-        <h4>JSON Config File</h4>
+        <h4>YAML Config File</h4>
         <p>
-          Configure your pipeline with an easy to use, easy to understand,
-          and very strict JSON file.
+          Configure your pipeline with an easy to use, easy to understand, flexible YAML file.
         </p>
       </div>
       <div class="col-md-3 col-feature">
@@ -30,8 +29,8 @@
         </div>
         <h4>Made for GitHub</h4>
         <p>
-          Developed as a GitHub App, it integrates seamlessly with Github
-          and can be easily installed on your account and/or your organizations.
+          Developed as a GitHub App, it integrates seamlessly with GitHub, and GitHub Enterprise.
+          It can be easily installed on your account and/or your organizations.
         </p>
       </div>
       <div class="col-md-3 col-feature">
@@ -51,7 +50,7 @@
         </div>
         <h4>Open Source</h4>
         <p>
-          GPLv3 licensed. See what's under the hood, make any changes you need, and help
+          AGPLv3 licensed. See what's under the hood, make any changes you need, and help
           make AlloyCI better.
         </p>
       </div>

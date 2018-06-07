@@ -46,7 +46,7 @@ defmodule AlloyCi.BuildsTest do
 
   describe "create_builds_from_config/2" do
     test "it creates elixir build with the correct data", %{pipeline: pipeline} do
-      content = File.read!(".alloy-ci.json")
+      content = File.read!(".alloy-ci.yml")
       {:ok, result} = Builds.create_builds_from_config(content, pipeline)
 
       assert result == nil
@@ -65,7 +65,7 @@ defmodule AlloyCi.BuildsTest do
     end
 
     test "it creates rails build with the correct data", %{pipeline: pipeline, project: project} do
-      content = File.read!("test/fixtures/rails_config.json")
+      content = File.read!("test/fixtures/rails_config.yml")
       {:ok, result} = Builds.create_builds_from_config(content, pipeline)
       assert result == nil
 
@@ -89,7 +89,7 @@ defmodule AlloyCi.BuildsTest do
     test "it can override image settings to allow for testing against different lang versions", %{
       pipeline: pipeline
     } do
-      content = File.read!("test/fixtures/full_features_config.json")
+      content = File.read!("test/fixtures/full_features_config.yml")
       {:ok, result} = Builds.create_builds_from_config(content, pipeline)
       assert result == nil
 
@@ -130,7 +130,7 @@ defmodule AlloyCi.BuildsTest do
     end
 
     test "it can populate the artifacts section", %{pipeline: pipeline} do
-      content = File.read!("test/fixtures/full_features_config.json")
+      content = File.read!("test/fixtures/full_features_config.yml")
       {:ok, result} = Builds.create_builds_from_config(content, pipeline)
       assert result == nil
 
@@ -147,14 +147,14 @@ defmodule AlloyCi.BuildsTest do
     end
 
     test "it returns error on broken data", %{pipeline: pipeline} do
-      content = File.read!("test/fixtures/broken_config.json")
+      content = File.read!("test/fixtures/broken_config.yml")
       {:error, result} = Builds.create_builds_from_config(content, pipeline)
 
-      assert result == "Unable to parse JSON config file."
+      assert result == "Unable to parse YAML config file."
     end
 
     test "it skips the build marked `except`", %{pipeline: pipeline} do
-      content = File.read!("test/fixtures/except_tag_config.json")
+      content = File.read!("test/fixtures/except_tag_config.yml")
 
       {:ok, result} = Builds.create_builds_from_config(content, pipeline)
       assert result == nil
@@ -166,7 +166,7 @@ defmodule AlloyCi.BuildsTest do
 
     test "it creates the build marked `except`", %{project: project} do
       pipeline = insert(:clean_pipeline, project: project, ref: "refs/tags/v1.0")
-      content = File.read!("test/fixtures/except_tag_config.json")
+      content = File.read!("test/fixtures/except_tag_config.yml")
 
       {:ok, result} = Builds.create_builds_from_config(content, pipeline)
       assert result == nil
@@ -179,7 +179,7 @@ defmodule AlloyCi.BuildsTest do
 
     test "it creates the build marked `only`", %{project: project} do
       pipeline = insert(:clean_pipeline, project: project, ref: "refs/tags/v1.0")
-      content = File.read!("test/fixtures/only_tag_config.json")
+      content = File.read!("test/fixtures/only_tag_config.yml")
 
       {:ok, result} = Builds.create_builds_from_config(content, pipeline)
       assert result == nil
@@ -192,7 +192,7 @@ defmodule AlloyCi.BuildsTest do
 
     test "it skips the build marked `only`", %{project: project} do
       pipeline = insert(:clean_pipeline, project: project, ref: "refs/heads/develop")
-      content = File.read!("test/fixtures/only_tag_config.json")
+      content = File.read!("test/fixtures/only_tag_config.yml")
 
       {:ok, result} = Builds.create_builds_from_config(content, pipeline)
       assert result == nil
@@ -204,7 +204,7 @@ defmodule AlloyCi.BuildsTest do
 
     test "it creates the build marked `only` and `except`", %{project: project} do
       pipeline = insert(:clean_pipeline, project: project, ref: "refs/heads/issue-25")
-      content = File.read!("test/fixtures/both_tags_config.json")
+      content = File.read!("test/fixtures/both_tags_config.yml")
 
       {:ok, result} = Builds.create_builds_from_config(content, pipeline)
       assert result == nil
@@ -217,7 +217,7 @@ defmodule AlloyCi.BuildsTest do
 
     test "it skips the build marked `only` and `except`", %{project: project} do
       pipeline = insert(:clean_pipeline, project: project, ref: "AlloyCI:master")
-      content = File.read!("test/fixtures/both_tags_config.json")
+      content = File.read!("test/fixtures/both_tags_config.yml")
 
       {:ok, result} = Builds.create_builds_from_config(content, pipeline)
       assert result == nil

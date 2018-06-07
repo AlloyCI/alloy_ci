@@ -8,7 +8,7 @@
   - [Deploy to Heroku](#deploy-to-heroku)
   - [Manual Installation](#manual-installation)
   - [First Run](#first-run)
-- [Configuration File](json/)
+- [Configuration File](yaml/)
   - [Job Environment Variables](variables/)
   - [Examples](examples/)
 - [Runners](runners/)
@@ -427,9 +427,9 @@ Now that everything is set up, it is time to actually use AlloyCI. Adding projec
 is quite easy via the WebUI, but before you add one, you will need to create the
 configuration file needed for AlloyCI to know what to do with your project.
 
-You need to add a [`.alloy-ci.json`](json/) file to the root of your
+You need to add a [`.alloy-ci.yml`](yaml/) file to the root of your
 project. You can read the full documentation to see all that available features, or
-you can head over to the [examples](examples/) to see a basic `.alloy-ci.json`
+you can head over to the [examples](examples/) to see a basic `.alloy-ci.yml`
 file for different programming languages and get a quick start.
 
 ### Runners
@@ -442,4 +442,4 @@ and configure your Runner for AlloyCI.
 
 Once a project has been added, AlloyCI will be notified by GitHub whenever a new
 push happens on your project. With this information, AlloyCI will proceed to create
-a new pipeline and configure the build jobs found on the `.alloy-ci.json` file.
+a new pipeline and configure the build jobs found on the `.alloy-ci.yml` file.

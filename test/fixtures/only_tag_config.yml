@@ -1,0 +1,42 @@
+---
+image: elixir:latest
+services:
+- postgres:latest
+cache:
+  paths:
+  - _build/
+  - deps/
+variables:
+  MIX_ENV: test
+  GITHUB_CLIENT_ID: fake-id
+  GITHUB_CLIENT_SECRET: fake-secret
+  GITHUB_SECRET_TOKEN: fake-token
+  SECRET_KEY_BASE: NULr4xlNDNzEwE77UHdId7cQU+vuaPJ+Q5x3l+7dppQngBsL5EkjEaMu0S9cCGbk
+  DATABASE_URL: postgres://postgres@postgres:5432/alloy_ci_test
+before_script:
+- mix local.hex --force
+- mix local.rebar --force
+- mix deps.get
+- mix ecto.setup
+mix:
+  stage: test
+  tags:
+  - elixir
+  - postgres
+  script:
+  - mix test
+credo:
+  stage: test
+  tags:
+  - elixir
+  script:
+  - mix credo
+deploy:
+  stage: deploy
+  tags:
+  - elixir
+  script:
+  - "./deploy"
+  only:
+  - tags
+  - master

@@ -63,8 +63,8 @@ defmodule AlloyCi.Web.BuildControllerTest do
       insert(:artifact, build: build)
       |> Artifact.changeset(%{
         file: %Plug.Upload{
-          path: "test/fixtures/broken_config.json",
-          filename: "broken_config.json"
+          path: "test/fixtures/broken_config.yml",
+          filename: "broken_config.yml"
         }
       })
       |> Repo.update()
@@ -76,7 +76,7 @@ defmodule AlloyCi.Web.BuildControllerTest do
 
       assert conn.status == 200
       assert conn.state == :file
-      assert conn.resp_body == File.read!("test/fixtures/broken_config.json")
+      assert conn.resp_body == File.read!("test/fixtures/broken_config.yml")
     end
 
     test "it redirects if user cannot access pipeline", %{project: project, build: build} do
@@ -98,8 +98,8 @@ defmodule AlloyCi.Web.BuildControllerTest do
         insert(:artifact, build: build)
         |> Artifact.changeset(%{
           file: %Plug.Upload{
-            path: "test/fixtures/broken_config.json",
-            filename: "broken_config.json"
+            path: "test/fixtures/broken_config.yml",
+            filename: "broken_config.yml"
           },
           expires_at: Timex.now()
         })

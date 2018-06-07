@@ -6,7 +6,7 @@ defmodule AlloyCi.Github.Test do
   @behaviour AlloyCi.Github
 
   def alloy_ci_config(_project, _pipeline) do
-    contents = ".alloy-ci.json" |> File.read!() |> :base64.encode()
+    contents = ".alloy-ci.yml" |> File.read!() |> :base64.encode()
     %{"content" => contents}
   end
 

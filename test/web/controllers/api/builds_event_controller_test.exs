@@ -40,7 +40,7 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
       {:ok, _} =
         insert(:artifact, build: dependent)
         |> Artifact.changeset(%{
-          file: %Plug.Upload{path: ".alloy-ci.json", filename: ".alloy-ci.json"}
+          file: %Plug.Upload{path: ".alloy-ci.yml", filename: ".alloy-ci.yml"}
         })
         |> Repo.update()
 
@@ -81,7 +81,7 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
                  id: dependent.id,
                  name: dependent.name,
                  token: dependent.token,
-                 artifacts_file: %{filename: ".alloy-ci.json", size: 2500}
+                 artifacts_file: %{filename: ".alloy-ci.yml", size: 2500}
                }
              ]
 
@@ -141,7 +141,7 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
       {:ok, _} =
         insert(:artifact, build: dependent)
         |> Artifact.changeset(%{
-          file: %Plug.Upload{path: ".alloy-ci.json", filename: ".alloy-ci.json"}
+          file: %Plug.Upload{path: ".alloy-ci.yml", filename: ".alloy-ci.yml"}
         })
         |> Repo.update()
 
@@ -169,7 +169,7 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
                  id: dependent.id,
                  name: dependent.name,
                  token: dependent.token,
-                 artifacts_file: %{filename: ".alloy-ci.json", size: 2500}
+                 artifacts_file: %{filename: ".alloy-ci.yml", size: 2500}
                }
              ]
 

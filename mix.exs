@@ -73,7 +73,8 @@ defmodule AlloyCi.Mixfile do
       :ueberauth,
       :ueberauth_github,
       :ueberauth_identity,
-      :que
+      :que,
+      :yaml_elixir
     ]
   end
 
@@ -115,6 +116,7 @@ defmodule AlloyCi.Mixfile do
       {:ueberauth_github, "~> 0.7"},
       {:ueberauth_identity, "~> 0.2.3"},
       {:que, "~> 0.4.1", github: "AlloyCI/que"},
+      {:yaml_elixir, "~> 2.1", github: "AlloyCI/yaml-elixir"},
 
       # Test and Dev dependencies
       {:excoveralls, "~> 0.8", only: :test},

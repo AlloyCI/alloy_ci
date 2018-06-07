@@ -26,8 +26,8 @@ defmodule AlloyCi.Web.Api.BuildsArtifactControllerTest do
 
       params = %{
         file: %Plug.Upload{
-          path: "test/fixtures/broken_config.json",
-          filename: "broken_config.json"
+          path: "test/fixtures/broken_config.yml",
+          filename: "broken_config.yml"
         },
         expire_in: "10d"
       }
@@ -47,7 +47,7 @@ defmodule AlloyCi.Web.Api.BuildsArtifactControllerTest do
                Timex.now() |> Timex.shift(seconds: "7d" |> TimeConvert.to_seconds())
              ) == 1
 
-      assert build.artifact.file[:file_name] == "broken_config.json"
+      assert build.artifact.file[:file_name] == "broken_config.yml"
     end
 
     test "it creates a new artifact with empty expiry" do
@@ -55,8 +55,8 @@ defmodule AlloyCi.Web.Api.BuildsArtifactControllerTest do
 
       params = %{
         file: %Plug.Upload{
-          path: "test/fixtures/broken_config.json",
-          filename: "broken_config.json"
+          path: "test/fixtures/broken_config.yml",
+          filename: "broken_config.yml"
         },
         expire_in: ""
       }
@@ -71,7 +71,7 @@ defmodule AlloyCi.Web.Api.BuildsArtifactControllerTest do
       assert conn.status == 201
       assert build.artifact != nil
       assert build.artifact.expires_at != nil
-      assert build.artifact.file[:file_name] == "broken_config.json"
+      assert build.artifact.file[:file_name] == "broken_config.yml"
     end
 
     test "it creates a new artifact without expiry in params" do
@@ -79,8 +79,8 @@ defmodule AlloyCi.Web.Api.BuildsArtifactControllerTest do
 
       params = %{
         file: %Plug.Upload{
-          path: "test/fixtures/broken_config.json",
-          filename: "broken_config.json"
+          path: "test/fixtures/broken_config.yml",
+          filename: "broken_config.yml"
         }
       }
 
@@ -94,7 +94,7 @@ defmodule AlloyCi.Web.Api.BuildsArtifactControllerTest do
       assert conn.status == 201
       assert build.artifact != nil
       assert build.artifact.expires_at != nil
-      assert build.artifact.file[:file_name] == "broken_config.json"
+      assert build.artifact.file[:file_name] == "broken_config.yml"
     end
 
     test "returns 403 when wrong token" do
@@ -127,8 +127,8 @@ defmodule AlloyCi.Web.Api.BuildsArtifactControllerTest do
       insert(:artifact, build: build)
       |> Artifact.changeset(%{
         file: %Plug.Upload{
-          path: "test/fixtures/broken_config.json",
-          filename: "broken_config.json"
+          path: "test/fixtures/broken_config.yml",
+          filename: "broken_config.yml"
         }
       })
       |> Repo.update()
@@ -140,7 +140,7 @@ defmodule AlloyCi.Web.Api.BuildsArtifactControllerTest do
 
       assert conn.status == 200
       assert conn.state == :file
-      assert conn.resp_body == File.read!("test/fixtures/broken_config.json")
+      assert conn.resp_body == File.read!("test/fixtures/broken_config.yml")
     end
 
     test "returns 403 when wrong token" do

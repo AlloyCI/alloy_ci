@@ -64,48 +64,54 @@ defmodule AlloyCi.Builds do
   end
 
   def create_builds_from_config(content, pipeline) do
-    with {:ok, config} <- Poison.decode(content) do
+    with {:ok, config} <- YamlElixir.read_from_string(content) do
       Projects.touch(pipeline.project_id)
 
       global_options = Map.take(config, @global_config)
       stages = config["stages"] || ["build", "test", "deploy"]
       build_jobs = Map.drop(config, @global_config)
 
-      Enum.each(build_jobs, fn {name, options} ->
-        local_options = Map.merge(global_options, Map.take(options, @local_overrides))
-        stage = options["stage"] || "test"
-
-        build_params = %{
-          allow_failure: options["allow_failure"] || false,
-          artifacts: options["artifacts"],
-          commands: options["script"],
-          deps: options["dependencies"],
-          name: name,
-          options: local_options,
-          stage: stage,
-          stage_idx: Enum.find_index(stages, &(&1 == stage)),
-          tags: options["tags"] || pipeline.project.tags,
-          token: generate_token(),
-          variables: local_options["variables"],
-          pipeline_id: pipeline.id,
-          project_id: pipeline.project_id,
-          when: options["when"] || "on_success"
-        }
-
-        creation_options = %{
-          except: options["except"],
-          ref: pipeline.ref,
-          only: options["only"]
-        }
-
-        create_build(build_params, creation_options)
+      Enum.each(build_jobs, fn job ->
+        create_build_from_map(job, global_options, stages, pipeline)
       end)
 
       {:ok, nil}
     else
       {:error, _} ->
-        {:error, "Unable to parse JSON config file."}
+        {:error, "Unable to parse YAML config file."}
     end
+  end
+
+  def create_build_from_map({"." <> _, _}, _, _, _), do: nil
+
+  def create_build_from_map({name, options}, global_options, stages, pipeline) do
+    local_options = Map.merge(global_options, Map.take(options, @local_overrides))
+    stage = options["stage"] || "test"
+
+    build_params = %{
+      allow_failure: options["allow_failure"] || false,
+      artifacts: options["artifacts"],
+      commands: options["script"],
+      deps: options["dependencies"],
+      name: name,
+      options: local_options,
+      stage: stage,
+      stage_idx: Enum.find_index(stages, &(&1 == stage)),
+      tags: options["tags"] || pipeline.project.tags,
+      token: generate_token(),
+      variables: local_options["variables"],
+      pipeline_id: pipeline.id,
+      project_id: pipeline.project_id,
+      when: options["when"] || "on_success"
+    }
+
+    creation_options = %{
+      except: options["except"],
+      ref: pipeline.ref,
+      only: options["only"]
+    }
+
+    create_build(build_params, creation_options)
   end
 
   def delete_where(project_id: id) do

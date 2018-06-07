@@ -1,6 +1,6 @@
 # Runners
 
-In AlloyCI, Runners run your [JSON](../json/README.md) job configuration file.
+In AlloyCI, Runners run your [YAML](../yaml/README.md) job configuration file.
 A Runner is an isolated (virtual) machine that picks up jobs
 through the coordinator API of AlloyCI.
 

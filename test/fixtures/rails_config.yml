@@ -1,0 +1,6 @@
+---
+Rspec Tests:
+  script:
+  - bundle install --path vendor/bundle
+  - bundle exec rake db:setup
+  - bundle exec rspec

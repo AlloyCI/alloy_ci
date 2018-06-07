@@ -10,7 +10,7 @@ used to test and build your applications.
 
 Docker, when used with AlloyCI, runs each job in a separate and isolated
 container using the predefined image that is set up in
-[`.alloy-ci.json`](../json/README.md).
+[`.alloy-ci.yml`](../yaml/README.md).
 
 This makes it easier to have a simple and reproducible build environment that
 can also run on your workstation. The added benefit is that you can test all
@@ -63,7 +63,7 @@ existing image and run it as an additional container than install `mysql` every
 time the project is built.
 
 You are not limited to have only database services. You can add as many
-services you need to `.alloy-ci.json` or manually modify `config.toml`.
+services you need to `.alloy-ci.yml` or manually modify `config.toml`.
 Any image found at [Docker Hub][hub] or your private Container Registry can be
 used as a service.
 
@@ -89,12 +89,13 @@ Let's say that you need a Wordpress instance to test some API integration with
 your application.
 
 You can then use for example the [tutum/wordpress][] image in your
-`.alloy-ci.json`:
+`.alloy-ci.yml`:
 
-```json
-{
-  "services": ["tutum/wordpress:latest"]
-}
+```yaml
+---
+services:
+- tutum/wordpress:latest
+
 ```
 
 If you don't [specify a service alias](#available-settings-for-services-entry),
@@ -120,88 +121,67 @@ following these rules:
 To override the default behavior, you can
 [specify a service alias](#available-settings-for-services).
 
-## Define `image` and `services` from `.alloy-ci.json`
+## Define `image` and `services` from `.alloy-ci.yml`
 
 You can simply define an image that will be used for all jobs and a list of
 services that you want to use during build time:
 
-```json
-{
-  "image": "ruby:2.2",
-  "services": [
-    "postgres:9.3"
-  ],
-  "before_script": [
-    "bundle install"
-  ],
-  "test": {
-    "script": [
-      "bundle exec rake spec"
-    ]
-  }
-}
+```yaml
+---
+image: ruby:2.2
+services:
+- postgres:9.3
+before_script:
+- bundle install
+test:
+  script:
+  - bundle exec rake spec
+
 ```
 
 It is also possible to define different images and services per job:
 
-```json
-{
-  "before_script": [
-    "bundle install"
-  ],
-  "test:2.1": {
-    "image": "ruby:2.1",
-    "services": [
-      "postgres:9.3"
-    ],
-    "script": [
-      "bundle exec rake spec"
-    ]
-  },
-  "test:2.2": {
-    "image": "ruby:2.2",
-    "services": [
-      "postgres:9.4"
-    ],
-    "script": [
-      "bundle exec rake spec"
-    ]
-  }
-}
+```yaml
+---
+before_script:
+- bundle install
+test:2.1:
+  image: ruby:2.1
+  services:
+  - postgres:9.3
+  script:
+  - bundle exec rake spec
+test:2.2:
+  image: ruby:2.2
+  services:
+  - postgres:9.4
+  script:
+  - bundle exec rake spec
+
 ```
 
 Or you can pass some [extended configuration options](#extended-docker-configuration-options)
 for `image` and `services`:
 
-```json
-{
-  "image": {
-    "name": "ruby:2.2",
-    "entrypoint": [
-      "/bin/bash"
-    ]
-  },
-  "services": [
-    {
-      "name": "my-postgres:9.4",
-      "alias": "db-postgres",
-      "entrypoint": [
-        "/usr/local/bin/db-postgres"
-      ],
-      "command": [
-        "start"
-      ]
-    }
-  ],
-  "before_script": [
-    "bundle install"
-  ],
-  "test": {
-    "script": [
-      "bundle exec rake spec"
-    ]
-  }
-}
+```yaml
+---
+image:
+  name: ruby:2.2
+  entrypoint:
+  - "/bin/bash"
+services:
+- name: my-postgres:9.4
+  alias: db-postgres
+  entrypoint:
+  - "/usr/local/bin/db-postgres"
+  command:
+  - start
+before_script:
+- bundle install
+test:
+  script:
+  - bundle exec rake spec
+
 ```
 
 ## Extended Docker configuration options
@@ -219,35 +199,24 @@ options:
 
 For example, the following two definitions are equal:
 
-1. Using a string as an option to `image` and `services`:
+1. Using simple notation as an option to `image` and `services`:
 
-    ```json
-    {
-      "image": "registry.example.com/my/image:latest",
-      "services": [
-        "postgresql:9.4",
-        "redis:latest"
-      ]
-    }
+    ```yaml
+    image: registry.example.com/my/image:latest
+    services:
+    - postgresql:9.4
+    - redis:latest
     ```
 
-1. Using a map as an option to `image` and `services`. The use of `image:name` is
+1. Using a detailed notation as an option to `image` and `services`. The use of `image:name` is
    required:
 
-    ```json
-    {
-      "image": {
-        "name": "registry.example.com/my/image:latest"
-      },
-      "services": [
-        {
-          "name": "postgresql:9.4"
-        },
-        {
-          "name": "redis:latest"
-        }
-      ]
-    }
+    ```yaml
+    image:
+      name: registry.example.com/my/image:latest
+    services:
+    - name: postgresql:9.4
+    - name: redis:latest
     ```
 
 ### Available settings for `image`
@@ -278,13 +247,11 @@ configuration options](#extended-docker-configuration-options).
 Before the new extended Docker configuration options, the following configuration
 would not work properly:
 
-```json
-{
-  "services": [
-    "mysql:latest",
-    "mysql:latest"
-  ]
-}
+```yaml
+---
+services:
+- mysql:latest
+- mysql:latest
 ```
 
 The Runner would start two containers using the `mysql:latest` image, but both
@@ -295,24 +262,19 @@ of the services not being accessible.
 After the new extended Docker configuration options, the above example would
 look like:
 
-```json
-{
-  "services": [
-    {
-      "name": "mysql:latest",
-      "alias": "mysql-1"
-    },
-    {
-      "name": "mysql:latest",
-      "alias": "mysql-2"
-    }
-  ]
-}
+```yaml
+---
+services:
+- name: mysql:latest
+  alias: mysql-1
+- name: mysql:latest
+  alias: mysql-2
+
 ```
 
 The Runner will still start two containers using the `mysql:latest` image,
 but now each of them will also be accessible with the alias configured
-in `.alloy-ci.json` file.
+in `.alloy-ci.yml` file.
 
 ### Setting a command for the service
 
@@ -336,27 +298,23 @@ FROM super/sql:latest
 CMD ["/usr/bin/super-sql", "run"]
 ```
 
-```json
-{
-  "services": ["mysql:latest"]
-}
+```yaml
+---
+services:
+- mysql:latest
 ```
 
 After the new extended Docker configuration options, you can now simply
-set a `command` in `.alloy-ci.json`, like:
+set a `command` in `.alloy-ci.yml`, like:
 
-```json
-{
-  "services": [
-    {
-      "name": "super/sql:latest",
-      "command": [
-        "/usr/bin/super-sql",
-        "run"
-      ]
-    }
-  ]
-}
+```yaml
+---
+services:
+- name: super/sql:latest
+  command:
+  - "/usr/bin/super-sql"
+  - run
+
 ```
 
 As you can see, the syntax of `command` is similar to [Dockerfile's `CMD`][cmd].
@@ -389,28 +347,23 @@ FROM super/sql:experimental
 ENTRYPOINT ["/bin/sh"]
 ```
 
-```json
-# .alloy-ci.json
+```yaml
+# .alloy-ci.yml
 
-{
-  "image": "my-super-sql:experimental"
-}
+image: "my-super-sql:experimental"
 ```
 
 After the new extended Docker configuration options, you can now simply
-set an `entrypoint` in `.alloy-ci.json`, like:
+set an `entrypoint` in `.alloy-ci.yml`, like:
 
-```json
-# .alloy-ci.json
+```yaml
+# .alloy-ci.yml
 
-{
-  "image": {
-    "name": "super/sql:experimental",
-    "entrypoint": [
-      "/bin/sh"
-    ]
-  }
-}
+image:
+  name: super/sql:experimental
+  entrypoint:
+  - "/bin/sh"
+
 ```
 
 As you can see the syntax of `entrypoint` is similar to
@@ -461,10 +414,10 @@ To configure access for `registry.example.com`, follow these steps:
          docker login registry.example.com --username my_username --password my_password
          ```
 
-          Then copy the content of `~/.docker/config.json`.
+          Then copy the content of `~/.docker/config.yml`.
      - **Second way -** In some setups, it's possible that Docker client will use
        the available system keystore to store the result of `docker login`. In
-       that case, it's impossible to read `~/.docker/config.json`, so you will
+       that case, it's impossible to read `~/.docker/config.yml`, so you will
        need to prepare the required base64-encoded version of
        `${username}:${password}` manually. Open a terminal and execute the
        following command:
@@ -479,15 +432,11 @@ To configure access for `registry.example.com`, follow these steps:
 1. Create a [secret variable] `DOCKER_AUTH_CONFIG` with the content of the
    Docker configuration file as the value:
 
-     ```json
-     {
-       "auths": {
-         "registry.example.com": {
-           "auth": "bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ="
-         }
-       }
-     }
-     ```
+    ```yaml
+    auths:
+      registry.example.com:
+        auth: bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
+    ```
 
 1. Optionally,if you followed the first way of finding the `DOCKER_AUTH_CONFIG`
    value, do a `docker logout` on your computer if you don't need access to the
@@ -498,12 +447,10 @@ To configure access for `registry.example.com`, follow these steps:
      ```
 
 1. You can now use any private image from `registry.example.com` defined in
-   `image` and/or `services` in your `.alloy-ci.json` file:
+   `image` and/or `services` in your `.alloy-ci.yml` file:
 
-      ```json
-      {
-        "image": "my.registry.tld:5000/namespace/image:tag"
-      }
+      ```yaml
+      image: "my.registry.tld:5000/namespace/image:tag"
       ```
 
       In the example above, GitLab Runner will look at `my.registry.tld:5000` for the
@@ -517,7 +464,7 @@ registries to the `"auths"` hash as described above.
 Many services accept environment variables which allow you to easily change
 database names or set account names depending on the environment.
 
-GitLab Runner 0.5.0 and up passes all JSON-defined variables to the created
+GitLab Runner 0.5.0 and up passes all YAML-defined variables to the created
 service containers.
 
 For all possible configuration variables check the documentation of each image
@@ -548,7 +495,7 @@ time.
 1. Start build container and send job script to the container.
 1. Run job script.
 1. Checkout code in: `/builds/group-name/project-name/`.
-1. Run any step defined in `.alloy-ci.json`.
+1. Run any step defined in `.alloy-ci.yml`.
 1. Check exit status of build script.
 1. Remove build container and all created service containers.
 

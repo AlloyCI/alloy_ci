@@ -30,6 +30,7 @@ defmodule AlloyCi.Projects do
     with %Project{} = project <- get(id),
          true <- project.private,
          %ProjectPermission{} <- get_project_permission(id, user) do
+      # Project is private, but user can access it
       true
     else
       false ->

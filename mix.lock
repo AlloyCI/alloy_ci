@@ -68,4 +68,6 @@
   "ueberauth_identity": {:hex, :ueberauth_identity, "0.2.3", "216f18ca24347f6b3dd0e5f4342b6fef7a4027fad0d133f1c454d51b7eaac55b", [:mix], [{:plug, "~> 1.0", [hex: :plug, optional: false]}, {:ueberauth, "~> 0.2", [hex: :ueberauth, optional: false]}]},
   "unicode_util_compat": {:hex, :unicode_util_compat, "0.3.1", "a1f612a7b512638634a603c8f401892afbf99b8ce93a45041f8aaca99cadb85e", [:rebar3], []},
   "uuid": {:hex, :uuid, "1.1.8", "e22fc04499de0de3ed1116b770c7737779f226ceefa0badb3592e64d5cfb4eb9", [:mix], []},
+  "yamerl": {:hex, :yamerl, "0.7.0", "e51dba652dce74c20a88294130b48051ebbbb0be7d76f22de064f0f3ccf0aaf5", [:rebar3], []},
+  "yaml_elixir": {:git, "https://github.com/AlloyCI/yaml-elixir.git", "9086dbb4c46adbb5e2e140b00a3bb16c656586aa", []},
 }
