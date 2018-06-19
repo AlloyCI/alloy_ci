@@ -1,5 +1,10 @@
 defmodule AlloyCi.Installation do
-  @moduledoc false
+  @moduledoc """
+  Schema to store data about which GitHub accounts/orgs
+  have installed this instance of AlloyCI. This is needed
+  to make sure only projects to which the system has access
+  can be added.
+  """
   use Ecto.Schema
   import Ecto.Changeset
 

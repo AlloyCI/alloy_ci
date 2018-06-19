@@ -34,7 +34,10 @@ defmodule AlloyCi.App do
     ]
   end
 
-  defp setup_config do
+  @doc """
+  Set up runtime related configuration
+  """
+  def setup_config do
     arc_storage_config()
     github_oauth_config()
   end

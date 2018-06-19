@@ -1,7 +1,8 @@
 defmodule AlloyCi.Artifact do
   @moduledoc """
-  A Build represents a single job unit for a Pipeline. Each job defined in
-  the `.alloy-ci.yml` file will be stored as a Build.
+  Artifacts can be generated after a build job has finished.
+  If the user specifies they want to save what was generated,
+  the metadata for this file is stored here.
   """
   use Ecto.Schema
   import Ecto.Changeset
