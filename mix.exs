@@ -32,49 +32,7 @@ defmodule AlloyCi.Mixfile do
   def application do
     [
       mod: {AlloyCi.App, []},
-      applications: applications(Mix.env())
-    ]
-  end
-
-  def applications(:test) do
-    applications(:default) ++ [:ex_machina]
-  end
-
-  def applications(_) do
-    [
-      :arc_ecto,
-      :bamboo,
-      :bamboo_smtp,
-      :bcrypt_elixir,
-      :comeonin,
-      :cowboy,
-      :elixir_make,
-      :ex_utils,
-      :ex_aws,
-      :ex_aws_s3,
-      :gettext,
-      :gravatar,
-      :guardian,
-      :guardian_db,
-      :joken,
-      :kerosene,
-      :logger,
-      :mix,
-      :phoenix,
-      :phoenix_ecto,
-      :phoenix_html,
-      :phoenix_pubsub,
-      :postgrex,
-      :secure_random,
-      :sentry,
-      :sweet_xml,
-      :timex,
-      :tentacat,
-      :ueberauth,
-      :ueberauth_github,
-      :ueberauth_identity,
-      :que,
-      :yaml_elixir
+      extra_applications: [:elixir_make, :ex_utils, :logger]
     ]
   end
 
@@ -120,7 +78,7 @@ defmodule AlloyCi.Mixfile do
 
       # Test and Dev dependencies
       {:excoveralls, "~> 0.8", only: :test},
-      {:ex_machina, "~> 2.2", only: [:dev, :test]},
+      {:ex_machina, "~> 2.2", only: [:dev, :test], runtime: false},
       {:credo, "~> 0.9", only: [:dev, :test]},
       {:phoenix_live_reload, "~> 1.1", only: :dev}
     ]
