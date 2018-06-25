@@ -1,6 +1,6 @@
 <div class="page-head">
   <h2 class="page-head-title">
-    <%= @pipeline.project.owner %>/<%= @pipeline.project.name %>
+    <%= @pipeline.project.owner %>/<%= link @pipeline.project.name, to: project_path(@conn, :show, @pipeline.project_id), class: "pipeline-link" %>
   </h2>
   <nav aria-label="breadcrumb" role="navigation">
     <!-- Breadcrumb -->

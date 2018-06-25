@@ -2,6 +2,10 @@ form.link {
   display: inline-flex !important;
 }
 
+.bold-lighter {
+  font-weight: 500;
+}
+
 .app-footer {
   position: fixed;
   bottom: 0;
@@ -23,6 +27,13 @@ a.action-link {
   color: #737373;
   &:hover {
     color: #737385;
+  }
+}
+
+a.pipeline-link {
+  color: #6b6b6b;
+  &:hover {
+    text-decoration: underline;
   }
 }
 
