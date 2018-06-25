@@ -1,0 +1,22 @@
+<div id="build-<%= @build.id %>">
+  <span class="user-timeline <%= timeline_status(@build.status) %>">
+    <li class="latest">
+      <div class="user-timeline-date">
+        <%= icon("clock-o") %>
+        <%= build_duration(@build) %>
+      </div>
+      <div class="user-timeline-title">
+        <%= icon("terminal") %> 
+        <%= link @build.name, to: project_build_path(@conn, :show, @build.project_id, @build.id) %>
+      </div>
+      <div class="user-timeline-description">
+        <span data-toggle="tooltip" 
+              data-placement="bottom"
+              title="Status: <%= String.capitalize(@build.status) %>">
+          <%= build_status_icon(@build.status) %>
+        </span>
+        <%= build_actions(@conn, @build, "fa-lg") %>
+      </div>
+    </li>
+  </span>
+</div>

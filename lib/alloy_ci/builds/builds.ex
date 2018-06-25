@@ -2,7 +2,7 @@ defmodule AlloyCi.Builds do
   @moduledoc """
   The boundary for the Builds system.
   """
-  alias AlloyCi.{Artifact, Build, Queuer, Pipelines, Projects, Repo, Workers}
+  alias AlloyCi.{Artifact, Build, Queuer, Pipelines, Projects, Repo, Workers, Web.BuildsChannel}
   import Ecto.Query, warn: false
 
   @github_api Application.get_env(:alloy_ci, :github_api)
@@ -60,7 +60,7 @@ defmodule AlloyCi.Builds do
   end
 
   def clean_ref(ref) do
-    ref |> String.replace(ref |> ref_type() |> cleanup_string(), "")
+    String.replace(ref, ref |> ref_type() |> cleanup_string(), "")
   end
 
   def create_builds_from_config(content, pipeline) do
@@ -160,7 +160,7 @@ defmodule AlloyCi.Builds do
   end
 
   def for_runner(runner) do
-    # Select builds whose tags are fully contained in the runner's tags
+    # Select a build whose tags are fully contained in the runner's tags
     Build
     |> where([b], b.status == "pending" and is_nil(b.runner_id))
     |> where([b], fragment("? <@ ?", b.tags, ^runner.tags))
@@ -290,6 +290,7 @@ defmodule AlloyCi.Builds do
       "created" -> update_status(build, status || "running")
       "pending" -> update_status(build, status || "running")
       "running" -> update_status(build, status || "success")
+      _ -> {:ok, build}
     end
   end
 
@@ -581,6 +582,7 @@ defmodule AlloyCi.Builds do
     case do_update_status(build, status) do
       {:ok, build} ->
         Queuer.push(Workers.ProcessPipelineWorker, build.pipeline_id)
+        BuildsChannel.update_status(build)
         build
 
       {:error, _} ->

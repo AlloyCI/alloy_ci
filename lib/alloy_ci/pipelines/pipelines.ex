@@ -11,6 +11,7 @@ defmodule AlloyCi.Pipelines do
     Projects,
     Queuer,
     Repo,
+    Web.PipelinesChannel,
     Workers.CreateBuildsWorker
   }
 
@@ -172,9 +173,13 @@ defmodule AlloyCi.Pipelines do
   end
 
   def update_pipeline(%Pipeline{} = pipeline, params) do
-    pipeline
-    |> Pipeline.changeset(params)
-    |> Repo.update()
+    with {:ok, pipeline} <-
+           pipeline
+           |> Pipeline.changeset(params)
+           |> Repo.update() do
+      PipelinesChannel.update_status(pipeline |> Repo.preload(:project))
+      {:ok, pipeline}
+    end
   end
 
   def update_status(pipeline_id) do

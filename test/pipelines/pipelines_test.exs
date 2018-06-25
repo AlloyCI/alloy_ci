@@ -7,10 +7,10 @@ defmodule AlloyCi.PipelinesTest do
 
   @update_attrs %{
     before_sha: "some updated before_sha",
-    commit: %{message: "some new commit_message", email: "some new committer_email"},
+    commit: %{"message" => "some new commit_message", "email" => "some new committer_email"},
     duration: 43,
     finished_at: ~N[2011-05-18 15:01:01.000000],
-    ref: "some updated ref",
+    ref: "refs/heads/master",
     sha: "some updated sha",
     started_at: ~N[2011-05-18 15:01:01.000000],
     status: "some updated status"
@@ -171,7 +171,7 @@ defmodule AlloyCi.PipelinesTest do
       assert pipeline.before_sha == "some updated before_sha"
       assert pipeline.duration == 43
       assert pipeline.finished_at == ~N[2011-05-18 15:01:01.000000]
-      assert pipeline.ref == "some updated ref"
+      assert pipeline.ref == "refs/heads/master"
       assert pipeline.sha == "some updated sha"
       assert pipeline.started_at == ~N[2011-05-18 15:01:01.000000]
       assert pipeline.status == "some updated status"

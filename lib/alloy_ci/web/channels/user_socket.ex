@@ -3,7 +3,8 @@ defmodule AlloyCi.Web.UserSocket do
   alias AlloyCi.Accounts
 
   ## Channels
-  channel("builds:*", AlloyCi.Web.BuildsChannel)
+  channel("build:*", AlloyCi.Web.BuildsChannel)
+  channel("pipeline:*", AlloyCi.Web.PipelinesChannel)
   channel("repos:*", AlloyCi.Web.ReposChannel)
 
   ## Transports

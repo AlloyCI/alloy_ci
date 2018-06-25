@@ -1,21 +1,21 @@
-defmodule AlloyCi.Web.BuildsChannelTest do
+defmodule AlloyCi.Web.PipelinesChannelTest do
   use AlloyCi.Web.ChannelCase
   import AlloyCi.Factory
 
-  alias AlloyCi.Web.BuildsChannel
+  alias AlloyCi.Web.PipelinesChannel
 
   setup do
-    build = insert(:full_build)
+    pipeline = insert(:pipeline)
 
     user =
-      insert(:user, project_permissions: [build(:project_permission, project: build.project)])
+      insert(:user, project_permissions: [build(:project_permission, project: pipeline.project)])
 
     {:ok, _, socket} =
       "user_id"
       |> socket(%{user_id: user.id})
-      |> subscribe_and_join(BuildsChannel, "build:#{build.id}")
+      |> subscribe_and_join(PipelinesChannel, "pipeline:#{pipeline.id}")
 
-    {:ok, socket: socket, build: build}
+    {:ok, socket: socket, pipeline: pipeline}
   end
 
   test "ping replies with status ok", %{socket: socket} do
@@ -23,7 +23,7 @@ defmodule AlloyCi.Web.BuildsChannelTest do
     assert_reply(ref, :ok, %{"hello" => "there"})
   end
 
-  test "shout broadcasts to builds:lobby", %{socket: socket} do
+  test "shout broadcasts to pipelines:lobby", %{socket: socket} do
     push(socket, "shout", %{"hello" => "all"})
     assert_broadcast("shout", %{"hello" => "all"})
   end
@@ -33,8 +33,8 @@ defmodule AlloyCi.Web.BuildsChannelTest do
     assert_push("broadcast", %{"some" => "data"})
   end
 
-  test "update_status sends the correct data", %{build: build} do
-    BuildsChannel.update_status(build)
-    assert_push("update_status", %{content: <<_div::binary-size(9), "build-", _rest::binary>>})
+  test "update_status sends the correct data", %{pipeline: pipeline} do
+    PipelinesChannel.update_status(pipeline)
+    assert_push("update_status", %{content: <<_div::binary-size(9), "pipeline-", _rest::binary>>})
   end
 end

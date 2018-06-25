@@ -16,15 +16,19 @@ import "phoenix_html"
 // Stimulus data
 import { Application } from "stimulus"
 
+import BuildController from "./controllers/build_controller"
 import BuildsController from "./controllers/builds_controller"
 import ChartsController from "./controllers/charts_controller"
+import PipelinesController from "./controllers/pipelines_controller"
 import ProjectsController from "./controllers/projects_controller"
 import ReposController from "./controllers/repos_controller"
 import TagsController from "./controllers/tags_controller"
 
 const application = Application.start()
+application.register("build", BuildController)
 application.register("builds", BuildsController)
 application.register("charts", ChartsController)
+application.register("pipelines", PipelinesController)
 application.register("projects", ProjectsController)
 application.register("repos", ReposController)
 application.register("tags", TagsController)
@@ -61,7 +65,7 @@ if($("#aside").hasClass("page-aside")) {
   $(".alert").addClass("aci-aside")
 }
 
-var 
+const 
   collapsibleSidebarClass = "aci-collapsible-sidebar",
   collapsibleSidebarCollapsedClass = "aci-collapsible-sidebar-collapsed",
   sidebar = $(".aci-left-sidebar"),

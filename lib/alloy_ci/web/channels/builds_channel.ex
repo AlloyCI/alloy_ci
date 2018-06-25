@@ -1,6 +1,6 @@
 defmodule AlloyCi.Web.BuildsChannel do
   @moduledoc false
-  alias AlloyCi.{Builds, Projects, Web.Endpoint}
+  alias AlloyCi.{Builds, Projects, Web.Endpoint, Web.PipelineView}
   use AlloyCi.Web, :channel
 
   # Channels can be used in a request/response fashion
@@ -16,7 +16,7 @@ defmodule AlloyCi.Web.BuildsChannel do
     {:noreply, socket}
   end
 
-  def join("builds:" <> build_id, _payload, socket) do
+  def join("build:" <> build_id, _payload, socket) do
     build = Builds.get(build_id)
 
     if Projects.can_access?(build.project_id, %{id: socket.assigns.user_id}) do
@@ -27,12 +27,25 @@ defmodule AlloyCi.Web.BuildsChannel do
   end
 
   def replace_trace(build_id, trace) do
-    Endpoint.broadcast("builds:#{build_id}", "replace_trace", %{trace: trace})
+    Endpoint.broadcast("build:#{build_id}", "replace_trace", %{trace: trace})
   end
 
   def send_trace(_build_id, ""), do: nil
 
   def send_trace(build_id, trace) do
-    Endpoint.broadcast("builds:#{build_id}", "append_trace", %{trace: trace})
+    Endpoint.broadcast("build:#{build_id}", "append_trace", %{trace: trace})
+  end
+
+  def update_status(build) do
+    Endpoint.broadcast("build:#{build.id}", "update_status", %{content: render_build(build)})
+  end
+
+  def render_build(build) do
+    Phoenix.View.render_to_string(
+      PipelineView,
+      "build.html",
+      build: build,
+      conn: %Plug.Conn{}
+    )
   end
 end

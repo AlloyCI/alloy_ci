@@ -4,15 +4,13 @@ import socket from "../socket"
 export default class extends Controller {
   connect() {
     const id = this.data.get("id")
-    const token = this.data.get("token")
-    let channel = socket.channel(`build:${id}`, {})
-    
+    let channel = socket.channel(`pipeline:${id}`, {})
     channel.join()
-      .receive("ok", data => { console.log(`Joined successfully for build ${id}`, data) })
+      .receive("ok", data => { console.log(`Joined successfully for pipeline ${id}`, data) })
       .receive("error", data => { console.log("Unable to join", data) })
 
     channel.on("update_status", data => {
-      $(`#build-${id}`).html(data.content.replace(/data-csrf="{1}.*=="/g, `data-csrf="${token}"`))
+      $(`#pipeline-${id}`).html(data.content)
     })
   }
 }

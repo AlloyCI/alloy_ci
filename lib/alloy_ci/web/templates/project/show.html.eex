@@ -33,42 +33,13 @@
             <div class="card-body">
               <div class="m-b-2">
                 <%= for pipeline <- pipelines do %>
-                  <div class="card <%= card_status(pipeline.status) %> <%= pipeline.status %>-background text-black">
-                    <div class="card-body">
-                      <div class="row">
-                        <div class="col-sm-1">
-                          <img src='<%= pipeline.commit["avatar_url"] %>' class="commmit-avatar" alt='<%= pipeline.commit["username"] %>'>
-                        </div>
-                        <div class="col-sm-8">
-                          <div class="text-muted">
-                            <strong>
-                              <%= pretty_commit(pipeline.commit["message"]) %>
-                              <%= if pipeline.commit["pr_commit_message"] do %>
-                                | <%= icon("code-fork") %> <%= pretty_commit(pipeline.commit["pr_commit_message"]) %>
-                              <% end %>
-                            </strong>
-                          </div>
-                          <br/>
-                          <%= icon("user") %> <%= pipeline.commit["username"] %>
-                          <span class="bullet">•</span>
-                          <%= icon("github") %> <%= sha_link(pipeline, @project) %>
-                          <span class="bullet">•</span>
-                          <%= ref_icon(pipeline.ref) %> <%= clean_ref(pipeline.ref) %>
-                          <span class="bullet">•</span>
-                          <%= icon("hourglass") %> <%= duration(pipeline.duration) %>
-                          <span class="bullet">•</span>
-                          <%= icon("clock-o") %> <%= pretty_date(pipeline.inserted_at) %>
-                        </div>
-                        <div class="col-sm-3">
-                          <div class="allign-right status-btn">
-                            <%= link String.capitalize(pipeline.status),
-                                      to: project_pipeline_path(@conn, :show, @project, pipeline),
-                                      class: "btn #{status_btn(pipeline.status)} btn-lg btn-block" %>
-                          </div>
-                        </div>
-                      </div>
+                  <%= if pipeline.status in ~w(failed success cancelled) do %>
+                    <%= render "pipeline.html", pipeline: pipeline, project: @project, conn: @conn %>
+                  <% else %>
+                    <div data-controller="pipelines" data-pipelines-id="<%= pipeline.id %>">
+                      <%= render "pipeline.html", pipeline: pipeline, project: @project, conn: @conn %>
                     </div>
-                  </div>
+                  <% end %>  
                 <% end %>
               </div>
               <%= paginate @conn, @kerosene, next_label: "»", previous_label: "«" %>

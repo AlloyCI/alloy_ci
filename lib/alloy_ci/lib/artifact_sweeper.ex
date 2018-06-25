@@ -31,22 +31,27 @@ defmodule AlloyCi.ArtifactSweeper do
     GenServer.call(__MODULE__, :sweep)
   end
 
+  @impl true
   def init(state) do
     {:ok, schedule_work(self(), state)}
   end
 
+  @impl true
   def handle_call(:reset_timer, _from, state) do
     {:reply, :ok, schedule_work(self(), state)}
   end
 
+  @impl true
   def handle_call(:sweep, _from, state) do
     {:reply, :ok, sweep(self(), state)}
   end
 
+  @impl true
   def handle_info(:sweep, state) do
     {:noreply, sweep(self(), state)}
   end
 
+  @impl true
   def handle_info(_, state), do: {:noreply, state}
 
   defp parse_interval(interval) do
