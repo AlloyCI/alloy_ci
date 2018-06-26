@@ -32,7 +32,7 @@ defmodule AlloyCi.Mixfile do
   def application do
     [
       mod: {AlloyCi.App, []},
-      extra_applications: [:elixir_make, :ex_utils, :logger]
+      extra_applications: [:elixir_make, :ex_utils, :logger, :mix]
     ]
   end
 
