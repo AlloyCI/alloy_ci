@@ -1,19 +1,25 @@
 <a name="v0.7.0"></a>
 ### v0.7.0 (2018-05-07)
 
-#### Features
-
-
-#### Bug Fixes
-
-* Fixed redirect loop that would happen when an authentication token expires.
-
 #### Deprecations
 
 * **MAJOR DEPRECATION** JSON config files for build/pipeline configuration are no longer supported. Use YAML files instead.
   The main reason behind this decision is that YAML is much more flexible than JSON. It allows us to use aliases in oder to avoid
   duplication, to add comments to make the config file more understandable, and it is the de facto standard configuration file
   for almost all CI systems in the market.
+
+#### Features
+
+* Build status is now automatically updated on the pipeline view. It uses websockets to redraw the
+  HTML data, and update the view when the status changes.
+* Pipeline status is also automatically updated in the same manner on the project view.
+* Added a Makefile to facilitate the start up procedure in dev mode.
+* Use YAML config files instead of JSON.
+
+#### Bug Fixes
+
+* Fixed redirect loop that would happen when an authentication token expires.
+* Reverted back to Kerosene v0.7.0, as the updated v0.8.0 had pagination bugs.  
  
 
 <a name="v0.6.0"></a>
