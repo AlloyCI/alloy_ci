@@ -67,7 +67,7 @@ defmodule AlloyCi.Mixfile do
       {:phoenix_pubsub, "~> 1.0"},
       {:postgrex, ">= 0.0.0"},
       {:secure_random, "~> 0.5"},
-      {:sentry, "~> 6.2"},
+      {:sentry, "== 6.3.0"},
       {:sweet_xml, "~> 0.6"},
       {:tentacat, "~> 1.0"},
       {:timex, "~> 3.3"},
@@ -77,7 +77,7 @@ defmodule AlloyCi.Mixfile do
       {:yaml_elixir, "~> 2.1", github: "AlloyCI/yaml-elixir"},
 
       # Test and Dev dependencies
-      {:excoveralls, "~> 0.8", only: :test},
+      {:excoveralls, "~> 0.9", only: :test},
       {:ex_machina, "~> 2.2", only: [:dev, :test]},
       {:credo, "~> 0.9", only: [:dev, :test]},
       {:phoenix_live_reload, "~> 1.1", only: :dev}
