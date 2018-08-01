@@ -32,7 +32,7 @@ defmodule AlloyCi.Mixfile do
   def application do
     [
       mod: {AlloyCi.App, []},
-      extra_applications: [:elixir_make, :ex_utils, :logger, :mix]
+      extra_applications: [:elixir_make, :logger, :mix]
     ]
   end
 
@@ -57,7 +57,8 @@ defmodule AlloyCi.Mixfile do
       {:gettext, "~> 0.15"},
       {:gravatar, "~> 0.1.0"},
       {:guardian_db, "~> 1.1"},
-      {:httpoison, "~> 1.1", override: true},
+      {:httpoison, "== 0.13.0", override: true},
+      {:hackney, "~> 1.13", override: true},
       {:joken, "~> 1.5"},
       {:kerosene, "== 0.7.0"},
       {:mix_docker, "~> 0.5", runtime: false},
@@ -73,7 +74,6 @@ defmodule AlloyCi.Mixfile do
       {:timex, "~> 3.3"},
       {:ueberauth_github, "~> 0.7"},
       {:ueberauth_identity, "~> 0.2.3"},
-      {:que, "~> 0.4.1", github: "AlloyCI/que"},
       {:yaml_elixir, "~> 2.1", github: "AlloyCI/yaml-elixir"},
 
       # Test and Dev dependencies
