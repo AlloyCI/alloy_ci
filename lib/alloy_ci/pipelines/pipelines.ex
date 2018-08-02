@@ -19,7 +19,14 @@ defmodule AlloyCi.Pipelines do
 
   def cancel(pipeline) do
     with {:ok, pipeline} <- update_pipeline(pipeline, %{status: "cancelled"}) do
-      case Builds.cancel(pipeline) do
+      query =
+        from(
+          b in "builds",
+          where: b.pipeline_id == ^pipeline.id and b.status in ~w(created pending running),
+          update: [set: [status: "cancelled"]]
+        )
+
+      case Repo.update_all(query, []) do
         {_, nil} ->
           @github_api.notify_cancelled!(pipeline.project, pipeline)
           {:ok, pipeline}

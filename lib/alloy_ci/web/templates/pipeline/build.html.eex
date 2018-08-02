@@ -13,7 +13,7 @@
         <span data-toggle="tooltip" 
               data-placement="bottom"
               title="Status: <%= String.capitalize(@build.status) %>">
-          <%= build_status_icon(@build.status) %>
+          <%= status_icon(@build.status, "fa-lg") %>
         </span>
         <%= build_actions(@conn, @build, "fa-lg") %>
       </div>

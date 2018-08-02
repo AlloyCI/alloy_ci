@@ -40,23 +40,13 @@ defmodule AlloyCi.Builds do
             name: b.name,
             project_id: b.project_id,
             started_at: b.started_at,
-            status: b.status
+            status: b.status,
+            when: b.when
           }
         )
 
       %{stage => Repo.all(query)}
     end)
-  end
-
-  def cancel(pipeline) do
-    query =
-      from(
-        b in Build,
-        where: b.pipeline_id == ^pipeline.id and b.status in ~w(created pending running),
-        update: [set: [status: "cancelled"]]
-      )
-
-    Repo.update_all(query, [])
   end
 
   def clean_ref(ref) do
@@ -89,7 +79,7 @@ defmodule AlloyCi.Builds do
     stage = options["stage"] || "test"
 
     build_params = %{
-      allow_failure: options["allow_failure"] || false,
+      allow_failure: options["allow_failure"] || default_allow_failure(options["when"]),
       artifacts: options["artifacts"],
       commands: options["script"],
       deps: options["dependencies"],
@@ -125,13 +115,18 @@ defmodule AlloyCi.Builds do
     end
   end
 
-  def enqueue(build) do
-    if build.status == "created" do
-      do_update_status(build, "pending")
-    else
-      build
-    end
+  def enqueue(%{status: "created", when: "manual"} = build) do
+    do_update_status(build, "manual")
   end
+
+  def enqueue(%{status: status, when: when_at} = build)
+      when status in ~w(created manual) and when_at !== "manual" do
+    do_update_status(build, "pending")
+  end
+
+  def enqueue(build), do: build
+
+  def enqueue!(build), do: do_update_status(build, "pending")
 
   def for_pipeline_and_lower_stage(pipeline_id, stage_idx) do
     Build
@@ -287,9 +282,8 @@ defmodule AlloyCi.Builds do
 
   def transition_status(build, status \\ nil) do
     case build.status do
-      "created" -> update_status(build, status || "running")
-      "pending" -> update_status(build, status || "running")
-      "running" -> update_status(build, status || "success")
+      s when s in ~w(created pending) -> update_status(build, status || "running")
+      s when s in ~w(manual running) -> update_status(build, status || "success")
       _ -> {:ok, build}
     end
   end
@@ -375,6 +369,9 @@ defmodule AlloyCi.Builds do
       do_create_build(params)
     end
   end
+
+  defp default_allow_failure("manual"), do: true
+  defp default_allow_failure(_when), do: false
 
   defp do_create_build(params) do
     %Build{}

@@ -7,6 +7,9 @@ defmodule AlloyCi.Web.ViewHelpers do
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
+  def boolean_to_icon(true), do: icon("check")
+  def boolean_to_icon(false), do: icon("close")
+
   def callout("success"), do: "callout-success"
   def callout("failed"), do: "callout-danger"
   def callout("running"), do: "callout-warning"
@@ -113,12 +116,14 @@ defmodule AlloyCi.Web.ViewHelpers do
   def status_btn("running"), do: "btn-warning"
   def status_btn(_), do: "btn-outline-secondary active"
 
-  def status_icon("created"), do: icon("calendar")
-  def status_icon("failed"), do: icon("close")
-  def status_icon("pending"), do: icon("circle-o-notch")
-  def status_icon("running"), do: icon("circle-o-notch", "fa-spin")
-  def status_icon("success"), do: icon("check")
-  def status_icon(_), do: icon("ban")
+  def status_icon(status, class \\ "")
+  def status_icon("created", class), do: icon("calendar", class)
+  def status_icon("failed", class), do: icon("close", class)
+  def status_icon("manual", class), do: icon("hand-paper-o", class)
+  def status_icon("pending", class), do: icon("circle-o-notch", class)
+  def status_icon("running", class), do: icon("circle-o-notch", "fa-spin #{class}")
+  def status_icon("success", class), do: icon("check", class)
+  def status_icon(_, _), do: icon("ban")
 
   defp status_class(:info), do: "primary"
   defp status_class(:error), do: "danger"
