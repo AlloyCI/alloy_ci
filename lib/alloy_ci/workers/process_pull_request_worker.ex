@@ -6,7 +6,6 @@ defmodule AlloyCi.Workers.ProcessPullRequestWorker do
   """
   alias AlloyCi.{Pipelines, Projects, Workers.CreateBuildsWorker, Queuer}
   require Logger
-  use Que.Worker
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 

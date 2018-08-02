@@ -1,6 +1,5 @@
 defmodule AlloyCi.Workers.FetchReposWorker do
   @moduledoc false
-  use Que.Worker
   alias AlloyCi.{Accounts, Project, ProjectPermission, Web.ProjectView, Web.ReposChannel}
 
   @github_api Application.get_env(:alloy_ci, :github_api)

@@ -7,14 +7,13 @@ defmodule AlloyCi.Workers.CreatePermissionsWorker do
   """
   alias AlloyCi.{Repo, ProjectPermission}
   import AlloyCi.ProjectPermission, only: [repo_ids: 0]
-  use Que.Worker
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
   def perform({user_id, token}) do
     user_repo_ids =
       token
-      |> @github_api.fetch_repos
+      |> @github_api.fetch_repos()
       |> Enum.map(& &1["id"])
 
     permission_ids = MapSet.intersection(MapSet.new(user_repo_ids), MapSet.new(repo_ids()))
