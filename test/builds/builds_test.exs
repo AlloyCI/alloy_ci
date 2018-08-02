@@ -36,7 +36,8 @@ defmodule AlloyCi.BuildsTest do
                      project_id: build.project_id,
                      status: build.status,
                      finished_at: nil,
-                     started_at: nil
+                     started_at: nil,
+                     when: "on_success"
                    }
                  ]
                }
@@ -80,7 +81,9 @@ defmodule AlloyCi.BuildsTest do
              ]
 
       assert build.project_id == pipeline.project_id
-      assert build.when == "on_success"
+      assert build.when == "manual"
+      assert build.allow_failure == true
+      assert build.status == "created"
       assert build.tags == project.tags
       assert build.stage_idx == 1
       assert build.stage == "test"

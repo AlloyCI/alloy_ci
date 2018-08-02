@@ -68,4 +68,25 @@ defmodule AlloyCi.Web.BuildController do
         |> render("show.html", build: build, pipeline: build.pipeline, current_user: current_user)
     end
   end
+
+  def update(conn, %{"id" => id, "project_id" => project_id}, current_user, _) do
+    case Builds.get_build(id, project_id, current_user) do
+      false ->
+        conn
+        |> put_flash(:info, "Project not found")
+        |> redirect(to: project_path(conn, :index))
+
+      build ->
+        with {:ok, _} <- Builds.enqueue!(build) do
+          conn
+          |> put_flash(:success, "Build successfully started")
+          |> redirect(to: project_build_path(conn, :show, build.project_id, build))
+        else
+          _ ->
+            conn
+            |> put_flash(:error, "An error occurred starting the build")
+            |> redirect(to: project_pipeline_path(conn, :show, project_id, build.pipeline_id))
+        end
+    end
+  end
 end

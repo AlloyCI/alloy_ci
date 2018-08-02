@@ -12,6 +12,8 @@
         <p><span class="text-muted">Duration: </span><%= icon("clock-o") %> <%= build_duration(@build) %></p>
         <p><span class="text-muted">Triggered: </span><%= from_now(@build.inserted_at) %></p>
         <p><span class="text-muted">Runner: </span><%= runner(@build.runner_id) %></p>
+        <p><span class="text-muted">Start condition: </span><%= @build.when %></p>
+        <p><span class="text-muted">Allowed to fail: </span><%= boolean_to_icon(@build.allow_failure) %></p>
         <span class="text-muted">Tags: </span><%= tags(@build.tags) %>
         
         <hr>

@@ -41,9 +41,12 @@ defmodule AlloyCi.PipelinesTest do
   end
 
   describe "cancel/1" do
-    test "it cancels the pipeline", %{pipeline: pipeline} do
+    test "it cancels the pipeline and its builds", %{pipeline: pipeline} do
+      build = insert(:build, pipeline: pipeline, project: pipeline.project)
       assert {:ok, pipeline} = Pipelines.cancel(pipeline)
       assert pipeline.status == "cancelled"
+      build = Builds.get(build.id)
+      assert build.status == "cancelled"
     end
   end
 

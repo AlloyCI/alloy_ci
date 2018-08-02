@@ -1,5 +1,6 @@
 ---
 Rspec Tests:
+  when: manual
   script:
   - bundle install --path vendor/bundle
   - bundle exec rake db:setup

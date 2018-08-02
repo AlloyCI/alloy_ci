@@ -103,6 +103,97 @@ defmodule AlloyCi.ProcessPipelineWorkerTest do
     assert pipeline.status == "failed"
   end
 
+  test "it processes the pipeline and updates the builds on manual", %{
+    pipeline: pipeline,
+    project: project
+  } do
+    insert(
+      :build,
+      pipeline_id: pipeline.id,
+      stage_idx: 0,
+      project_id: project.id,
+      status: "success"
+    )
+
+    build =
+      insert(
+        :build,
+        pipeline_id: pipeline.id,
+        stage_idx: 1,
+        project_id: project.id,
+        status: "created",
+        when: "manual"
+      )
+
+    ProcessPipelineWorker.perform(pipeline.id)
+
+    build = Builds.get(build.id)
+    pipeline = Pipeline |> Repo.get(pipeline.id)
+
+    assert build.status == "manual"
+    assert pipeline.status == "running"
+
+    ProcessPipelineWorker.perform(pipeline.id)
+
+    build = Builds.get(build.id)
+    pipeline = Pipeline |> Repo.get(pipeline.id)
+
+    assert build.status == "manual"
+    assert pipeline.status == "running"
+  end
+
+  test "it processes the pipeline and updates the builds on blocking manual", %{
+    pipeline: pipeline,
+    project: project
+  } do
+    insert(
+      :build,
+      pipeline_id: pipeline.id,
+      stage_idx: 0,
+      project_id: project.id,
+      status: "success"
+    )
+
+    build =
+      insert(
+        :build,
+        pipeline_id: pipeline.id,
+        stage_idx: 1,
+        project_id: project.id,
+        status: "created",
+        when: "manual",
+        allow_failure: false
+      )
+
+    build2 =
+      insert(
+        :build,
+        pipeline_id: pipeline.id,
+        stage_idx: 2,
+        project_id: project.id,
+        status: "created"
+      )
+
+    ProcessPipelineWorker.perform(pipeline.id)
+
+    build = Builds.get(build.id)
+    build2 = Builds.get(build2.id)
+    pipeline = Pipeline |> Repo.get(pipeline.id)
+
+    assert build.status == "manual"
+    assert build2.status == "created"
+    assert pipeline.status == "running"
+
+    Builds.transition_status(build, "success")
+    ProcessPipelineWorker.perform(pipeline.id)
+
+    build2 = Builds.get(build2.id)
+    pipeline = Pipeline |> Repo.get(pipeline.id)
+
+    assert build2.status == "pending"
+    assert pipeline.status == "running"
+  end
+
   test "it processes the pipeline and updates the second stage on success", %{
     pipeline: pipeline,
     project: project

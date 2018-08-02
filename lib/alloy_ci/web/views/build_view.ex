@@ -21,13 +21,24 @@ defmodule AlloyCi.Web.BuildView do
   end
 
   def artifact_for(_, _) do
-    content_tag :p do
-      "No artifacts were generated for this build."
-    end
+    content_tag(:p, "No artifacts were generated for this build.")
   end
 
   def build_actions(conn, build, icon_class \\ "")
   def build_actions(_, %{status: s}, _) when s in ~w(pending running created), do: ""
+
+  def build_actions(conn, %{status: "manual", when: "manual"} = build, icon_class) do
+    content_tag :span,
+      class: "float-right",
+      data: [toggle: "tooltip", placement: "bottom"],
+      title: "Perform this build!" do
+      link to: project_build_path(conn, :update, build.project_id, build.id),
+           method: :put,
+           class: "action-link" do
+        icon("play", icon_class)
+      end
+    end
+  end
 
   def build_actions(conn, build, icon_class) do
     content_tag :span,
@@ -54,18 +65,8 @@ defmodule AlloyCi.Web.BuildView do
   def build_loading_icon("running"), do: icon("spinner", "fa-spin fa-2x")
   def build_loading_icon(_), do: ""
 
-  def build_status_icon("created"), do: icon("calendar", "fa-lg")
-  def build_status_icon("failed"), do: icon("close", "fa-lg")
-  def build_status_icon("pending"), do: icon("circle-o-notch", "fa-lg")
-  def build_status_icon("running"), do: icon("circle-o-notch", "fa-spin fa-lg")
-  def build_status_icon("success"), do: icon("check", "fa-lg")
-  def build_status_icon(_), do: icon("ban")
-
   def from_now(nil), do: "Never"
-
-  def from_now(time) do
-    time |> Timex.from_now()
-  end
+  def from_now(time), do: time |> Timex.from_now()
 
   def runner(nil), do: "Pending"
   def runner(id), do: "##{id}"

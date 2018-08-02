@@ -62,10 +62,11 @@ defmodule AlloyCi.Workers.ProcessPipelineWorker do
       stats[:total] == 0 ->
         "success"
 
-      stats[:total] == stats[:successful] + stats[:allowed_failures] ->
+      stats[:total] ==
+          stats[:successful] + stats[:allowed_failures] + stats[:non_blocking_manual_builds] ->
         "success"
 
-      stats[:active] > 0 ->
+      stats[:active] > 0 || stats[:blocking_manual_builds] > 0 ->
         "running"
 
       true ->
@@ -74,32 +75,22 @@ defmodule AlloyCi.Workers.ProcessPipelineWorker do
   end
 
   defp stage_builds_stats(pipeline_id, stage_idx) do
-    successful_builds =
-      from(
-        b in "builds",
-        where:
-          b.pipeline_id == ^pipeline_id and b.stage_idx == ^(stage_idx - 1) and
-            b.status == "success",
-        select: count(b.id)
-      )
-      |> Repo.one()
-
-    allowed_failures =
-      from(
-        b in "builds",
-        where:
-          b.pipeline_id == ^pipeline_id and b.stage_idx == ^(stage_idx - 1) and
-            b.status == "failed" and b.allow_failure == true,
-        select: count(b.id)
-      )
-      |> Repo.one()
-
     active_builds =
       from(
         b in "builds",
         where:
           b.pipeline_id == ^pipeline_id and b.stage_idx == ^(stage_idx - 1) and
             b.status in ~w(pending running),
+        select: count(b.id)
+      )
+      |> Repo.one()
+
+    successful_builds =
+      from(
+        b in "builds",
+        where:
+          b.pipeline_id == ^pipeline_id and b.stage_idx == ^(stage_idx - 1) and
+            b.status == "success",
         select: count(b.id)
       )
       |> Repo.one()
@@ -113,19 +104,35 @@ defmodule AlloyCi.Workers.ProcessPipelineWorker do
       |> Repo.one()
 
     %{
-      total: total_builds,
+      active: active_builds,
       successful: successful_builds,
-      allowed_failures: allowed_failures,
-      active: active_builds
+      total: total_builds,
+      allowed_failures:
+        status_counter(pipeline_id, stage_idx, %{status: "failed", allowed_failure: true}),
+      non_blocking_manual_builds:
+        status_counter(pipeline_id, stage_idx, %{status: "manual", allowed_failure: true}),
+      blocking_manual_builds:
+        status_counter(pipeline_id, stage_idx, %{status: "manual", allowed_failure: false})
     }
   end
 
-  defp valid_status?(build_when, status) do
+  defp status_counter(pipeline_id, stage_idx, opts) do
+    from(
+      b in "builds",
+      where:
+        b.pipeline_id == ^pipeline_id and b.stage_idx == ^(stage_idx - 1) and
+          b.status == ^opts.status and b.allow_failure == ^opts.allowed_failure,
+      select: count(b.id)
+    )
+    |> Repo.one()
+  end
+
+  defp valid_status?(build_when, last_stage_status) do
     case build_when do
-      "on_success" -> status in ~w(success skipped)
-      "on_failure" -> status == "failed"
+      "on_success" -> last_stage_status in ~w(success skipped)
+      "on_failure" -> last_stage_status == "failed"
       "always" -> true
-      "manual" -> status == "success"
+      "manual" -> last_stage_status == "success"
     end
   end
 end
