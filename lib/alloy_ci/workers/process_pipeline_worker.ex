@@ -8,7 +8,6 @@ defmodule AlloyCi.Workers.ProcessPipelineWorker do
   alias AlloyCi.{Builds, Pipelines, Repo}
   import Ecto.Query
   require Logger
-  use Que.Worker
 
   def perform(pipeline_id) do
     log("Processing builds for pipeline #{pipeline_id}")
