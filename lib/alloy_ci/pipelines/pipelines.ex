@@ -32,7 +32,7 @@ defmodule AlloyCi.Pipelines do
           {:ok, pipeline}
 
         _ ->
-          :error
+          {:error, nil}
       end
     end
   end
@@ -54,6 +54,7 @@ defmodule AlloyCi.Pipelines do
     end
   end
 
+  @spec duplicate(Pipeline.t()) :: {:error, any()} | {:ok, Pipeline.t()}
   def duplicate(pipeline) do
     with {:ok, clone} <- clone(pipeline) do
       Queuer.push(CreateBuildsWorker, clone.id)
@@ -87,6 +88,16 @@ defmodule AlloyCi.Pipelines do
     |> where([p], p.status == "pending" or p.status == "running")
     |> order_by(asc: :inserted_at)
     |> Repo.all()
+  end
+
+  @spec for_project_and_user(any(), any(), any()) :: false | nil | Pipeline.t()
+  def for_project_and_user(id, project_id, user) do
+    with true <- Projects.can_access?(project_id, user) do
+      Pipeline
+      |> where(project_id: ^project_id)
+      |> Repo.get(id)
+      |> Repo.preload(:project)
+    end
   end
 
   def get(id), do: Pipeline |> Repo.get(id)
@@ -136,15 +147,7 @@ defmodule AlloyCi.Pipelines do
     end
   end
 
-  def show_pipeline(id, project_id, user) do
-    with true <- Projects.can_access?(project_id, user) do
-      Pipeline
-      |> where(project_id: ^project_id)
-      |> Repo.get(id)
-      |> Repo.preload(:project)
-    end
-  end
-
+  @spec success!(pos_integer()) :: {:error, nil} | {:ok, Pipeline.t()}
   def success!(pipeline_id) do
     pipeline =
       pipeline_id
@@ -175,10 +178,11 @@ defmodule AlloyCi.Pipelines do
         end
 
       true ->
-        nil
+        {:error, nil}
     end
   end
 
+  @spec update_pipeline(Pipeline.t(), map()) :: {:error, any()} | {:ok, Pipeline.t()}
   def update_pipeline(%Pipeline{} = pipeline, params) do
     with {:ok, pipeline} <-
            pipeline
@@ -189,6 +193,7 @@ defmodule AlloyCi.Pipelines do
     end
   end
 
+  @spec update_status(pos_integer()) :: {:error, any()} | {:ok, Pipeline.t() | nil}
   def update_status(pipeline_id) do
     pipeline = get(pipeline_id)
 
@@ -209,7 +214,7 @@ defmodule AlloyCi.Pipelines do
       %{status: "failed", allow_failure: false} -> failed!(pipeline)
       %{status: "skipped"} -> update_pipeline(pipeline, %{status: "running"})
       %{status: "running"} -> update_pipeline(pipeline, %{status: "running"})
-      _ -> nil
+      _ -> {:ok, nil}
     end
   end
 

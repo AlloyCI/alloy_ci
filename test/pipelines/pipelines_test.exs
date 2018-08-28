@@ -203,7 +203,7 @@ defmodule AlloyCi.PipelinesTest do
         allow_failure: true
       )
 
-      result = Pipelines.update_status(pipeline.id)
+      {:ok, result} = Pipelines.update_status(pipeline.id)
 
       assert result == nil
     end

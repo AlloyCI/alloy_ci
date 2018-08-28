@@ -37,7 +37,7 @@ defmodule AlloyCi.Web.PipelineController do
   end
 
   def show(conn, %{"id" => id, "project_id" => project_id}, current_user, _claims) do
-    with %Pipeline{} = pipeline <- Pipelines.show_pipeline(id, project_id, current_user) do
+    with %Pipeline{} = pipeline <- Pipelines.for_project_and_user(id, project_id, current_user) do
       builds = Builds.by_stage(pipeline)
       render(conn, "show.html", builds: builds, pipeline: pipeline, current_user: current_user)
     else
