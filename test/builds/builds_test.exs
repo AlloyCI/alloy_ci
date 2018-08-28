@@ -19,7 +19,7 @@ defmodule AlloyCi.BuildsTest do
       assert {:ok, _} = Builds.append_trace(build, "new trace")
 
       build = Builds.get(build.id)
-      assert Builds.get_trace(build) == "existing trace\nnew trace\n"
+      assert Builds.get_trace(build) == "existing trace\nnew trace"
     end
 
     test "BuildsTraceCache handles concurrent writes" do
