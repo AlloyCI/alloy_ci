@@ -10,29 +10,18 @@ defmodule AlloyCi.App do
     setup_config()
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: AlloyCi.Supervisor]
-    Supervisor.start_link(children(Mix.env()), opts)
-  end
-
-  def children(env) when env != "test" do
-    import Supervisor.Spec, warn: false
-    children()
-  end
-
-  def children do
-    import Supervisor.Spec
-    # Define workers and child supervisors to be supervised
-    [
-      # Start the Ecto repository
-      supervisor(AlloyCi.Repo, []),
-      # Start the endpoint when the application starts
-      supervisor(AlloyCi.Web.Endpoint, []),
-      supervisor(AlloyCi.BackgroundScheduler, []),
-      worker(Guardian.DB.Token.SweeperServer, []),
-      worker(AlloyCi.ArtifactSweeper, [System.get_env("ARTIFACT_SWEEP_INTERVAL")])
-      # Start your own worker by calling: AlloyCi.Worker.start_link(arg1, arg2, arg3)
-      # worker(AlloyCi.Worker, [arg1, arg2, arg3]),
+    children = [
+      AlloyCi.Repo,
+      AlloyCi.Web.Endpoint,
+      AlloyCi.BackgroundScheduler,
+      Guardian.DB.Token.SweeperServer,
+      {AlloyCi.ArtifactSweeper, System.get_env("ARTIFACT_SWEEP_INTERVAL")},
+      AlloyCi.BuildsTraceCache,
+      {Task.Supervisor, name: AlloyCi.TaskSupervisor}
     ]
+
+    opts = [strategy: :one_for_one, name: AlloyCi.Supervisor]
+    Supervisor.start_link(children, opts)
   end
 
   @doc """
