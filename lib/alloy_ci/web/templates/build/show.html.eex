@@ -70,7 +70,7 @@
     <div class="row">
       <div class="col-xl-12 col-sm-12">
         <div class="card card-border-color card-border-color-<%= panel_status(@build.status)%>" 
-            data-controller="build" data-build-id="<%= @build.id %>" data-build-trace="<%= @build.trace %>" 
+            data-controller="build" data-build-id="<%= @build.id %>" data-build-trace="<%= get_trace(@build) %>" 
             data-build-name="<%= @build.name %>">
           <div class="card-header"></div>
           <div class="card-body">

@@ -2,7 +2,21 @@ defmodule AlloyCi.Builds do
   @moduledoc """
   The boundary for the Builds system.
   """
-  alias AlloyCi.{Artifact, Build, Queuer, Pipelines, Projects, Repo, Workers, Web.BuildsChannel}
+  alias AlloyCi.{
+    Artifact,
+    Build,
+    BuildsTraceCache,
+    Queuer,
+    Pipeline,
+    Pipelines,
+    Projects,
+    Repo,
+    Runner,
+    User,
+    Workers,
+    Web.BuildsChannel
+  }
+
   import Ecto.Query, warn: false
 
   @github_api Application.get_env(:alloy_ci, :github_api)
@@ -10,12 +24,19 @@ defmodule AlloyCi.Builds do
   @global_config ~w(after_script before_script cache image services stages variables)
   @local_overrides ~w(after_script before_script cache image services variables)
 
+  @spec append_trace(Build.t(), binary()) :: {:ok, Build.t()}
+  def append_trace(build, ""), do: {:ok, build}
+
   def append_trace(build, trace) do
-    with {1, nil} <- append!(build, trace) do
+    old_trace = BuildsTraceCache.lookup(build.id)
+    new_trace = old_trace <> "\n#{trace}"
+
+    with :ok <- BuildsTraceCache.insert(build.id, new_trace) do
       {:ok, build}
     end
   end
 
+  @spec by_stage(Pipeline.t()) :: [map()]
   def by_stage(pipeline) do
     query =
       from(
@@ -49,10 +70,12 @@ defmodule AlloyCi.Builds do
     end)
   end
 
+  @spec clean_ref(binary()) :: binary()
   def clean_ref(ref) do
     String.replace(ref, ref |> ref_type() |> cleanup_string(), "")
   end
 
+  @spec create_builds_from_config(binary(), any()) :: {:error, <<_::264>>} | {:ok, nil}
   def create_builds_from_config(content, pipeline) do
     with {:ok, config} <- YamlElixir.read_from_string(content) do
       Projects.touch(pipeline.project_id)
@@ -72,6 +95,7 @@ defmodule AlloyCi.Builds do
     end
   end
 
+  @spec create_build_from_map({binary(), map()}, map(), list(), any()) :: nil | Build.t()
   def create_build_from_map({"." <> _, _}, _, _, _), do: nil
 
   def create_build_from_map({name, options}, global_options, stages, pipeline) do
@@ -104,6 +128,7 @@ defmodule AlloyCi.Builds do
     create_build(build_params, creation_options)
   end
 
+  @spec delete_where([{:project_id, pos_integer()}, ...]) :: :error | :ok
   def delete_where(project_id: id) do
     query =
       Build
@@ -115,6 +140,7 @@ defmodule AlloyCi.Builds do
     end
   end
 
+  @spec enqueue(Build.t()) :: Build.t()
   def enqueue(%{status: "created", when: "manual"} = build) do
     do_update_status(build, "manual")
   end
@@ -126,8 +152,10 @@ defmodule AlloyCi.Builds do
 
   def enqueue(build), do: build
 
+  @spec enqueue!(Build.t()) :: Build.t()
   def enqueue!(build), do: do_update_status(build, "pending")
 
+  @spec for_pipeline_and_lower_stage(pos_integer(), pos_integer()) :: [Build.t()]
   def for_pipeline_and_lower_stage(pipeline_id, stage_idx) do
     Build
     |> where(pipeline_id: ^pipeline_id)
@@ -137,6 +165,7 @@ defmodule AlloyCi.Builds do
     |> Repo.all()
   end
 
+  @spec for_pipeline_and_stage(pos_integer(), pos_integer()) :: [Build.t()]
   def for_pipeline_and_stage(pipeline_id, stage_idx) do
     Build
     |> where(pipeline_id: ^pipeline_id)
@@ -145,6 +174,7 @@ defmodule AlloyCi.Builds do
     |> Repo.all()
   end
 
+  @spec for_project(pos_integer()) :: Build.t()
   def for_project(project_id) do
     Build
     |> where(project_id: ^project_id)
@@ -154,6 +184,7 @@ defmodule AlloyCi.Builds do
     |> Repo.one()
   end
 
+  @spec for_runner(Runner.t()) :: Build.t()
   def for_runner(runner) do
     # Select a build whose tags are fully contained in the runner's tags
     Build
@@ -164,8 +195,10 @@ defmodule AlloyCi.Builds do
     |> Repo.one()
   end
 
+  @spec get(binary() | pos_integer()) :: Build.t()
   def get(id), do: Build |> Repo.get(id)
 
+  @spec get_build(pos_integer(), pos_integer(), User.t()) :: false | nil | Build.t()
   def get_build(id, project_id, user) do
     with true <- Projects.can_access?(project_id, user) do
       Build
@@ -175,6 +208,7 @@ defmodule AlloyCi.Builds do
     end
   end
 
+  @spec get_by(pos_integer(), binary()) :: {:error, nil} | {:ok, Build.t()}
   def get_by(id, token) do
     build = get(id)
 
@@ -185,18 +219,25 @@ defmodule AlloyCi.Builds do
     end
   end
 
+  @spec get_with_artifact(any(), any()) :: {:error, nil} | {:ok, Build.t()}
   def get_with_artifact(id, token) do
     with {:ok, build} <- get_by(id, token) do
       {:ok, build |> Repo.preload(:artifact)}
     end
   end
 
+  @spec get_trace(Build.t()) :: binary()
+  def get_trace(%{id: id, status: "running"}), do: BuildsTraceCache.lookup(id)
+  def get_trace(build), do: build.trace
+
+  @spec keep_artifact(Build.t()) :: {:error, any()} | {:ok, Build.t()}
   def keep_artifact(build) do
     build.artifact
     |> Artifact.changeset(%{expires_at: nil})
     |> Repo.update()
   end
 
+  @spec ref_type(binary()) :: binary()
   def ref_type(ref) do
     ref_types = [{~r/heads/, "branches"}, {~r/tags/, "tags"}, {~r/:/, "forks"}]
 
@@ -208,6 +249,7 @@ defmodule AlloyCi.Builds do
     type
   end
 
+  @spec retry(Build.t()) :: {:ok, Build.t()} | {:error, any()}
   def retry(build) do
     with {:ok, _} <-
            build |> do_update(%{allow_failure: true, name: build.name <> " (restarted)"}) do
@@ -235,6 +277,8 @@ defmodule AlloyCi.Builds do
     end
   end
 
+  @spec start_build(nil | Build.t(), Runner.t()) ::
+          {:error, any()} | {:no_build, nil} | {:ok, map()}
   def start_build(build, runner) do
     with %Build{} <- build do
       # start build and check conflict
@@ -267,11 +311,13 @@ defmodule AlloyCi.Builds do
     end
   end
 
+  @spec store_artifact(Build.t(), any(), binary()) :: any()
   def store_artifact(build, file, expire_in) when is_nil(expire_in) or expire_in == "",
     do: do_store_artifact(build, file, "7d")
 
   def store_artifact(build, file, expire_in), do: do_store_artifact(build, file, expire_in)
 
+  @spec to_process() :: Build.t()
   def to_process do
     Build
     |> where([b], b.status == "pending" and is_nil(b.runner_id) and is_nil(b.tags))
@@ -280,15 +326,19 @@ defmodule AlloyCi.Builds do
     |> Repo.one()
   end
 
+  @spec transition_status(Build.t(), binary() | nil) :: Build.t()
   def transition_status(build, status \\ nil) do
     case build.status do
       s when s in ~w(created pending) -> update_status(build, status || "running")
       s when s in ~w(manual running) -> update_status(build, status || "success")
-      _ -> {:ok, build}
+      _ -> build
     end
   end
 
+  @spec update_trace(Build.t(), binary()) :: {:ok, Build.t()} | {:error, any()}
   def update_trace(build, trace) do
+    BuildsTraceCache.delete(build.id)
+
     build
     |> do_update(%{trace: trace})
   end
@@ -296,21 +346,6 @@ defmodule AlloyCi.Builds do
   ###################
   # Private functions
   ###################
-  defp append!(_build, ""), do: {1, nil}
-
-  defp append!(build, trace) do
-    new_trace = "\n#{trace}\n"
-
-    query =
-      from(
-        b in Build,
-        where: b.id == ^build.id,
-        update: [set: [trace: fragment("? || ?", b.trace, ^new_trace)]]
-      )
-
-    Repo.update_all(query, [])
-  end
-
   defp after_script(build) do
     case build.options["after_script"] do
       nil ->

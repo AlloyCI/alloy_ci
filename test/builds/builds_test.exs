@@ -2,7 +2,7 @@ defmodule AlloyCi.BuildsTest do
   @moduledoc """
   """
   use AlloyCi.DataCase
-  alias AlloyCi.{Build, Builds, Repo}
+  alias AlloyCi.{Build, Builds, BuildsTraceCache, Repo}
   import AlloyCi.Factory
 
   setup do
@@ -14,11 +14,24 @@ defmodule AlloyCi.BuildsTest do
 
   describe "append_trace/2" do
     test "it appends the new trace after the old trace" do
-      build = insert(:full_build, status: "running", trace: "existing trace")
+      build = insert(:full_build, status: "running")
+      assert :ok = BuildsTraceCache.insert(build.id, "existing trace")
       assert {:ok, _} = Builds.append_trace(build, "new trace")
 
       build = Builds.get(build.id)
-      assert build.trace == "existing trace\nnew trace\n"
+      assert Builds.get_trace(build) == "existing trace\nnew trace\n"
+    end
+
+    test "BuildsTraceCache handles concurrent writes" do
+      Enum.each(1..10000, fn x ->
+        Task.start(fn ->
+          assert :ok = BuildsTraceCache.insert(x, "existing trace #{x}")
+        end)
+      end)
+
+      Enum.each(1..10000, fn x ->
+        assert "existing trace #{x}" == BuildsTraceCache.lookup(x)
+      end)
     end
   end
 
@@ -490,8 +503,10 @@ defmodule AlloyCi.BuildsTest do
   describe "update_trace/2" do
     test "it overwrites the build trace" do
       build = insert(:full_build, status: "running", trace: "existing trace")
+      assert :ok = BuildsTraceCache.insert(build.id, "existing trace")
       assert {:ok, build} = Builds.update_trace(build, "new trace")
 
+      assert "" == BuildsTraceCache.lookup(build.id)
       assert build.trace == "new trace"
     end
   end

@@ -212,6 +212,7 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
 
       assert conn.status == 200
       assert build.status == "success"
+      assert Builds.get_trace(build) == "trace"
     end
 
     test "returns 403 when wrong token" do
@@ -243,7 +244,7 @@ defmodule AlloyCi.Web.Api.BuildsEventControllerTest do
       {:ok, build} = Builds.get_by(build.id, build.token)
 
       assert conn.status == 202
-      assert build.trace != nil
+      assert Builds.get_trace(build) != ""
     end
 
     test "returns 403 when wrong token" do
