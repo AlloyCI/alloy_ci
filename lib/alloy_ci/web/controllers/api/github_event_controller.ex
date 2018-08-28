@@ -22,7 +22,9 @@ defmodule AlloyCi.Web.Api.GithubEventController do
       ) do
     event = %{status: :bad_request, message: "Reference deletion is not handled"}
 
-    render(conn, "event.json", event: event)
+    conn
+    |> put_status(400)
+    |> render("event.json", event: event)
   end
 
   def handle_event(
@@ -62,7 +64,9 @@ defmodule AlloyCi.Web.Api.GithubEventController do
         render(conn, "event.json", event: event)
 
       {:error, changeset} ->
-        render(conn, "error.json", changeset: changeset)
+        conn
+        |> put_status(422)
+        |> render("error.json", changeset: changeset)
     end
   end
 
@@ -103,7 +107,9 @@ defmodule AlloyCi.Web.Api.GithubEventController do
   def handle_event(%{assigns: %{github_event: gh_event}} = conn, _params, _, _) do
     event = %{status: :bad_request, message: "Event #{gh_event} is not handled by this endpoint."}
 
-    render(conn, "event.json", event: event)
+    conn
+    |> put_status(400)
+    |> render("event.json", event: event)
   end
 
   ###################
@@ -141,17 +147,21 @@ defmodule AlloyCi.Web.Api.GithubEventController do
           render(conn, "event.json", event: event)
 
         {:error, changeset} ->
-          render(conn, "error.json", changeset: changeset)
+          conn
+          |> put_status(400)
+          |> render("error.json", changeset: changeset)
       end
     else
       {:error, nil} ->
-        render(conn, "event.json", event: %{status: :not_found, message: "Project not found."})
+        conn
+        |> put_status(404)
+        |> render("event.json", event: %{status: :not_found, message: "Project not found."})
 
       _ ->
-        render(
-          conn,
-          "event.json",
-          event: %{status: :bad_request, message: "Config file not found for ref."}
+        conn
+        |> put_status(406)
+        |> render("event.json",
+          event: %{status: :not_acceptable, message: "Config file not found for ref."}
         )
     end
   end
