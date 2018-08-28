@@ -9,7 +9,7 @@ defmodule AlloyCi.Mixfile do
     [
       app: :alloy_ci,
       version: @version,
-      elixir: "~> 1.6",
+      elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       build_embedded: Mix.env() in [:prod, :heroku],
@@ -32,7 +32,7 @@ defmodule AlloyCi.Mixfile do
   def application do
     [
       mod: {AlloyCi.App, []},
-      extra_applications: [:elixir_make, :logger, :mix]
+      extra_applications: [:elixir_make, :logger, :mix, :parse_trans]
     ]
   end
 
@@ -65,7 +65,7 @@ defmodule AlloyCi.Mixfile do
       {:phoenix, "~> 1.3", override: true},
       {:phoenix_ecto, "~> 3.3"},
       {:phoenix_html, "~> 2.11"},
-      {:phoenix_pubsub, "~> 1.0"},
+      {:phoenix_pubsub, "~> 1.1"},
       {:postgrex, ">= 0.0.0"},
       {:secure_random, "~> 0.5"},
       {:sentry, "== 6.3.0"},
