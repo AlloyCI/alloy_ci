@@ -39,6 +39,11 @@ defmodule AlloyCi.Web.BuildController do
         conn
         |> put_flash(:info, "Project not found")
         |> redirect(to: project_path(conn, :index))
+
+      {:error, _} ->
+        conn
+        |> put_flash(:info, "There was an error restarting the build")
+        |> redirect(to: project_path(conn, :show, project_id))
     end
   end
 
@@ -53,6 +58,11 @@ defmodule AlloyCi.Web.BuildController do
         conn
         |> put_flash(:info, "Project not found")
         |> redirect(to: project_path(conn, :index))
+
+      {:error, _} ->
+        conn
+        |> put_flash(:info, "There was an error updating the build")
+        |> redirect(to: project_build_path(conn, :show, project_id, id))
     end
   end
 
