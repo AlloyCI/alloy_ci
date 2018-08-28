@@ -1,7 +1,7 @@
 defmodule AlloyCi.Web.BuildView do
   use AlloyCi.Web, :view
   import AlloyCi.Web.ProjectView, only: [ref_icon: 1, tags: 1]
-  import AlloyCi.Builds, only: [clean_ref: 1]
+  import AlloyCi.Builds, only: [clean_ref: 1, get_trace: 1]
 
   def artifact_for(conn, %{artifacts: %{}, artifact: artifact} = build)
       when not is_nil(artifact) do
