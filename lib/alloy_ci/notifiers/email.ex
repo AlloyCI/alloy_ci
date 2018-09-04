@@ -9,6 +9,7 @@ defmodule AlloyCi.Notifiers.Email do
     |> __MODULE__.deliver_now()
   end
 
+  @spec config() :: map()
   def config do
     :alloy_ci
     |> Application.fetch_env!(__MODULE__)
@@ -20,8 +21,9 @@ defmodule AlloyCi.Emails do
   @moduledoc false
   use Bamboo.Phoenix, view: AlloyCi.Web.EmailView
   import Bamboo.Email
-  alias AlloyCi.Notifiers.Email
+  alias AlloyCi.{Notification, Notifiers.Email}
 
+  @spec notification_email(Notification.t()) :: Bamboo.Email.t()
   def notification_email(notification) do
     notification
     |> prepare_notification_email()

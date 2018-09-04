@@ -2,11 +2,13 @@ defmodule AlloyCi.Runners do
   @moduledoc """
   The boundary for the Runners system.
   """
-  alias AlloyCi.{Builds, Projects, Repo, Runner}
+  alias AlloyCi.{Build, Builds, Projects, Repo, Runner, User}
   import Ecto.Query, warn: false
 
+  @spec all(map()) :: {Runner.t(), Kerosene.t()}
   def all(params), do: Runner |> Repo.paginate(params)
 
+  @spec can_manage?(any(), User.t()) :: {:error, nil} | {:ok, Runner.t()}
   def can_manage?(id, user) do
     with %Runner{} = runner <- get(id),
          true <- Projects.can_manage?(runner.project_id, user) do
@@ -17,6 +19,7 @@ defmodule AlloyCi.Runners do
     end
   end
 
+  @spec create(map()) :: Runner.t()
   def create(%{"token" => token, "info" => runner_info} = params) do
     if token == global_token() do
       new_runner = Enum.into(%{global: true}, runner_params(params, runner_info))
@@ -34,6 +37,7 @@ defmodule AlloyCi.Runners do
     end
   end
 
+  @spec delete_by([{:id, any()} | {:token, any()}, ...]) :: {:error, any()} | {:ok, Runner.t()}
   def delete_by(id: id) do
     Runner
     |> Repo.get(id)
@@ -48,8 +52,10 @@ defmodule AlloyCi.Runners do
     FunctionClauseError -> nil
   end
 
+  @spec get(any()) :: Runner.t()
   def get(id), do: Runner |> Repo.get(id)
 
+  @spec get_by([{:token, any()}, ...]) :: {:error, nil} | {:ok, Runner.t()}
   def get_by(token: token) do
     case Runner |> Repo.get_by(token: token) do
       nil ->
@@ -60,6 +66,7 @@ defmodule AlloyCi.Runners do
     end
   end
 
+  @spec global_runners() :: [Runner.t()]
   def global_runners do
     Runner
     |> where([r], is_nil(r.project_id) and r.global == true)
@@ -67,10 +74,12 @@ defmodule AlloyCi.Runners do
     |> Repo.all()
   end
 
+  @spec global_token() :: binary()
   def global_token do
     Application.get_env(:alloy_ci, :runner_registration_token)
   end
 
+  @spec register_job(Build.t()) :: {:error, any()} | {:no_build, nil} | {:ok, map()}
   def register_job(%{project_id: nil, tags: nil} = runner) do
     Builds.to_process()
     |> Builds.start_build(runner)
@@ -105,6 +114,7 @@ defmodule AlloyCi.Runners do
     |> Builds.start_build(runner)
   end
 
+  @spec save(map()) :: nil | Runner.t()
   def save(params) do
     result =
       %Runner{}
@@ -117,6 +127,7 @@ defmodule AlloyCi.Runners do
     end
   end
 
+  @spec update(Runner.t(), map()) :: {:error, any()} | {:ok, Runner.t()}
   def update(runner, params) do
     params =
       case params["tags"] do
@@ -134,6 +145,7 @@ defmodule AlloyCi.Runners do
     |> Repo.update()
   end
 
+  @spec update_info(Runner.t(), map()) :: {:error, any()} | {:ok, Runner.t()}
   def update_info(runner, params) do
     runner
     |> Runner.changeset(params)

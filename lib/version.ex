@@ -6,6 +6,7 @@ defmodule AlloyCi.Version do
 
   @version "0.8.0"
 
+  @spec version() :: binary()
   def version do
     @version
   end

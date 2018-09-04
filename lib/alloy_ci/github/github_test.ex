@@ -72,10 +72,6 @@ defmodule AlloyCi.Github.Test do
     Poison.decode!(File.read!("test/fixtures/responses/test_pull_response.json"))
   end
 
-  def repos_for(user) do
-    fetch_repos(user)
-  end
-
   def skip_ci?(commit_message) do
     String.match?(commit_message, ~r/\[skip ci\]/) ||
       String.match?(commit_message, ~r/\[ci skip\]/)

@@ -7,17 +7,20 @@ defmodule AlloyCi.Accounts do
   alias Ueberauth.Auth
   import Ecto.Query
 
+  @spec authentications(User.t()) :: [Authentication.t()]
   def authentications(user) do
     user = user |> Repo.preload(:authentications)
     user.authentications
   end
 
+  @spec create_installation(map()) :: {:error, any()} | {:ok, Installation.t()}
   def create_installation(params) do
     %Installation{}
     |> Installation.changeset(params)
     |> Repo.insert()
   end
 
+  @spec installed_on_owner?(any()) :: boolean()
   def installed_on_owner?(target_id) do
     result =
       Installation
@@ -31,6 +34,7 @@ defmodule AlloyCi.Accounts do
     end
   end
 
+  @spec current_auths(nil | User.t()) :: [any()]
   def current_auths(nil), do: []
 
   def current_auths(%User{} = user) do
@@ -40,24 +44,28 @@ defmodule AlloyCi.Accounts do
     |> Enum.map(& &1.provider)
   end
 
+  @spec delete_auth(any(), User.t()) :: any()
   def delete_auth(id, user) do
     Authentication
     |> where(id: ^id, user_id: ^user.id)
     |> Repo.delete_all()
   end
 
+  @spec delete_auths(any()) :: any()
   def delete_auths(user_id) do
     Authentication
     |> where(user_id: ^user_id)
     |> Repo.delete_all()
   end
 
+  @spec delete_installation(any()) :: any()
   def delete_installation(uid) do
     Installation
     |> where(uid: ^uid)
     |> Repo.delete_all()
   end
 
+  @spec delete_user(any()) :: {:error, any()} | {:ok, User.t()}
   def delete_user(id) do
     query =
       ProjectPermission
@@ -65,13 +73,14 @@ defmodule AlloyCi.Accounts do
 
     with {_, nil} <- Repo.delete_all(query),
          {_, nil} <- delete_auths(id) do
-      id |> get_user!() |> Repo.delete()
+      id |> get_user() |> Repo.delete()
     else
       _ ->
         {:error, nil}
     end
   end
 
+  @spec get_or_create_user(atom() | %{provider: any(), uid: any()}, any()) :: User.t()
   def get_or_create_user(auth, current_user) do
     case auth_and_validate(auth) do
       {:error, :not_found} ->
@@ -89,18 +98,22 @@ defmodule AlloyCi.Accounts do
     end
   end
 
-  def get_user!(id), do: User |> Repo.get!(id)
+  @spec get_user(any()) :: User.t()
+  def get_user(id), do: User |> Repo.get(id)
 
+  @spec get_user_id_from_auth_token(binary()) :: pos_integer()
   def get_user_id_from_auth_token(token) do
     query = from(a in Authentication, where: a.token == ^token, limit: 1, select: a.user_id)
     Repo.one(query)
   end
 
+  @spec get_valid_auth_token(User.t()) :: binary()
   def get_valid_auth_token(user) do
     query = from(a in Authentication, where: a.user_id == ^user.id, limit: 1, select: a.token)
     Repo.one(query)
   end
 
+  @spec github_auth(User.t()) :: Authentication.t()
   def github_auth(user) do
     Authentication
     |> where(user_id: ^user.id)
@@ -108,6 +121,7 @@ defmodule AlloyCi.Accounts do
     |> Repo.one()
   end
 
+  @spec gravatar_url(User.t()) :: binary()
   def gravatar_url(user) do
     user.email
     |> Gravatar.new()
@@ -120,6 +134,7 @@ defmodule AlloyCi.Accounts do
   project permissions for projects to which the user already has access,
   and have already been added to AlloyCI.
   """
+  @spec process_auth(Authentication.t()) :: Authentication.t()
   def process_auth(auth) do
     case auth.provider do
       "github" ->
@@ -131,6 +146,7 @@ defmodule AlloyCi.Accounts do
     end
   end
 
+  @spec update_profile(User.t(), map()) :: {:error, any()} | {:ok, User.t()}
   def update_profile(user, user_params) do
     user
     |> User.changeset(user_params)

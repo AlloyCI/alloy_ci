@@ -22,6 +22,7 @@ defmodule AlloyCi.GuardianToken do
     timestamps()
   end
 
+  @spec for_user(User.t()) :: any()
   def for_user(user) do
     case Guardian.subject_for_token(user, nil) do
       {:ok, aud} ->

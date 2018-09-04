@@ -28,9 +28,10 @@ defprotocol Chartable do
 end
 
 defimpl Chartable, for: AlloyCi.Project do
-  alias AlloyCi.Repo
+  alias AlloyCi.{Project, Repo}
   import Ecto.Query
 
+  @spec builds_chart(Project.t()) :: %{datasets: [map(), ...], labels: [any()]}
   def builds_chart(project) do
     from(
       b in "builds",
@@ -44,13 +45,15 @@ defimpl Chartable, for: AlloyCi.Project do
     |> Chart.line_chart()
   end
 
+  @spec projects_chart(any()) :: nil
   def projects_chart(_), do: nil
 end
 
 defimpl Chartable, for: AlloyCi.Runner do
-  alias AlloyCi.Repo
+  alias AlloyCi.{Repo, Runner}
   import Ecto.Query
 
+  @spec builds_chart(Runner.t()) :: %{datasets: [map(), ...], labels: [any()]}
   def builds_chart(runner) do
     from(
       b in "builds",
@@ -64,6 +67,7 @@ defimpl Chartable, for: AlloyCi.Runner do
     |> Chart.line_chart()
   end
 
+  @spec projects_chart(Runner.t()) :: %{datasets: [map(), ...], labels: [any()]}
   def projects_chart(runner) do
     from(
       b in "builds",
@@ -85,7 +89,7 @@ defmodule Chart do
 
   Exposes 2 functions: `Chart.doughnut_chart/1` and `Chart.line_chart/1`
   """
-  alias AlloyCi.Projects
+  alias AlloyCi.{Build, Projects}
 
   @doc """
   Prepares a map with the data necessary to create a doughnut chart. Since it groups
@@ -93,6 +97,7 @@ defmodule Chart do
 
   Used only for runners.
   """
+  @spec doughnut_chart([Build.t()]) :: %{datasets: [map(), ...], labels: [any()]}
   def doughnut_chart(builds) do
     {_, result} =
       Enum.map_reduce(builds, %{}, fn {project, count}, acc ->
@@ -123,6 +128,7 @@ defmodule Chart do
 
   Used for projects.
   """
+  @spec line_chart([Build.t()]) :: %{datasets: [map(), ...], labels: [any()]}
   def line_chart(builds) do
     {_, result} =
       Enum.map_reduce(builds, %{}, fn {day, status, count}, acc ->
@@ -165,5 +171,6 @@ defmodule Chart do
     }
   end
 
+  @doc false
   def interval, do: Timex.now() |> Timex.shift(months: -3)
 end

@@ -6,9 +6,10 @@ defmodule AlloyCi.Github.Live do
   @behaviour AlloyCi.Github
 
   import Ecto.Query, warn: false
-  alias AlloyCi.Repo
   import Joken
+  alias AlloyCi.{Pipeline, Project}
 
+  @spec alloy_ci_config(Project.t(), Pipeline.t()) :: map()
   def alloy_ci_config(project, pipeline) do
     pipeline.installation_id
     |> installation_client()
@@ -16,6 +17,7 @@ defmodule AlloyCi.Github.Live do
     |> access_body()
   end
 
+  @spec app_client() :: Tentacat.Client.t()
   def app_client do
     key = JOSE.JWK.from_pem(Application.get_env(:alloy_ci, :private_key))
     app_id = Application.get_env(:alloy_ci, :app_id)
@@ -31,12 +33,14 @@ defmodule AlloyCi.Github.Live do
     Tentacat.Client.new(%{jwt: signed_jwt}, endpoint())
   end
 
+  @spec clone_url(Project.t(), Pipeline.t()) :: binary()
   def clone_url(project, pipeline) do
     %{"token" => token} = installation_token(pipeline.installation_id)
 
     "https://x-access-token:#{token}@#{clone_domain()}/#{project.owner}/#{project.name}.git"
   end
 
+  @spec commit(Project.t(), any(), integer()) :: map()
   def commit(project, sha, installation_id) do
     installation_id
     |> installation_client()
@@ -44,12 +48,14 @@ defmodule AlloyCi.Github.Live do
     |> access_body()
   end
 
+  @spec fetch_repos(binary()) :: any()
   def fetch_repos(token) do
     %{access_token: token}
     |> Tentacat.Client.new(endpoint())
     |> Tentacat.Repositories.list_mine(sort: "pushed")
   end
 
+  @spec installation_id_for(any()) :: pos_integer()
   def installation_id_for(github_uid) do
     github_uid
     |> filter_installations()
@@ -57,12 +63,14 @@ defmodule AlloyCi.Github.Live do
     |> Map.get("id")
   end
 
+  @spec list_installations() :: map()
   def list_installations do
     app_client()
     |> Tentacat.App.Installations.list_mine()
     |> access_body()
   end
 
+  @spec notify_cancelled!(Project.t(), Pipeline.t()) :: any()
   def notify_cancelled!(project, pipeline) do
     params = %{
       state: "error",
@@ -72,6 +80,7 @@ defmodule AlloyCi.Github.Live do
     notify!(project, pipeline, params)
   end
 
+  @spec notify_failure!(Project.t(), Pipeline.t()) :: any()
   def notify_failure!(project, pipeline) do
     params = %{
       state: "failure",
@@ -81,6 +90,7 @@ defmodule AlloyCi.Github.Live do
     notify!(project, pipeline, params)
   end
 
+  @spec notify_pending!(Project.t(), Pipeline.t()) :: any()
   def notify_pending!(project, pipeline) do
     params = %{
       state: "pending",
@@ -90,6 +100,7 @@ defmodule AlloyCi.Github.Live do
     notify!(project, pipeline, params)
   end
 
+  @spec notify_success!(Project.t(), Pipeline.t()) :: any()
   def notify_success!(project, pipeline) do
     params = %{
       state: "success",
@@ -99,6 +110,7 @@ defmodule AlloyCi.Github.Live do
     notify!(project, pipeline, params)
   end
 
+  @spec pull_request(Project.t(), binary() | integer(), integer()) :: map()
   def pull_request(project, pr_number, installation_id) do
     installation_id
     |> installation_client()
@@ -106,23 +118,13 @@ defmodule AlloyCi.Github.Live do
     |> access_body()
   end
 
-  def repos_for(user) do
-    query =
-      from(
-        auth in "authentications",
-        where: auth.user_id == ^user.id and auth.provider == "github",
-        select: auth.token
-      )
-
-    token = Repo.one(query)
-    fetch_repos(token)
-  end
-
+  @spec skip_ci?(binary()) :: boolean()
   def skip_ci?(commit_message) do
     String.match?(commit_message, ~r/\[skip ci\]/) ||
       String.match?(commit_message, ~r/\[ci skip\]/)
   end
 
+  @spec sha_url(Project.t(), Pipeline.t()) :: binary()
   def sha_url(project, pipeline) do
     "#{github_url()}/#{project.owner}/#{project.name}/commit/#{pipeline.sha}"
   end
@@ -130,7 +132,6 @@ defmodule AlloyCi.Github.Live do
   ###################
   # Private functions
   ###################
-  @spec access_body(any) :: any
   defp access_body(response), do: elem(response, 1)
 
   defp clone_domain do

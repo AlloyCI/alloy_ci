@@ -6,6 +6,7 @@ defmodule AlloyCi.ArtifactSweeper do
   alias AlloyCi.Artifacts
   require Logger
 
+  @spec start_link(any(), any()) :: :ignore | {:error, any()} | {:ok, pid()}
   def start_link(interval, opts \\ []) do
     defaults = %{
       interval: parse_interval(interval)
@@ -32,6 +33,7 @@ defmodule AlloyCi.ArtifactSweeper do
   end
 
   @impl true
+  @spec init(map()) :: {:ok, %{timer: any()}}
   def init(state) do
     {:ok, schedule_work(self(), state)}
   end

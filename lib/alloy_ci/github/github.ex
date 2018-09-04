@@ -3,34 +3,36 @@ defmodule AlloyCi.Github do
   Defines the behaviour for interacting with the GitHub API. There is a production
   implementation, and a test implementation of this behaviour.
   """
-  alias AlloyCi.{Pipeline, Project, User}
+  alias AlloyCi.{Pipeline, Project}
 
-  @callback alloy_ci_config(project :: %Project{}, pipeline :: %Pipeline{}) :: Map.t()
+  @callback alloy_ci_config(project :: Project.t(), pipeline :: Pipeline.t()) :: map()
 
   @callback app_client() :: any
 
-  @callback clone_url(project :: %Project{}, pipeline :: %Pipeline{}) :: String.t()
+  @callback clone_url(project :: Project.t(), pipeline :: Pipeline.t()) :: binary()
 
-  @callback commit(project :: %Project{}, sha :: String.t(), installation_id :: Integer.t()) ::
-              Map.t()
+  @callback commit(project :: Project.t(), sha :: binary(), installation_id :: pos_integer()) ::
+              map()
 
-  @callback fetch_repos(token :: String.t()) :: Map.t()
+  @callback fetch_repos(token :: binary()) :: any()
 
-  @callback installation_id_for(github_uid :: String.t()) :: Integer.t()
+  @callback installation_id_for(github_uid :: binary()) :: pos_integer()
 
-  @callback notify_cancelled!(project :: %Project{}, pipeline :: %Pipeline{}) :: any
+  @callback notify_cancelled!(project :: Project.t(), pipeline :: Pipeline.t()) :: any()
 
-  @callback notify_pending!(project :: %Project{}, pipeline :: %Pipeline{}) :: any
+  @callback notify_pending!(project :: Project.t(), pipeline :: Pipeline.t()) :: any()
 
-  @callback notify_success!(project :: %Project{}, pipeline :: %Pipeline{}) :: any
+  @callback notify_success!(project :: Project.t(), pipeline :: Pipeline.t()) :: any()
 
-  @callback notify_failure!(project :: %Project{}, pipeline :: %Pipeline{}) :: any
+  @callback notify_failure!(project :: Project.t(), pipeline :: Pipeline.t()) :: any()
 
   @callback pull_request(
-              project :: %Project{},
-              pr_number :: Integer.t(),
-              installation_id :: Integer.t()
-            ) :: Map.t()
+              project :: Project.t(),
+              pr_number :: pos_integer(),
+              installation_id :: pos_integer()
+            ) :: map()
 
-  @callback repos_for(user :: %User{}) :: Map.t()
+  @callback skip_ci?(commit_massage :: binary()) :: boolean()
+
+  @callback sha_url(project :: Project.t(), pipeline :: Pipeline.t()) :: binary()
 end

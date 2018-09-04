@@ -9,6 +9,7 @@ defmodule AlloyCi.Workers.ProcessPullRequestWorker do
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
+  @spec perform(map()) :: :ok | {:error, any()}
   def perform(
         %{
           "pull_request" => %{"head" => %{"repo" => %{"fork" => true}}, "base" => base},

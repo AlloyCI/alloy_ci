@@ -34,6 +34,7 @@ defmodule AlloyCi.User do
     |> unique_constraint(:email, name: :users_email_index)
   end
 
+  @spec make_admin!(User.t()) :: User.t()
   def make_admin!(user) do
     user
     |> cast(%{is_admin: true}, ~w(is_admin)a)

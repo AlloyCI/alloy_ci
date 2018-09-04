@@ -11,12 +11,14 @@ defmodule AlloyCi.Pipelines do
     Projects,
     Queuer,
     Repo,
+    User,
     Web.PipelinesChannel,
     Workers.CreateBuildsWorker
   }
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
+  @spec cancel(Pipeline.t()) :: {:error, any()} | {:ok, Pipeline.t()}
   def cancel(pipeline) do
     with {:ok, pipeline} <- update_pipeline(pipeline, %{status: "cancelled"}) do
       query =
@@ -37,12 +39,14 @@ defmodule AlloyCi.Pipelines do
     end
   end
 
+  @spec create_pipeline(Pipeline.t(), map()) :: any()
   def create_pipeline(pipeline, params) do
     pipeline
     |> Pipeline.changeset(params)
     |> Repo.insert()
   end
 
+  @spec delete_where([{:project_id, any()}, ...]) :: :error | :ok
   def delete_where(project_id: id) do
     query =
       Pipeline
@@ -63,6 +67,7 @@ defmodule AlloyCi.Pipelines do
     end
   end
 
+  @spec failed!(Pipeline.t()) :: {:error, any()} | {:ok, Pipeline.t()}
   def failed!(pipeline) do
     pipeline = pipeline |> Repo.preload(:project)
     @github_api.notify_failure!(pipeline.project, pipeline)
@@ -82,6 +87,7 @@ defmodule AlloyCi.Pipelines do
     })
   end
 
+  @spec for_project(any()) :: [Pipeline.t()]
   def for_project(project_id) do
     Pipeline
     |> where(project_id: ^project_id)
@@ -100,8 +106,10 @@ defmodule AlloyCi.Pipelines do
     end
   end
 
+  @spec get(any()) :: Pipeline.t()
   def get(id), do: Pipeline |> Repo.get(id)
 
+  @spec get_pipeline(any(), any(), User.t()) :: false | nil | Pipeline.t()
   def get_pipeline(id, project_id, user) do
     with true <- Projects.can_manage?(project_id, user) do
       Pipeline
@@ -111,12 +119,14 @@ defmodule AlloyCi.Pipelines do
     end
   end
 
+  @spec get_with_project(any()) :: Pipeline.t()
   def get_with_project(id) do
     id
     |> get()
     |> Repo.preload(:project)
   end
 
+  @spec has_artifacts?(Pipeline.t()) :: boolean()
   def has_artifacts?(pipeline) do
     query =
       from(
@@ -134,6 +144,7 @@ defmodule AlloyCi.Pipelines do
     end
   end
 
+  @spec paginated(any(), map()) :: {[Pipeline.t()], Kerosene.t()}
   def paginated(project_id, params) do
     Pipeline
     |> where(project_id: ^project_id)
@@ -141,6 +152,7 @@ defmodule AlloyCi.Pipelines do
     |> Repo.paginate(params)
   end
 
+  @spec run!(Pipeline.t()) :: nil | {:error, any()} | {:ok, Pipeline.t()}
   def run!(pipeline) do
     if pipeline.status == "pending" do
       update_pipeline(pipeline, %{status: "running", started_at: Timex.now()})

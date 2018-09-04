@@ -5,6 +5,7 @@ defmodule AlloyCi.Workers.CreateBuildsWorker do
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
+  @spec perform(any()) :: :ok | {:error, any()} | {:ok, any()}
   def perform(pipeline_id) do
     pipeline = Pipelines.get_with_project(pipeline_id)
     project = pipeline.project

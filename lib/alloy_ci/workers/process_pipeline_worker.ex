@@ -9,6 +9,7 @@ defmodule AlloyCi.Workers.ProcessPipelineWorker do
   import Ecto.Query
   require Logger
 
+  @spec perform(pos_integer()) :: {:error | :ok, any()}
   def perform(pipeline_id) do
     log("Processing builds for pipeline #{pipeline_id}")
 

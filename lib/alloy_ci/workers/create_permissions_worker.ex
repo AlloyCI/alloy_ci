@@ -10,6 +10,7 @@ defmodule AlloyCi.Workers.CreatePermissionsWorker do
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
+  @spec perform({any(), any()}) :: {:error, any()} | {:ok, ProjectPermission.t()}
   def perform({user_id, token}) do
     user_repo_ids =
       token

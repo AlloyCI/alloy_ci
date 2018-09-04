@@ -7,6 +7,7 @@ defmodule AlloyCi.Queuer do
   """
   alias AlloyCi.BackgroundScheduler
 
+  @spec push(any(), any()) :: nil | :ok
   def push(worker, args) do
     unless Mix.env() == :test do
       BackgroundScheduler.push(worker, args)

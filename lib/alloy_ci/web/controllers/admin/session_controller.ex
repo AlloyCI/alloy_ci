@@ -63,7 +63,7 @@ defmodule AlloyCi.Web.Admin.SessionController do
   end
 
   def impersonate(conn, %{"user_id" => user_id}, _current_user, _claims) do
-    user = Accounts.get_user!(user_id)
+    user = Accounts.get_user(user_id)
 
     conn
     |> Guardian.Plug.sign_out(key: :default)

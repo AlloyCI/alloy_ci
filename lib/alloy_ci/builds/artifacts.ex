@@ -13,6 +13,7 @@ defmodule AlloyCi.Artifacts do
     "uploads/artifacts/#{artifact.id}"
   end
 
+  @spec delete_expired() :: :ok
   def delete_expired do
     Artifact
     |> where([a], a.expires_at < ^Timex.now())

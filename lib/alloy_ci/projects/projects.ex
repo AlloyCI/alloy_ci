@@ -2,15 +2,17 @@ defmodule AlloyCi.Projects do
   @moduledoc """
   The boundary for the Projects system.
   """
-  alias AlloyCi.{Accounts, Pipelines, Project, ProjectPermission, Repo}
+  alias AlloyCi.{Accounts, Pipeline, Pipelines, Project, ProjectPermission, Repo, User}
   import Ecto.Query
 
   @github_api Application.get_env(:alloy_ci, :github_api)
 
+  @spec all(map()) :: {[Project.t()], Kerosene.t()}
   def all(params) do
     Project |> order_by(desc: :updated_at) |> Repo.paginate(params)
   end
 
+  @spec build_badge(binary(), binary()) :: %{color: any(), status: any()}
   def build_badge(id, ref) do
     status = last_status(%{id: String.to_integer(id)}, ref)
 
@@ -26,6 +28,7 @@ defmodule AlloyCi.Projects do
     %{color: colors[status], status: status}
   end
 
+  @spec can_access?(any(), any()) :: boolean()
   def can_access?(id, user) do
     with %Project{} = project <- get(id),
          true <- project.private,
@@ -43,6 +46,7 @@ defmodule AlloyCi.Projects do
     end
   end
 
+  @spec can_manage?(pos_integer() | nil, User.t()) :: boolean()
   def can_manage?(nil, _), do: false
 
   def can_manage?(id, user) do
@@ -57,6 +61,7 @@ defmodule AlloyCi.Projects do
     end
   end
 
+  @spec create_project(nil | keyword() | map(), User.t()) :: any()
   def create_project(params, user) do
     installation_id = @github_api.installation_id_for(Accounts.github_auth(user).uid)
 
@@ -98,6 +103,7 @@ defmodule AlloyCi.Projects do
     end
   end
 
+  @spec delete_by(any(), User.t()) :: {:error, any()} | {:ok, Project.t()}
   def delete_by(id, user) do
     with {:ok, project} <- get_by(id, user),
          :ok <- Pipelines.delete_where(project_id: id),
@@ -106,6 +112,7 @@ defmodule AlloyCi.Projects do
     end
   end
 
+  @spec delete_by(any()) :: {:error, any()} | {:ok, Project.t()}
   def delete_by(id) do
     with :ok <- Pipelines.delete_where(project_id: id),
          :ok <- purge_permissions(id) do
@@ -113,8 +120,10 @@ defmodule AlloyCi.Projects do
     end
   end
 
+  @spec get(any()) :: Project.t()
   def get(id), do: Project |> Repo.get(id)
 
+  @spec get_by(any(), User.t()) :: {:error, nil} | {:ok, Project.t()}
   def get_by(id, user) do
     permission =
       id
@@ -130,6 +139,7 @@ defmodule AlloyCi.Projects do
     end
   end
 
+  @spec get_by(any(), User.t(), [{:preload, any()}, ...]) :: {:error, nil} | {:ok, Project.t()}
   def get_by(id, user, preload: subject) do
     permission =
       id
@@ -146,6 +156,7 @@ defmodule AlloyCi.Projects do
     end
   end
 
+  @spec get_by([{:repo_id, any()} | {:token, any()}, ...]) :: {:error, nil} | {:ok, Project.t()}
   def get_by(repo_id: id) do
     case Project |> Repo.get_by(repo_id: id) do
       nil ->
@@ -166,6 +177,7 @@ defmodule AlloyCi.Projects do
     end
   end
 
+  @spec last_status(Project.t(), binary()) :: binary()
   def last_status(project, ref) do
     query =
       from(
@@ -179,6 +191,7 @@ defmodule AlloyCi.Projects do
     Repo.one(query) || "unknown"
   end
 
+  @spec last_statuses(any()) :: map()
   def last_statuses(projects) do
     ids = projects |> Enum.map(fn p -> p.id end)
 
@@ -194,6 +207,7 @@ defmodule AlloyCi.Projects do
     query |> Repo.all() |> Map.new()
   end
 
+  @spec latest(User.t()) :: [Project.t()]
   def latest(user) do
     query =
       from(
@@ -209,6 +223,7 @@ defmodule AlloyCi.Projects do
     Repo.all(query)
   end
 
+  @spec paginated_for(User.t(), map()) :: {Project.t(), Kerosene.t()}
   def paginated_for(user, params) do
     query =
       from(
@@ -223,6 +238,7 @@ defmodule AlloyCi.Projects do
     Repo.paginate(query, params)
   end
 
+  @spec private?(any()) :: boolean()
   def private?(id) do
     Project
     |> where(id: ^id)
@@ -230,6 +246,7 @@ defmodule AlloyCi.Projects do
     |> Repo.one()
   end
 
+  @spec repo_and_project(any(), any()) :: {:error, nil} | {:ok, any()}
   def repo_and_project(repo_id, existing_ids) do
     result =
       existing_ids
@@ -244,6 +261,8 @@ defmodule AlloyCi.Projects do
     end
   end
 
+  @spec show_by(any(), User.t(), any()) ::
+          {:error, nil} | {:ok, {Project.t(), Pipeline.t(), Kerosene.t()}}
   def show_by(id, user, params) do
     project = get(id)
 
@@ -262,6 +281,7 @@ defmodule AlloyCi.Projects do
     end
   end
 
+  @spec touch(any()) :: {:error, any()} | {:ok, Project.t()}
   def touch(id) do
     Project
     |> Repo.get(id)
@@ -269,6 +289,7 @@ defmodule AlloyCi.Projects do
     |> Repo.update(force: true)
   end
 
+  @spec update(Project.t(), map()) :: {:error, any()} | {:ok, Project.t()}
   def update(project, params) do
     params =
       with {:ok, secret_vars} <- Poison.decode(params["secret_variables"] || "") do

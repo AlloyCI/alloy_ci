@@ -2,7 +2,10 @@ defmodule AlloyCi.Notifiers.Slack do
   @moduledoc false
   import AlloyCi.Web.Router.Helpers
   import AlloyCi.Builds, only: [clean_ref: 1]
+  alias AlloyCi.Notification
 
+  @spec send_notification(Notification.t()) ::
+          {:error, HTTPoison.Error.t()} | {:ok, HTTPoison.Response.t()}
   def send_notification(notification) do
     HTTPoison.post(config()[:hook_url], build_payload(notification), [
       {"content-type", "application/json"}
