@@ -3,8 +3,9 @@ defmodule AlloyCi.Notifications do
   The boundary for the Notifications system.
   """
   import Ecto.Query, warn: false
-  alias AlloyCi.{Notification, Notifier, Repo, User}
+  alias AlloyCi.{Notification, Notifier, Pipeline, Repo, User}
 
+  @spec acknowledge!(any(), User.t()) :: Notification.t()
   def acknowledge!(id, user) do
     with %Notification{} = notification <- get(id, user) do
       notification
@@ -13,6 +14,7 @@ defmodule AlloyCi.Notifications do
     end
   end
 
+  @spec acknowledge_all(User.t()) :: any()
   def acknowledge_all(user) do
     query =
       from(
@@ -24,6 +26,7 @@ defmodule AlloyCi.Notifications do
     Repo.update_all(query, [])
   end
 
+  @spec count_for_user(User.t()) :: pos_integer()
   def count_for_user(user) do
     query =
       from(
@@ -35,18 +38,21 @@ defmodule AlloyCi.Notifications do
     Repo.one(query)
   end
 
+  @spec delete(any(), User.t()) :: any()
   def delete(id, user) do
     Notification
     |> where(id: ^id, user_id: ^user.id)
     |> Repo.delete_all()
   end
 
+  @spec delete_all(User.t()) :: any()
   def delete_all(user) do
     Notification
     |> where(user_id: ^user.id, acknowledged: ^true)
     |> Repo.delete_all()
   end
 
+  @spec for_user(User.t(), any()) :: [Notification.t()]
   def for_user(user, acknowledged \\ false) do
     Notification
     |> where(user_id: ^user.id, acknowledged: ^acknowledged)
@@ -56,20 +62,27 @@ defmodule AlloyCi.Notifications do
     |> Repo.all()
   end
 
+  @spec get(any()) :: Notification.t()
   def get(id), do: Notification |> Repo.get(id)
 
+  @spec get(any(), User.t()) :: Notification.t()
   def get(id, user) do
     Notification
     |> where(user_id: ^user.id)
     |> Repo.get(id)
   end
 
+  @spec get_with_project_and_user(any()) :: Notification.t()
   def get_with_project_and_user(id) do
     Notification
     |> Repo.get(id)
     |> Repo.preload([:project, :user])
   end
 
+  @spec send(map(), Pipeline.t(), any()) ::
+          :ok
+          | {:error, any()}
+          | {:ok, HTTPoison.Response.t()}
   def send(pipeline, project, type) do
     pipeline = Map.drop(pipeline, [:__meta__, :__struct__, :builds, :project])
 
@@ -82,8 +95,8 @@ defmodule AlloyCi.Notifications do
   # Private functions
   ###################
   defp create(user, project, type, content) do
-    with {:ok, notification} <- do_create(user, project, type, content) do
-      Notifier.notify!(notification.id)
+    with %Notification{} = notification <- do_create(user, project, type, content) do
+      Notifier.notify!(notification)
     end
   end
 
@@ -97,7 +110,8 @@ defmodule AlloyCi.Notifications do
 
     %Notification{}
     |> Notification.changeset(params)
-    |> Repo.insert()
+    |> Repo.insert!()
+    |> Repo.preload([:project, :user])
   end
 
   defp user_for_pipeline(pipeline) do

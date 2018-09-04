@@ -1,11 +1,11 @@
 defmodule AlloyCi.Notifier do
   @moduledoc false
-  alias AlloyCi.{Notifiers, Notifications}
+  alias AlloyCi.Notifiers
   require Logger
 
-  def notify!(notification_id) do
-    notification_id
-    |> Notifications.get_with_project_and_user()
+  @spec notify!(any()) :: :ok | {:error, any()} | {:ok, HTTPoison.Response.t()} | Bamboo.Email.t()
+  def notify!(notification) do
+    notification
     |> send_notifications(config())
   end
 
