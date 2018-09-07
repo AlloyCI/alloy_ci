@@ -1,5 +1,10 @@
 image: elixir:latest
 
+stages:
+- test
+- build
+- deploy
+
 services:
 - postgres:9.6
 
@@ -38,3 +43,17 @@ credo + formatter:
   script:
   - mix credo
   - mix format --check-formatted
+
+image builder:
+  cache: []
+  before_script: []
+  stage: build
+  services:
+  - docker:dind
+  variables:
+    DOCKER_DRIVER: overlay
+    DOCKER_HOST: tcp://docker:2375
+  script:
+    - make release  
+  only:
+  - tags  
