@@ -48,8 +48,6 @@ config :guardian, Guardian.DB,
 
 config :tentacat, :extra_headers, [{"Accept", "application/vnd.github.machine-man-preview+json"}]
 
-config :mix_docker, image: "alloyci/alloy_ci"
-
 # Configures Notifiers
 config :alloy_ci, AlloyCi.Notifier,
   slack: System.get_env("ENABLE_SLACK_NOTIFICATIONS"),

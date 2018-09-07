@@ -1,3 +1,3 @@
 #!/bin/sh
 
-bin/alloy_ci command Elixir.AlloyCi.ReleaseTasks migrate
+bin/alloy_ci eval 'AlloyCi.ReleaseTasks.migrate()'

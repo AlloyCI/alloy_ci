@@ -86,6 +86,7 @@ services:
       -----END RSA PRIVATE KEY-----"
 
   db:
+    restart: always
     image: postgres:9.6
     environment:
       POSTGRES_DB: "alloy_ci_prod"
