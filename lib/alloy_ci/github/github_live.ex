@@ -52,7 +52,8 @@ defmodule AlloyCi.Github.Live do
   def fetch_repos(token) do
     %{access_token: token}
     |> Tentacat.Client.new(endpoint())
-    |> Tentacat.Repositories.list_mine(sort: "pushed")
+    |> Tentacat.Repositories.list_mine(sort: "full_name")
+    |> present()
   end
 
   @spec installation_id_for(any()) :: pos_integer()
@@ -182,6 +183,12 @@ defmodule AlloyCi.Github.Live do
       params
     )
   end
+
+  defp present(result) when is_tuple(result) do
+    access_body(result)
+  end
+
+  defp present(result), do: result
 
   defp pipeline_url(project, pipeline) do
     base_url = Application.get_env(:alloy_ci, :server_url)
