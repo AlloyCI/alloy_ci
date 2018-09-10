@@ -1,6 +1,6 @@
 defmodule AlloyCi.Web.ProjectController do
   use AlloyCi.Web, :controller
-  alias AlloyCi.{Queuer, Project, Projects, Workers}
+  alias AlloyCi.{Project, Projects, Queuer, Workers}
   import Phoenix.HTML.Link
   import AlloyCi.Web.ProjectView, only: [app_url: 0]
 

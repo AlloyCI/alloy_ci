@@ -4,7 +4,7 @@ defmodule AlloyCi.Workers.ProcessPullRequestWorker do
   processes the information from the PR and the forked repo to create a special
   pipeline to test the code from the fork. Requires AlloyCI Runner.
   """
-  alias AlloyCi.{Pipelines, Projects, Workers.CreateBuildsWorker, Queuer}
+  alias AlloyCi.{Pipelines, Projects, Queuer, Workers.CreateBuildsWorker}
   require Logger
 
   @github_api Application.get_env(:alloy_ci, :github_api)

@@ -6,15 +6,15 @@ defmodule AlloyCi.Builds do
     Artifact,
     Build,
     BuildsTraceCache,
-    Queuer,
     Pipeline,
     Pipelines,
     Projects,
+    Queuer,
     Repo,
     Runner,
     User,
-    Workers,
-    Web.BuildsChannel
+    Web.BuildsChannel,
+    Workers
   }
 
   import Ecto.Query, warn: false

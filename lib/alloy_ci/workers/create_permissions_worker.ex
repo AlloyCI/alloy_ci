@@ -5,7 +5,7 @@ defmodule AlloyCi.Workers.CreatePermissionsWorker do
   AlloyCI, it will be added to the list of projects to which they already have
   access.
   """
-  alias AlloyCi.{Repo, ProjectPermission}
+  alias AlloyCi.{ProjectPermission, Repo}
   import AlloyCi.ProjectPermission, only: [repo_ids: 0]
 
   @github_api Application.get_env(:alloy_ci, :github_api)

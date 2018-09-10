@@ -1,7 +1,7 @@
 defmodule AlloyCi.Web.Admin.UserController do
   use AlloyCi.Web, :admin_controller
 
-  alias AlloyCi.{Accounts, User, Repo}
+  alias AlloyCi.{Accounts, Repo, User}
 
   # Make sure that we have a valid token in the :admin area of the session
   # We've aliased Guardian.Plug.EnsureAuthenticated in our AlloyCi.Web.admin_controller macro

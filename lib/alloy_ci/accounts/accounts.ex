@@ -2,7 +2,7 @@ defmodule AlloyCi.Accounts do
   @moduledoc """
   The boundary for the Accounts system.
   """
-  alias AlloyCi.{Authentication, Installation, ProjectPermission, Queuer, User, Repo}
+  alias AlloyCi.{Authentication, Installation, ProjectPermission, Queuer, Repo, User}
   alias AlloyCi.Workers.CreatePermissionsWorker
   alias Ueberauth.Auth
   import Ecto.Query
