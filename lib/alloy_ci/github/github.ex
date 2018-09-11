@@ -7,7 +7,9 @@ defmodule AlloyCi.Github do
 
   @callback alloy_ci_config(project :: Project.t(), pipeline :: Pipeline.t()) :: map()
 
-  @callback app_client() :: any
+  @callback app_auth_url() :: binary()
+
+  @callback app_client() :: any()
 
   @callback clone_url(project :: Project.t(), pipeline :: Pipeline.t()) :: binary()
 

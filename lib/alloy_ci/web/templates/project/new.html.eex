@@ -18,6 +18,17 @@
               <input data-action="keyup->repos#filter" data-target="repos.input" type="text" class="form-control" placeholder="Filter...">
             </div>
           </div>
+          <div class="col-sm-12 mt-1">
+            <p>
+              Not finding what you are looking for? You might need to re-authorize
+              AlloyCI for a particular organization. Click the button below to do so.
+              Once authorized, please refresh this page.
+            </p>
+            <%= link to: reauth_url(), target: "_blank", class: "btn btn-secondary btn-sm" do %>
+              <%= icon("rocket") %>
+              Authorize AlloyCI
+            <% end %>
+          </div>
         </div>
       </div>
     </div>

@@ -17,6 +17,11 @@ defmodule AlloyCi.Github.Live do
     |> access_body()
   end
 
+  @spec app_auth_url() :: binary()
+  def app_auth_url do
+    github_url() <> "/settings/connections/applications/" <> System.get_env("GITHUB_CLIENT_ID")
+  end
+
   @spec app_client() :: Tentacat.Client.t()
   def app_client do
     key = JOSE.JWK.from_pem(Application.get_env(:alloy_ci, :private_key))
