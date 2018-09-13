@@ -1,3 +1,29 @@
+<a name="v0.8.0"></a>
+### v0.8.0 (2018-09-13)
+
+#### Features
+
+* Manual build jobs can now be declared on the `.alloy-ci.yml` file under the `when` directive. 
+Manual jobs are those that need a user action before they can be picked up by a runner. Once 
+previous stages of a pipeline have succeeded, a manual job becomes available for enqueuing.
+
+#### Bug Fixes
+
+* Handle Tentacat bug that causes repositories list to be returned in 2 different ways [e144aeaa](https://github.com/AlloyCI/alloy_ci/commit/e144aeaa8f93e32c92562827f8bc27dca17fd6a9)
+* Allow users to re-authorize AlloyCI, so that they can see repositories from organizations with restricted permissions.
+See [#52](https://github.com/AlloyCI/alloy_ci/issues/52) for details on upcoming improvements.
+
+#### Chores
+
+* Use ETS to store intermediate build trace updates to avoid unnecessary round trips to the DB
+* Update Elixir to 1.7, and update dependencies 
+* Replace Que with own implementation of background jobs using GenServer (since Que dependencies stopped working on Elixir 1.7)
+* Added `typespec` definitions to all public functions outside of the `web` folder
+* Updated `distillery` to 2.0.9 and removed `mix_docker`
+* Replaced `.build` and `.release` Dockerfiles with a single `Dockerfile` that builds in stages, and added `make` tasks to release and push the images
+* Replaced `elixir:latest` with `elixir:slim` for the release stage in order to reduce final image size
+* Added CI task to automatically release Docker images when a tag is pushed
+
 <a name="v0.7.0"></a>
 ### v0.7.0 (2018-06-26)
 
@@ -21,7 +47,6 @@
 * Fixed redirect loop that would happen when an authentication token expires.
 * Reverted back to Kerosene v0.7.0, as the updated v0.8.0 had pagination bugs.  
  
-
 <a name="v0.6.0"></a>
 ### v0.6.0 (2018-05-07)
 
