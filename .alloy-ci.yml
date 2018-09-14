@@ -45,7 +45,9 @@ credo + formatter:
   - mix format --check-formatted
 
 image builder:
-  cache: []
+  image: docker:git
+  cache:
+    paths: []
   before_script: []
   stage: build
   services:
@@ -54,6 +56,7 @@ image builder:
     DOCKER_DRIVER: overlay
     DOCKER_HOST: tcp://docker:2375
   script:
+    - apk add --update make
     - make release  
   only:
   - tags  
