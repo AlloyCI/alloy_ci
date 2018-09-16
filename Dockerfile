@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV HOME=/opt/app/ TERM=xterm
 
 RUN \
-  curl -sL https://deb.nodesource.com/setup_9.x | bash - && \
+  curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
   apt-get install -y nodejs
 
 ## Install Hex+Rebar
