@@ -2,7 +2,7 @@ defmodule AlloyCi.Web.BuildsChannelTest do
   use AlloyCi.Web.ChannelCase
   import AlloyCi.Factory
 
-  alias AlloyCi.Web.BuildsChannel
+  alias AlloyCi.Web.{BuildsChannel, UserSocket}
 
   setup do
     build = insert(:full_build)
@@ -11,8 +11,7 @@ defmodule AlloyCi.Web.BuildsChannelTest do
       insert(:user, project_permissions: [build(:project_permission, project: build.project)])
 
     {:ok, _, socket} =
-      "user_id"
-      |> socket(%{user_id: user.id})
+      socket(UserSocket, "user_id", %{user_id: user.id})
       |> subscribe_and_join(BuildsChannel, "build:#{build.id}")
 
     {:ok, socket: socket, build: build}

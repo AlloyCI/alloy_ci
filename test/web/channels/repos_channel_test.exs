@@ -1,11 +1,11 @@
 defmodule AlloyCi.Web.ReposChannelTest do
   use AlloyCi.Web.ChannelCase
 
-  alias AlloyCi.Web.ReposChannel
+  alias AlloyCi.Web.{ReposChannel, UserSocket}
 
   setup do
     {:ok, _, socket} =
-      socket("user_id", %{some: :assign})
+      socket(UserSocket, "user_id", %{some: :assign})
       |> subscribe_and_join(ReposChannel, "repos:lobby")
 
     {:ok, socket: socket}

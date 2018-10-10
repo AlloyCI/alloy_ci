@@ -2,7 +2,7 @@ defmodule AlloyCi.Web.PipelinesChannelTest do
   use AlloyCi.Web.ChannelCase
   import AlloyCi.Factory
 
-  alias AlloyCi.Web.PipelinesChannel
+  alias AlloyCi.Web.{PipelinesChannel, UserSocket}
 
   setup do
     pipeline = insert(:pipeline)
@@ -11,8 +11,7 @@ defmodule AlloyCi.Web.PipelinesChannelTest do
       insert(:user, project_permissions: [build(:project_permission, project: pipeline.project)])
 
     {:ok, _, socket} =
-      "user_id"
-      |> socket(%{user_id: user.id})
+      socket(UserSocket, "user_id", %{user_id: user.id})
       |> subscribe_and_join(PipelinesChannel, "pipeline:#{pipeline.id}")
 
     {:ok, socket: socket, pipeline: pipeline}

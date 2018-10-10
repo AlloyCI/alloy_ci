@@ -45,14 +45,14 @@ defmodule AlloyCi.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:arc, "~> 0.8"},
-      {:arc_ecto, "~> 0.7.0"},
-      {:bamboo, "~> 0.8"},
+      {:arc, "~> 0.11"},
+      {:arc_ecto, "~> 0.11"},
+      {:bamboo, "~> 1.1"},
       {:bamboo_smtp, "~> 1.4"},
       {:bcrypt_elixir, "~> 1.0"},
       {:comeonin, "~> 4.1"},
-      {:cowboy, "~> 1.1"},
-      {:distillery, "~> 2.0", override: true},
+      {:cowboy, "~> 2.5"},
+      {:distillery, "~> 2.0"},
       {:ex_aws, "~> 2.0", override: true},
       {:ex_aws_s3, "~> 2.0"},
       {:gettext, "~> 0.15"},
@@ -62,7 +62,7 @@ defmodule AlloyCi.Mixfile do
       {:hackney, "~> 1.13", override: true},
       {:joken, "~> 1.5"},
       {:kerosene, "~> 0.8.1"},
-      {:phoenix, "~> 1.3", override: true},
+      {:phoenix, "~> 1.4.0-rc", override: true},
       {:phoenix_ecto, "~> 3.3"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_pubsub, "~> 1.1"},

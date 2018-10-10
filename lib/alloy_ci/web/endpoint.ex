@@ -1,7 +1,7 @@
 defmodule AlloyCi.Web.Endpoint do
   use Phoenix.Endpoint, otp_app: :alloy_ci
 
-  socket("/socket", AlloyCi.Web.UserSocket)
+  socket("/socket", AlloyCi.Web.UserSocket, websocket: true)
 
   # Serve at "/" the static files from "priv/static" directory.
   #
