@@ -2,7 +2,6 @@ import { Controller } from "stimulus"
 import "chart.js"
 
 export default class extends Controller {
-  
   connect() {
     function scales(ctx) {
       let result = {}

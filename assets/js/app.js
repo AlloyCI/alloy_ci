@@ -66,7 +66,6 @@ if($("#aside").hasClass("page-aside")) {
 }
 
 const 
-  collapsibleSidebarClass = "aci-collapsible-sidebar",
   collapsibleSidebarCollapsedClass = "aci-collapsible-sidebar-collapsed",
   sidebar = $(".aci-left-sidebar"),
   mainWrapper = $(".aci-wrapper");

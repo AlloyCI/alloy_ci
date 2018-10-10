@@ -8,16 +8,16 @@ export default class extends Controller {
 
   connect() {
     let CodeMirror = require("codemirror")
-    var myCodeMirror = 
-      CodeMirror.fromTextArea(
-        document.getElementById("project_secret_variables"),
-        {
-          lineNumbers: true,
-          matchBrackets: true,
-          mode: {name: "javascript", json: true},
-          theme: "dracula",
-          tabSize: 2
-        }
-      );
+    
+    CodeMirror.fromTextArea(
+      document.getElementById("project_secret_variables"),
+      {
+        lineNumbers: true,
+        matchBrackets: true,
+        mode: {name: "javascript", json: true},
+        theme: "dracula",
+        tabSize: 2
+      }
+    );
   }
 }
