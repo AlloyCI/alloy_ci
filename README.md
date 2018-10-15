@@ -60,7 +60,7 @@ and commits, so you can always know their status, just like any other CI service
   - [x] Can manually specify dependent jobs via the `.alloy-ci.yml` file
   - [x] Presents the artifacts to the user in a nice way, and allows download
 - [ ] Deployment functionality
-  - [ ] Can manually start deployments (manual actions)
+  - [x] Can manually start deployments (manual actions)
   - [x] Can do auto deploys
   - [ ] Can make use of different environments
   - [ ] Can start Review Apps
