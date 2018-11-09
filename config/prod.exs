@@ -40,7 +40,6 @@ config :logger, level: :info
 
 # Configure your database
 config :alloy_ci, AlloyCi.Repo,
-  adapter: Ecto.Adapters.Postgres,
   url: "${DATABASE_URL}",
   pool_size: 20
 
