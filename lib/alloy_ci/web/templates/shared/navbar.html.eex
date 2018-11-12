@@ -1,6 +1,5 @@
 <nav class="navbar navbar-expand fixed-top aci-top-header">
   <div class="container-fluid">
-    <% count = notification_count(@current_user) %>
     <div class="aci-navbar-header">
       <div class="page-title float-left">
         AlloyCI
@@ -44,9 +43,7 @@
         <li class="nav-item hidden-md-down">
           <%= link to: notification_path(@conn, :index), class: "nav-link" do %>
             <%= icon("bell-o fa-lg") %>
-            <%= if count > 0 do %>
-              <span class="badge badge-pill badge-danger"><%= count %></span>
-            <% end %>
+            <%= notification_badge(@current_user) %>
           <% end %>
         </li>
       </ul>

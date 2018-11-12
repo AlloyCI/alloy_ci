@@ -26,7 +26,7 @@ defmodule AlloyCi.Notifications do
     Repo.update_all(query, [])
   end
 
-  @spec count_for_user(User.t()) :: pos_integer()
+  @spec count_for_user(User.t()) :: integer()
   def count_for_user(user) do
     query =
       from(
