@@ -40,28 +40,29 @@ application.register("tags", TagsController)
 
 $('[data-toggle="tooltip"]').tooltip();
 
-$(".project-card").click(function(){
+$(".project-card").click(function() {
   window.location.href = $(this).data("url")
 })
 
 // Add class .active to current link
-$('.sidebar-elements').find('a').each(function(){
-  var cUrl = String(window.location).split('?')[0];
+$('.sidebar-elements').find('a').each(function(_, element) {
+  let cUrl = String(window.location).split('?')[0];
+  element = $(element)
 
   if (cUrl.substr(cUrl.length - 1) == '#') {
     cUrl = cUrl.slice(0,-1);
   }
 
-  if (cUrl.includes($($(this))[0].href)) {
-    $(this).addClass('active');
+  if (cUrl.includes(element[0].href)) {
+    element.addClass('active');
 
-    $(this).parents('ul').add(this).each(function(){
-      $(this).parent().addClass('active');
+    element.parents('ul').add(element).each(function(){
+      element.parent().addClass('active');
     });
   }
 });
 
-if($("#aside").hasClass("page-aside")) {
+if ($("#aside").hasClass("page-aside")) {
   $(".alert").addClass("aci-aside")
 }
 

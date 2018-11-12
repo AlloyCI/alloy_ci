@@ -18,13 +18,15 @@ export default class extends Controller {
   filter() {
     let filter = this.inputTarget.value.toUpperCase()
 
-    $(".filter").each(function(index) {
-      if(($(this).text().toUpperCase().indexOf(filter) > -1)) {
-        var id = $(this).data("id")
-        $(`#card-${id}`).show()
+    $(".filter").each(function(_, element) {
+      element = $(element)
+      let id = element.data("id")
+      let card = $(`#card-${id}`)
+
+      if(element.text().toUpperCase().includes(filter)) {
+        card.show()
       } else {
-        var id = $(this).data("id")
-        $(`#card-${id}`).hide()
+        card.hide()
       }
     })
   }
