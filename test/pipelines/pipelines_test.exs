@@ -173,10 +173,10 @@ defmodule AlloyCi.PipelinesTest do
       assert {:ok, pipeline} = Pipelines.update_pipeline(pipeline, @update_attrs)
       assert pipeline.before_sha == "some updated before_sha"
       assert pipeline.duration == 43
-      assert pipeline.finished_at == ~N[2011-05-18 15:01:01.000000]
+      assert pipeline.finished_at == ~N[2011-05-18 15:01:01]
       assert pipeline.ref == "refs/heads/master"
       assert pipeline.sha == "some updated sha"
-      assert pipeline.started_at == ~N[2011-05-18 15:01:01.000000]
+      assert pipeline.started_at == ~N[2011-05-18 15:01:01]
       assert pipeline.status == "some updated status"
     end
 
