@@ -71,7 +71,7 @@ defmodule AlloyCi.Mixfile do
       {:plug_cowboy, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
       {:secure_random, "~> 0.5"},
-      {:sentry, "== 6.3.0"},
+      {:sentry, "~> 7.0"},
       {:sweet_xml, "~> 0.6"},
       {:tentacat, "~> 1.0"},
       {:timex, "~> 3.3"},
