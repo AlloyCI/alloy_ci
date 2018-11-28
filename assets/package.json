@@ -22,7 +22,7 @@
   "devDependencies": {
     "babel-brunch": "~6.0.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
-    "brunch": "2.10.10",
+    "brunch": "2.10.17",
     "clean-css-brunch": "~2.0.0",
     "copycat-brunch": "^1.1.0",
     "css-brunch": "~2.0.0",
