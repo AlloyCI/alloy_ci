@@ -25,7 +25,7 @@
     "brunch": "2.10.10",
     "clean-css-brunch": "~2.0.0",
     "copycat-brunch": "^1.1.0",
-    "css-brunch": "~2.0.0",
+    "css-brunch": "~2.10.0",
     "javascript-brunch": "~2.0.0",
     "sass-brunch": "github:brunch/sass-brunch",
     "uglify-js-brunch": "git+https://github.com/brunch/uglify-js-brunch.git#update-uglifyjs"
