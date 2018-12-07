@@ -44,7 +44,23 @@ credo + formatter:
   - mix credo
   - mix format --check-formatted
 
-image builder:
+image build:
+  image: docker:git
+  cache:
+    paths: []
+  before_script: []
+  stage: build
+  services:
+  - docker:dind
+  variables:
+    TAG: test-builder
+    DOCKER_DRIVER: overlay
+    DOCKER_HOST: tcp://docker:2375
+  script:
+    - apk add --update make
+    - make build
+
+image release:
   image: docker:git
   cache:
     paths: []
