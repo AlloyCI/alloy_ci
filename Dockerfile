@@ -6,7 +6,9 @@ ENV HOME=/opt/app/ TERM=xterm
 
 RUN \
   curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
-  apt-get install -y nodejs
+  curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+  echo "deb http://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+  apt-get update && apt-get -y install nodejs yarn
 
 ## Install Hex+Rebar
 RUN mix local.hex --force && \
@@ -24,7 +26,8 @@ RUN mix do deps.get, deps.compile, sentry_recompile
 
 ## Cache node deps
 COPY assets/*.json ./assets/
-RUN cd ./assets && npm install
+COPY assets/yarn.lock ./assets/
+RUN cd ./assets && yarn install
 
 ## Compile assests & create digest
 COPY . .

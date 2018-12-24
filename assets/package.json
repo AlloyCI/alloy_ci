@@ -16,8 +16,7 @@
     "phoenix": "file:../deps/phoenix",
     "phoenix_html": "file:../deps/phoenix_html",
     "popper.js": "^1.12.9",
-    "stimulus": "^1.0.1",
-    "tether": "^1.4.3"
+    "stimulus": "^1.0.1"
   },
   "devDependencies": {
     "babel-brunch": "~6.0.0",
@@ -27,7 +26,7 @@
     "copycat-brunch": "^1.1.0",
     "css-brunch": "~2.0.0",
     "javascript-brunch": "~2.0.0",
-    "sass-brunch": "github:brunch/sass-brunch",
+    "sass-brunch": "2.10.7",
     "uglify-js-brunch": "git+https://github.com/brunch/uglify-js-brunch.git#update-uglifyjs"
   }
 }
