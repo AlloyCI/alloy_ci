@@ -62,7 +62,7 @@ defmodule AlloyCi.Mixfile do
       {:guardian_db, "~> 2.0", github: "ueberauth/guardian_db"},
       {:httpoison, "== 0.13.0", override: true},
       {:hackney, "~> 1.13", override: true},
-      {:joken, "~> 1.5"},
+      {:joken, "~> 2.0"},
       {:kerosene, "~> 0.9", github: "AlloyCI/kerosene"},
       {:phoenix, "~> 1.4.0", override: true},
       {:phoenix_ecto, "~> 4.0"},
