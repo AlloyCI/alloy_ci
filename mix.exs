@@ -9,7 +9,7 @@ defmodule AlloyCi.Mixfile do
     [
       app: :alloy_ci,
       version: @version,
-      elixir: "~> 1.7",
+      elixir: "~> 1.8",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       build_embedded: Mix.env() in [:prod, :heroku],
