@@ -1,3 +1,16 @@
+<a name="v0.9.0"></a>
+### v0.9.0 (2019-01-22)
+
+#### Bug Fixes
+
+* Use `node` v10.x or Docker images
+
+#### Chores
+
+* Update Elixir to 1.8, and update dependencies 
+* Upgrade to Phoenix 1.4
+* Use `yarn` instead of `npm` for JS dependency management
+
 <a name="v0.8.0"></a>
 ### v0.8.0 (2018-09-13)
 
