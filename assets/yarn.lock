@@ -1152,9 +1152,9 @@ code-point-at@^1.0.0:
   integrity sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=
 
 codemirror@^5.35.0:
-  version "5.42.2"
-  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.42.2.tgz#801ab715a7a7e1c7ed4162b78e9d8138b98de8f0"
-  integrity sha512-Tkv6im39VuhduFMsDA3MlXcC/kKas3Z0PI1/8N88QvFQbtOeiiwnfFJE4juGyC8/a4sb1BSxQlzsil8XLQdxRw==
+  version "5.43.0"
+  resolved "https://registry.yarnpkg.com/codemirror/-/codemirror-5.43.0.tgz#2454b5e0f7005dc9945ab7b0d9594ccf233da040"
+  integrity sha512-mljwQWUaWIf85I7QwTBryF2ASaIvmYAL4s5UCanCJFfKeXOKhrqdHWdHiZWAMNT+hjLTCnVx2S/SYTORIgxsgA==
 
 coffee-script@~1.12.7:
   version "1.12.7"
