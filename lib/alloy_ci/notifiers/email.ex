@@ -1,8 +1,9 @@
 defmodule AlloyCi.Notifiers.Email do
   @moduledoc false
   use Bamboo.Mailer, otp_app: :alloy_ci
-  alias AlloyCi.Emails
+  alias AlloyCi.{Emails, Notification}
 
+  @spec send_notification(Notification.t()) :: Bamboo.Email.t()
   def send_notification(notification) do
     notification
     |> Emails.notification_email()
