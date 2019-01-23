@@ -10,7 +10,9 @@ build:
 
 publish:
 	docker tag alloy_ci:$(TAG) alloyci/alloy_ci:$(TAG)
+	docker tag alloy_ci:$(TAG) alloyci/alloy_ci:latest
 	docker push alloyci/alloy_ci:$(TAG)
+	docker push alloyci/alloy_ci:latest
 
 release:
 	make build
