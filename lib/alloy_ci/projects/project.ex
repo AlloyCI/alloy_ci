@@ -30,5 +30,6 @@ defmodule AlloyCi.Project do
     struct
     |> cast(params, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
+    |> unique_constraint(:repo_id, name: :projects_repo_id_index)
   end
 end
