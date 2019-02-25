@@ -73,8 +73,13 @@ exports.config = {
         precision: 8 // minimum precision required by bootstrap-sass
       }
     },
-    uglify: {
-      mangle: false
+    terser: {
+      mangle: false,
+      compress: {
+        global_defs: {
+          DEBUG: false,
+        }
+      }
     }
   },
 

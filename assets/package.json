@@ -27,6 +27,6 @@
     "css-brunch": "~2.0.0",
     "javascript-brunch": "~2.0.0",
     "sass-brunch": "2.10.7",
-    "uglify-js-brunch": "git+https://github.com/brunch/uglify-js-brunch.git#update-uglifyjs"
+    "terser-brunch": "^3.0.0"
   }
 }

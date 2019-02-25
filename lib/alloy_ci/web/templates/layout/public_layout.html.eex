@@ -39,9 +39,9 @@
             </li>
             <li class="nav-item">
               <%= if @current_user do %>
-                <%= link "Projects", to: project_path(@conn, :index), class: "btn btn-outline-success btn-outline" %>
+                <%= link "Projects", to: project_path(@conn, :index), class: "main-link btn btn-outline-success btn-outline" %>
               <% else %>
-                <a class="btn btn-outline-success btn-outline" href="/auth/login">Log in</a>
+                <%= link "Log in", to: auth_path(@conn, :login, "identity"), class: "main-link btn btn-outline-success btn-outline" %>
               <% end %>
           </ul>
         </div>

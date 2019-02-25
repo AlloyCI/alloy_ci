@@ -68,7 +68,7 @@ defmodule AlloyCi.Web.Admin.SessionController do
     conn
     |> Guardian.Plug.sign_out(key: :default)
     |> Guardian.Plug.sign_in(user, %{typ: "access"})
-    |> redirect(to: "/")
+    |> redirect(to: project_path(conn, :index))
   end
 
   def stop_impersonating(conn, _params, _current_user, _claims) do
