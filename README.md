@@ -78,7 +78,7 @@ Pull requests are always welcome!
 
 1. Clone the Repository
 1. Run `mix deps.get` to install all dependencies
-1. Run `cd assets && npm install` to install all Javascript dependencies
+1. Run `cd assets && yarn install` to install all Javascript dependencies
 1. Make sure all environment variables are present. See [here](doc/README.md#configuration) for more info. 
    You can save them in a `.env` file, and source them before running any `mix` task
 1. Create and migrate the database with `mix ecto.setup`
