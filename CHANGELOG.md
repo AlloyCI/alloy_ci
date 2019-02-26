@@ -1,3 +1,14 @@
+<a name="v0.9.1"></a>
+### v0.9.1 (2019-02-26)
+
+#### Bug Fixes
+
+* Fix issue with migrations not running automatically, due to pool size being too small
+
+#### Chores
+
+* Replace uglify-js with terser-js
+
 <a name="v0.9.0"></a>
 ### v0.9.0 (2019-01-22)
 
