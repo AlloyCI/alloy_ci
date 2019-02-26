@@ -5,7 +5,8 @@ defmodule AlloyCi.ReleaseTasks do
     :crypto,
     :ssl,
     :postgrex,
-    :ecto
+    :ecto,
+    :ecto_sql
   ]
 
   @myapps [
@@ -62,7 +63,7 @@ defmodule AlloyCi.ReleaseTasks do
 
     # Start the Repo(s) for myapp
     IO.puts("Starting repos...")
-    Enum.each(@repos, & &1.start_link(pool_size: 1))
+    Enum.each(@repos, & &1.start_link(pool_size: 5))
   end
 
   defp migrations_path(app), do: Path.join([priv_dir(app), "repo", "migrations"])
