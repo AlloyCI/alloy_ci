@@ -1,7 +1,10 @@
 TAG ?= $(shell echo "$(CI_COMMIT_REF_SLUG)" | sed 's/v//')
 
 run:
-	./run.sh
+	./bin/run
+
+unit:
+	./bin/test
 
 build:
 	docker pull elixir:latest
@@ -10,14 +13,18 @@ build:
 
 publish:
 	docker tag alloy_ci:$(TAG) alloyci/alloy_ci:$(TAG)
-	docker tag alloy_ci:$(TAG) alloyci/alloy_ci:latest
 	docker push alloyci/alloy_ci:$(TAG)
-	docker push alloyci/alloy_ci:latest
 
 release:
 	make build
-	docker login --username $(DOCKER_HUB_USER) --password $(DOCKER_HUB_PASSWORD)
+	./bin/prepare_credentials
+	cat /tmp/credentials | docker login --username $(DOCKER_HUB_USER) --password-stdin
 	make publish
+	make latest
+
+latest:
+	docker tag alloy_ci:$(TAG) alloyci/alloy_ci:latest
+	docker push alloyci/alloy_ci:latest
 
 shipit:
 	make build

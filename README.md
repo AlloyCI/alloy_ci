@@ -82,7 +82,7 @@ Pull requests are always welcome!
 1. Make sure all environment variables are present. See [here](doc/README.md#configuration) for more info. 
    You can save them in a `.env` file, and source them before running any `mix` task
 1. Create and migrate the database with `mix ecto.setup`
-1. Run tests with `mix test` or start a development server with `mix phx.server`
+1. Run tests with `make unit` or start a development server with `make run`
 1. Code & send your PR when ready
 
 Before contributing, please read our [Code of Conduct](CODE_OF_CONDUCT.md) and
