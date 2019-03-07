@@ -44,7 +44,7 @@ credo + formatter:
   - mix credo
   - mix format --check-formatted
 
-image build:
+.docker: &docker
   image: docker:git
   cache:
     paths: []
@@ -52,6 +52,9 @@ image build:
   stage: build
   services:
   - docker:dind
+
+image build:
+  <<: *docker
   variables:
     TAG: test-builder
     DOCKER_DRIVER: overlay
@@ -59,20 +62,31 @@ image build:
   script:
     - apk add --update make
     - make build
+  only:
+    - branches
+  except:
+    - master
+
+image release bleeding:
+  <<: *docker
+  variables:
+    TAG: bleeding
+    DOCKER_DRIVER: overlay
+    DOCKER_HOST: tcp://docker:2375
+  script:
+    - apk add --update make
+    - make release
+  only:
+    - master
 
 image release:
-  image: docker:git
-  cache:
-    paths: []
-  before_script: []
-  stage: build
-  services:
-  - docker:dind
+  <<: *docker
   variables:
     DOCKER_DRIVER: overlay
     DOCKER_HOST: tcp://docker:2375
   script:
     - apk add --update make
-    - make release  
+    - make release 
+    - make latest 
   only:
   - tags  

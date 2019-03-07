@@ -20,7 +20,6 @@ release:
 	./bin/prepare_credentials
 	cat /tmp/credentials | docker login --username $(DOCKER_HUB_USER) --password-stdin
 	make publish
-	make latest
 
 latest:
 	docker tag alloy_ci:$(TAG) alloyci/alloy_ci:latest
