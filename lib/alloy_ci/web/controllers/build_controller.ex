@@ -73,6 +73,11 @@ defmodule AlloyCi.Web.BuildController do
         |> put_flash(:info, "Project not found")
         |> redirect(to: project_path(conn, :index))
 
+      nil ->
+        conn
+        |> put_flash(:info, "Build not found")
+        |> redirect(to: project_path(conn, :show, project_id))
+
       build ->
         conn
         |> render("show.html", build: build, pipeline: build.pipeline, current_user: current_user)

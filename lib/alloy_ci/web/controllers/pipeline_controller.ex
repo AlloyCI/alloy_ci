@@ -15,10 +15,15 @@ defmodule AlloyCi.Web.PipelineController do
       )
       |> redirect(to: project_pipeline_path(conn, :show, project_id, pipeline))
     else
-      _ ->
+      false ->
         conn
         |> put_flash(:info, "Project not found")
         |> redirect(to: project_path(conn, :index))
+
+      nil ->
+        conn
+        |> put_flash(:info, "Pipeline not found")
+        |> redirect(to: project_path(conn, :show, project_id))
     end
   end
 
@@ -41,10 +46,15 @@ defmodule AlloyCi.Web.PipelineController do
       builds = Builds.by_stage(pipeline)
       render(conn, "show.html", builds: builds, pipeline: pipeline, current_user: current_user)
     else
-      _ ->
+      false ->
         conn
         |> put_flash(:info, "Project not found")
         |> redirect(to: project_path(conn, :index))
+
+      nil ->
+        conn
+        |> put_flash(:info, "Pipeline not found")
+        |> redirect(to: project_path(conn, :show, project_id))
     end
   end
 end
