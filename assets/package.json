@@ -19,7 +19,7 @@
     "stimulus": "^1.0.1"
   },
   "devDependencies": {
-    "babel-brunch": "~6.0.0",
+    "babel-brunch": "~7.0.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "brunch": "2.10.10",
     "clean-css-brunch": "~2.0.0",
