@@ -24,18 +24,7 @@ defmodule AlloyCi.Github.Live do
 
   @spec app_client() :: Tentacat.Client.t()
   def app_client do
-    key = JOSE.JWK.from_pem(Application.get_env(:alloy_ci, :private_key))
-    app_id = Application.get_env(:alloy_ci, :app_id)
-
-    payload = %{
-      "iat" => DateTime.utc_now() |> Timex.to_unix(),
-      "exp" => Timex.now() |> Timex.shift(minutes: 9) |> Timex.to_unix(),
-      "iss" => String.to_integer(app_id)
-    }
-
-    signed_jwt = payload |> token() |> sign(rs256(key)) |> get_compact()
-
-    Tentacat.Client.new(%{jwt: signed_jwt}, endpoint())
+    Tentacat.Client.new(%{jwt: signed_jwt()}, endpoint())
   end
 
   @spec clone_url(Project.t(), Pipeline.t()) :: binary()
@@ -166,9 +155,17 @@ defmodule AlloyCi.Github.Live do
   end
 
   defp installation_token(installation_id) do
-    app_client()
-    |> Tentacat.App.Installations.token(installation_id)
-    |> access_body()
+    {:ok, response} =
+      Mojito.request(
+        :post,
+        "#{endpoint()}app/installations/#{installation_id}/access_tokens",
+        [
+          {"Authorization", "Bearer #{signed_jwt()}"},
+          {"Accept", "application/vnd.github.machine-man-preview+json"}
+        ]
+      )
+
+    Jason.decode!(response.body)
   end
 
   defp notify!(project, pipeline, params) do
@@ -199,5 +196,18 @@ defmodule AlloyCi.Github.Live do
     base_url = Application.get_env(:alloy_ci, :server_url)
 
     "#{base_url}/projects/#{project.id}/pipelines/#{pipeline.id}"
+  end
+
+  defp signed_jwt do
+    key = JOSE.JWK.from_pem(Application.get_env(:alloy_ci, :private_key))
+    app_id = Application.get_env(:alloy_ci, :app_id)
+
+    payload = %{
+      "iat" => DateTime.utc_now() |> Timex.to_unix(),
+      "exp" => Timex.now() |> Timex.shift(minutes: 9) |> Timex.to_unix(),
+      "iss" => String.to_integer(app_id)
+    }
+
+    payload |> token() |> sign(rs256(key)) |> get_compact()
   end
 end
