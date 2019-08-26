@@ -35,7 +35,7 @@ RUN cd ./assets && ./node_modules/brunch/bin/brunch b -p
 RUN mix phx.digest
 
 ## Compile Elixir release
-RUN MIX_ENV=prod mix release --env=prod
+RUN MIX_ENV=prod mix distillery.release --env=prod
 
 # Release Stage
 FROM elixir:slim

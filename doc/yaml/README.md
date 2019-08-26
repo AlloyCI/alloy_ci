@@ -257,7 +257,7 @@ job_name:
 | allow_failure | no       | Allow job to fail. Failed job doesn't contribute to commit status | Boolean |
 | when          | no       | Define when to run job. Can be `on_success`, `on_failure`, `always` or `manual` | String |
 | dependencies  | no       | Define other jobs that a job depends on so that you can pass artifacts between them | Array of Strings |
-| artifacts     | no       | Define list of [job artifacts](../../user/project/pipelines/job_artifacts.md) | YAML Object |
+| artifacts     | no       | Define list of job artifacts | YAML Object |
 | cache         | no       | Define list of files that should be cached between subsequent runs | YAML Object |
 | before_script | no       | Override a set of commands that are executed before job | Array of Strings |
 | after_script  | no       | Override a set of commands that are executed after job | Array of Strings |
