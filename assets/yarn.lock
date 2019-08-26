@@ -87,9 +87,9 @@ ansi-styles@^3.2.1:
     color-convert "^1.9.0"
 
 ansi-to-html@^0.6.4:
-  version "0.6.9"
-  resolved "https://registry.yarnpkg.com/ansi-to-html/-/ansi-to-html-0.6.9.tgz#f4f2e2361792269cc62da85944f39759fc71b1e2"
-  integrity sha512-hwNdg2DNgCzsrvaNc+LDqSxJkpxf9oEt4R7KE0IeURXhEOlontEqNpXNiGeFBpSes8TZF+ZZ9sjB85QzjPsI6A==
+  version "0.6.11"
+  resolved "https://registry.yarnpkg.com/ansi-to-html/-/ansi-to-html-0.6.11.tgz#5093fc4962186c0e9343dec572a4f71abdc93439"
+  integrity sha512-88XZtrcwrfkyn6fGstHnkaF1kl7hGtNCYh4vSmItgEV+6JnQHryDBf7udF4f2RhTRQmYvJvPcTtqgaqrxzc9oA==
   dependencies:
     entities "^1.1.1"
 
