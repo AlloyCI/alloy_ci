@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "ansi-to-html": "^0.6.4",
-    "bootstrap": "^4.0.0",
+    "bootstrap": "^4.3.1",
     "chart.js": "^2.7.2",
     "codemirror": "^5.35.0",
     "font-awesome": "^4.7.0",
