@@ -78,7 +78,7 @@ defmodule AlloyCi.Mixfile do
       {:tentacat, "~> 1.0"},
       {:timex, "~> 3.3"},
       {:ueberauth_github, "~> 0.7"},
-      {:ueberauth_identity, "~> 0.2.3"},
+      {:ueberauth_identity, "~> 0.3.0"},
       {:yaml_elixir, "~> 2.1", github: "AlloyCI/yaml-elixir"},
 
       # Test and Dev dependencies
