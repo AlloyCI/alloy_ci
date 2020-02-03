@@ -27,6 +27,6 @@
     "css-brunch": "~2.0.0",
     "javascript-brunch": "~2.0.0",
     "sass-brunch": "2.10.7",
-    "terser-brunch": "^3.0.0"
+    "terser-brunch": "^4.0.0"
   }
 }
