@@ -25,6 +25,8 @@ config :arc, storage: Arc.Storage.Local
 
 config :kerosene, theme: :bootstrap4
 
+config :phoenix, :json_library, Jason
+
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
