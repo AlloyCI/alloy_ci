@@ -1,5 +1,5 @@
 # Build Stage
-FROM elixir:latest as build
+FROM elixir:1.10 as build
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV HOME=/opt/app/ TERM=xterm
@@ -38,7 +38,7 @@ RUN mix phx.digest
 RUN MIX_ENV=prod mix distillery.release --env=prod
 
 # Release Stage
-FROM elixir:slim
+FROM elixir:1.10-slim
 
 EXPOSE 4000
 ENV PORT=4000 MIX_ENV=prod REPLACE_OS_VARS=true SHELL=/bin/sh
