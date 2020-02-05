@@ -1,0 +1,12 @@
+name: Docker Image CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Test Docker image build
+      run: docker build ./ -t alloy_ci:$(date +%s)
