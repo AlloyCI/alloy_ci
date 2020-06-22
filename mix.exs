@@ -65,7 +65,7 @@ defmodule AlloyCi.Mixfile do
       {:jason, "~> 1.1"},
       {:joken, "~> 1.5"},
       {:kerosene, "~> 0.9", github: "AlloyCI/kerosene"},
-      {:mojito, "~> 0.6.1"},
+      {:mojito, "~> 0.7.2"},
       {:phoenix, "~> 1.4.0", override: true},
       {:phoenix_ecto, "~> 4.0"},
       {:phoenix_html, "~> 2.11"},
