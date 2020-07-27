@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,6 +12,7 @@
   <title>AlloyCI</title>
   <link rel="stylesheet" href="<%= static_path(@conn, "/css/kit.css") %>">
 </head>
+
 <body class="index" id="page-top">
 
   <section class="cover-5 text-center">
@@ -23,7 +25,9 @@
           <img src="/images/logo.png" class="img-avatar" width="25%" alt="logo">
           AlloyCI
         </a>
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarToggler-5" aria-controls="navbarToggler-5" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+          data-target="#navbarToggler-5" aria-controls="navbarToggler-5" aria-expanded="false"
+          aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse pull-xs-right justify-content-end" id="navbarToggler-5">
@@ -39,9 +43,9 @@
             </li>
             <li class="nav-item">
               <%= if @current_user do %>
-                <%= link "Projects", to: project_path(@conn, :index), class: "main-link btn btn-outline-success btn-outline" %>
+              <%= link "Projects", to: project_path(@conn, :index), class: "main-link btn btn-outline-success btn-outline" %>
               <% else %>
-                <%= link "Log in", to: auth_path(@conn, :login, "identity"), class: "main-link btn btn-outline-success btn-outline" %>
+              <%= link "Log in", to: auth_path(@conn, :login, "identity"), class: "main-link btn btn-outline-success btn-outline" %>
               <% end %>
           </ul>
         </div>
@@ -62,7 +66,7 @@
     </div>
   </section>
 
-  <%= render @view_module, @view_template, assigns %>
+  <%= @inner_content %>
 
   <!-- Footer -->
   <footer class="footer-3">
@@ -82,7 +86,10 @@
     </div>
   </footer>
   <!-- Bootstrap core JavaScript -->
-  <script>window.userToken = "1";</script>
+  <script>
+    window.userToken = "1";
+  </script>
   <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
 </body>
+
 </html>

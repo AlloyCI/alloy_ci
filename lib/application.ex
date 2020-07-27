@@ -17,7 +17,8 @@ defmodule AlloyCi.App do
       Guardian.DB.Token.SweeperServer,
       {AlloyCi.ArtifactSweeper, System.get_env("ARTIFACT_SWEEP_INTERVAL")},
       AlloyCi.BuildsTraceCache,
-      {Task.Supervisor, name: AlloyCi.TaskSupervisor}
+      {Task.Supervisor, name: AlloyCi.TaskSupervisor},
+      {Phoenix.PubSub, [name: AlloyCi.PubSub, adapter: Phoenix.PubSub.PG2]}
     ]
 
     opts = [strategy: :one_for_one, name: AlloyCi.Supervisor]

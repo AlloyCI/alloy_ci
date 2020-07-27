@@ -17,7 +17,7 @@ defmodule AlloyCi.Web.ChannelCase do
   using do
     quote do
       # Import conveniences for testing with channels
-      use Phoenix.ChannelTest
+      import Phoenix.ChannelTest
 
       alias AlloyCi.Repo
       import Ecto

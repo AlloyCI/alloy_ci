@@ -23,15 +23,19 @@
       <%= render_flash(@conn, :info) %>
       <%= render_flash(@conn, :error) %>
       <!-- Main content -->
-      <%= render @view_module, @view_template, assigns %>
+      <%= @inner_content %>
     </div>
 
     <footer class="app-footer">
-      <span class="float-right m-r-3"><a href="https://alloy-ci.com">AlloyCI - Admin</a> © <%= Timex.now.year %> Insomniware, LLC. <b>Version: <%= AlloyCi.Version.version %></b></span>
+      <span class="float-right m-r-3"><a href="https://alloy-ci.com">AlloyCI - Admin</a> © <%= Timex.now.year %>
+        Insomniware, LLC. <b>Version: <%= AlloyCi.Version.version %></b></span>
     </footer>
   </div>
 
-  <script>window.userToken = "<%= Accounts.get_valid_auth_token(@current_user) %>";</script>
+  <script>
+    window.userToken = "<%= Accounts.get_valid_auth_token(@current_user) %>";
+  </script>
   <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
 </body>
+
 </html>

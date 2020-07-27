@@ -10,6 +10,6 @@
     <link rel="stylesheet" href="<%= static_url(AlloyCi.Web.Endpoint, "/css/app.css") %>">
   </head>
   <body>
-    <%= render @view_module, @view_template, assigns %>
+    <%= @inner_content %>
   </body>
 </html>

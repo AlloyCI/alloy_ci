@@ -38,7 +38,11 @@ defmodule AlloyCi.Factory do
       ref: "refs/heads/master",
       sha: "0000000000000000000000",
       before_sha: "0000000000000000000000",
-      commit: %{"message" => "test", "username" => "supernova32"}
+      commit: %{
+        "message" => "test",
+        "username" => "supernova32",
+        "pusher_email" => "suprnova32@gmail.com"
+      }
     }
   end
 

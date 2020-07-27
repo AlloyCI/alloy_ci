@@ -19,7 +19,7 @@ config :alloy_ci, AlloyCi.Web.Endpoint,
   url: [host: "localhost"],
   secret_key_base: System.get_env("SECRET_KEY_BASE"),
   render_errors: [view: AlloyCi.Web.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: AlloyCi.PubSub, adapter: Phoenix.PubSub.PG2]
+  pubsub_server: AlloyCi.PubSub
 
 config :arc, storage: Arc.Storage.Local
 

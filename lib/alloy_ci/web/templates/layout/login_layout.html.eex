@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -19,29 +20,30 @@
       <%= render_flash(@conn, :info) %>
       <%= render_flash(@conn, :error) %>
       <%= render_flash(@conn, :success) %>
-      
-     <div class="main-content container-fluid">
-      <div class="splash-container">
-        <div class="card card-border-color card-border-color-primary">
-          <div class="card-header">
-            <h2 class="page-title">AlloyCI<h2>
-            <span class="splash-description">
-              Please enter your user information to
-              <%= if @current_user do %>
-                connect your account
-              <% else %>
-                login
-              <% end %>
-            </span>
-          </div>
-          <div class="card-body">
-            <%= render @view_module, @view_template, assigns %>
+
+      <div class="main-content container-fluid">
+        <div class="splash-container">
+          <div class="card card-border-color card-border-color-primary">
+            <div class="card-header">
+              <h2 class="page-title">AlloyCI<h2>
+                  <span class="splash-description">
+                    Please enter your user information to
+                    <%= if @current_user do %>
+                    connect your account
+                    <% else %>
+                    login
+                    <% end %>
+                  </span>
+            </div>
+            <div class="card-body">
+              <%= @inner_content %>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    </div>
   </div>
   <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
 </body>
+
 </html>

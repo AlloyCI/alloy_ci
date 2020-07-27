@@ -10,7 +10,7 @@ defmodule AlloyCi.Web.Api.BuildsEventController do
         {:ok, build} ->
           conn
           |> put_status(201)
-          |> render("build.json", build)
+          |> render("build.json", build |> Map.from_struct())
 
         {:no_build, _} ->
           conn

@@ -21,6 +21,8 @@ defmodule AlloyCi.Accounts do
   end
 
   @spec installed_on_owner?(any()) :: boolean()
+  def installed_on_owner?(nil), do: false
+
   def installed_on_owner?(target_id) do
     result =
       Installation
