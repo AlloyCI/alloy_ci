@@ -50,7 +50,7 @@ defmodule AlloyCi.Mixfile do
       {:bamboo, "~> 1.4"},
       {:bamboo_smtp, "~> 1.4"},
       {:bcrypt_elixir, "~> 1.0"},
-      {:comeonin, "~> 4.1"},
+      {:comeonin, "~> 5.3"},
       {:cowboy, "~> 2.5"},
       {:distillery, "~> 2.0"},
       {:ecto, "~> 3.0", override: true},
