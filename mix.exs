@@ -76,7 +76,7 @@ defmodule AlloyCi.Mixfile do
       {:secure_random, "~> 0.5"},
       {:sentry, "~> 7.0"},
       {:sweet_xml, "~> 0.6"},
-      {:tentacat, "~> 1.0"},
+      {:tentacat, "~> 2.1"},
       {:timex, "~> 3.3"},
       {:ueberauth_github, "~> 0.7"},
       {:ueberauth_identity, "~> 0.3.0"},
