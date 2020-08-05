@@ -27,7 +27,7 @@
   "exjsx": {:hex, :exjsx, "4.0.0", "60548841e0212df401e38e63c0078ec57b33e7ea49b032c796ccad8cde794b5c", [:mix], [{:jsx, "~> 2.8.0", [hex: :jsx, repo: "hexpm", optional: false]}], "hexpm", "32e95820a97cffea67830e91514a2ad53b888850442d6d395f53a1ac60c82e07"},
   "file_system": {:hex, :file_system, "0.2.8", "f632bd287927a1eed2b718f22af727c5aeaccc9a98d8c2bd7bff709e851dc986", [:mix], [], "hexpm", "97a3b6f8d63ef53bd0113070102db2ce05352ecf0d25390eb8d747c2bde98bca"},
   "gen_smtp": {:hex, :gen_smtp, "0.14.0", "39846a03522456077c6429b4badfd1d55e5e7d0fdfb65e935b7c5e38549d9202", [:rebar3], [], "hexpm", "d32d796c947fa35dc5e8f20706877bb8c8584b16c4eedf3315083f983959d82b"},
-  "gettext": {:hex, :gettext, "0.18.0", "406d6b9e0e3278162c2ae1de0a60270452c553536772167e2d701f028116f870", [:mix], [], "hexpm", "c3f850be6367ebe1a08616c2158affe4a23231c70391050bf359d5f92f66a571"},
+  "gettext": {:hex, :gettext, "0.18.1", "89e8499b051c7671fa60782faf24409b5d2306aa71feb43d79648a8bc63d0522", [:mix], [], "hexpm", "e70750c10a5f88cb8dc026fc28fa101529835026dec4a06dba3b614f2a99c7a9"},
   "gravatar": {:hex, :gravatar, "0.1.0", "536d8dbe9ef9b6a63b0b57e66e41682deb55a27f343d6684fc28c14ad00a33ee", [:mix], [], "hexpm", "4fab4a0313312d4319496662b55f25d3aabaa740ef3d084456425db8c9bdb4fd"},
   "guardian": {:hex, :guardian, "2.1.1", "1f02b349f6ba765647cc834036a8d76fa4bd65605342fe3a031df3c99d0d411a", [:mix], [{:jose, "~> 1.8", [hex: :jose, repo: "hexpm", optional: false]}, {:plug, "~> 1.3.3 or ~> 1.4", [hex: :plug, repo: "hexpm", optional: true]}], "hexpm", "189b87ba7ce6b40d6ba029138098b96ffc4ae78f229f5b39539b9141af8bf0f8"},
   "guardian_db": {:git, "https://github.com/ueberauth/guardian_db.git", "8ceb1587de63b502afda1b1bcf9673b57a0ce770", []},
