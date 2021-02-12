@@ -48,7 +48,7 @@ defmodule AlloyCi.Mixfile do
       {:arc, "~> 0.11"},
       {:arc_ecto, "~> 0.11"},
       {:bamboo, "~> 1.4"},
-      {:bamboo_smtp, "~> 1.4"},
+      {:bamboo_smtp, "~> 3.1"},
       {:bcrypt_elixir, "~> 1.0"},
       {:comeonin, "~> 5.3"},
       {:cowboy, "~> 2.5"},
