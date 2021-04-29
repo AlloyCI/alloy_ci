@@ -1,0 +1,61 @@
+version: 2
+updates:
+- package-ecosystem: mix
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: joken
+    versions:
+    - "> 1.5.0"
+  - dependency-name: ecto
+    versions:
+    - 3.5.6
+    - 3.5.7
+    - 3.5.8
+    - 3.6.0
+  - dependency-name: ex_aws
+    versions:
+    - 2.1.6
+    - 2.1.7
+  - dependency-name: phoenix
+    versions:
+    - 1.5.7
+  - dependency-name: sentry
+    versions:
+    - 8.0.4
+  - dependency-name: bamboo_smtp
+    versions:
+    - 3.0.0
+- package-ecosystem: npm
+  directory: "/assets"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  versioning-strategy: increase-if-necessary
+  ignore:
+  - dependency-name: babel-brunch
+    versions:
+    - "> 6.0.6"
+  - dependency-name: terser-brunch
+    versions:
+    - "> 3.0.0"
+  - dependency-name: chart.js
+    versions:
+    - 2.9.4
+    - 3.0.2
+    - 3.1.0
+    - 3.1.1
+  - dependency-name: codemirror
+    versions:
+    - 5.59.2
+    - 5.59.3
+    - 5.59.4
+    - 5.60.0
+  - dependency-name: lodash
+    versions:
+    - 4.17.20
+  - dependency-name: elliptic
+    versions:
+    - 6.5.3
